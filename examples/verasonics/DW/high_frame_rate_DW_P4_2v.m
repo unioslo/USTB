@@ -199,8 +199,8 @@ for i = 1:Resource.RcvBuffer(1).numFrames
     end
     % Set last acquisitions SeqControl for transferToHost.
     Event(n-1).seqControl = [5,3,nsc];
-        SeqControl(nsc).command = 'transferToHost'; % transfer all acqs in one super frame
-        nsc = nsc + 1;
+    SeqControl(nsc).command = 'transferToHost'; % transfer all acqs in one super frame
+    nsc = nsc + 1;
     % Do reconstruction and processing for 1st sub frame
     Event(n).info = 'Reconstruct'; 
     Event(n).tx = 0;         % no transmit
