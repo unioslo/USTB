@@ -143,9 +143,20 @@ classdef das < midprocess
                                            receive_delay,...
                                            modulation_frequency,...
                                            int32(h.dimension));
-               
+                    %% MEX CUDA                  
+                    case code.mex_gpu
+                        aux_data=mex.das_cuda(data,...
+                            sampling_frequency,...
+                            initial_time,...
+                            tx_apodization,...
+                            rx_apodization,...
+                            transmit_delay,...
+                            receive_delay,...
+                            modulation_frequency,...
+                            int32(h.dimension));
+                        
                     %% MATLAB
-                    case code.matlab 
+                    case code.matlab
                         % workbar
                         tools.workbar();
                         N=N_waves*N_channels;
@@ -189,9 +200,9 @@ classdef das < midprocess
                                 end
                             end
                         end
-                        
-                    %% MATLAB GPU FRAMELOOP
-                    case code.matlab_gpu_frameloop
+                        tools.workbar(1);
+                    %% MATLAB GPU 
+                    case code.matlab_gpu
                         
                         % clear GPU memory and show basic info
                         gpu_info=gpuDevice();
@@ -277,7 +288,8 @@ classdef das < midprocess
                                     aux_data(:,1,1,n_frame) = gather(sum(bf_data, 3));
                             end
                         end % end frame loop
-          
+                        
+                        tools.workbar(1);
                     otherwise
                         error('Unknown code implementation requested');
                 end % end switch
@@ -285,10 +297,7 @@ classdef das < midprocess
                 % assign phase according to 2 times the receive propagation distance
                 if ( abs(w0) > eps )
                     aux_data=bsxfun(@times,aux_data,exp(-1i*w0*2*h.scan.reference_distance/h.channel_data.sound_speed));
-                end
-                
-                tools.workbar(1);
-                
+                end                
             end % end if
             
             % copy data to object
