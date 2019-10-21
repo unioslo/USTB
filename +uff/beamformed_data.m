@@ -246,9 +246,9 @@ classdef beamformed_data < uff
             end
             switch class(h.scan)
                 case 'uff.linear_scan'
-                    img = reshape(envelope,[h.scan.N_z_axis h.scan.N_x_axis size(h.data,4)]);
+                    img = reshape(envelope,[h.scan.N_z_axis h.scan.N_x_axis size(h.data,3) size(h.data,4)]);
                 case 'uff.sector_scan'
-                    img = reshape(envelope,[h.scan.N_depth_axis h.scan.N_azimuth_axis size(h.data,4)]);
+                    img = reshape(envelope,[h.scan.N_depth_axis h.scan.N_azimuth_axis size(h.data,3) size(h.data,4)]);
                 otherwise
                     error(sprintf('Dont know how to plot on a %s yet. Sorry!',class(b_data.scan)));
             end

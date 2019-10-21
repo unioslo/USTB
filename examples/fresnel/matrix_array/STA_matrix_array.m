@@ -85,8 +85,7 @@ for n=1:prb.N_elements
     
     seq(n).apodization=uff.apodization();
     seq(n).apodization.window=uff.window.sta;
-    seq(n).apodization.origo=seq(n).source;
-    
+    seq(n).apodization.origin=seq(n).source;
     seq(n).sound_speed=pha.sound_speed;
     
     % show source
@@ -135,11 +134,9 @@ pipe.scan=sca;
 
 pipe.receive_apodization.window=uff.window.tukey50;
 pipe.receive_apodization.f_number=F_number;
-pipe.receive_apodization.origo.distance=Inf;
 
 pipe.transmit_apodization.window=uff.window.tukey50;
 pipe.transmit_apodization.f_number=F_number;
-pipe.transmit_apodization.origo.distance=Inf;
 
 %% 
 %

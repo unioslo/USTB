@@ -66,7 +66,7 @@ classdef apodization < uff
     %% set methods
     methods
         function h=set.origin(h,in_origin)
-            assert(isa(in_origin,'uff.point'), 'The input origo is not a POINT class. Check HELP POINT');
+            assert(isa(in_origin,'uff.point'), 'The input origin is not a POINT class. Check HELP POINT');
             h.origin=in_origin;
         end
         function h=set.probe(h,in_probe)
