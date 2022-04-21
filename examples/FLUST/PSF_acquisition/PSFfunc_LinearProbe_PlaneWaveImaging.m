@@ -1,15 +1,18 @@
-function PSFs = PSFfunc_L11_singlePlaneWave(flowLine, p) % parameter structure not used in this example
+function [PSFs,p] = PSFfunc_LinearProbe_PlaneWaveImaging(flowLine, setup) % parameter structure not used in this example
 
 %% Computation of a CPWI dataset with Field II and beamforming with USTB
 %
-% Creates a Field II simulation of single plane waves,
+% Creates a Field II simulation of Na plane waves,
 % converts into a USTB channel_data object and beamforms
 % the image using the USTB routines. 
 %
-% date:               23.10.2020
-% based on code by :  Ole Marius Hoel RIndal <olemarius@olemarius.net>
+% NBNB: (Return data without compounding? Rx aperture not yet defined.)
+%
+% date:               08.04.2022
+% based on code by :  Ole Marius Hoel Rindal <olemarius@olemarius.net>
 %                     Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no>
 % modified by      :  Joergen Avdal <jorgen.avdal@ntnu.no>
+%                     Ingvild Kinn Ekroll <ingvild.k.ekroll@ntnu.no>
 
 
 %% Basic Constants
@@ -36,21 +39,32 @@ set_field('use_rectangles',1);  % use rectangular elements
 %% Transducer definition L11-4v, 128-element linear array transducer
 % 
 % Our next step is to define the ultrasound transducer array we are using.
-% For this experiment, we shall use the L11-4v 128 element Verasonics
-% Transducer and set our parameters to match it.
+% Default values from the L11-4v 128 element Verasonics transducer 
+
+p.trans.f0                = 5.1333e+06;      % Transducer center frequency [Hz]
+p.trans.lambda            = c0/p.trans.f0;   % Wavelength [m]
+p.trans.element_height    = 5e-3;            % Height of element [m]
+p.trans.pitch             = 0.300e-3;        % probe.pitch [m]
+p.trans.kerf              = 0.03e-03;        % gap between elements [m]
+p.trans.element_width     = p.trans.pitch-p.trans.kerf;  % Width of element [m]
+p.trans.lens_el           = 20e-3;           % position of the elevation focus
+p.trans.N                 = 128;             % Number of elements
+p.trans.pulse_duration    = 4.5;             % pulse duration [cycles]
+
+fields = fieldnames(setup.trans);
+for k=1:size(fields,1)
+    if(isfield(p.trans,fields{k}))
+        p.trans.(fields{k}) = setup.trans.(fields{k});
+    else
+        disp(['Transducer setup: ' fields{k} ' is not a valid parameter...']);
+    end
+end
 
 probe = uff.linear_array();
-f0                      = 5.1333e+06;      % Transducer center frequency [Hz]
-lambda                  = c0/f0;           % Wavelength [m]
-probe.element_height    = 5e-3;            % Height of element [m]
-probe.pitch             = 0.300e-3;        % probe.pitch [m]
-kerf                    = 0.03e-03;        % gap between elements [m]
-probe.element_width     = probe.pitch-kerf;% Width of element [m]
-lens_el                 = 20e-3;           % position of the elevation focus
-probe.N                 = 128;             % Number of elements
-pulse_duration          = 4.5;             % pulse duration [cycles]
-
- 
+probe.element_height = p.trans.element_height;
+probe.pitch = p.trans.pitch;
+probe.element_width = p.trans.element_width;
+probe.N     = p.trans.N;
 %% Pulse definition
 % 
 % We then define the pulse-echo signal which is done here using the 
@@ -59,13 +73,13 @@ pulse_duration          = 4.5;             % pulse duration [cycles]
 
 pulse = uff.pulse();
 pulse.fractional_bandwidth = 0.65;        % probe bandwidth [1]
-pulse.center_frequency = f0;
-t0 = (-1/pulse.fractional_bandwidth/f0): dt : (1/pulse.fractional_bandwidth/f0);
-impulse_response = gauspuls(t0, f0, pulse.fractional_bandwidth);
+pulse.center_frequency = p.trans.f0;
+t0 = (-1/pulse.fractional_bandwidth/p.trans.f0): dt : (1/pulse.fractional_bandwidth/p.trans.f0);
+impulse_response = gauspuls(t0, p.trans.f0, pulse.fractional_bandwidth);
 impulse_response = impulse_response-mean(impulse_response); % To get rid of DC
 
-te = (-pulse_duration/2/f0): dt : (pulse_duration/2/f0);
-excitation = square(2*pi*f0*te+pi/2);
+te = (-p.trans.pulse_duration/2/p.trans.f0): dt : (p.trans.pulse_duration/2/p.trans.f0);
+excitation = square(2*pi*p.trans.f0*te+pi/2);
 one_way_ir = conv(impulse_response,excitation);
 two_way_ir = conv(one_way_ir,impulse_response);
 lag = length(two_way_ir)/2+1;   
@@ -74,10 +88,10 @@ lag = length(two_way_ir)/2+1;
 % Next, we define the the mesh geometry with the help of Field II's
 % *xdc_focused_array* function.
 
-noSubAz=round(probe.element_width/(lambda/8));        % number of subelements in the azimuth direction
-noSubEl=round(probe.element_height/(lambda/8));       % number of subelements in the elevation direction
-Th = xdc_focused_array (probe.N, probe.element_width, probe.element_height, kerf, lens_el, noSubAz, noSubEl, [0 0 Inf]); 
-Rh = xdc_focused_array (probe.N, probe.element_width, probe.element_height, kerf, lens_el, noSubAz, noSubEl, [0 0 Inf]); 
+noSubAz=round(probe.element_width/(p.trans.lambda/8));        % number of subelements in the azimuth direction
+noSubEl=round(probe.element_height/(p.trans.lambda/8));       % number of subelements in the elevation direction
+Th = xdc_focused_array (probe.N, probe.element_width, probe.element_height, p.trans.kerf, p.trans.lens_el, noSubAz, noSubEl, [0 0 Inf]); 
+Rh = xdc_focused_array (probe.N, probe.element_width, probe.element_height, p.trans.kerf, p.trans.lens_el, noSubAz, noSubEl, [0 0 Inf]); 
 
 % We also set the excitation, impulse response and baffle as below:
 xdc_excitation (Th, excitation);
@@ -90,19 +104,40 @@ xdc_center_focus(Rh,[0 0 0]);
  
 %% Define plane wave sequence
 % Define the start_angle and number of angles
-F_number = 1.7;
-alpha_max = 0; %atan(1/2/F_number);
-Na=1;                                      % number of plane waves 
 F=size(flowLine,1);                        % number of frames
-alpha=linspace(-alpha_max,alpha_max,Na);   % vector of angles [rad]
- 
+p.acq.F_number = 1.7;
+p.acq.alphaTx = 0; %atan(1/2/p.acq.F_number);
+p.acq.alphaRx = 0;
+
+fields = fieldnames(setup.acq);
+for k=1:size(fields,1)
+    if(isfield(p.acq,fields{k}))
+        p.acq.(fields{k}) = setup.acq.(fields{k});
+    else
+        disp(['Acquisition setup: ' fields{k} ' is not a valid parameter...']);
+    end
+end
+
+[alphaTx, ~, ia] = unique( p.acq.alphaTx);
+alphaRx = p.acq.alphaRx;
+
 %% Define phantom
 % Define some points in a phantom for the simulation
 
-chunkSize = 100;
-for cc = 1:chunkSize:size(flowLine, 1)
+p.run.chunkSize = 100;
+fields = fieldnames(setup.run);
+for k=1:size(fields,1)
+    if(isfield(p.run,fields{k}))
+        p.run.(fields{k}) = setup.run.(fields{k});
+    else
+        disp(['Runtime setup: ' fields{k} ' is not a valid parameter...']);
+    end
+end
+
+
+for cc = 1:p.run.chunkSize:size(flowLine, 1)
     
-point_position = flowLine(cc:min( cc+chunkSize-1, size( flowLine,1) ),: );
+point_position = flowLine(cc:min( cc+p.run.chunkSize-1, size( flowLine,1) ),: );
 
 % Set point amplitudes
 point_amplitudes = ones(size(point_position,1),1);
@@ -112,18 +147,18 @@ point_zdists = abs( point_position(:,3) );
 point_dists = sqrt( sum( point_position.^2, 2) );
 cropstart=floor(1.7*min(point_zdists(:))/c0/dt);    %minimum time sample, samples before this will be dumped
 cropend=ceil(1.2*2*max(point_dists)/c0/dt);    % maximum time sample, samples after this will be dumped
-CPW=zeros(cropend-cropstart+1,probe.N,1,chunkSize);  % impulse response channel data
+CPW=zeros(cropend-cropstart+1,probe.N,1,p.run.chunkSize);  % impulse response channel data
  
 %% Compute CPW signals
 disp('Field II: Computing CPW dataset');
 for f=1:size(point_position,1)
-    for n=1:Na
+    for n=1:length(alphaTx)
         clc
         disp( [num2str(f+cc-1) '/' num2str(F)]);
          
         % transmit aperture
         xdc_apodization(Th,0,ones(1,probe.N));
-        xdc_times_focus(Th,0,probe.geometry(:,1)'.*sin(alpha(n))/c0);
+        xdc_times_focus(Th,0,probe.geometry(:,1)'.*sin(alphaTx(n))/c0);
         
         % receive aperture
         xdc_apodization(Rh, 0, ones(1,probe.N));
@@ -139,7 +174,7 @@ for f=1:size(point_position,1)
         % Save transmit sequence
         seq(n)=uff.wave();
         seq(n).probe=probe;
-        seq(n).source.azimuth=alpha(n);
+        seq(n).source.azimuth=alphaTx(n);
         seq(n).source.distance=Inf;
         seq(n).sound_speed=c0;
         seq(n).delay = -lag*dt;
@@ -168,7 +203,25 @@ channel_data.data = CPW/1e-26; %
 % which is defined with two components: the lateral range and the 
 % depth range. *scan* too has a useful *plot* method it can call.
 
-sca=uff.linear_scan('x_axis',linspace(-10e-3,10e-3,256).', 'z_axis', linspace(10e-3,30e-3,256).');
+p.scan.xStart = -10e-3;
+p.scan.xEnd = 10e-3;
+p.scan.Nx = 256;
+p.scan.zStart = 10e-3;
+p.scan.zEnd = 30e-3;
+p.scan.Nz = 256;
+p.scan.rx_apod = 'tukey25';
+
+fields = fieldnames(setup.scan);
+for k=1:size(fields,1)
+    if(isfield(p.scan,fields{k}))
+        p.scan.(fields{k}) = setup.scan.(fields{k});
+    else
+        disp(['Scan region setup: ' fields{k} ' is not a valid parameter...']);
+    end
+end
+
+sca=uff.linear_scan('x_axis',linspace(p.scan.xStart,p.scan.xEnd,p.scan.Nx).', 'z_axis', linspace(p.scan.zStart,p.scan.zEnd,p.scan.Nz).');
+
 
 %% Pipeline
 %
@@ -182,15 +235,22 @@ pipe=pipeline();
 pipe.channel_data=channel_data;
 
 myDemodulation=preprocess.fast_demodulation;
-myDemodulation.modulation_frequency = f0;
+myDemodulation.modulation_frequency = p.trans.f0;
 myDemodulation.downsample_frequency = fs/4; %at least 4*f0 recommended
 
 demod_channel_data=pipe.go({myDemodulation});
+pipe.channel_data = demod_channel_data;
+demodData=demod_channel_data.data;
 
-pipe.channel_data=demod_channel_data;
 pipe.scan=sca;
-pipe.receive_apodization.window=uff.window.tukey25;
-pipe.receive_apodization.f_number=F_number;
+try
+    pipe.receive_apodization.window=uff.window.(p.scan.rx_apod);
+catch
+    [memb, winNames] = enumeration('uff.window');
+    disp('The rx apodization window is not valid. Use one of the following window functions:')
+    winNames
+end
+pipe.receive_apodization.f_number=p.acq.F_number;
 
 %% 
 %
@@ -202,19 +262,32 @@ pipe.receive_apodization.f_number=F_number;
 % To achieve the goal of this example, we use delay-and-sum (implemented in 
 % the *das_mex()* process) as well as coherent compounding.
 
-b_data=pipe.go({midprocess.das()});
-b_data.modulation_frequency = f0; %myDemodulation.modulation_frequency;
+
+
+for aa = 1:length( alphaRx)
+    pipe.receive_apodization.tilt = [alphaRx(aa) 0];
+    pipe.channel_data.data = demodData(:,:,ia(aa),:);
+    pipe.channel_data.sequence = seq(ia(aa));
+    b_data=pipe.go({midprocess.das()});
+    if aa == 1
+        dsize = size( b_data.data);
+        bfData = single( zeros( dsize(1), dsize(2), length( alphaRx), dsize(4) ) );
+    end
+    bfData(:,:,aa,:) = b_data.data;
+end
+b_data.modulation_frequency = p.trans.f0;
 
 
 if cc == 1
     PSFs = b_data;
-    if F > chunkSize
-        PSFs.data(:,:,:,F) = zeros; % trick to allocate data matrix
+    if F > p.run.chunkSize
+        PSFs.data = bfData;
+        PSFs.data(:,:,length(alphaRx),F) = zeros; % trick to allocate data matrix
     else
-        PSFs.data = PSFs.data(:,:,:,1:F);
+        PSFs.data = bfData(:,:,:,1:F);
     end
 else
-    PSFs.data(:,:,:,cc:cc+size(point_position,1)-1) = b_data.data(:,:,:,1:size(point_position,1)); %reshape( b_data.data, length( sca.z_axis), length( sca.x_axis), size( flowLine, 1) );
+    PSFs.data(:,:,:,cc:cc+size(point_position,1)-1) = bfData(:,:,:,1:size(point_position,1)); %reshape( b_data.data, length( sca.z_axis), length( sca.x_axis), size( flowLine, 1) );
 end
 
 end
