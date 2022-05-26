@@ -42,7 +42,7 @@ s = struct();
 %% DATA OUTPUT PARAMETERS
 s.firing_rate = 12000; % firing rate of output signal, (Doppler PRF) = (firing rate)/(nr of firings)
 s.nrReps = 10;         % nr of realizations 
-s.nrSamps = 100;       % nr of slow time samples in each realization
+s.nrSamps = 10;       % nr of slow time samples in each realization (Ensemble size)
 
 contrastMode = 0;      % is set to 1, will simulate contrast scatterers propagating in flow field
 contrastDensity = 0.1; % if using contrastMode, determines the density of scatterers, typically < 0.2
@@ -59,13 +59,14 @@ chunksize = 5;         % chunking on scanlines, adjust according to available me
 %% DEFINE ACQUSITION SETUP / PSF FUNCTIONS 
 s.PSF_function = @PSFfunc_LinearProbe_PlaneWaveImaging;
 
-s.PSF_params = [];     % Tranducer and acquisition parameters. Default values used if not set
+% Tranducer and acquisition parameters. Print s.PSF_params after running simulation to see which parameters can be set.
+s.PSF_params = [];     
 % Transducer params
 s.PSF_params.trans.f0 = 6.25e6;
 s.PSF_params.trans.pulse_duration = 1.5;
 % Acquisition params
-s.PSF_params.acq.alphaTx = [-10 -10 0 10 10]*pi/180;
-s.PSF_params.acq.alphaRx = [-10 -5 0 5 10]*pi/180; 
+s.PSF_params.acq.alphaTx = [0]*pi/180;
+s.PSF_params.acq.alphaRx = [0]*pi/180; 
 % Image/scan region params
 s.PSF_params.scan.rx_apod = 'tukey25';
 s.PSF_params.scan.xStart = -5e-3;
@@ -76,22 +77,32 @@ s.PSF_params.scan.zEnd = 25e-3;
 s.PSF_params.scan.Nz = 256;
 
 % Runtime params
-s.PSF_params.run.chunkSize = 100;
+s.PSF_params.run.chunkSize = 100; % Description?
 
 %% DEFINE PHANTOM AND PSF FUNCTIONS
+%s.phantom_function = @Phantom_parabolic3Dtube;
+%s.phantom_function = @Phantom_parabolic2Dtube;
 s.phantom_function = @Phantom_gradient2Dtube;
-s.phantom_params = []; % this structure may contain phantom parameters
+
+
+% Phantom parameters. Print s.phantom_params after running simulation to see which parameters can be set.
+s.phantom_params = []; 
 s.phantom_params.btf = 60;
-s.phantom_params.noFlowLines = 3;    % Tube diameter = depthstep*(noFlowLines-1)
-s.phantom_params.depthstep = 0.0001; % NB: Needs to be sufficiently small for given application - in the order of lambda/2;
+s.phantom_params.diameter = 0.001; % Number of flowlines = ceil(diameter/maxLineSpacing)+1
+s.phantom_params.maxLineSpacing = 0.0001; % NB: Needs to be sufficiently small for given application - in the order of lambda/2;
+s.phantom_params.vel_1 = 0.2;
+s.phantom_params.vel_2 = 1;
 
 % To output true velocities in phantom, define grid
 myX = linspace(s.PSF_params.scan.xStart,s.PSF_params.scan.xEnd,s.PSF_params.scan.Nx);
 myZ = linspace(s.PSF_params.scan.zStart,s.PSF_params.scan.zEnd,s.PSF_params.scan.Nz);
 [X,Z] =  meshgrid(myX,myZ);
 
-% make phantom
-[flowField, GT, s.phantom_params] = s.phantom_function(s.phantom_params,X,Z); % flowField should have timetab and postab fields
+% make phantom, get true velocity and phantom parameters
+ [flowField, s.phantom_params, GT] = s.phantom_function(s.phantom_params,X,Z); % flowField should have timetab and postab fields
+%Y = zeros( size(X) );
+%[flowField, s.phantom_params, GT] = s.phantom_function(s.phantom_params,X,Y,Z); % flowField should have timetab and postab fields
+
 
 
 %% FLUST main loop
@@ -104,3 +115,12 @@ b_data = uff.beamformed_data();
 b_data.scan = PSFstruct.scan;
 b_data.data = reshape(firstRealization,size(firstRealization,1)*size(firstRealization,2),1,1,size(firstRealization,3));
 b_data.plot([],['Flow from FLUST'],[20])
+
+%% True velocities?
+
+figure(); imagesc(X(:), Z(:), GT); title('Vmag') % Example, looking at velocity magnitude (NB, change to x and z component)
+
+
+%GT_rsh = reshape( GT, [s.PSF_params.scan.Nz s.PSF_params.scan.Nx 3] );
+%figure(); imagesc(X(:), Z(:), GT_rsh(:,:,1)); title('Vx') % Example, looking at x component of velocity field
+
