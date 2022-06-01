@@ -1,4 +1,4 @@
-function [flowField, p, GT] = Phantom_gradient2Dtube( setup, X, Z ) 
+function [flowField, p, GT] = Phantom_gradient2Dtube( setup, X, Y, Z ) 
 
 %% small 2D tube phantom with velocity gradient. Set vel_1 and vel_2 equal for plug flow.
 p.btf = 60;

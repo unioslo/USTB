@@ -39,8 +39,10 @@ origPos = [zeros( size( D(:) ) ).'; E(:).'; D(:).'];
 rAZ = [cosd(90-p.btfAZ) 0 sind(90-p.btfAZ); 0 1 0; -sind(90-p.btfAZ) 0 cosd(90-p.btfAZ)];
 rEL = [1 0 0; 0 cosd(p.btfEL) -sind(p.btfEL); 0 sind(p.btfEL) cosd(p.btfEL)];
 rotPos = rEL*rAZ*origPos;
-rotD = rotPos(3,:)+p.tubedepth;
-rotE = rotPos(2,:);
+rotZ = rotPos(3,:)+p.tubedepth;
+rotY = rotPos(2,:);
+rotX = rotPos(2,:);
+
 
 % GTdepth = depthtab-p.tubedepth;
 % GTveltab = (1-(GTdepth/radius).^2)*p.vel_high+p.vel_low;
@@ -48,15 +50,13 @@ rotE = rotPos(2,:);
 unitVec = rEL*rAZ*[1 0 0].';
 
 ctr = 1;
-for kk = 1:length( rotD(:) )
+for kk = 1:length( rotX(:) )
     if isnan( velTab(kk) )
         continue;
     end
     time_max = p.flowlength/velTab(kk);
-    currtubedepth = rotD(kk); %depthtab(kk);
-    currtubeelpos = rotE(kk); %eltab(kk);
     flowField(ctr).timetab = linspace(0, time_max, p.npoints);
-    flowField(ctr).postab = velTab(kk)*(flowField(ctr).timetab-time_max/2).*unitVec+[0; currtubeelpos; currtubedepth];
+    flowField(ctr).postab = velTab(kk)*(flowField(ctr).timetab-time_max/2).*unitVec+[rotX(kk); rotY(kk); rotZ(kk)];
     flowField(ctr).timetab = flowField(ctr).timetab.'; 
     flowField(ctr).postab = flowField(ctr).postab.';
     ctr = ctr + 1;

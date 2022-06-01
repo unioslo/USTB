@@ -136,7 +136,7 @@ alphaRx = p.acq.alphaRx;
 %% Define phantom
 % Define some points in a phantom for the simulation
 
-p.run.chunkSize = 100;
+p.run.chunkSize = 101;
 fields = fieldnames(setup.run);
 for k=1:size(fields,1)
     if(isfield(p.run,fields{k}))
