@@ -62,7 +62,7 @@ s.overSampFact = 2;    % slow time oversampling factor, should be high enough to
                        % in slow time signal. Without oversampling, slow time sampling rate = firing rate
 
 %% PERFORMANCE PARAMETER
-chunksize = 5;         % chunking on scanlines, adjust according to available memory.
+chunksize = 2;         % chunking on scanlines, adjust according to available memory.
 
 
 %% DEFINE ACQUSITION SETUP / PSF FUNCTIONS 
@@ -90,18 +90,21 @@ s.PSF_params.run.chunkSize = 100; % Description?
 
 %% DEFINE PHANTOM AND PSF FUNCTIONS
 %s.phantom_function = @Phantom_parabolic3Dtube;
-s.phantom_function = @Phantom_parabolic2Dtube;
-% s.phantom_function = @Phantom_gradient2Dtube;
+% s.phantom_function = @Phantom_parabolic2Dtube;
+s.phantom_function = @Phantom_gradient2Dtube;
 
 
 % Phantom parameters. Print s.phantom_params after running simulation to see which parameters can be set.
 s.phantom_params = []; 
-s.phantom_params.btfAZ = 75;
+% s.phantom_params.btfAZ = 90;
+s.phantom_params.btf = 90;
 s.phantom_params.diameter = 0.001; % Number of flowlines = ceil(diameter/maxLineSpacing)+1
-s.phantom_params.tubedepth = 0.018;
+s.phantom_params.tubedepth = 0.020;
 s.phantom_params.maxLineSpacing = 0.0001; % NB: Needs to be sufficiently small for given application - in the order of lambda/2;
-s.phantom_params.vel_low = 0.001;
-s.phantom_params.vel_high = 0.5;
+% s.phantom_params.vel_low = 0.001;
+% s.phantom_params.vel_high = 0.5;
+s.phantom_params.vel_1 = 0.001;
+s.phantom_params.vel_2 = 0.5;
 
 % To output true velocities in phantom, define grid
 myX = linspace(s.PSF_params.scan.xStart,s.PSF_params.scan.xEnd,s.PSF_params.scan.Nx);
@@ -127,25 +130,36 @@ title('Flowlines, rF(t)')
 set(gca,'zdir','reverse')
 view(3)
 
-GTT = reshape(GT, [s.PSF_params.scan.Nx, s.PSF_params.scan.Nz, 3]);
-figure,subplot(1,4,1), imagesc(X(:),Z(:),GTT(:,:,1)), title('Vx'), colorbar
-hold on, subplot(1,4,2), imagesc(X(:),Z(:), GTT(:,:,2)), title('Vy'), colorbar
-subplot(1,4,3), imagesc(X(:),Z(:), GTT(:,:,3)), title('Vz'), colorbar
+% GTT = reshape(GT, [s.PSF_params.scan.Nx, s.PSF_params.scan.Nz, 3]);
+% figure,subplot(1,4,1), imagesc(X(:),Z(:),GTT(:,:,1)), title('Vx'), colorbar
+% hold on, subplot(1,4,2), imagesc(X(:),Z(:), GTT(:,:,2)), title('Vy'), colorbar
+% subplot(1,4,3), imagesc(X(:),Z(:), GTT(:,:,3)), title('Vz'), colorbar
 
-subplot(1,4,4), imagesc(X(:), Z(:), sqrt(GTT(:,:,1).^2 + GTT(:,:,2).^2 + GTT(:,:,3).^2)), title('Vmagn'), colorbar
-    
+% figure, imagesc(X(:),Z(:),GT), title('Vmagn'), colorbar
+figure, hold on, pcolor(X*1000,Z*1000,GT), shading interp, title('Vmagn (m/s)'), colorbar
+set(gca,'ydir','reverse'), axis image
+xlabel('X (mm)'), ylabel('Z (mm)')  
     
 
 %% FLUST main loop
 runFLUST;
 
 %% VISUALIZE FIRST REALIZATION using the built-in beamformed data object
+
+% AS: not possble yet to show data on linear_scan_rotated using ustb yet
+% --> where to find in USTB?
+
 firstRealization = realTab(:,:,:,1,1);
 
 b_data = uff.beamformed_data();
 b_data.scan = PSFstruct.scan;
 b_data.data = reshape(firstRealization,size(firstRealization,1)*size(firstRealization,2),1,1,size(firstRealization,3));
 b_data.plot([],['Flow from FLUST'],[20])
+
+%% AS - temp, own visualization of realizations
+
+
+            
 
 %% True velocities?
 
