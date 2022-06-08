@@ -1,4 +1,4 @@
-function [flowField, p, GT] = Phantom_gradient2Dtube( setup, X, Y, Z ) 
+function [flowField, p, GT_vel] = Phantom_gradient2Dtube( setup, X, Y, Z ) 
 
 %% small 2D tube phantom with velocity gradient. Set vel_1 and vel_2 equal for plug flow.
 p.btf = 60;
@@ -21,19 +21,21 @@ end
 
 noFlowLines = ceil(p.diameter/p.maxLineSpacing)+1;
 veltab = linspace( p.vel_1, p.vel_2, noFlowLines);
+unitVec = [sind(p.btf); 0; cosd(p.btf)];
 
 depthtab = linspace( p.tubedepth-p.maxLineSpacing*(noFlowLines-1)/2, p.tubedepth+p.maxLineSpacing*(noFlowLines-1)/2, noFlowLines);
 for kk = 1:noFlowLines
     time_max = p.flowlength/veltab(kk);
     currtubedepth = depthtab(kk);
     flowField(kk).timetab = linspace(0, time_max, p.npoints);
-    flowField(kk).postab = veltab(kk)*(flowField(kk).timetab-time_max/2).*[sind(p.btf); 0; cosd(p.btf)]+[0; 0; currtubedepth];
+    flowField(kk).postab = veltab(kk)*(flowField(kk).timetab-time_max/2).*unitVec+[0; 0; currtubedepth];
     flowField(kk).timetab = flowField(kk).timetab.'; 
     flowField(kk).postab = flowField(kk).postab.';
 end
 if nargin > 1
     projZ = Z-X/tand(p.btf);
     projDist = X/sind(p.btf);
-    GT = interp1( depthtab, veltab, projZ);
-    GT( abs( projDist) > p.flowlength/2 ) = NaN;
+    GT_vel = interp1( depthtab, veltab, projZ);
+    GT_vel( abs( projDist) > p.flowlength/2 ) = NaN;
+    GT = GT_vel
 end
