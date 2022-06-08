@@ -40,13 +40,10 @@ set_field('use_rectangles',1);  % use rectangular elements
 % 
 % Our next step is to define the ultrasound transducer array we are using.
 % Default values from the L11-4v 128 element Verasonics transducer 
-
 p.trans.f0                = 5.1333e+06;      % Transducer center frequency [Hz]
-p.trans.lambda            = c0/p.trans.f0;   % Wavelength [m]
 p.trans.element_height    = 5e-3;            % Height of element [m]
 p.trans.pitch             = 0.300e-3;        % probe.pitch [m]
 p.trans.kerf              = 0.03e-03;        % gap between elements [m]
-p.trans.element_width     = p.trans.pitch-p.trans.kerf;  % Width of element [m]
 p.trans.lens_el           = 20e-3;           % position of the elevation focus
 p.trans.N                 = 128;             % Number of elements
 p.trans.pulse_duration    = 4.5;             % pulse duration [cycles]
@@ -59,6 +56,9 @@ for k=1:size(fields,1)
         disp(['Transducer setup: ' fields{k} ' is not a valid parameter...']);
     end
 end
+
+p.trans.lambda            = c0/p.trans.f0;   % Wavelength [m]
+p.trans.element_width     = p.trans.pitch-p.trans.kerf;  % Width of element [m]
 
 probe = uff.linear_array();
 probe.element_height = p.trans.element_height;
