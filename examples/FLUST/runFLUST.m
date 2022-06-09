@@ -70,7 +70,7 @@ for kk = 1:length(flowField)
             % Create noise function n(t)
             % Each value n(t) is a real valued random variable with Gaussian distribution and represents the amplitude of
             % scatterers with a time lag t
-            fNoiseTab = randn( [1 length( 1) length(ts)+s.nrSamps*s.overSampFact*noAngs*s.nrReps+s.overSampFact*noAngs ], 'single');
+            fNoiseTab = randn( [length(ts)+s.nrSamps*s.overSampFact*noAngs*s.nrReps+s.overSampFact*noAngs 1], 'single');
 
             if contrastMode
                 fN_sort = sort( abs( fNoiseTab(:) ) );
@@ -79,7 +79,7 @@ for kk = 1:length(flowField)
             end
 
             fNoiseTab = fNoiseTab/sqrt( length( ts) );
-            fNoiseTab = fft( fNoiseTab, Nfft, 3 );
+            fNoiseTab = fft( fNoiseTab, Nfft, 1 );
 
             fNoiseTab_GPU = gpuArray( fNoiseTab);
         end
@@ -99,22 +99,23 @@ for kk = 1:length(flowField)
             permuteMyData = permute( myData_GPU, [4 1 2 3]);
             permuteMyData = permuteMyData(:, :);
             myData_int = interp1( timetab, permuteMyData, ts, 'linear');
-            myData_int = permute( myData_int, [2 1]);
-            myData_int = reshape( myData_int, [szZ, length( cinds) size( myData_int,2) ]);
-
+            
             % FFT of function hF
-            fft_myData = fft( myData_int, Nfft, 3);
-
-            totdist = sum( sqrt( sum( diff( flowField(kk).postab,1).^2, 2 ) ), 1);
-            totsamp = length( ts);
-            weight = totdist/sqrt(totsamp);
 
             % 1) convolution between hF and a noise function n
             % 2) IFT --> result: signal from a collection of point
             % scatterers following flowline kk
-            fullRealization = ifft( fft_myData .* fNoiseTab_GPU(1,1,:), [], 3);
-           
+            fft_myData = fft( myData_int, Nfft, 1);
+            fullRealization = ifft( fft_myData .* fNoiseTab_GPU, [], 1);
+
+            fullRealization = permute( fullRealization, [2 1]);
+            fullRealization = reshape( fullRealization, [szZ, length( cinds) size( fullRealization,2) ]);
+
+            
             % Adding of resulting signals to produce a full realization
+            totdist = sum( sqrt( sum( diff( flowField(kk).postab,1).^2, 2 ) ), 1);
+            totsamp = length( ts);
+            weight = totdist/sqrt(totsamp);
             realTab(:,cinds,:, anglectr, : ) = realTab(:,cinds,:, anglectr, : )+...
                 gather( weight*reshape( fullRealization(:,:,length(ts)+(anglectr-1)*s.overSampFact+(0:s.overSampFact*noAngs:s.nrReps*s.nrSamps*s.overSampFact*noAngs-1),:), ...
                 [szZ, length( cinds), s.nrSamps, 1, s.nrReps]) );
