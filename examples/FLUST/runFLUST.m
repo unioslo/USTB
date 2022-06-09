@@ -41,7 +41,7 @@ for kk = 1:length(flowField)
         for a = 1: noAngs
             figure()
 %             subplot(1,noAngs,a)
-            pcolor(reshape(sca{a}.x*1000, [sca{a}.N_x_axis sca{a}.N_z_axis]), reshape(sca{a}.z*1000,[sca{a}.N_x_axis sca{a}.N_z_axis] ), abs(PSFs(:,:,a,1))), shading interp
+            pcolor(reshape(sca{a}.x*1000, [sca{a}.N_x_axis sca{a}.N_z_axis]), reshape(sca{a}.z*1000,[sca{a}.N_x_axis sca{a}.N_z_axis] ), abs(PSFs(:,:,a,30))), shading interp
             set(gca,'ydir','reverse')
             xlabel('X (mm)'), ylabel('Z (mm)')
             axis image

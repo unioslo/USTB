@@ -83,11 +83,11 @@ s.PSF_params.acq.alphaTx = [-20 20]*pi/180;
 s.PSF_params.acq.alphaRx = [-20 20]*pi/180; 
 % Image/scan region params
 s.PSF_params.scan.rx_apod = 'tukey25';
-s.PSF_params.scan.xStart = -5e-3;
-s.PSF_params.scan.xEnd = 5e-3;
+s.PSF_params.scan.xStart = -7e-3;
+s.PSF_params.scan.xEnd = 7e-3;
 s.PSF_params.scan.Nx = 256;
-s.PSF_params.scan.zStart = 10e-3;
-s.PSF_params.scan.zEnd = 30e-3;
+s.PSF_params.scan.zStart = 15e-3;
+s.PSF_params.scan.zEnd = 25e-3;
 s.PSF_params.scan.Nz = 256;
 
 % Runtime params
@@ -101,8 +101,8 @@ s.phantom_function = @Phantom_gradient2Dtube;
 
 % Phantom parameters. Print s.phantom_params after running simulation to see which parameters can be set.
 s.phantom_params = []; 
-% s.phantom_params.btfAZ = 90;
-s.phantom_params.btf = 90;
+s.phantom_params.btfAZ = 90;
+% s.phantom_params.btf = 90;
 s.phantom_params.flowlength = 0.012;
 s.phantom_params.diameter = 0.006; % Number of flowlines = ceil(diameter/maxLineSpacing)+1
 s.phantom_params.tubedepth = 0.02;
@@ -136,15 +136,16 @@ title('Flowlines, rF(t)')
 set(gca,'zdir','reverse')
 view(3)
 
-% GTT = reshape(GT, [s.PSF_params.scan.Nx, s.PSF_params.scan.Nz, 3]);
-% figure,subplot(1,4,1), imagesc(X(:),Z(:),GTT(:,:,1)), title('Vx'), colorbar
-% hold on, subplot(1,4,2), imagesc(X(:),Z(:), GTT(:,:,2)), title('Vy'), colorbar
-% subplot(1,4,3), imagesc(X(:),Z(:), GTT(:,:,3)), title('Vz'), colorbar
+GTT = reshape(GT, [s.PSF_params.scan.Nx, s.PSF_params.scan.Nz, 3]);
+figure,subplot(1,4,1), imagesc(X(:),Z(:),GTT(:,:,1)), title('Vx'), colorbar
+hold on, subplot(1,4,2), imagesc(X(:),Z(:), GTT(:,:,2)), title('Vy'), colorbar
+subplot(1,4,3), imagesc(X(:),Z(:), GTT(:,:,3)), title('Vz'), colorbar
+subplot(1,4,4), imagesc(X(:), Z(:), sqrt(GTT(:,:,1).^2 + GTT(:,:,2).^2 + GTT(:,:,3).^2)), title('Vmagn'), colorbar
 
-% figure, imagesc(X(:),Z(:),GT), title('Vmagn'), colorbar
-figure, hold on, pcolor(X*1000,Z*1000,GT), shading interp, title('Vmagn (m/s)'), colorbar
-set(gca,'ydir','reverse'), axis image
-xlabel('X (mm)'), ylabel('Z (mm)')  
+% % figure, imagesc(X(:),Z(:),GT), title('Vmagn'), colorbar
+% figure, hold on, pcolor(X*1000,Z*1000,GT), shading interp, title('Vmagn (m/s)'), colorbar
+% set(gca,'ydir','reverse'), axis image
+% xlabel('X (mm)'), ylabel('Z (mm)')  
     
 
 %% FLUST main loop
@@ -201,6 +202,50 @@ z1 = reshape(sca{1}.z,[sca{1}.N_x_axis, sca{1}.N_z_axis])*1000;
 x2 = reshape(sca{2}.x,[sca{2}.N_x_axis, sca{2}.N_z_axis])*1000;
 z2 = reshape(sca{2}.z,[sca{2}.N_x_axis, sca{2}.N_z_axis])*1000;
 
+% temp - visualize grid en TD
+    figure, plot(x1,z1,'*b')
+    hold on, plot(x2,z2,'*g')
+    set(gca,'ydir','reverse')
+
+    pitch = p.trans.pitch;
+    numelements = p.trans.N; 
+    numelementsA = p.trans.Na;
+    elempos             = 1000* linspace(-(numelements-1)/2,...              % z-coordinates of the elements
+                           (numelements-1)/2,...
+                           numelements)*pitch;
+    hold on, plot(elempos,zeros(size(elempos)),'sqk')
+    xlabel('X (mm)'), ylabel('Z (mm)')
+
+    angles = p.acq.alphaTx / pi*180;
+
+    % Determine borders of PW angled beams
+    % PW-20
+    depth   = p.scan.zEnd*1000 + 10;
+    bx1      = elempos(p.trans.elemStart(1));
+    bx1_d    = elempos(p.trans.elemStart(1)) - depth*tand(-angles(1));
+    bx2      = elempos(p.trans.elemEnd(1));
+    bx2_d    = elempos(p.trans.elemEnd(1)) - depth*tand(-angles(1));
+    xmin    = [bx1 bx1_d bx2_d bx2 bx1];
+    ymin    = [0 depth depth 0 0];
+
+    % PW+20
+    bx1      = elempos(p.trans.elemStart(2));
+    bx1_d    = elempos(p.trans.elemStart(2)) - depth*tand(-angles(2));
+    bx2      = elempos(p.trans.elemEnd(2));
+    bx2_d    = elempos(p.trans.elemEnd(2)) - depth*tand(-angles(2));
+    xplus   = [bx1 bx1_d bx2_d bx2 bx1];
+    yplus   = [0 depth depth 0 0];
+    clear bx1 bx1_d bx2 bx2_d depth
+
+    hold on, plot(xmin,ymin, '--b')
+    plot(xplus,yplus,'--g')
+    axis image
+    
+    % phantom borders
+    hold on, plot([0-s.phantom_params.flowlength/2 0+s.phantom_params.flowlength/2]*1000,[s.phantom_params.tubedepth-s.phantom_params.diameter/2 s.phantom_params.tubedepth-s.phantom_params.diameter/2]*1000,'--r')
+    hold on, plot([0-s.phantom_params.flowlength/2 0+s.phantom_params.flowlength/2]*1000,[s.phantom_params.tubedepth+s.phantom_params.diameter/2 s.phantom_params.tubedepth+s.phantom_params.diameter/2]*1000,'--r')
+
+
 % data
 firstReal = realTab(:,:,:,:,ensNr);
 envelope = abs(firstReal);
@@ -211,7 +256,7 @@ min_value = -dynamic_range;
 % figure
 [ fig(1), ah1 ]  = multipleAxes( 700, 1100, 1, 2, 0,45,'on',[1 1 1], [1 1 1] );
 
-for fr = 1:40
+for fr = 1:s.nrSamps
     
     % angle 1
     a = 1;
@@ -227,9 +272,11 @@ for fr = 1:40
     brighten(-0.5)
     colorbar
     
+    % borders PW
+    hold on, plot(xmin,ymin, '--b')
     % phantom geom
-    hold on, plot([-8 8],[s.phantom_params.tubedepth-s.phantom_params.diameter/2 s.phantom_params.tubedepth-s.phantom_params.diameter/2]*1000,'--r')
-    hold on, plot([-8 8],[s.phantom_params.tubedepth+s.phantom_params.diameter/2 s.phantom_params.tubedepth+s.phantom_params.diameter/2]*1000,'--r')
+    hold on, plot([0-s.phantom_params.flowlength/2 0+s.phantom_params.flowlength/2]*1000,[s.phantom_params.tubedepth-s.phantom_params.diameter/2 s.phantom_params.tubedepth-s.phantom_params.diameter/2]*1000,'--r')
+    hold on, plot([0-s.phantom_params.flowlength/2 0+s.phantom_params.flowlength/2]*1000,[s.phantom_params.tubedepth+s.phantom_params.diameter/2 s.phantom_params.tubedepth+s.phantom_params.diameter/2]*1000,'--r')
 %     % phantom velocities
 %     hold on, plot([0 0],[s.phantom_params.tubedepth-s.phantom_params.diameter/2 s.phantom_params.tubedepth+s.phantom_params.diameter/2]*1000,'--y')
 %     hold on, plot([0 2],[s.phantom_params.tubedepth-s.phantom_params.diameter/2 s.phantom_params.tubedepth+s.phantom_params.diameter/2]*1000,'-y', 'lineWidth',2)
@@ -248,9 +295,11 @@ for fr = 1:40
     brighten(-0.5)
     colorbar
     
+    % borders PW
+    hold on, plot(xplus,yplus,'--g')
     % phantom params
-    hold on, plot([-8 8],[s.phantom_params.tubedepth-s.phantom_params.diameter/2 s.phantom_params.tubedepth-s.phantom_params.diameter/2]*1000,'--r')
-    hold on, plot([-8 8],[s.phantom_params.tubedepth+s.phantom_params.diameter/2 s.phantom_params.tubedepth+s.phantom_params.diameter/2]*1000,'--r')
+    hold on, plot([0-s.phantom_params.flowlength/2 0+s.phantom_params.flowlength/2]*1000,[s.phantom_params.tubedepth-s.phantom_params.diameter/2 s.phantom_params.tubedepth-s.phantom_params.diameter/2]*1000,'--r')
+    hold on, plot([0-s.phantom_params.flowlength/2 0+s.phantom_params.flowlength/2]*1000,[s.phantom_params.tubedepth+s.phantom_params.diameter/2 s.phantom_params.tubedepth+s.phantom_params.diameter/2]*1000,'--r')
     
     writeVideo(writerObj,getframe(fig(1)))
     
@@ -260,37 +309,10 @@ close(writerObj)
 
 %% True velocities?
 
-figure(); imagesc(X(:), Z(:), GT); title('Vmag') % Example, looking at velocity magnitude (NB, change to x and z component)
+% figure(); imagesc(X(:), Z(:), GT); title('Vmag') % Example, looking at velocity magnitude (NB, change to x and z component)
 
 
-%GT_rsh = reshape( GT, [s.PSF_params.scan.Nz s.PSF_params.scan.Nx 3] );
-%figure(); imagesc(X(:), Z(:), GT_rsh(:,:,1)); title('Vx') % Example, looking at x component of velocity field
+GT_rsh = reshape( GT, [s.PSF_params.scan.Nz s.PSF_params.scan.Nx 3] );
+figure(); imagesc(X(:), Z(:), GT_rsh(:,:,1)); title('Vx') % Example, looking at x component of velocity field
 
-
-%% IQ --> RF
-
-% [rfData,fs] = iq2rf(IQdata,fs,fc,depthIncrement,c,startDepth)
-% IQdata = [numSamples, numLines]
-
-% constants
-c0              = 1540;
-depthIncrement  = sca{1}.z_step;    % sample distance IQ data (m)       
-startDepth      = sca{1}.z_axis(1); %0;                % depth of first sample (m)
-
-% pre-allocate
-rfData_t = zeros(size(realTab,1)*4, size(realTab,2), size(realTab,3), size(realTab,4), size(realTab,5));
-
-% looping over frames
-for ensNr = 1:size(realTab,5)
-    for aNr = 1:size(realTab,4)
-        for frNr = 1:size(realTab,3)
-
-            % single frame IQdata
-            IQData  = realTab(:,:,frNr,aNr,ensNr); 
-            [rf,fs] = iq2rf(IQData, p.trans.f0*4, p.trans.f0, depthIncrement, c0, startDepth);
-            
-            rfData(:,:,frNr, aNr, ensNr) = rf;
-        end
-    end
-end
 

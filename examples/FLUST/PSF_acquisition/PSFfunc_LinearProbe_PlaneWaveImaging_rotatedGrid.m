@@ -24,7 +24,8 @@ function [PSFs,p] = PSFfunc_LinearProbe_PlaneWaveImaging_rotatedGrid(flowLine, s
 c0=1540;     % Speed of sound [m/s]
 fs=100e6;    % Sampling frequency [Hz]
 dt=1/fs;     % Sampling step [s] 
- 
+
+
 %% field II initialisation
 % 
 % Next, we initialize the field II toolbox. Again, this only works if the 
@@ -46,7 +47,8 @@ p.trans.element_height    = 5e-3;            % Height of element [m]
 p.trans.pitch             = 0.300e-3;        % probe.pitch [m]
 p.trans.kerf              = 0.03e-03;        % gap between elements [m]
 p.trans.lens_el           = 20e-3;           % position of the elevation focus
-p.trans.N                 = 128;             % Number of elements
+p.trans.N                 = 288;             % Number of physical elements
+p.trans.Na                = 128;             % Number of active elements
 p.trans.pulse_duration    = 4.5;             % pulse duration [cycles]
 
 fields = fieldnames(setup.trans);
@@ -66,6 +68,55 @@ probe.element_height = p.trans.element_height;
 probe.pitch = p.trans.pitch;
 probe.element_width = p.trans.element_width;
 probe.N     = p.trans.N;
+
+
+%% Calculate active aperture position
+elemS = zeros(size(setup.acq.alphaTx));
+elemE = zeros(size(setup.acq.alphaTx));
+apodPos = zeros(size(setup.acq.alphaTx));
+
+if p.trans.N ~= p.trans.Na
+    for i = 1:size(setup.acq.alphaTx,2)
+        elempos = linspace(-(p.trans.N-1)/2,(p.trans.N-1)/2,p.trans.N)*p.trans.pitch;              % x-coordinates of the elements                    
+        apodCenter = ((setup.scan.zEnd-setup.scan.zStart)/2 + setup.scan.zStart) * tan(-1*setup.acq.alphaTx(i));         % calculate active centre element
+        [~,centerElement]   = min(abs(elempos-apodCenter));
+
+        % calculating elements used 
+        if (elempos(centerElement)-apodCenter) > 0
+            leftmostElement     = centerElement-p.trans.Na/2;
+            rightmostElement    = centerElement+p.trans.Na/2-1;
+        else
+            leftmostElement     = centerElement-p.trans.Na/2+1;
+            rightmostElement    = centerElement+p.trans.Na/2;
+        end
+
+        if leftmostElement < 1
+            leftmostElement     = 1;
+            rightmostElement    = p.trans.Na;      
+        end
+
+        if rightmostElement > probe.N
+            leftmostElement     = probe.N - p.trans.Na + 1;
+            rightmostElement    = probe.N;
+        end  
+
+        elemS(i) = leftmostElement;
+        elemE(i) = rightmostElement;
+        apodPos(i) = apodCenter;
+    end
+else
+    % full probe is used for each transmit
+    elemS = zeros(size(setup.acq.alphaTx,2)) + 1;
+    elemE = zeros(size(setup.acq.alphaTx,2)) + p.trans.N;
+    apodPos = zeros(size(setup.acq.alphaTx,2));
+end
+
+p.trans.elemStart = elemS;
+p.trans.elemEnd = elemE;
+p.trans.apodCenter = apodPos;
+    
+clear elemS elemE apodPos
+
 %% Pulse definition
 % 
 % We then define the pulse-echo signal which is done here using the 
@@ -173,15 +224,17 @@ for f=1:size(point_position,1)
         disp( [num2str(f+cc-1) '/' num2str(F)]);
          
         % transmit aperture
-        xdc_apodization(Th,0,ones(1,probe.N));
+        apod = zeros(1,probe.N);
+        apod(p.trans.elemStart(n):p.trans.elemEnd(n)) = 1;
+        xdc_apodization(Th,0,apod);
+%         xdc_apodization(Th,0,ones(1,probe.N));
         xdc_times_focus(Th,0,probe.geometry(:,1)'.*sin(alphaTx(n))/c0);
         
         % receive aperture
-        xdc_apodization(Rh, 0, ones(1,probe.N));
+        xdc_apodization(Rh, 0, apod);
+%         xdc_apodization(Rh, 0, ones(1,probe.N));
         xdc_focus_times(Rh, 0, zeros(1,probe.N));
         
-        xdc_show(Th, 'elements')
-
         % do calculation
         [v,t]=calc_scat_multi(Th, Rh, point_position(f,:), point_amplitudes(f));
          
