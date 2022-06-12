@@ -49,23 +49,39 @@ for kk = 1:length(flowField)
         end
     end
 
-    %% make realizations        
+    %% make realizations
+ 
+    
+    % Prep for regular temporal grid with interval (1/PRFfiring/overSampleFactor). 
+    % Temp res should be high enough to avoid aliasing of the signal for the highest velocities
+    % present, for which the overSamplingFactor is used.
+    % 'Original' time-vector
+    timetab = gpuArray( newtimetab );
+    % New (slow) time-vector
+    ts = gpuArray( min(timetab):(1/s.firing_rate)/s.overSampFact:max(timetab) );
+
+    Nfft = 2*length(ts)+s.nrSamps*s.overSampFact*noAngs*s.nrReps+s.overSampFact*noAngs-1;
+    
+    
+    % phase correction makes PSF interpolation more robust and less
+    % dependent on small s.dr
+    if isfield(s.PSF_params, 'phaseCorr')
+        demodPhaseRad = interp1( timetab, s.PSF_params.phaseCorr, ts);
+        modPhase = gpuArray(exp(1i*2*pi*s.PSF_params.phaseCorr ) );
+        demodPhase = exp( -1i*2*pi*demodPhaseRad);
+    else
+        modPhase = ones(1, noAngs);
+        demodPhase = ones( 1, noAngs);
+    end
+    
+    
+    
     for anglectr = 1:noAngs
 
         if kk == 1 && anglectr == 1
             realTab = complex( zeros( szZ, szX, s.nrSamps, noAngs, s.nrReps, 'single') ); % pre-allocate
         end
 
-        % Prep for regular temporal grid with interval (1/PRFfiring/overSampleFactor). 
-        % Temp res should be high enough to avoid aliasing of the signal for the highest velocities
-        % present, for which the overSamplingFactor is used.
-        % 'Original' time-vector
-        timetab = gpuArray( newtimetab );
-        % New (slow) time-vector
-        ts = gpuArray( min(timetab):(1/s.firing_rate)/s.overSampFact:max(timetab) );
-       
-        Nfft = 2*length(ts)+s.nrSamps*s.overSampFact*noAngs*s.nrReps+s.overSampFact*noAngs-1;
-        
         if anglectr == 1
             % Create noise function n(t)
             % Each value n(t) is a real valued random variable with Gaussian distribution and represents the amplitude of
@@ -97,8 +113,11 @@ for kk = 1:length(flowField)
             % describing the received signal from an single scatterer
             % moving along F
             permuteMyData = permute( myData_GPU, [4 1 2 3]);
-            permuteMyData = permuteMyData(:, :);
-            myData_int = interp1( timetab, permuteMyData, ts, 'linear');
+            permuteMyData = permuteMyData(:, :);            
+%             myData_int = interp1( timetab, permuteMyData, ts, 'linear');
+
+            myData_int = interp1( timetab, permuteMyData.*modPhase(:,anglectr), ts, 'linear').*demodPhase(:,anglectr);
+
             
             % FFT of function hF
 
