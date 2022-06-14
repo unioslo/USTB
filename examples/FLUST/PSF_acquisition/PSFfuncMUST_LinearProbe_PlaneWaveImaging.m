@@ -1,7 +1,5 @@
 function [PSFs,p] = PSFfuncMUST_LinearProbe_PlaneWaveImaging(flowLine, setup) % parameter structure not used in this example
 
-addpath('C:\Users\jorgenav\Documents\MATLAB\Software\MUST');
-
 %% Computation of a CPWI dataset with Field II and beamforming with USTB
 %
 % Creates a simulation of Na plane waves using MUST, requires access to the
