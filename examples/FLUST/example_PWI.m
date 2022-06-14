@@ -21,21 +21,25 @@
 
 % How to use FLUST:
 % 1) Provide/select function to calculate PSFs from a vector of spatial positions. 
-% 2) Run simulations with simple phantoms, check integrity of signal,
-%    update quality parameters if necessary, repeat.
-% 3) Run FLUST on phantom of interest.
-% 4) Apply your favorite velocity estimator to realizations. 
-% 5) Assess statistical properties of estimator, optimize estimator.
-% 6) Publish results, report statistical properties, make results
+% 2) Run FLUST on phantom of interest.
+% 3) Apply your favorite velocity estimator to realizations. 
+% 4) Assess statistical properties of estimator, optimize estimator.
+% 5) Publish results, report statistical properties, make results
 %    reproducible, cite original paper DOI: 10.1109/TUFFC.2018.2887398
 
 clear all;
 close all;
 
-addpath('C:\Users\ingvilek\FieldIIpro\m_files'); 
-addpath('C:\Users\ingvilek\OneDrive - NTNU\FLUST\ustb_phantomDB\');
+% addpath('C:\Users\ingvilek\FieldIIpro\m_files'); 
+% addpath('C:\Users\ingvilek\OneDrive - NTNU\FLUST\ustb_phantomDB\');
+addpath('Core');
 addpath('Phantoms')
 addpath('PSF_acquisition')
+addpath('..\..'); % ustb main folder
+
+addpath('C:\Users\jorgenav\Documents\MATLAB\Software\field_IIpro\m_files');
+addpath('C:\Users\jorgenav\GitProjects\ustb_flust_db');
+
 
 s = struct();
 
@@ -47,10 +51,9 @@ s.nrSamps = 40;       % nr of slow time samples in each realization (Ensemble si
 contrastMode = 0;      % is set to 1, will simulate contrast scatterers propagating in flow field
 contrastDensity = 0.1; % if using contrastMode, determines the density of scatterers, typically < 0.2
 
-%% QUALITY PARAMETERS
-s.dr = 5e-5;           % spatial discretization along flowlines: lambda/4 or smaller recommended if phase information is important
-s.overSampFact = 4;    % slow time oversampling factor, should be high enough to avoid aliasing
-                       % in slow time signal. Without oversampling, slow time sampling rate = firing rate
+%% QUALITY PARAMETERS, SET ONLY ONE OF THESE
+% s.dr = 5e-5;  % spatial discretization along flowlines: lambda/4 or smaller recommended if phase information is important
+s.interpErrorLimit = 4; % FLUST will set s.dr to attain interpolation error smaller than this value in percent
 
 %% PERFORMANCE PARAMETER
 chunksize = 16;         % chunking on scanlines, adjust according to available memory.
@@ -58,6 +61,7 @@ chunksize = 16;         % chunking on scanlines, adjust according to available m
 
 %% DEFINE ACQUSITION SETUP / PSF FUNCTIONS 
 s.PSF_function = @PSFfunc_LinearProbe_PlaneWaveImaging;
+% s.PSF_function = @PSFfuncMUST_LinearProbe_PlaneWaveImaging;
 
 % Tranducer and acquisition parameters. Print s.PSF_params after running simulation to see which parameters can be set.
 s.PSF_params = [];     
@@ -87,8 +91,8 @@ s.PSF_params.run.chunkSize = 125; % Description?
 
 %% DEFINE PHANTOM AND PSF FUNCTIONS
 %s.phantom_function = @Phantom_parabolic3Dtube;
-s.phantom_function = @Phantom_parabolic2Dtube;
-%s.phantom_function = @Phantom_gradient2Dtube;
+% s.phantom_function = @Phantom_parabolic2Dtube;
+s.phantom_function = @Phantom_gradient2Dtube;
 
 
 % Phantom parameters. Print s.phantom_params after running simulation to see which parameters can be set.
@@ -133,6 +137,6 @@ b_data.plot([],['Flow from FLUST'],[20])
 
 
 GT_rsh = reshape( GT, [s.PSF_params.scan.Nz s.PSF_params.scan.Nx 1 3] );
-figure(1); imagesc(X(:), Z(:), GT_rsh(:,:,1,1)); axis equal; title('Vx') % Example, looking at x component of velocity field
-figure(2); imagesc(X(:), Z(:), GT_rsh(:,:,1,3)); axis equal; title('Vz') % Example, looking at x component of velocity field
+figure(2); imagesc(X(:), Z(:), GT_rsh(:,:,1,1)); axis equal; title('Vx') % Example, looking at x component of velocity field
+figure(3); imagesc(X(:), Z(:), GT_rsh(:,:,1,3)); axis equal; title('Vz') % Example, looking at x component of velocity field
 

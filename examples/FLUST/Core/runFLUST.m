@@ -1,4 +1,8 @@
 %% FLUST main loop
+if isfield( s, 'interpErrorLimit')
+    suggestSpacing;
+end
+
 overSampFactTab = zeros( length( flowField), 1 );
 for kk = 1:length(flowField)
 
