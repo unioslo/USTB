@@ -35,8 +35,8 @@ else
 end
 
 %% fill in IQ signals at center of PSFs
-latSig = permute( PSFs(indX,indZ,:,1:nP), [4 3 1 2] ).*modPhase(1:nP,:);
-axSig = permute( PSFs(indX,indZ,:,nP+(1:nP) ), [4 3 1 2] ).*modPhase(nP+(1:nP),:);
+latSig = permute( PSFs(indZ,indX,:,1:nP), [4 3 1 2] ).*modPhase(1:nP,:);
+axSig = permute( PSFs(indZ,indX,:,nP+(1:nP) ), [4 3 1 2] ).*modPhase(nP+(1:nP),:);
 
 %% generate interpolation filters
 maxFact = 40;

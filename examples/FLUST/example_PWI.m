@@ -37,6 +37,8 @@ addpath('Phantoms')
 addpath('PSF_acquisition')
 addpath('..\..'); % ustb main folder
 
+addpath('C:\Users\jorgenav\Documents\MATLAB\Software\MUST');
+addpath('C:\Users\jorgenav\GitProjects\ustb_flust_db\examples\FLUST\Support')
 addpath('C:\Users\jorgenav\Documents\MATLAB\Software\field_IIpro\m_files');
 addpath('C:\Users\jorgenav\GitProjects\ustb_flust_db');
 
@@ -60,8 +62,8 @@ chunksize = 16;         % chunking on scanlines, adjust according to available m
 
 
 %% DEFINE ACQUSITION SETUP / PSF FUNCTIONS 
-s.PSF_function = @PSFfunc_LinearProbe_PlaneWaveImaging;
-% s.PSF_function = @PSFfuncMUST_LinearProbe_PlaneWaveImaging;
+% s.PSF_function = @PSFfunc_LinearProbe_PlaneWaveImaging;
+s.PSF_function = @PSFfuncMUST_LinearProbe_PlaneWaveImaging;
 
 % Tranducer and acquisition parameters. Print s.PSF_params after running simulation to see which parameters can be set.
 s.PSF_params = [];     
