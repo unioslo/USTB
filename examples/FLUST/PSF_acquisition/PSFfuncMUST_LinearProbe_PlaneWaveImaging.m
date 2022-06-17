@@ -103,23 +103,27 @@ PSFs.scan = sca;
 PSFs.modulation_frequency = param.fc;
 
 N = length(p.acq.alphaTx);
+phaseVecsTx = [sin(p.acq.alphaTx); zeros( size( p.acq.alphaTx) ); cos(p.acq.alphaTx)];
+phaseVecsRx = [sin(p.acq.alphaRx); zeros( size( p.acq.alphaRx) ); cos(p.acq.alphaRx)];
+refDistsGrid = X.*permute(2*phaseVecsRx(1,:), [1 3 2]) + ...
+    Z.*permute(2*phaseVecsRx(3,:), [1 3 2]);
+
 opt.waitbar = false;
 tic
 for angleind = 1:N
-    txDelay = txdelay( param, p.acq.alphaTx(angleind) );
-    param.RXangle = p.acq.alphaRx(angleind);
+    txDelay = txdelay( param, -p.acq.alphaTx(angleind) ); % NB! MUST sign convention
+    param.RXangle = -p.acq.alphaRx(angleind);
 
     [RF, param] = simus( scatx, scatz, RC, txDelay, param, opt);
     IQ = rf2iq(RF,param);
     IQb = das(IQ,X,Z,txDelay,param);
+    IQb = IQb.*exp(-1i*2*pi*refDistsGrid(:,:,angleind)./c0*p.trans.f0 ); % Rx phase compensation
     if angleind == 1
         PSFs.data = zeros( [length(xs)*length(zs) 1 N size( flowLine, 1) ] );
     end
     PSFs.data(:,:,angleind,:) = reshape( IQb, [length(xs)*length(zs) 1 1 size( flowLine, 1) ] );
 end
 % add phase correction for FLUST interpolation step, improves numerical stability
-phaseVecsTx = [sin(p.acq.alphaTx); zeros( size( p.acq.alphaTx) ); cos(p.acq.alphaTx)];
-phaseVecsRx = [sin(p.acq.alphaRx); zeros( size( p.acq.alphaRx) ); cos(p.acq.alphaRx)];
 refDists = flowLine*(phaseVecsTx+phaseVecsRx);
 p.phaseCorr = refDists./c0*p.trans.f0;
 toc
