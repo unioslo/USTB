@@ -307,8 +307,8 @@ end
 end
 
 % add phase correction for FLUST interpolation step, improves numerical stability
-phaseVecsTx = [sin(alphaTx); zeros( size( alphaTx) ); cos(alphaTx)];
-phaseVecsRx = [sin(alphaRx); zeros( size( alphaRx) ); cos(alphaRx)];
-refDists = flowLine*(phaseVecsTx+phaseVecsRx);
+p.phaseVecsTx = [sin(alphaTx); zeros( size( alphaTx) ); cos(alphaTx)];
+p.phaseVecsRx = [sin(alphaRx); zeros( size( alphaRx) ); cos(alphaRx)];
+refDists = flowLine*(p.phaseVecsTx+p.phaseVecsRx);
 p.phaseCorr = refDists./c0*p.trans.f0;
 end
