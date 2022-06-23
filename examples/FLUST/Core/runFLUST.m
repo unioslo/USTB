@@ -1,3 +1,22 @@
+%%
+if ~(exist( 'removeDisclaimer', 'var') && removeDisclaimer)
+    msg{1} = 'If using FLUST for scientific publications, please cite the original paper';
+    msg{2} = 'Avdal et al: Fast Flow-Line-Based Analysis of Ultrasound Spectral and';
+    msg{3} = 'Vector Velocity Estimators, tUFFC, 2019. DOI: 10.1109/TUFFC.2018.2887398';
+    msg{4} = '';
+    msg{5} = 'How to use FLUST:';
+    msg{6} = '1) Provide/select function to calculate PSFs from a vector of spatial positions. ';
+    msg{7} = '2) Run FLUST on phantom of interest.';
+    msg{8} = '3) Apply your favorite velocity estimator to realizations. ';
+    msg{9} = '4) Assess statistical properties of estimator, optimize estimator.';
+    msg{10} = '5) Publish results, report statistical properties, make results';
+    msg{11} = '   reproducible, cite original paper DOI: 10.1109/TUFFC.2018.2887398';
+
+    waitfor( msgbox( msg) );
+    removeDisclaimer = 1;
+end
+
+%%
 if ~isfield( s, 'useGPU'), s.useGPU = 0; end 
 
 if isfield( s, 'interpErrorLimit')
