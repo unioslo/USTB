@@ -1,13 +1,10 @@
 function validate_autocorr(assessParams)
-   %% Standardized way of showing performance of velocity estimator, using the
-    % true velocities from the phantom definition as reference. Function needs
-    % a structure with the following fields:
+    % Standardized way of showing performance of velocity estimator, using the
+    % true velocities from the phantom definition as reference. Function
+    % uses a structure with the following fields:
     %
-    % - GT: true velocities (output from s.phantom_function)
     % - vxEst: estimated velocities in form [Nx, Nz, Nreals]
     % - vzEst: estimated velocities in form [Nx, Nz, Nreals]
-    % - X: scan grid/grid used as input to s.phantom_function
-    % - Z: scan grid/grid used as input to s.phantom_function
     % - scanMask: mask indicating valid estimator pixels (optional). Useful if phantom is only partly covered by valid scan zone (due to steering etc.)
     % - scatterDecimationFac: Decimation factor used in scatterplots
     % - biasPercentage: percentage of (directional) max velocity used in images of bias (default 10 percent)
@@ -26,7 +23,7 @@ function validate_autocorr(assessParams)
     Na = length(s.PSF_params.acq.alphaTx);  % number of transmits
     PRF = s.firing_rate/Na;
     f_demod = s.PSF_params.trans.f0;
-    c = 1540;
+    c = s.PSF_params.trans.c0;
     vNyq = PRF*c/(4*f_demod);
 
     if isfield( assessParams, 'SNR')

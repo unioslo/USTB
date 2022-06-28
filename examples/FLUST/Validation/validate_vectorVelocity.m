@@ -1,13 +1,10 @@
 function validate_vectorVelocity(assessParams)
-   %% Standardized way of showing performance of velocity estimator, using the
-    % true velocities from the phantom definition as reference. Function needs
-    % a structure with the following fields:
+    % Standardized way of showing performance of velocity estimator, using the
+    % true velocities from the phantom definition as reference. Function
+    % uses a structure with the following fields:
     %
-    % - GT: true velocities (output from s.phantom_function)
     % - vxEst: estimated velocities in form [Nz, Nx, Nreals]
     % - vzEst: estimated velocities in form [Nz, Nx, Nreals]
-    % - X: scan grid/grid used as input to s.phantom_function
-    % - Z: scan grid/grid used as input to s.phantom_function
     % - scanMask: mask indicating valid estimator pixels (optional). Useful if phantom is only partly covered by valid scan zone (due to steering etc.)
     % - scatterDecimationFac: Decimation factor used in scatterplots
     % - biasPercentage: percentage of (directional) max velocity used in images of bias (default 10 percent)
@@ -23,7 +20,6 @@ function validate_vectorVelocity(assessParams)
 
     X = evalin( 'base', 'X');               % Grid used as input to phantom function (= scan grid)
     Z = evalin( 'base', 'Z');               % Grid used as input to phantom function (= scan grid)
-%     s = evalin( 'base', 's');
     
     SNR = assessParams.SNR;      % SNR used in simulations
     

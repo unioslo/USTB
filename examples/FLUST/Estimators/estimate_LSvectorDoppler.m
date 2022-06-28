@@ -10,7 +10,7 @@ s = evalin( 'base', 's');
 Na = length(s.PSF_params.acq.alphaTx);
 PRF = s.firing_rate/Na;
 f_demod = s.PSF_params.trans.f0;
-c = 1540;
+c = s.PSF_params.trans.c0;
 vNyq = PRF*c/(4*f_demod);
 
 

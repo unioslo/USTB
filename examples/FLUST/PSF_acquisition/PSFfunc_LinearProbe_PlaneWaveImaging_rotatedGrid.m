@@ -15,27 +15,6 @@ function [PSFs,p] = PSFfunc_LinearProbe_PlaneWaveImaging_rotatedGrid(flowLine, s
 %                     Ingvild Kinn Ekroll <ingvild.k.ekroll@ntnu.no>
 %                     Anne Saris, for usage of rotated linear_array grid
 
-%% Basic Constants
-% 
-% Our first step is to define some basic constants for our imaging scenario
-% - below, we set the speed of sound in the tissue, sampling frequency and
-% sampling step size in time.
-
-c0=1540;     % Speed of sound [m/s]
-fs=100e6;    % Sampling frequency [Hz]
-dt=1/fs;     % Sampling step [s] 
-
-
-%% field II initialisation
-% 
-% Next, we initialize the field II toolbox. Again, this only works if the 
-% Field II simulation program (<field-ii.dk>) is in MATLAB's path. We also
-% pass our set constants to it.
-
-field_init(0);
-set_field('c',c0);              % Speed of sound [m/s]
-set_field('fs',fs);             % Sampling frequency [Hz]
-set_field('use_rectangles',1);  % use rectangular elements
 
 %% Transducer definition L11-4v, 128-element linear array transducer
 % 
@@ -50,6 +29,8 @@ p.trans.lens_el           = 20e-3;           % position of the elevation focus
 p.trans.N                 = 288;             % Number of physical elements
 p.trans.Na                = 128;             % Number of active elements
 p.trans.pulse_duration    = 4.5;             % pulse duration [cycles]
+p.trans.c0                = 1540;            % speed of sound [m/s]
+p.trans.fs                = 100e6;           % Sampling frequency [Hz]
 
 fields = fieldnames(setup.trans);
 for k=1:size(fields,1)
@@ -60,8 +41,34 @@ for k=1:size(fields,1)
     end
 end
 
-p.trans.lambda            = c0/p.trans.f0;   % Wavelength [m]
+p.trans.lambda            = p.trans.c0/p.trans.f0;   % Wavelength [m]
 p.trans.element_width     = p.trans.pitch-p.trans.kerf;  % Width of element [m]
+
+
+%% Basic Constants
+% 
+% Our first step is to define some basic constants for our imaging scenario
+% - below, we set the speed of sound in the tissue, sampling frequency and
+% sampling step size in time.
+
+c0=p.trans.c0;     % Speed of sound [m/s]
+fs=p.trans.fs;    % Sampling frequency [Hz]
+dt=1/fs;     % Sampling step [s] 
+
+
+%% field II initialisation
+% 
+% Next, we initialize the field II toolbox. Again, this only works if the 
+% Field II simulation program (<field-ii.dk>) is in MATLAB's path. We also
+% pass our set constants to it.
+
+field_init(0);
+set_field('c',c0);              % Speed of sound [m/s]
+set_field('fs',fs);             % Sampling frequency [Hz]
+set_field('use_rectangles',1);  % use rectangular elements
+
+
+
 
 probe = uff.linear_array();
 probe.element_height = p.trans.element_height;
