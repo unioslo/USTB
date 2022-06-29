@@ -83,8 +83,8 @@ classdef das < midprocess
                             transmit_delay(:,n_wave)=(-1).^(h.scan.z<h.channel_data.sequence(n_wave).source.z).*sqrt((h.channel_data.sequence(n_wave).source.x-h.scan.x).^2+(h.channel_data.sequence(n_wave).source.y-h.scan.y).^2+(h.channel_data.sequence(n_wave).source.z-h.scan.z).^2);
                             
                             % add distance from source to origin
-                            if (h.channel_data.sequence(n_wave).source.z<-1e-3)
-                                transmit_delay(:,n_wave)=transmit_delay(:,n_wave)-h.channel_data.sequence(n_wave).source.distance;
+                            if (h.channel_data.sequence(n_wave).source.z<-1e-3) %Diverging Wave (DW) transmit
+                                transmit_delay(:,n_wave)=transmit_delay(:,n_wave)-abs(h.channel_data.sequence(n_wave).source.distance);
                             else % if virtual source in front of transducer
                                 switch h.spherical_transmit_delay_model
                                     % Please see the reference below for a documentation and definition of these three models and the differences.

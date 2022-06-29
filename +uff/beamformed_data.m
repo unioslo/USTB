@@ -42,6 +42,7 @@ classdef beamformed_data < uff
         pulse                      % PULSE object
         sampling_frequency         % Sampling frequency in the depth direction in [Hz]
         modulation_frequency       % Modulation frequency in [Hz]
+        frame_rate = 1             % Framerate for Video or GIF file to be saved [fps]
     end
     
     %% dependent properties
@@ -404,7 +405,7 @@ classdef beamformed_data < uff
                         set(h.image_handle,'CData',h.all_images(:,:,h.current_frame));
                         title([h.in_title,', Frame = ',num2str(h.current_frame),'/',num2str(size(h.all_images,3))]);
                         drawnow();
-                        pause(0.05);
+                        pause(1/h.frame_rate);
                 catch ME
                     if strcmp(ME.identifier,'MATLAB:class:InvalidHandle')
                         %The Figure was closed while the video was running
@@ -420,7 +421,7 @@ classdef beamformed_data < uff
              [FileName,path] = uiputfile('movie.mp4','Save movie loop as');
              vidObj = VideoWriter([path,filesep,FileName],'MPEG-4');
              vidObj.Quality = 100;
-             vidObj.FrameRate = 25;
+             vidObj.FrameRate = h.frame_rate;
              open(vidObj);
              for i = 1:size(h.all_images,3)
                  
@@ -441,6 +442,8 @@ classdef beamformed_data < uff
              else
                 FileName = filename;
              end
+             
+             delay_time = 1/h.frame_rate;
 
              for i = 1:size(h.all_images,3)
                  
@@ -452,9 +455,9 @@ classdef beamformed_data < uff
                  [imind,cm] = rgb2ind(im,256);
                  
                  if i == 1
-                     imwrite(imind,cm,FileName,'gif', 'Loopcount',inf);
+                     imwrite(imind,cm,FileName,'gif', 'Loopcount',inf, 'DelayTime',delay_time);
                  else
-                     imwrite(imind,cm,FileName,'gif','WriteMode','append');
+                     imwrite(imind,cm,FileName,'gif','WriteMode','append', 'DelayTime',delay_time);
                  end
                  
              end

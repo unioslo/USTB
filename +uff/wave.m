@@ -155,7 +155,7 @@ classdef wave < uff
             if ~isinf(h.source.distance)
                 dst=sqrt((h.probe.x-h.source.x).^2+(h.probe.y-h.source.y).^2+(h.probe.z-h.source.z).^2);
                 if(h.source.z<0)
-                    value=dst/h.sound_speed-h.source.distance/h.sound_speed;
+                    value=dst/h.sound_speed-abs(h.source.distance/h.sound_speed);
                 else
                     value=h.source.distance/h.sound_speed-dst/h.sound_speed;
                 end
