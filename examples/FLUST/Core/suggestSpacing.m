@@ -27,8 +27,43 @@ s.PSF_params = p;
 % [~, indX] = min( abs( flowCentroid(1)-PSFstruct.scan.x_axis) );
 % [~, indZ] = min( abs( flowCentroid(3)-PSFstruct.scan.z_axis) );
 [~, myInd] = min( (flowCentroid(1)-PSFstruct.scan.x).^2+(flowCentroid(3)-PSFstruct.scan.z).^2 );
-[indZ, indX] = ind2sub( size( PSFs, [1 2] ), myInd);
 
+% [indZ, indX] = ind2sub( size( PSFs, [1 2] ), myInd);
+[indZ, indX] = ind2sub([size(PSFs, 1), size(PSFs,2)], myInd);
+
+
+%% temp visual Anne
+figure, imagesc(PSFstruct.scan.x(:), PSFstruct.scan.z(:),abs(PSFs(:,:,1,1))), title('PSF, angle 1, lat pos 1')
+hold on, plot(testPos(:,1), testPos(:,3),'.r')
+hold on, plot(testPos(1,1), testPos(1,3),'ok')
+hold on, plot(PSFstruct.scan.x(myInd), PSFstruct.scan.z(myInd),'sqy', 'lineWidth',2)
+legend('testpositions PSFs','current position','sampling position IQ signal (slow time signal)')
+
+% IQ without phase correction
+latIQ = permute( PSFs(indZ,indX,:,1:nP), [4 3 1 2] );
+axIQ = permute( PSFs(indZ,indX,:,nP+(1:nP) ), [4 3 1 2] );
+
+figure,subplot(1,2,1)
+plot(real(latIQ))
+hold on, plot(imag(latIQ))
+hold on, plot(abs(latIQ),'-*r')
+legend('in-phase (realIQ) angle 1','in-phase angle 2','quadrature (imagIQ) angle 1','quadrature angle 2','abs(IQ) angle 1','abs(IQ) angle 2')
+title('lateral, slow time')
+xlabel('N (91) spatial sampling points')
+
+subplot(1,2,2), plot(real(axIQ))
+hold on, plot(imag(axIQ))
+hold on, plot(abs(axIQ),'-*r')
+legend('in-phase (realIQ) angle 1','in-phase angle 2','quadrature (imagIQ) angle 1','quadrature angle 2','abs(IQ) angle 1','abs(IQ) angle 2')
+title('axial, slow time')
+xlabel('N (91) spatial sampling points')
+
+figure, subplot(1,2,1), plot(real(latIQ(:,1)), imag(latIQ(:,1)),'*-r'), title('lat IQ angle 1'), xlabel('I'), ylabel('Q'), axis equal
+subplot(1,2,2), plot(real(axIQ(:,1)), imag(axIQ(:,1)),'*-r'), title('ax IQ angle 1'), xlabel('I'), ylabel('Q'), axis equal
+
+figure,subplot(1,2,1), plot(atan2(real(latIQ),imag(latIQ)),'-*r'), title('phase of latIQ')
+subplot(1,2,2),  plot(atan2(real(axIQ),imag(axIQ)),'-*r'), title('phase of axIQ')
+legend('angle 1','angle 2')
 
 %% phase correction makes PSF interpolation more robust and allows for smaller s.dr
 if isfield(s.PSF_params, 'phaseCorr')

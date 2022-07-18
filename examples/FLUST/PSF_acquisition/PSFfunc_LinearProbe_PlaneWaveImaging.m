@@ -271,7 +271,7 @@ for aa = 1:length( alphaRx)
     pipe(aa).channel_data.sequence = seq(ia(aa));
     if ~runChOnly
         bmf = midprocess.das();
-        bmf.code = code.mexFast;
+%         bmf.code = code.mexFast;
         pipe(aa).channel_data.data = demodData(:,:,ia(aa),:);
         b_data=pipe(aa).go({bmf});
         if aa == 1

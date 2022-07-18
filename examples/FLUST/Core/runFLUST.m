@@ -20,6 +20,8 @@ end
 if ~isfield( s, 'useGPU'), s.useGPU = 0; end 
 
 if isfield( s, 'interpErrorLimit')
+    % Get recommended spatial distance ?r between scatterer positions along
+    % flowlines
     suggestSpacing;
 end
 overSampFactTab = zeros( length( flowField), 1 );
@@ -27,7 +29,7 @@ overSampFactTab = zeros( length( flowField), 1 );
 %% FLUST main loop
 for kk = 1:length(flowField)
 
-    %% resample along flowlines with density s.dr
+    %% resample along flowlines with density s.dr (?r)
     prop = diff( flowField(kk).postab, 1);
     propdist = [0; cumsum( sqrt( sum( prop.^2, 2 ) ), 1 ) ];
     newdists = (0:s.dr:max(propdist)).';
@@ -64,11 +66,12 @@ for kk = 1:length(flowField)
     end
     
     
-    %% find max velocity and oversampling factor
+    %% find max velocity and oversampling factor (?t,F)
+    % according to: (?t,F < (?r/vmax))
     timeDiffVec = diff(flowField( kk).timetab);
     posDiffVec = sqrt( sum( diff(flowField( kk).postab, 1).^2, 2) );
     maxVel = max( posDiffVec./timeDiffVec);
-    minFR = maxVel/s.dr;
+    minFR = maxVel/s.dr; 
     currFact = ceil( minFR/s.firing_rate);
     overSampFactTab( kk ) = currFact;
     
@@ -132,12 +135,11 @@ for kk = 1:length(flowField)
         end
 
         for coffset = 1:s.chunksize:szX
-%             mm = 1; % not used?
             
             % chunking of scanlines/columns
             cinds = coffset:min( coffset+s.chunksize-1, szX );
 
-            % interpolate to regular grid with interval ts.
+            % interpolate to regular grid with interval ?t,F.
             % myData_int = hF(r,t), function hF of time and space
             % describing the received signal from an single scatterer
             % moving along F
@@ -162,10 +164,11 @@ for kk = 1:length(flowField)
             fullRealization = reshape( fullRealization, [], length( cinds), size( fullRealization,2));
 
             
-            % Adding of resulting signals to produce a full realization
-            totdist = sum( sqrt( sum( diff( flowField(kk).postab,1).^2, 2 ) ), 1);
-            totsamp = length( ts);
-            weight = totdist/sqrt(totsamp);
+            % Adding of resulting signals to produce a full realization,
+            % and apllying flowline weighting
+            totdist = sum( sqrt( sum( diff( flowField(kk).postab,1).^2, 2 ) ), 1); % D(k), length of flowline
+            totsamp = length( ts); % represents T(k), time it takes for one scatterer to pass through flowline
+            weight = totdist/sqrt(totsamp); % weighting factor for flowline k, W(k)
             realTab(currinds,cinds,:, anglectr, : ) = realTab(currinds,cinds,:, anglectr, : )+...
                 gather( weight*reshape( fullRealization(:,:,length(ts)+(anglectr-1)*currFact+(0:currFact*noAngs:s.nrReps*s.nrSamps*currFact*noAngs-1),:), ...
                 [], length( cinds), s.nrSamps, 1, s.nrReps) );

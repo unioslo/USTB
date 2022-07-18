@@ -30,7 +30,10 @@
 % clear all;
 close all;
 
-addpath('C:\Users\ingvilek\FieldIIpro\m_files'); 
+addpath('H:\MUSIC\software third party\FIELD_II_Pro_2020');
+addpath('H:\MUSIC\staff\anne\_MATLAB_external\20220523_FLUST');
+
+% addpath('C:\Users\ingvilek\FieldIIpro\m_files'); 
 % addpath('C:\Users\ingvilek\OneDrive - NTNU\FLUST\ustb_phantomDB\');
 addpath('Core');
 addpath('Phantoms')
@@ -90,7 +93,7 @@ s.PSF_params.scan.zEnd = 25e-3;
 s.PSF_params.scan.Nz = 128;
 
 % Runtime params
-s.PSF_params.run.chunkSize = 125; % Description?
+s.PSF_params.run.chunkSize = 100; % Description?
 
 %% DEFINE PHANTOM AND PSF FUNCTIONS
 % s.phantom_function = @Phantom_parabolic3Dtube;
