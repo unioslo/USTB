@@ -38,7 +38,7 @@ for kk = 1:length(flowField)
 
     %% calculate PSFs at each position (newpostab) along flowline kk
     simStart = tic;
-    if isfield( s.PSF_params.run, 'runMode') && strcmp( s.PSF_params.run.runMode, 'chOnly')
+    if isfield( s.PSF_params, 'run') && isfield( s.PSF_params.run, 'runMode') && strcmp( s.PSF_params.run.runMode, 'chOnly')
         [PSFstruct,p,pipe] = s.PSF_function(newpostab, s.PSF_params); % PSFs in channel data format
     else
         [PSFstruct,p] = s.PSF_function(newpostab, s.PSF_params); % PSFs in uff/beamformed_data format
@@ -48,7 +48,7 @@ for kk = 1:length(flowField)
 
     %% reshape PSF data
     noAngs = size( PSFstruct.data, 3);
-    if isa( PSFstruct, 'uff.beamformed_data')      % beamformed data
+    if isa( PSFstruct, 'uff.beamformed_data') || ( isfield(PSFstruct, 'isMUST') && PSFstruct.isMUST)      % beamformed data
         if isa( PSFstruct.scan, 'uff.sector_scan')
             szZ = length(PSFstruct.scan.depth_axis); % size( PSFs, 1);
             szX = length(PSFstruct.scan.azimuth_axis); % size( PSFs, 2);
@@ -82,8 +82,13 @@ for kk = 1:length(flowField)
 
     
     if s.useGPU
-        timetab = gpuArray( newtimetab ); % 'Original' time-vector
-        ts = gpuArray( (min(timetab):(1/s.firing_rate)/currFact:max(timetab) ).' ); % New (slow) time-vector
+        try 
+            timetab = gpuArray( newtimetab ); % 'Original' time-vector
+            ts = gpuArray( (min(timetab):(1/s.firing_rate)/currFact:max(timetab) ).' ); % New (slow) time-vector
+        catch gpuError
+            disp( 'GPU error detected, you may set s.useGPU to 0 to run on CPU');
+            throw( gpuError);
+        end
     else
         timetab = newtimetab;
         ts = ( min(timetab):(1/s.firing_rate)/currFact:max(timetab) ).';
