@@ -3,8 +3,8 @@ lastwarn(''); % reset warning
 %% set paths here
 
 % PSF generators (Field II/MUST/other)
-addpath('PathToField_II')
-addpath('PathToMUST');
+addpath('PathToField'); % Path to Field II goes here
+addpath('PathToMUST'); % Path to MUST if this is used
 
 % FLUST folders
 addpath( genpath( pwd) ); % please run FLUST from its root folder
@@ -15,5 +15,5 @@ addpath('..\..'); % ustb main folder
 if strcmp( msgid, 'MATLAB:mpath:nameNonexistentOrNotADirectory')
     disp('At least one addpath statement in setPathsScript returned with a warning.')
     edit setPathsScript.m
-    error('Check that paths to PSF simulator (Field/MUST/other) are set properly in setPathsScript.m');
+    warning('Check that paths to PSF simulator (Field/MUST/other) are set properly in setPathsScript.m');
 end
