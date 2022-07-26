@@ -9,6 +9,7 @@ classdef code < int32
    enumeration
       matlab(0)
       mex(1)
+      mexFast(2)
       matlab_gpu_frameloop(3)
    end
 end
