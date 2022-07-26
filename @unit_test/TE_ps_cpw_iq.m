@@ -1,12 +1,12 @@
 function ok = TE_ps_cpw_iq(h)
 %PS_CPW_IQ Point Spread function Coherent Plane-Wave Compounding IQ test
-%   Downloads data from 'http://hirse.medisin.ntnu.no/ustb/data/ps/'
+%   Downloads data from 'https://www.ustb.no/datasets'
 %   beamforms it and compares it with previously beamformed data (USTB v1.9)
 
     import uff.*;
     
     % data location
-    url='https://nyhirse.medisin.ntnu.no/ustb/data/ps/';   % if not found data will be downloaded from here
+    url='https://www.ustb.no/datasets/ps';   % if not found data will be downloaded from here
     local_path=[ustb_path() '/data/ps/'];                              % location of example data in this computer                      
     raw_data_filename='ps_cpw_iq.mat';
     beamformed_data_filename='beamformed_ps_cpw_iq.mat';
