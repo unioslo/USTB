@@ -6,8 +6,6 @@ lastwarn(''); % reset warning
 addpath('PathToField'); % Path to Field II goes here
 addpath('PathToMUST'); % Path to MUST if this is used
 
-% addpath('C:\Users\jorgenav\Software\field_IIpro\m_files');
-
 % FLUST folders
 addpath( genpath( pwd) ); % please run FLUST from its root folder
 addpath('..\..'); % ustb main folder
