@@ -27,6 +27,10 @@ classdef unit_test
     %% tests
     methods (Access = public)
         function ok=all(h)
+            if ~exist([ustb_path() '/data/ps'])
+                h.download_UT_data()
+            end
+            
             %ALL   Go through all tests
             allok=1;
             
@@ -82,6 +86,18 @@ classdef unit_test
             else
                 fprintf('<strong>All tests OK!!</strong>\n');
             end
+        end
+        
+        function download_UT_data(h)% data location
+            url='https://www.ustb.no/datasets/';   % if not found data will be downloaded from here
+            local_path=[ustb_path() '/data/'];                              % location of example data in this computer
+            zip_data='ps.zip';
+            
+            fprintf('Downloading and unzipping data for unit tests (this wile take some time)...');
+            websave([local_path,zip_data],[url,zip_data]);
+            unzip([local_path,zip_data],local_path)
+            delete([local_path,zip_data])
+            fprintf('...done!\n')
         end
     end
 end

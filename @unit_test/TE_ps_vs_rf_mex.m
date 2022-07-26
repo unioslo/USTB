@@ -1,12 +1,12 @@
 function ok = TE_ps_vs_rf_mex(h)
 %PS_VS_RF Point Spread function Diverging Waves RF test
-%   Downloads data from 'http://hirse.medisin.ntnu.no/ustb/data/ps/'
+%   Downloads data from 'https://www.ustb.no/datasets/ps'
 %   beamforms it and compares it with previously beamformed data (USTB v1.9)
 
     import uff.*;
 
     % data location
-    url='https://nyhirse.medisin.ntnu.no/ustb/data/ps/';   % if not found data will be downloaded from here
+    url='https://www.ustb.no/datasets/ps';   % if not found data will be downloaded from here
     local_path=[ustb_path() '/data/ps/'];                              % location of example data in this computer                      
     raw_data_filename='ps_vs_rf.mat';
     beamformed_data_filename='beamformed_ps_vs_rf.mat';
