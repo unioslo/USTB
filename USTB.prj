@@ -1,14 +1,14 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration build-checksum="3584785850" file="E:\PROJECTS\ustb\USTB.prj" location="E:\PROJECTS\ustb" name="USTB" target="target.toolbox" target-name="Package Toolbox">
-    <param.appname>ustb</param.appname>
-    <param.authnamewatermark>The UltraSound ToolBox group</param.authnamewatermark>
+  <configuration build-checksum="2499403500" file="C:\Repositories\USTB_for_toolbox\USTB.prj" location="C:\Repositories\USTB_for_toolbox" name="USTB" target="target.toolbox" target-name="Package Toolbox">
+    <param.appname>USTB</param.appname>
+    <param.authnamewatermark>The UltraSound ToolBox Taskforce</param.authnamewatermark>
     <param.email>contact@ustb.no</param.email>
     <param.company>UiO, NTNU, CREATIS, JHU</param.company>
     <param.summary>USTB: a toolbox for ultrasonic signal processing</param.summary>
     <param.description>USTB is a free MATLAB toolbox for processing ultrasonic signals Its aim is to facilitate the comparison of imaging techniques and the dissemination of research results. USTB covers processing techniques for both tissue and flow visualization, as well as other image processing techniques.</param.description>
-    <param.screenshot>\\home.ansatt.ntnu.no\alfonsom\My Documents\My Pictures\cubeUSTB_medium.png</param.screenshot>
-    <param.version>2.4.2</param.version>
-    <param.output>${PROJECT_ROOT}\ustb.mltbx</param.output>
+    <param.screenshot>${PROJECT_ROOT}\helpfiles\USTB_logo.png</param.screenshot>
+    <param.version>2.3.1</param.version>
+    <param.output>${PROJECT_ROOT}\USTB.mltbx</param.output>
     <param.products.name />
     <param.products.id />
     <param.products.version />
@@ -19,30 +19,81 @@
 .mat
 .mltbx
 .prj</param.exclude.filters>
+    <param.exclude.pcodedmfiles>true</param.exclude.pcodedmfiles>
     <param.examples>&lt;?xml version="1.0" encoding="utf-8"?&gt;
 &lt;examples&gt;
    &lt;exampleCategory name="advanced_beamforming"&gt;
       &lt;example name="FI_UFF_delay_multiply_and_sum_contrast" type="html"&gt;
          &lt;file type="source"&gt;/examples/advanced_beamforming/html/FI_UFF_delay_multiply_and_sum_contrast.html&lt;/file&gt;
          &lt;file type="main"&gt;/examples/advanced_beamforming/FI_UFF_delay_multiply_and_sum_contrast.m&lt;/file&gt;
-         &lt;file type="thumbnail"/&gt;
+         &lt;file type="thumbnail"&gt;/examples/advanced_beamforming/html/FI_UFF_delay_multiply_and_sum_contrast.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/advanced_beamforming/html/FI_UFF_delay_multiply_and_sum_contrast_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/advanced_beamforming/html/FI_UFF_delay_multiply_and_sum_contrast_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/advanced_beamforming/html/FI_UFF_delay_multiply_and_sum_contrast_03.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/advanced_beamforming/html/FI_UFF_delay_multiply_and_sum_contrast_04.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/advanced_beamforming/html/FI_UFF_delay_multiply_and_sum_contrast_05.png&lt;/file&gt;
       &lt;/example&gt;
       &lt;example name="FI_UFF_delay_multiply_and_sum_resolution" type="html"&gt;
          &lt;file type="source"&gt;/examples/advanced_beamforming/html/FI_UFF_delay_multiply_and_sum_resolution.html&lt;/file&gt;
          &lt;file type="main"&gt;/examples/advanced_beamforming/FI_UFF_delay_multiply_and_sum_resolution.m&lt;/file&gt;
-         &lt;file type="thumbnail"/&gt;
+         &lt;file type="thumbnail"&gt;/examples/advanced_beamforming/html/FI_UFF_delay_multiply_and_sum_resolution.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/advanced_beamforming/html/FI_UFF_delay_multiply_and_sum_resolution_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/advanced_beamforming/html/FI_UFF_delay_multiply_and_sum_resolution_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/advanced_beamforming/html/FI_UFF_delay_multiply_and_sum_resolution_03.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/advanced_beamforming/html/FI_UFF_delay_multiply_and_sum_resolution_04.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/advanced_beamforming/html/FI_UFF_delay_multiply_and_sum_resolution_05.png&lt;/file&gt;
       &lt;/example&gt;
    &lt;/exampleCategory&gt;
    &lt;exampleCategory name="matrix_array"&gt;
       &lt;example name="CPWC_matrix_array" type="html"&gt;
          &lt;file type="source"&gt;/examples/fresnel/matrix_array/html/CPWC_matrix_array.html&lt;/file&gt;
          &lt;file type="main"&gt;/examples/fresnel/matrix_array/CPWC_matrix_array.m&lt;/file&gt;
-         &lt;file type="thumbnail"/&gt;
+         &lt;file type="thumbnail"&gt;/examples/fresnel/matrix_array/html/CPWC_matrix_array.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/fresnel/matrix_array/html/CPWC_matrix_array_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/fresnel/matrix_array/html/CPWC_matrix_array_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/fresnel/matrix_array/html/CPWC_matrix_array_03.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/fresnel/matrix_array/html/CPWC_matrix_array_04.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/fresnel/matrix_array/html/CPWC_matrix_array_05.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/fresnel/matrix_array/html/CPWC_matrix_array_06.png&lt;/file&gt;
       &lt;/example&gt;
       &lt;example name="STA_matrix_array" type="html"&gt;
          &lt;file type="source"&gt;/examples/fresnel/matrix_array/html/STA_matrix_array.html&lt;/file&gt;
          &lt;file type="main"&gt;/examples/fresnel/matrix_array/STA_matrix_array.m&lt;/file&gt;
-         &lt;file type="thumbnail"/&gt;
+         &lt;file type="thumbnail"&gt;/examples/fresnel/matrix_array/html/STA_matrix_array.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/fresnel/matrix_array/html/STA_matrix_array_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/fresnel/matrix_array/html/STA_matrix_array_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/fresnel/matrix_array/html/STA_matrix_array_03.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/fresnel/matrix_array/html/STA_matrix_array_04.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/fresnel/matrix_array/html/STA_matrix_array_05.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/fresnel/matrix_array/html/STA_matrix_array_06.png&lt;/file&gt;
+      &lt;/example&gt;
+   &lt;/exampleCategory&gt;
+   &lt;exampleCategory name="Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel"&gt;
+      &lt;example name="Proceedings_FI_UFF_Verasonics_RTB_delay_models" type="html"&gt;
+         &lt;file type="source"&gt;/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/html/Proceedings_FI_UFF_Verasonics_RTB_delay_models.html&lt;/file&gt;
+         &lt;file type="main"&gt;/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Proceedings_FI_UFF_Verasonics_RTB_delay_models.m&lt;/file&gt;
+         &lt;file type="thumbnail"&gt;/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/html/Proceedings_FI_UFF_Verasonics_RTB_delay_models.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/html/Proceedings_FI_UFF_Verasonics_RTB_delay_models_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/html/Proceedings_FI_UFF_Verasonics_RTB_delay_models_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/html/Proceedings_FI_UFF_Verasonics_RTB_delay_models_03.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/html/Proceedings_FI_UFF_Verasonics_RTB_delay_models_04.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/html/Proceedings_FI_UFF_Verasonics_RTB_delay_models_05.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/html/Proceedings_FI_UFF_Verasonics_RTB_delay_models_06.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/html/Proceedings_FI_UFF_Verasonics_RTB_delay_models_07.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/html/Proceedings_FI_UFF_Verasonics_RTB_delay_models_08.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/html/Proceedings_FI_UFF_Verasonics_RTB_delay_models_09.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/html/Proceedings_FI_UFF_Verasonics_RTB_delay_models_10.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/html/Proceedings_FI_UFF_Verasonics_RTB_delay_models_11.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/html/Proceedings_FI_UFF_Verasonics_RTB_delay_models_12.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/html/Proceedings_FI_UFF_Verasonics_RTB_delay_models_13.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/html/Proceedings_FI_UFF_Verasonics_RTB_delay_models_14.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/html/Proceedings_FI_UFF_Verasonics_RTB_delay_models_15.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/html/Proceedings_FI_UFF_Verasonics_RTB_delay_models_16.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/html/Proceedings_FI_UFF_Verasonics_RTB_delay_models_17.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/html/Proceedings_FI_UFF_Verasonics_RTB_delay_models_18.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/html/Proceedings_FI_UFF_Verasonics_RTB_delay_models_19.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/html/Proceedings_FI_UFF_Verasonics_RTB_delay_models_20.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/html/Proceedings_FI_UFF_Verasonics_RTB_delay_models_21.png&lt;/file&gt;
       &lt;/example&gt;
    &lt;/exampleCategory&gt;
    &lt;exampleCategory name="linear_array"&gt;
@@ -56,6 +107,11 @@
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_04.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_05.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_06.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_beamformer_speed_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_beamformer_speed_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_beamformer_speed_03.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_beamformer_speed_04.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_beamformer_speed_05.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_coherence_factor_01.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_coherence_factor_02.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_coherence_factor_03.png&lt;/file&gt;
@@ -63,15 +119,11 @@
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_coherence_factor_05.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_coherence_factor_06.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_coherence_factor_07.png&lt;/file&gt;
-         &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_coherence_factor_08.png&lt;/file&gt;
-         &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_coherence_factor_09.png&lt;/file&gt;
-         &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_coherence_factor_10.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_low_quality_PW_images_01.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_low_quality_PW_images_02.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_low_quality_PW_images_03.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_low_quality_PW_images_04.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_low_quality_PW_images_05.png&lt;/file&gt;
-         &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_low_quality_PW_images_06.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_multiframe_01.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_multiframe_02.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_multiframe_03.png&lt;/file&gt;
@@ -82,7 +134,12 @@
       &lt;example name="CPWC_linear_array_beamformer_speed" type="html"&gt;
          &lt;file type="source"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_beamformer_speed.html&lt;/file&gt;
          &lt;file type="main"&gt;/examples/fresnel/linear_array/CPWC_linear_array_beamformer_speed.m&lt;/file&gt;
-         &lt;file type="thumbnail"/&gt;
+         &lt;file type="thumbnail"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_beamformer_speed.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_beamformer_speed_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_beamformer_speed_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_beamformer_speed_03.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_beamformer_speed_04.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_beamformer_speed_05.png&lt;/file&gt;
       &lt;/example&gt;
       &lt;example name="CPWC_linear_array_coherence_factor" type="html"&gt;
          &lt;file type="source"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_coherence_factor.html&lt;/file&gt;
@@ -95,9 +152,6 @@
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_coherence_factor_05.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_coherence_factor_06.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_coherence_factor_07.png&lt;/file&gt;
-         &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_coherence_factor_08.png&lt;/file&gt;
-         &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_coherence_factor_09.png&lt;/file&gt;
-         &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_coherence_factor_10.png&lt;/file&gt;
       &lt;/example&gt;
       &lt;example name="CPWC_linear_array_low_quality_PW_images" type="html"&gt;
          &lt;file type="source"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_low_quality_PW_images.html&lt;/file&gt;
@@ -108,7 +162,6 @@
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_low_quality_PW_images_03.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_low_quality_PW_images_04.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_low_quality_PW_images_05.png&lt;/file&gt;
-         &lt;file type="image"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_low_quality_PW_images_06.png&lt;/file&gt;
       &lt;/example&gt;
       &lt;example name="CPWC_linear_array_multiframe" type="html"&gt;
          &lt;file type="source"&gt;/examples/fresnel/linear_array/html/CPWC_linear_array_multiframe.html&lt;/file&gt;
@@ -141,7 +194,6 @@
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/FI_linear_array_03.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/FI_linear_array_04.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/FI_linear_array_05.png&lt;/file&gt;
-         &lt;file type="image"&gt;/examples/fresnel/linear_array/html/FI_linear_array_06.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/FI_linear_array_receive_processes_01.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/FI_linear_array_receive_processes_02.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/FI_linear_array_receive_processes_03.png&lt;/file&gt;
@@ -152,7 +204,6 @@
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/FI_linear_array_receive_processes_08.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/FI_linear_array_receive_processes_09.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/FI_linear_array_receive_processes_10.png&lt;/file&gt;
-         &lt;file type="image"&gt;/examples/fresnel/linear_array/html/FI_linear_array_receive_processes_11.png&lt;/file&gt;
       &lt;/example&gt;
       &lt;example name="FI_linear_array_receive_processes" type="html"&gt;
          &lt;file type="source"&gt;/examples/fresnel/linear_array/html/FI_linear_array_receive_processes.html&lt;/file&gt;
@@ -168,7 +219,6 @@
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/FI_linear_array_receive_processes_08.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/FI_linear_array_receive_processes_09.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/FI_linear_array_receive_processes_10.png&lt;/file&gt;
-         &lt;file type="image"&gt;/examples/fresnel/linear_array/html/FI_linear_array_receive_processes_11.png&lt;/file&gt;
       &lt;/example&gt;
       &lt;example name="IUS2017_abstract" type="html"&gt;
          &lt;file type="source"&gt;/examples/fresnel/linear_array/html/IUS2017_abstract.html&lt;/file&gt;
@@ -186,7 +236,6 @@
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/IUS2017_abstract_10.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/IUS2017_abstract_11.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/IUS2017_abstract_12.png&lt;/file&gt;
-         &lt;file type="image"&gt;/examples/fresnel/linear_array/html/IUS2017_abstract_13.png&lt;/file&gt;
       &lt;/example&gt;
       &lt;example name="RTB_linear_array" type="html"&gt;
          &lt;file type="source"&gt;/examples/fresnel/linear_array/html/RTB_linear_array.html&lt;/file&gt;
@@ -209,12 +258,6 @@
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/STA_linear_array_04.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/STA_linear_array_05.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/STA_linear_array_06.png&lt;/file&gt;
-         &lt;file type="image"&gt;/examples/fresnel/linear_array/html/STA_linear_array_beamformers_01.png&lt;/file&gt;
-         &lt;file type="image"&gt;/examples/fresnel/linear_array/html/STA_linear_array_beamformers_02.png&lt;/file&gt;
-         &lt;file type="image"&gt;/examples/fresnel/linear_array/html/STA_linear_array_beamformers_03.png&lt;/file&gt;
-         &lt;file type="image"&gt;/examples/fresnel/linear_array/html/STA_linear_array_beamformers_04.png&lt;/file&gt;
-         &lt;file type="image"&gt;/examples/fresnel/linear_array/html/STA_linear_array_beamformers_05.png&lt;/file&gt;
-         &lt;file type="image"&gt;/examples/fresnel/linear_array/html/STA_linear_array_beamformers_06.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/STA_linear_array_transmit_processes_01.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/STA_linear_array_transmit_processes_02.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/linear_array/html/STA_linear_array_transmit_processes_03.png&lt;/file&gt;
@@ -285,57 +328,77 @@
          &lt;file type="image"&gt;/examples/fresnel/phased_array/html/FI_phased_array_03.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/phased_array/html/FI_phased_array_04.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/phased_array/html/FI_phased_array_05.png&lt;/file&gt;
-         &lt;file type="image"&gt;/examples/fresnel/phased_array/html/FI_phased_array_06.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/phased_array/html/FI_phased_array_multiframe_01.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/phased_array/html/FI_phased_array_multiframe_02.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/phased_array/html/FI_phased_array_multiframe_03.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/phased_array/html/FI_phased_array_multiframe_04.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/fresnel/phased_array/html/FI_phased_array_multiframe_05.png&lt;/file&gt;
       &lt;/example&gt;
       &lt;example name="FI_phased_array_multiframe" type="html"&gt;
          &lt;file type="source"&gt;/examples/fresnel/phased_array/html/FI_phased_array_multiframe.html&lt;/file&gt;
          &lt;file type="main"&gt;/examples/fresnel/phased_array/FI_phased_array_multiframe.m&lt;/file&gt;
-         &lt;file type="thumbnail"/&gt;
+         &lt;file type="thumbnail"&gt;/examples/fresnel/phased_array/html/FI_phased_array_multiframe.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/phased_array/html/FI_phased_array_multiframe_01.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/phased_array/html/FI_phased_array_multiframe_02.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/phased_array/html/FI_phased_array_multiframe_03.png&lt;/file&gt;
          &lt;file type="image"&gt;/examples/fresnel/phased_array/html/FI_phased_array_multiframe_04.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/fresnel/phased_array/html/FI_phased_array_multiframe_05.png&lt;/file&gt;
       &lt;/example&gt;
       &lt;example name="STA_phased_array" type="html"&gt;
          &lt;file type="source"&gt;/examples/fresnel/phased_array/html/STA_phased_array.html&lt;/file&gt;
          &lt;file type="main"&gt;/examples/fresnel/phased_array/STA_phased_array.m&lt;/file&gt;
-         &lt;file type="thumbnail"/&gt;
+         &lt;file type="thumbnail"&gt;/examples/fresnel/phased_array/html/STA_phased_array.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/fresnel/phased_array/html/STA_phased_array_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/fresnel/phased_array/html/STA_phased_array_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/fresnel/phased_array/html/STA_phased_array_03.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/fresnel/phased_array/html/STA_phased_array_04.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/fresnel/phased_array/html/STA_phased_array_05.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/fresnel/phased_array/html/STA_phased_array_06.png&lt;/file&gt;
       &lt;/example&gt;
    &lt;/exampleCategory&gt;
    &lt;exampleCategory name="picmus"&gt;
       &lt;example name="experiment_contrast_speckle" type="html"&gt;
          &lt;file type="source"&gt;/examples/picmus/html/experiment_contrast_speckle.html&lt;/file&gt;
          &lt;file type="main"&gt;/examples/picmus/experiment_contrast_speckle.m&lt;/file&gt;
-         &lt;file type="thumbnail"/&gt;
+         &lt;file type="thumbnail"&gt;/examples/picmus/html/experiment_contrast_speckle.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/picmus/html/experiment_contrast_speckle_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/picmus/html/experiment_contrast_speckle_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/picmus/html/experiment_contrast_speckle_03.png&lt;/file&gt;
       &lt;/example&gt;
       &lt;example name="experiment_resolution_distortion" type="html"&gt;
          &lt;file type="source"&gt;/examples/picmus/html/experiment_resolution_distortion.html&lt;/file&gt;
          &lt;file type="main"&gt;/examples/picmus/experiment_resolution_distortion.m&lt;/file&gt;
-         &lt;file type="thumbnail"/&gt;
+         &lt;file type="thumbnail"&gt;/examples/picmus/html/experiment_resolution_distortion.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/picmus/html/experiment_resolution_distortion_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/picmus/html/experiment_resolution_distortion_02.png&lt;/file&gt;
       &lt;/example&gt;
       &lt;example name="invivo_carotid_cross" type="html"&gt;
          &lt;file type="source"&gt;/examples/picmus/html/invivo_carotid_cross.html&lt;/file&gt;
          &lt;file type="main"&gt;/examples/picmus/invivo_carotid_cross.m&lt;/file&gt;
-         &lt;file type="thumbnail"/&gt;
+         &lt;file type="thumbnail"&gt;/examples/picmus/html/invivo_carotid_cross.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/picmus/html/invivo_carotid_cross_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/picmus/html/invivo_carotid_cross_02.png&lt;/file&gt;
       &lt;/example&gt;
       &lt;example name="invivo_carotid_long" type="html"&gt;
          &lt;file type="source"&gt;/examples/picmus/html/invivo_carotid_long.html&lt;/file&gt;
          &lt;file type="main"&gt;/examples/picmus/invivo_carotid_long.m&lt;/file&gt;
-         &lt;file type="thumbnail"/&gt;
+         &lt;file type="thumbnail"&gt;/examples/picmus/html/invivo_carotid_long.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/picmus/html/invivo_carotid_long_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/picmus/html/invivo_carotid_long_02.png&lt;/file&gt;
       &lt;/example&gt;
       &lt;example name="simulation_contrast_speckle" type="html"&gt;
          &lt;file type="source"&gt;/examples/picmus/html/simulation_contrast_speckle.html&lt;/file&gt;
          &lt;file type="main"&gt;/examples/picmus/simulation_contrast_speckle.m&lt;/file&gt;
-         &lt;file type="thumbnail"/&gt;
+         &lt;file type="thumbnail"&gt;/examples/picmus/html/simulation_contrast_speckle.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/picmus/html/simulation_contrast_speckle_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/picmus/html/simulation_contrast_speckle_02.png&lt;/file&gt;
       &lt;/example&gt;
       &lt;example name="simulation_resolution_distortion" type="html"&gt;
          &lt;file type="source"&gt;/examples/picmus/html/simulation_resolution_distortion.html&lt;/file&gt;
          &lt;file type="main"&gt;/examples/picmus/simulation_resolution_distortion.m&lt;/file&gt;
-         &lt;file type="thumbnail"/&gt;
+         &lt;file type="thumbnail"&gt;/examples/picmus/html/simulation_resolution_distortion.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/picmus/html/simulation_resolution_distortion_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/picmus/html/simulation_resolution_distortion_02.png&lt;/file&gt;
       &lt;/example&gt;
    &lt;/exampleCategory&gt;
    &lt;exampleCategory name="uff"&gt;
@@ -357,19 +420,26 @@
       &lt;example name="CPWC_UFF_write" type="html"&gt;
          &lt;file type="source"&gt;/examples/uff/html/CPWC_UFF_write.html&lt;/file&gt;
          &lt;file type="main"&gt;/examples/uff/CPWC_UFF_write.m&lt;/file&gt;
-         &lt;file type="thumbnail"/&gt;
+         &lt;file type="thumbnail"&gt;/examples/uff/html/CPWC_UFF_write.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/uff/html/CPWC_UFF_write_01.png&lt;/file&gt;
       &lt;/example&gt;
       &lt;example name="FI_UFF_Alpinion" type="html"&gt;
          &lt;file type="source"&gt;/examples/uff/html/FI_UFF_Alpinion.html&lt;/file&gt;
          &lt;file type="main"&gt;/examples/uff/FI_UFF_Alpinion.m&lt;/file&gt;
-         &lt;file type="thumbnail"/&gt;
+         &lt;file type="thumbnail"&gt;/examples/uff/html/FI_UFF_Alpinion.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/uff/html/FI_UFF_Alpinion_01.png&lt;/file&gt;
       &lt;/example&gt;
    &lt;/exampleCategory&gt;
    &lt;exampleCategory name="Prieur_et_al_Signal_coherence_and_image_amplitude_with_the_fDMAS"&gt;
       &lt;example name="FI_UFF_FIeldII_simulations_Fig2_and_Fig3" type="html"&gt;
          &lt;file type="source"&gt;/publications/TUFFC/Prieur_et_al_Signal_coherence_and_image_amplitude_with_the_fDMAS/html/FI_UFF_FIeldII_simulations_Fig2_and_Fig3.html&lt;/file&gt;
          &lt;file type="main"&gt;/publications/TUFFC/Prieur_et_al_Signal_coherence_and_image_amplitude_with_the_fDMAS/FI_UFF_FIeldII_simulations_Fig2_and_Fig3.m&lt;/file&gt;
-         &lt;file type="thumbnail"/&gt;
+         &lt;file type="thumbnail"&gt;/publications/TUFFC/Prieur_et_al_Signal_coherence_and_image_amplitude_with_the_fDMAS/html/FI_UFF_FIeldII_simulations_Fig2_and_Fig3.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/TUFFC/Prieur_et_al_Signal_coherence_and_image_amplitude_with_the_fDMAS/html/FI_UFF_FIeldII_simulations_Fig2_and_Fig3_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/TUFFC/Prieur_et_al_Signal_coherence_and_image_amplitude_with_the_fDMAS/html/FI_UFF_FIeldII_simulations_Fig2_and_Fig3_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/TUFFC/Prieur_et_al_Signal_coherence_and_image_amplitude_with_the_fDMAS/html/FI_UFF_FIeldII_simulations_Fig2_and_Fig3_03.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/TUFFC/Prieur_et_al_Signal_coherence_and_image_amplitude_with_the_fDMAS/html/FI_UFF_FIeldII_simulations_Fig2_and_Fig3_04.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/TUFFC/Prieur_et_al_Signal_coherence_and_image_amplitude_with_the_fDMAS/html/FI_UFF_FIeldII_simulations_Fig2_and_Fig3_05.png&lt;/file&gt;
       &lt;/example&gt;
       &lt;example name="FI_UFF_delay_multiply_and_sum_Fig5_and_Fig6" type="html"&gt;
          &lt;file type="source"&gt;/publications/TUFFC/Prieur_et_al_Signal_coherence_and_image_amplitude_with_the_fDMAS/html/FI_UFF_delay_multiply_and_sum_Fig5_and_Fig6.html&lt;/file&gt;
@@ -394,17 +464,59 @@
       &lt;example name="STAI_L11_probe_sim" type="html"&gt;
          &lt;file type="source"&gt;/examples/field_II/html/STAI_L11_probe_sim.html&lt;/file&gt;
          &lt;file type="main"&gt;/examples/field_II/STAI_L11_probe_sim.m&lt;/file&gt;
-         &lt;file type="thumbnail"/&gt;
+         &lt;file type="thumbnail"&gt;/examples/field_II/html/STAI_L11_probe_sim.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/field_II/html/STAI_L11_probe_sim_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/field_II/html/STAI_L11_probe_sim_02.png&lt;/file&gt;
       &lt;/example&gt;
       &lt;example name="STAI_L11_speckle" type="html"&gt;
          &lt;file type="source"&gt;/examples/field_II/html/STAI_L11_speckle.html&lt;/file&gt;
          &lt;file type="main"&gt;/examples/field_II/STAI_L11_speckle.m&lt;/file&gt;
-         &lt;file type="thumbnail"/&gt;
+         &lt;file type="thumbnail"&gt;/examples/field_II/html/STAI_L11_speckle.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/field_II/html/STAI_L11_speckle_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/field_II/html/STAI_L11_speckle_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/field_II/html/STAI_L11_speckle_03.png&lt;/file&gt;
       &lt;/example&gt;
       &lt;example name="STAI_theoretical_PSF" type="html"&gt;
          &lt;file type="source"&gt;/examples/field_II/html/STAI_theoretical_PSF.html&lt;/file&gt;
          &lt;file type="main"&gt;/examples/field_II/STAI_theoretical_PSF.m&lt;/file&gt;
-         &lt;file type="thumbnail"/&gt;
+         &lt;file type="thumbnail"&gt;/examples/field_II/html/STAI_theoretical_PSF.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/field_II/html/STAI_theoretical_PSF_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/field_II/html/STAI_theoretical_PSF_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/field_II/html/STAI_theoretical_PSF_03.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/field_II/html/STAI_theoretical_PSF_04.png&lt;/file&gt;
+         &lt;file type="image"&gt;/examples/field_II/html/STAI_theoretical_PSF_05.png&lt;/file&gt;
+      &lt;/example&gt;
+   &lt;/exampleCategory&gt;
+   &lt;exampleCategory name="DynamicRange"&gt;
+      &lt;example name="create_figures_from_experimental" type="html"&gt;
+         &lt;file type="source"&gt;/publications/DynamicRange/html/create_figures_from_experimental.html&lt;/file&gt;
+         &lt;file type="main"&gt;/publications/DynamicRange/create_figures_from_experimental.m&lt;/file&gt;
+         &lt;file type="thumbnail"&gt;/publications/DynamicRange/html/create_figures_from_experimental.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/DynamicRange/html/create_figures_from_experimental_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/DynamicRange/html/create_figures_from_experimental_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/DynamicRange/html/create_figures_from_experimental_03.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/DynamicRange/html/create_figures_from_experimental_04.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/DynamicRange/html/create_figures_from_experimental_05.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/DynamicRange/html/create_figures_from_experimental_06.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/DynamicRange/html/create_figures_from_experimental_07.png&lt;/file&gt;
+      &lt;/example&gt;
+      &lt;example name="create_figures_from_simulation" type="html"&gt;
+         &lt;file type="source"&gt;/publications/DynamicRange/html/create_figures_from_simulation.html&lt;/file&gt;
+         &lt;file type="main"&gt;/publications/DynamicRange/create_figures_from_simulation.m&lt;/file&gt;
+         &lt;file type="thumbnail"&gt;/publications/DynamicRange/html/create_figures_from_simulation.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/DynamicRange/html/create_figures_from_simulation_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/DynamicRange/html/create_figures_from_simulation_02.png&lt;/file&gt;
+      &lt;/example&gt;
+      &lt;example name="dynamic_range_test" type="html"&gt;
+         &lt;file type="source"&gt;/publications/DynamicRange/html/dynamic_range_test.html&lt;/file&gt;
+         &lt;file type="main"&gt;/publications/DynamicRange/dynamic_range_test.m&lt;/file&gt;
+         &lt;file type="thumbnail"&gt;/publications/DynamicRange/html/dynamic_range_test.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/DynamicRange/html/dynamic_range_test_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/DynamicRange/html/dynamic_range_test_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/DynamicRange/html/dynamic_range_test_03.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/DynamicRange/html/dynamic_range_test_04.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/DynamicRange/html/dynamic_range_test_05.png&lt;/file&gt;
+         &lt;file type="image"&gt;/publications/DynamicRange/html/dynamic_range_test_06.png&lt;/file&gt;
       &lt;/example&gt;
    &lt;/exampleCategory&gt;
 &lt;/examples&gt;</param.examples>
@@ -413,22 +525,58 @@
     <param.registered.apps />
     <param.docs>${PROJECT_ROOT}\info.xml</param.docs>
     <param.getting.started.guide>${PROJECT_ROOT}\doc\GettingStarted.mlx</param.getting.started.guide>
-    <param.matlabpath.excludes />
+    <param.matlabpath.excludes>
+      <item>/examples/fresnel/curvilinear_array</item>
+    </param.matlabpath.excludes>
     <param.javaclasspath.excludes />
+    <param.exported.on.package>false</param.exported.on.package>
+    <param.required.addons />
+    <param.matlab.project.id />
+    <param.matlab.project.name />
+    <param.release.start />
+    <param.release.end />
+    <param.release.current.only>false</param.release.current.only>
+    <param.compatiblity.windows>true</param.compatiblity.windows>
+    <param.compatiblity.macos>true</param.compatiblity.macos>
+    <param.compatiblity.linux>true</param.compatiblity.linux>
+    <param.compatiblity.matlabonline>true</param.compatiblity.matlabonline>
+    <param.installation.map />
+    <param.additional.sw.names />
+    <param.additional.sw.licenses />
+    <param.additional.sw.win.url />
+    <param.additional.sw.mac.url />
+    <param.additional.sw.linux.url />
     <unset>
       <param.output />
       <param.products.name />
       <param.products.id />
       <param.products.version />
       <param.platforms />
+      <param.exclude.pcodedmfiles />
       <param.demosxml />
       <param.apps />
       <param.registered.apps />
-      <param.matlabpath.excludes />
       <param.javaclasspath.excludes />
+      <param.exported.on.package />
+      <param.required.addons />
+      <param.matlab.project.id />
+      <param.matlab.project.name />
+      <param.release.start />
+      <param.release.end />
+      <param.release.current.only />
+      <param.compatiblity.windows />
+      <param.compatiblity.macos />
+      <param.compatiblity.linux />
+      <param.compatiblity.matlabonline />
+      <param.installation.map />
+      <param.additional.sw.names />
+      <param.additional.sw.licenses />
+      <param.additional.sw.win.url />
+      <param.additional.sw.mac.url />
+      <param.additional.sw.linux.url />
     </unset>
     <fileset.rootdir>
-      <file>E:\PROJECTS\ustb</file>
+      <file>${PROJECT_ROOT}</file>
     </fileset.rootdir>
     <fileset.rootfiles>
       <file>${PROJECT_ROOT}\+mex</file>
@@ -460,34 +608,98 @@
       <file>${PROJECT_ROOT}\process.m</file>
       <file>${PROJECT_ROOT}\publications</file>
       <file>${PROJECT_ROOT}\README.md</file>
+      <file>${PROJECT_ROOT}\sandbox</file>
+      <file>${PROJECT_ROOT}\spherical_transmit_delay_model.m</file>
       <file>${PROJECT_ROOT}\uff.m</file>
       <file>${PROJECT_ROOT}\ustb_path.m</file>
     </fileset.rootfiles>
     <fileset.depfun.included />
     <fileset.depfun.excluded>
       <file>${MATLAB_ROOT}\toolbox\matlab\demos\mri.mat</file>
+      <file>C:\Repositories\FieldII\calc_hp.m</file>
+      <file>C:\Repositories\FieldII\calc_scat_multi.m</file>
+      <file>C:\Repositories\FieldII\field_init.m</file>
+      <file>C:\Repositories\FieldII\Mat_field.mexw64</file>
+      <file>C:\Repositories\FieldII\set_field.m</file>
+      <file>C:\Repositories\FieldII\xdc_apodization.m</file>
+      <file>C:\Repositories\FieldII\xdc_baffle.m</file>
+      <file>C:\Repositories\FieldII\xdc_center_focus.m</file>
+      <file>C:\Repositories\FieldII\xdc_excitation.m</file>
+      <file>C:\Repositories\FieldII\xdc_focus.m</file>
+      <file>C:\Repositories\FieldII\xdc_focus_times.m</file>
+      <file>C:\Repositories\FieldII\xdc_focused_array.m</file>
+      <file>C:\Repositories\FieldII\xdc_impulse.m</file>
+      <file>C:\Repositories\FieldII\xdc_linear_array.m</file>
+      <file>C:\Repositories\FieldII\xdc_times_focus.m</file>
+      <file>C:\Repositories\k-wave\addNoise.m</file>
+      <file>C:\Repositories\k-wave\applyFilter.m</file>
+      <file>C:\Repositories\k-wave\cart2grid.m</file>
+      <file>C:\Repositories\k-wave\checkStability.m</file>
+      <file>C:\Repositories\k-wave\db2neper.m</file>
+      <file>C:\Repositories\k-wave\expandMatrix.m</file>
+      <file>C:\Repositories\k-wave\filterTimeSeries.m</file>
+      <file>C:\Repositories\k-wave\fourierShift.m</file>
+      <file>C:\Repositories\k-wave\gaussian.m</file>
+      <file>C:\Repositories\k-wave\gaussianFilter.m</file>
+      <file>C:\Repositories\k-wave\getColorMap.m</file>
+      <file>C:\Repositories\k-wave\getComputerInfo.m</file>
+      <file>C:\Repositories\k-wave\getDateString.m</file>
+      <file>C:\Repositories\k-wave\getkWavePath.m</file>
+      <file>C:\Repositories\k-wave\getOptimalPMLSize.m</file>
+      <file>C:\Repositories\k-wave\getWin.m</file>
+      <file>C:\Repositories\k-wave\kspaceFirstOrder2D.m</file>
+      <file>C:\Repositories\k-wave\kWaveGrid.m</file>
+      <file>C:\Repositories\k-wave\numDim.m</file>
+      <file>C:\Repositories\k-wave\private\checkFieldNames.m</file>
+      <file>C:\Repositories\k-wave\private\directionalResponse.m</file>
+      <file>C:\Repositories\k-wave\private\enforceFields.m</file>
+      <file>C:\Repositories\k-wave\private\getH5Literals.m</file>
+      <file>C:\Repositories\k-wave\private\getkWaveVersion.m</file>
+      <file>C:\Repositories\k-wave\private\getPML.m</file>
+      <file>C:\Repositories\k-wave\private\gridDataFast2D.m</file>
+      <file>C:\Repositories\k-wave\private\gridDataFast2D_tsearch.m</file>
+      <file>C:\Repositories\k-wave\private\gridDataFast3D.m</file>
+      <file>C:\Repositories\k-wave\private\kspaceFirstOrder_adjustPlotScale.m</file>
+      <file>C:\Repositories\k-wave\private\kspaceFirstOrder_checkMemoryUsage.m</file>
+      <file>C:\Repositories\k-wave\private\kspaceFirstOrder_checkOptionalInputs.m</file>
+      <file>C:\Repositories\k-wave\private\kspaceFirstOrder_createAbsorptionVariables.m</file>
+      <file>C:\Repositories\k-wave\private\kspaceFirstOrder_createStorageVariables.m</file>
+      <file>C:\Repositories\k-wave\private\kspaceFirstOrder_dataCast.m</file>
+      <file>C:\Repositories\k-wave\private\kspaceFirstOrder_dataRecast.m</file>
+      <file>C:\Repositories\k-wave\private\kspaceFirstOrder_displaySimulationParams.m</file>
+      <file>C:\Repositories\k-wave\private\kspaceFirstOrder_expandGridMatrices.m</file>
+      <file>C:\Repositories\k-wave\private\kspaceFirstOrder_extractSensorData.m</file>
+      <file>C:\Repositories\k-wave\private\kspaceFirstOrder_initialiseFigureWindow.m</file>
+      <file>C:\Repositories\k-wave\private\kspaceFirstOrder_initialiseMovieParameters.m</file>
+      <file>C:\Repositories\k-wave\private\kspaceFirstOrder_inputChecking.m</file>
+      <file>C:\Repositories\k-wave\private\kspaceFirstOrder_plotLayout.m</file>
+      <file>C:\Repositories\k-wave\private\kspaceFirstOrder_reorderCartData.m</file>
+      <file>C:\Repositories\k-wave\private\kspaceFirstOrder_reorderCuboidCorners.m</file>
+      <file>C:\Repositories\k-wave\private\kspaceFirstOrder_saveIntensity.m</file>
+      <file>C:\Repositories\k-wave\private\kspaceFirstOrder_saveToDisk.m</file>
+      <file>C:\Repositories\k-wave\private\kspaceFirstOrder_scaleSourceTerms.m</file>
+      <file>C:\Repositories\k-wave\private\kspaceFirstOrder_setDefaults.m</file>
+      <file>C:\Repositories\k-wave\private\kspaceFirstOrder_setSoundSpeedRef.m</file>
+      <file>C:\Repositories\k-wave\private\sinc.m</file>
+      <file>C:\Repositories\k-wave\reorderBinarySensorData.m</file>
+      <file>C:\Repositories\k-wave\scaleFig.m</file>
+      <file>C:\Repositories\k-wave\scaleSI.m</file>
+      <file>C:\Repositories\k-wave\scaleTime.m</file>
+      <file>C:\Repositories\k-wave\smooth.m</file>
+      <file>C:\Repositories\k-wave\spect.m</file>
+      <file>C:\Repositories\k-wave\stackedPlot.m</file>
+      <file>C:\Repositories\k-wave\toneBurst.m</file>
+      <file>C:\Repositories\k-wave\writeAttributes.m</file>
+      <file>C:\Repositories\k-wave\writeMatrix.m</file>
     </fileset.depfun.excluded>
     <fileset.package />
     <build-deliverables>
-      <file location="E:\PROJECTS\ustb" name="ustb.mltbx" optional="false">E:\PROJECTS\ustb\ustb.mltbx</file>
+      <file location="${PROJECT_ROOT}" name="USTB.mltbx" optional="false">C:\Repositories\USTB_for_toolbox\USTB.mltbx</file>
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>C:\Program Files\MATLAB\R2017b</root>
-      <toolboxes>
-        <toolbox name="matlabcoder" />
-        <toolbox name="gpucoder" />
-      </toolboxes>
-      <toolbox>
-        <matlabcoder>
-          <enabled>true</enabled>
-        </matlabcoder>
-      </toolbox>
-      <toolbox>
-        <gpucoder>
-          <enabled>true</enabled>
-        </gpucoder>
-      </toolbox>
+      <root>C:\Program Files\MATLAB\R2020a</root>
+      <toolboxes />
     </matlab>
     <platform>
       <unix>false</unix>
@@ -498,7 +710,7 @@
       <vista>false</vista>
       <linux>false</linux>
       <solaris>false</solaris>
-      <osver>6.1</osver>
+      <osver>10.0</osver>
       <os32>false</os32>
       <os64>true</os64>
       <arch>win64</arch>
