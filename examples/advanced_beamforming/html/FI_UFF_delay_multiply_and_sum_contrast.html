@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Contrast of Delay Multiply And Sum on FI data from an UFF file</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-06-06"><meta name="DC.source" content="FI_UFF_delay_multiply_and_sum_contrast.m"><style type="text/css">
+      --><title>Contrast of Delay Multiply And Sum on FI data from an UFF file</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-08-02"><meta name="DC.source" content="FI_UFF_delay_multiply_and_sum_contrast.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -66,35 +67,27 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>Contrast of Delay Multiply And Sum on FI data from an UFF file</h1><!--introduction--><p><i>by Ole Marius Hoel Rindal <a href="olemarius@olemarius.net">olemarius@olemarius.net</a> 28.05.2017</i></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Setting up file path</a></li><li><a href="#2">Reading channel data from UFF file</a></li><li><a href="#4">Define Scan</a></li><li><a href="#5">Set up delay part of beamforming</a></li><li><a href="#6">Create the DMAS image using the delay_multiply_and_sum process</a></li><li><a href="#7">Beamform DAS image</a></li><li><a href="#8">Plot both images in same plot</a></li><li><a href="#9">Measure contrast</a></li></ul></div><h2 id="1">Setting up file path</h2><p>To read data from a UFF file the first we need is, you guessed it, a UFF file. We check if it is on the current path and download it from the USTB websever.</p><pre class="codeinput">clear <span class="string">all</span>; close <span class="string">all</span>;
+  </style></head><body><div class="content"><h1>Contrast of Delay Multiply And Sum on FI data from an UFF file</h1><!--introduction--><p><i>by Ole Marius Hoel Rindal <a href="olemarius@olemarius.net">olemarius@olemarius.net</a></i></p><p>Last updated 07.08.2017</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Setting up file path</a></li><li><a href="#2">Reading channel data from UFF file</a></li><li><a href="#4">Define Scan</a></li><li><a href="#5">Set up the processing pipeline</a></li><li><a href="#6">Define the DAS beamformer</a></li><li><a href="#7">Create the DMAS image using the delay_multiply_and_sum postprocess</a></li><li><a href="#8">Beamform DAS image</a></li><li><a href="#9">Plot both images in same plot</a></li><li><a href="#10">Measure contrast</a></li></ul></div><h2 id="1">Setting up file path</h2><p>To read data from a UFF file the first we need is, you guessed it, a UFF file. We check if it is on the current path and download it from the USTB websever.</p><pre class="codeinput">clear <span class="string">all</span>; close <span class="string">all</span>;
 
 <span class="comment">% data location</span>
 url=<span class="string">'http://ustb.no/datasets/'</span>;      <span class="comment">% if not found downloaded from here</span>
 local_path = [ustb_path(),<span class="string">'/data/'</span>]; <span class="comment">% location of example data</span>
-addpath(local_path);
 
 <span class="comment">% Choose dataset</span>
 filename=<span class="string">'Alpinion_L3-8_FI_hypoechoic.uff'</span>;
 
 <span class="comment">% check if the file is available in the local path or downloads otherwise</span>
 tools.download(filename, url, local_path);
-</pre><h2 id="2">Reading channel data from UFF file</h2><pre class="codeinput">uff_file=uff(filename)
-channel_data=uff_file.read(<span class="string">'/channel_data'</span>);
-</pre><pre class="codeoutput">
-uff_file = 
-
-  uff with properties:
-
-    filename: 'Alpinion_L3-8_FI_hypoechoic.uff'
-     version: 'v1.0.1'
-        mode: 'append'
-     verbose: 1
-
-UFF: reading channel_data [uff.channel_data]
-UFF: reading sequence [uff.wave]
-Processed 256/256
+</pre><h2 id="2">Reading channel data from UFF file</h2><pre class="codeinput">channel_data=uff.read_object([local_path filename],<span class="string">'/channel_data'</span>);
+<span class="comment">% Check that the user have the correct version of the dataset</span>
+<span class="keyword">if</span>(strcmp(channel_data.version{1},<span class="string">'1.0.2'</span>)~=1)
+    error([<span class="string">'Wrong version of the dataset. Please delete '</span>,local_path,<span class="keyword">...</span>
+                                        filename,<span class="string">' and rerun script.'</span>]);
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">UFF: reading channel_data [uff.channel_data]
+UFF: reading sequence [uff.wave] [====================] 100%
 </pre><pre class="codeinput"><span class="comment">%Print info about the dataset</span>
-channel_data.print_info
+channel_data.print_authorship
 </pre><pre class="codeoutput">Name: 		 FI dataset of hypoechic cyst recorded on an  
 		 Alpinion scanner with a L3-8 Probe from a CIRC  
 		 General Purpose Ultrasound Phantom 
@@ -102,65 +95,61 @@ Reference: 	 www.ultrasoundtoolbox.com
 Author(s): 	 Ole Marius Hoel Rindal &lt;olemarius@olemarius.net&gt; 
 		 Muyinatu Lediju Bell &lt;mledijubell@jhu.edu&gt; 
 Version: 	 1.0.2 
-</pre><h2 id="4">Define Scan</h2><p>Define the image coordinates we want to beamform in the scan object. Notice that we need to use quite a lot of samples in the z-direction. This is because the DMAS creates an "artificial" second harmonic signal, so we need high enough sampling frequency in the image to get a second harmonic signal.</p><pre class="codeinput">z_axis=linspace(34e-3,48e-3,768).';
-sca=uff.linear_scan();
-idx = 1;
-<span class="keyword">for</span> n=1:numel(channel_data.sequence)
-    sca(n)=uff.linear_scan(channel_data.sequence(n).source.x,z_axis);
+</pre><h2 id="4">Define Scan</h2><p>Define the image coordinates we want to beamform in the scan object. Notice that we need to use quite a lot of samples in the z-direction. This is because the DMAS creates an "artificial" second harmonic signal, so we need high enough sampling frequency in the image to get a second harmonic signal.</p><pre class="codeinput">z_axis=linspace(34e-3,48e-3,750).';
+x_axis=zeros(channel_data.N_waves,1);
+<span class="keyword">for</span> n=1:channel_data.N_waves
+    x_axis(n) = channel_data.sequence(n).source.x;
 <span class="keyword">end</span>
-</pre><h2 id="5">Set up delay part of beamforming</h2><p>setting up and running the delay part of the beamforming</p><pre class="codeinput">bmf=beamformer();
-bmf.channel_data=channel_data;
-bmf.scan=sca;
 
-bmf.receive_apodization.window=uff.window.boxcar;
-bmf.receive_apodization.f_number=1.7;
-bmf.receive_apodization.apex.distance=Inf;
+scan=uff.linear_scan(<span class="string">'x_axis'</span>,x_axis,<span class="string">'z_axis'</span>,z_axis);
+</pre><h2 id="5">Set up the processing pipeline</h2><pre class="codeinput">pipe=pipeline();
+pipe.channel_data=channel_data;
+pipe.scan=scan;
 
-bmf.transmit_apodization.window=uff.window.none;
-b_data=bmf.go({process.delay_matlab_light process.stack});
-</pre><h2 id="6">Create the DMAS image using the delay_multiply_and_sum process</h2><pre class="codeinput">dmas = process.delay_multiply_and_sum();
-dmas.dimension = dimension.receive();
-dmas.receive_apodization = bmf.receive_apodization;
-dmas.transmit_apodization = bmf.transmit_apodization;
-dmas.beamformed_data = b_data;
+pipe.transmit_apodization.window=uff.window.scanline;
+
+pipe.receive_apodization.window=uff.window.none;
+pipe.receive_apodization.f_number=1.7;
+</pre><h2 id="6">Define the DAS beamformer</h2><pre class="codeinput">das = midprocess.das();
+<span class="comment">%Sum only on transmit, so that we can do DMAS on receice</span>
+das.dimension = dimension.transmit();
+</pre><h2 id="7">Create the DMAS image using the delay_multiply_and_sum postprocess</h2><pre class="codeinput">dmas = postprocess.delay_multiply_and_sum();
+dmas.dimension = dimension.receive;
 dmas.channel_data = channel_data;
-dmas.scan = sca
-b_data_dmas = dmas.go();        <span class="comment">% Launch beamformer</span>
-b_data_dmas.plot(100,<span class="string">'DMAS'</span>);   <span class="comment">% Display image</span>
-</pre><pre class="codeoutput">
-dmas = 
+dmas.receive_apodization = pipe.receive_apodization;
 
-  delay_multiply_and_sum with properties:
+b_data_dmas=pipe.go({das dmas});
 
-               dimension: receive
-            channel_data: [1&times;1 uff.channel_data]
-     receive_apodization: [1&times;1 uff.apodization]
-    transmit_apodization: [1&times;1 uff.apodization]
-                    scan: [1&times;256 uff.linear_scan]
-         beamformed_data: [1&times;1 uff.beamformed_data]
-                    name: 'Delay Multiply and Sum'
-               reference: 'Matrone, G., Savoia, A. S., &amp; Magenes, G. (2015...'
-          implemented_by: {'Ole Marius Hoel Rindal &lt;olemarius@olemarius.net&gt;'}
-                 version: 'v1.0.2'
+<span class="comment">% beamforming</span>
+b_data_dmas.plot(100,<span class="string">'DMAS'</span>);
+</pre><pre class="codeoutput">USTB General beamformer MEX v1.1.2 .............done!
+uff.apodization: Inputs and outputs are unchanged. Skipping process.
+
+f_stop =
+
+  single
+
+    10779358
 
 Warning: If the result looks funky, you might need to tune the filter paramters
-of DMAS. Use the plot to check that everything is OK. 
-</pre><img vspace="5" hspace="5" src="FI_UFF_delay_multiply_and_sum_contrast_01.png" style="width:560px;height:420px;" alt=""> <h2 id="7">Beamform DAS image</h2><p>Notice that I redefine the beamformer to use Hamming apodization.</p><pre class="codeinput">bmf.receive_apodization.window=uff.window.hamming;
-bmf.receive_apodization.f_number=1.7;
-bmf.receive_apodization.apex.distance=Inf;
+of DMAS using the filter_freqs property. Use the plot to check that everything
+is OK. 
+</pre><img vspace="5" hspace="5" src="FI_UFF_delay_multiply_and_sum_contrast_01.png" alt=""> <h2 id="8">Beamform DAS image</h2><p>Notice that I redefine the beamformer to use Hamming apodization and summing on both transmit and receive.</p><pre class="codeinput">das.dimension = dimension.both();
+das.receive_apodization.window=uff.window.hamming;
+das.receive_apodization.f_number=1.7;
 
-bmf.transmit_apodization.window=uff.window.none;
-
-b_data_das=bmf.go({process.das_mex process.stack});
-b_data_das.plot(2,<span class="string">'DAS'</span>);
-</pre><img vspace="5" hspace="5" src="FI_UFF_delay_multiply_and_sum_contrast_02.png" style="width:560px;height:420px;" alt=""> <h2 id="8">Plot both images in same plot</h2><p>Plot both in same plot with connected axes, try to zoom!</p><pre class="codeinput">f3 = figure(3);clf
+b_data_das=pipe.go({das});
+b_data_das.plot([],<span class="string">'DAS'</span>);
+</pre><pre class="codeoutput">uff.apodization: Inputs and outputs are unchanged. Skipping process.
+USTB General beamformer MEX v1.1.2 .............done!
+</pre><img vspace="5" hspace="5" src="FI_UFF_delay_multiply_and_sum_contrast_02.png" alt=""> <h2 id="9">Plot both images in same plot</h2><p>Plot both in same plot with connected axes, try to zoom!</p><pre class="codeinput">f3 = figure(3);clf
 set(f3,<span class="string">'Position'</span>,[200,200,600,350])
 b_data_dmas.plot(subplot(2,3,[1 2]),<span class="string">'DMAS'</span>); <span class="comment">% Display image</span>
 ax(1) = gca;
 b_data_das.plot(subplot(2,3,[4 5]),<span class="string">'DAS'</span>); <span class="comment">% Display image</span>
 ax(2) = gca;
 linkaxes(ax);
-</pre><img vspace="5" hspace="5" src="FI_UFF_delay_multiply_and_sum_contrast_03.png" style="width:600px;height:350px;" alt=""> <h2 id="9">Measure contrast</h2><p>Lets measure the contrast using the "contrast ratio" as our metric.</p><pre class="codeinput"><span class="comment">% First we need to put our images in a different data struct that the</span>
+</pre><img vspace="5" hspace="5" src="FI_UFF_delay_multiply_and_sum_contrast_03.png" alt=""> <h2 id="10">Measure contrast</h2><p>Lets measure the contrast using the "contrast ratio" as our metric.</p><pre class="codeinput"><span class="comment">% First we need to put our images in a different data struct that the</span>
 <span class="comment">% measure contrast function expects</span>
 images.all{1} = b_data_dmas.get_image();
 images.all{2} = b_data_das.get_image();
@@ -183,11 +172,13 @@ bar(CR)
 set(gca,<span class="string">'XTickLabel'</span>,{<span class="string">'DMAS'</span>,<span class="string">'DAS'</span>})
 title(<span class="string">'Measured Contrast'</span>);
 ylabel(<span class="string">'CR'</span>);
-</pre><img vspace="5" hspace="5" src="FI_UFF_delay_multiply_and_sum_contrast_04.png" style="width:300px;height:300px;" alt=""> <img vspace="5" hspace="5" src="FI_UFF_delay_multiply_and_sum_contrast_05.png" style="width:600px;height:350px;" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+</pre><img vspace="5" hspace="5" src="FI_UFF_delay_multiply_and_sum_contrast_04.png" alt=""> <img vspace="5" hspace="5" src="FI_UFF_delay_multiply_and_sum_contrast_05.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Contrast of Delay Multiply And Sum on FI data from an UFF file
 %
-% _by Ole Marius Hoel Rindal <olemarius@olemarius.net> 28.05.2017_
+% _by Ole Marius Hoel Rindal <olemarius@olemarius.net>_
+%
+% Last updated 07.08.2017
 
 %% Setting up file path
 %
@@ -200,7 +191,6 @@ clear all; close all;
 % data location
 url='http://ustb.no/datasets/';      % if not found downloaded from here
 local_path = [ustb_path(),'/data/']; % location of example data
-addpath(local_path);
 
 % Choose dataset
 filename='Alpinion_L3-8_FI_hypoechoic.uff';
@@ -209,12 +199,15 @@ filename='Alpinion_L3-8_FI_hypoechoic.uff';
 tools.download(filename, url, local_path);
 
 %% Reading channel data from UFF file
-uff_file=uff(filename)
-channel_data=uff_file.read('/channel_data');
-
+channel_data=uff.read_object([local_path filename],'/channel_data');
+% Check that the user have the correct version of the dataset
+if(strcmp(channel_data.version{1},'1.0.2')~=1)
+    error(['Wrong version of the dataset. Please delete ',local_path,...
+                                        filename,' and rerun script.']);
+end
 %%
 %Print info about the dataset
-channel_data.print_info
+channel_data.print_authorship
 
 %% Define Scan
 % Define the image coordinates we want to beamform in the scan object.
@@ -223,48 +216,49 @@ channel_data.print_info
 % so we need high enough sampling frequency in the image to get a second
 % harmonic signal.
 
-z_axis=linspace(34e-3,48e-3,768).';
-sca=uff.linear_scan();
-idx = 1;
-for n=1:numel(channel_data.sequence)
-    sca(n)=uff.linear_scan(channel_data.sequence(n).source.x,z_axis);
+z_axis=linspace(34e-3,48e-3,750).';
+x_axis=zeros(channel_data.N_waves,1);
+for n=1:channel_data.N_waves
+    x_axis(n) = channel_data.sequence(n).source.x;
 end
 
-%% Set up delay part of beamforming
-% setting up and running the delay part of the beamforming
-bmf=beamformer();
-bmf.channel_data=channel_data;
-bmf.scan=sca;
+scan=uff.linear_scan('x_axis',x_axis,'z_axis',z_axis);
 
-bmf.receive_apodization.window=uff.window.boxcar;
-bmf.receive_apodization.f_number=1.7;
-bmf.receive_apodization.apex.distance=Inf;
+%% Set up the processing pipeline
+pipe=pipeline();
+pipe.channel_data=channel_data;
+pipe.scan=scan;
 
-bmf.transmit_apodization.window=uff.window.none;
-b_data=bmf.go({process.delay_matlab_light process.stack});
+pipe.transmit_apodization.window=uff.window.scanline;
 
-%% Create the DMAS image using the delay_multiply_and_sum process
-dmas = process.delay_multiply_and_sum();
-dmas.dimension = dimension.receive();
-dmas.receive_apodization = bmf.receive_apodization;
-dmas.transmit_apodization = bmf.transmit_apodization;
-dmas.beamformed_data = b_data;
+pipe.receive_apodization.window=uff.window.none;
+pipe.receive_apodization.f_number=1.7;
+
+%% Define the DAS beamformer
+das = midprocess.das();
+%Sum only on transmit, so that we can do DMAS on receice
+das.dimension = dimension.transmit(); 
+
+%% Create the DMAS image using the delay_multiply_and_sum postprocess
+dmas = postprocess.delay_multiply_and_sum();
+dmas.dimension = dimension.receive;
 dmas.channel_data = channel_data;
-dmas.scan = sca
-b_data_dmas = dmas.go();        % Launch beamformer
-b_data_dmas.plot(100,'DMAS');   % Display image
+dmas.receive_apodization = pipe.receive_apodization;
+
+b_data_dmas=pipe.go({das dmas});
+
+% beamforming
+b_data_dmas.plot(100,'DMAS');
 
 %% Beamform DAS image
-% Notice that I redefine the beamformer to use Hamming apodization.
+% Notice that I redefine the beamformer to use Hamming apodization and
+% summing on both transmit and receive.
+das.dimension = dimension.both();
+das.receive_apodization.window=uff.window.hamming;
+das.receive_apodization.f_number=1.7;
 
-bmf.receive_apodization.window=uff.window.hamming;
-bmf.receive_apodization.f_number=1.7;
-bmf.receive_apodization.apex.distance=Inf;
-
-bmf.transmit_apodization.window=uff.window.none;
-
-b_data_das=bmf.go({process.das_mex process.stack});
-b_data_das.plot(2,'DAS');
+b_data_das=pipe.go({das});
+b_data_das.plot([],'DAS');
 
 %% Plot both images in same plot
 % Plot both in same plot with connected axes, try to zoom!

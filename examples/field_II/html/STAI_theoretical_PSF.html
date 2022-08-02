@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>A comparison of axial and lateral PSF profiles of Field II against USTB's Fresnel simulator.</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-06-23"><meta name="DC.source" content="STAI_theoretical_PSF.m"><style type="text/css">
+      --><title>A comparison of axial and lateral PSF profiles of Field II against USTB's Fresnel simulator.</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-08-02"><meta name="DC.source" content="STAI_theoretical_PSF.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -66,12 +67,12 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>A comparison of axial and lateral PSF profiles of Field II against USTB's Fresnel simulator.</h1><!--introduction--><p>This example shows how to load the data from a Field II simulation into USTB objects, and then beamform it with the USTB routines and compare the axial and lateral PSF profiles of Field II against USTB's Fresnel simulator. This example uses the 128 element L9-4/38 Ultrasonix ultrasound transducer The Field II simulation program (<a href="field-ii.dk">field-ii.dk</a>) should be in MATLAB's path.</p><p>This tutorial assumes familiarity with the contents of the <a href="../../fresnel/linear_array/html/CPWC_linear_array.html">'CPWC simulation with the USTB built-in Fresnel simulator'</a> tutorial. Please feel free to refer back to that for more details.</p><p><i>by Alfonso Rodriguez-Molares <a href="alfonso.r.molares@ntnu.no">alfonso.r.molares@ntnu.no</a>, Ole Marius Hoel Rindal <a href="olemarius@olemarius.net">olemarius@olemarius.net</a> and Arun Asokan Nair <a href="anair8@jhu.edu">anair8@jhu.edu</a> 09.05.2017</i></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Clear old workspace and close old plots</a></li><li><a href="#2">Basic Constants</a></li><li><a href="#3">field II initialisation</a></li><li><a href="#4">Transducer definition L9-4/38 Ultrasonix, 128-element linear array transducer</a></li><li><a href="#5">Pulse definition</a></li><li><a href="#6">Aperture Objects</a></li><li><a href="#7">Phantom</a></li><li><a href="#8">Output data</a></li><li><a href="#9">Compute STA signals using Field II</a></li><li><a href="#10">Channel Data</a></li><li><a href="#11">Scan</a></li><li><a href="#12">Beamformer</a></li><li><a href="#14">Compute STA signals using USTB's Fresnel simulator</a></li><li><a href="#15">BEAMFORM data from Fresnel simulation</a></li><li><a href="#16">Display images</a></li><li><a href="#17">compare lateral profile to sinc</a></li><li><a href="#18">compare axial profile</a></li></ul></div><h2 id="1">Clear old workspace and close old plots</h2><pre class="codeinput">clear <span class="string">all</span>;
+  </style></head><body><div class="content"><h1>A comparison of axial and lateral PSF profiles of Field II against USTB's Fresnel simulator.</h1><!--introduction--><p>This example shows how to load the data from a Field II simulation into USTB objects, and then beamform it with the USTB routines and compare the axial and lateral PSF profiles of Field II against USTB's Fresnel simulator. This example uses the 128 element L9-4/38 Ultrasonix ultrasound transducer The Field II simulation program (<a href="field-ii.dk">field-ii.dk</a>) should be in MATLAB's path.</p><p>This tutorial assumes familiarity with the contents of the <a href="../../fresnel/linear_array/html/CPWC_linear_array.html">'CPWC simulation with the USTB built-in Fresnel simulator'</a> tutorial. Please feel free to refer back to that for more details.</p><p><i>by Alfonso Rodriguez-Molares <a href="alfonso.r.molares@ntnu.no">alfonso.r.molares@ntnu.no</a>, Ole Marius Hoel Rindal <a href="olemarius@olemarius.net">olemarius@olemarius.net</a> and Arun Asokan Nair <a href="anair8@jhu.edu">anair8@jhu.edu</a> 09.05.2017</i></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Clear old workspace and close old plots</a></li><li><a href="#2">Basic Constants</a></li><li><a href="#3">field II initialisation</a></li><li><a href="#4">Transducer definition L9-4/38 Ultrasonix, 128-element linear array transducer</a></li><li><a href="#5">Pulse definition</a></li><li><a href="#6">Aperture Objects</a></li><li><a href="#7">Phantom</a></li><li><a href="#8">Output data</a></li><li><a href="#9">Compute STA signals using Field II</a></li><li><a href="#10">Channel Data</a></li><li><a href="#11">Scan</a></li><li><a href="#12">Pipeline</a></li><li><a href="#14">Compute STA signals using USTB's Fresnel simulator</a></li><li><a href="#15">BEAMFORM data from Fresnel simulation</a></li><li><a href="#16">Display images</a></li><li><a href="#17">compare lateral profile to sinc</a></li><li><a href="#18">compare axial profile</a></li></ul></div><h2 id="1">Clear old workspace and close old plots</h2><pre class="codeinput">clear <span class="string">all</span>;
 close <span class="string">all</span>;
 </pre><h2 id="2">Basic Constants</h2><p>Our first step is to define some basic constants for our imaging scenario - below, we set the speed of sound in the tissue, sampling frequency and sampling step size in time.</p><pre class="codeinput">c0=1540;     <span class="comment">% Speed of sound [m/s]</span>
 fs=100e6;    <span class="comment">% Sampling frequency [Hz]</span>
 dt=1/fs;     <span class="comment">% Sampling step [s]</span>
-</pre><h2 id="3">field II initialisation</h2><p>Next, we initialize the field II toolbox. Again, this only works if the Field II simulation program (<a href="field-ii.dk">field-ii.dk</a>) is in MATLAB's path. We also pass our set constants to it.</p><pre class="codeinput">field_init;
+</pre><h2 id="3">field II initialisation</h2><p>Next, we initialize the field II toolbox. Again, this only works if the Field II simulation program (<a href="field-ii.dk">field-ii.dk</a>) is in MATLAB's path. We also pass our set constants to it.</p><pre class="codeinput">field_init(0);
 set_field(<span class="string">'c'</span>,c0);              <span class="comment">% Speed of sound [m/s]</span>
 set_field(<span class="string">'fs'</span>,fs);             <span class="comment">% Sampling frequency [Hz]</span>
 set_field(<span class="string">'use_rectangles'</span>,1);  <span class="comment">% use rectangular elements</span>
@@ -82,7 +83,7 @@ set_field(<span class="string">'use_rectangles'</span>,1);  <span class="comment
       *              Simulator for ultrasound systems              *
       *                                                            *
       *             Copyright by Joergen Arendt Jensen             *
-      *    Version 3.24, May 12, 2014 (Matlab 8.20 version)        *
+      *    Version 3.24a, May 24, 2014 (Matlab 8.20 gcc version)   *
       *                  Web-site: field-ii.dk                     *
       *                                                            *
       *     This is citationware. Note the terms and conditions    *
@@ -101,12 +102,13 @@ kerf                    =0.035e-3;        <span class="comment">% gap between el
 probe.element_width     =probe.pitch-kerf;<span class="comment">% Width of element [m]</span>
 lens_el                 =19e-3;           <span class="comment">% position of the elevation focus</span>
 probe.N                 =128;             <span class="comment">% Number of elements</span>
-</pre><h2 id="5">Pulse definition</h2><p>We then define the pulse-echo signal which is done here using the <b>fresnel</b> simulator's <b>pulse</b> structure. We could also use <a href="http://field-ii.dk/">'Field II'</a> for a more accurate model.</p><pre class="codeinput">pulse = uff.pulse(f0);
+</pre><h2 id="5">Pulse definition</h2><p>We then define the pulse-echo signal which is done here using the <b>fresnel</b> simulator's <b>pulse</b> structure. We could also use <a href="http://field-ii.dk/">'Field II'</a> for a more accurate model.</p><pre class="codeinput">pulse = uff.pulse();
+pulse.center_frequency = f0;
 pulse.fractional_bandwidth = 0.1;             <span class="comment">% probe bandwidth [1]</span>
 t0=(-1.0/pulse.fractional_bandwidth /f0): dt : (1.0/pulse.fractional_bandwidth /f0);
 excitation=1;
 impulse_response=gauspuls(t0, f0, pulse.fractional_bandwidth );
-two_ways_ir= conv(conv(impulse_response,impulse_response),excitation);
+two_ways_ir= conv(conv(impulse_response,impulse_response),excitation)./norm(impulse_response).^2;
 <span class="keyword">if</span> mod(length(impulse_response),2)
     lag=(length(two_ways_ir)-1)/2;
 <span class="keyword">else</span>
@@ -116,16 +118,14 @@ two_ways_ir= conv(conv(impulse_response,impulse_response),excitation);
 <span class="comment">% We display the pulse to check that the lag estimation is on place</span>
 <span class="comment">% (and that the pulse is symmetric)</span>
 
-figure;
-plot((0:(length(two_ways_ir)-1))*dt -lag*dt,two_ways_ir); hold <span class="string">on</span>; grid <span class="string">on</span>; axis <span class="string">tight</span>
-plot((0:(length(two_ways_ir)-1))*dt -lag*dt,abs(hilbert(two_ways_ir)),<span class="string">'r'</span>)
+fig_handle=figure;
+plot(((0:(length(two_ways_ir)-1))*dt -lag*dt)*1e6,two_ways_ir); hold <span class="string">on</span>; grid <span class="string">on</span>; axis <span class="string">tight</span>
+plot(((0:(length(two_ways_ir)-1))*dt -lag*dt)*1e6,abs(hilbert(two_ways_ir)),<span class="string">'r'</span>)
 plot([0 0],[min(two_ways_ir) max(two_ways_ir)],<span class="string">'g'</span>);
 legend(<span class="string">'2-ways pulse'</span>,<span class="string">'Envelope'</span>,<span class="string">'Estimated lag'</span>);
 title(<span class="string">'2-ways impulse response Field II'</span>);
-
-<span class="comment">% Plot the pulse from USTB simulation</span>
-pulse.plot([],<span class="string">'2-way pulse for Fresnel simulator'</span>);
-</pre><img vspace="5" hspace="5" src="STAI_theoretical_PSF_01.png" alt=""> <img vspace="5" hspace="5" src="STAI_theoretical_PSF_02.png" alt=""> <h2 id="6">Aperture Objects</h2><p>Next, we define the the mesh geometry with the help of Field II's <b>xdc_linear_array</b> function.</p><pre class="codeinput">noSubAz=round(probe.element_width/(lambda/8));        <span class="comment">% number of subelements in the azimuth direction</span>
+pulse.plot(fig_handle,<span class="string">''</span>,<span class="string">'--'</span>);
+</pre><img vspace="5" hspace="5" src="STAI_theoretical_PSF_01.png" alt=""> <h2 id="6">Aperture Objects</h2><p>Next, we define the the mesh geometry with the help of Field II's <b>xdc_linear_array</b> function.</p><pre class="codeinput">noSubAz=round(probe.element_width/(lambda/8));        <span class="comment">% number of subelements in the azimuth direction</span>
 noSubEl=round(probe.element_height/(lambda/8));       <span class="comment">% number of subelements in the elevation direction</span>
 Th = xdc_linear_array (probe.N, probe.element_width, probe.element_height, kerf, noSubAz, noSubEl, [0 0 Inf]);
 Rh = xdc_linear_array (probe.N, probe.element_width, probe.element_height, kerf, noSubAz, noSubEl, [0 0 Inf]);
@@ -143,7 +143,7 @@ pha.sound_speed=1540;            <span class="comment">% speed of sound [m/s]</s
 pha.points=[0,  0, 20e-3, 1];    <span class="comment">% point scatterer position [m]</span>
 fig_handle=pha.plot();
 cropat=round(1.1*2*sqrt((max(pha.points(:,1))-min(probe.x))^2+max(pha.points(:,3))^2)/c0/dt);   <span class="comment">% maximum time sample, samples after this will be dumped</span>
-</pre><img vspace="5" hspace="5" src="STAI_theoretical_PSF_03.png" alt=""> <h2 id="8">Output data</h2><p>We define the variables to store our output data</p><pre class="codeinput">t_out=0:dt:((cropat-1)*dt);                 <span class="comment">% output time vector</span>
+</pre><img vspace="5" hspace="5" src="STAI_theoretical_PSF_02.png" alt=""> <h2 id="8">Output data</h2><p>We define the variables to store our output data</p><pre class="codeinput">t_out=0:dt:((cropat-1)*dt);                 <span class="comment">% output time vector</span>
 STA=zeros(cropat,probe.N,probe.N);    <span class="comment">% impulse response channel data</span>
 </pre><h2 id="9">Compute STA signals using Field II</h2><p>Now, we finally reach the stage where we generate a STA (Synthetic Transmit Aperture) dataset with the help of Field II.</p><pre class="codeinput">disp(<span class="string">'Field II: Computing STA dataset'</span>);
 wb = waitbar(0, <span class="string">'Field II: Computing STA dataset'</span>);
@@ -161,30 +161,18 @@ wb = waitbar(0, <span class="string">'Field II: Computing STA dataset'</span>);
     <span class="comment">% do calculation</span>
     [v,t]=calc_scat_multi(Th, Rh, pha.points(1:3), pha.points(4));
 
-    <span class="comment">% lag compensation</span>
-    t_in=(0:dt:((size(v,1)-1)*dt))+t-lag*dt + probe.r(n)/c0;
-    v_aux=interp1(t_in,v,t_out,<span class="string">'linear'</span>,0);
-
     <span class="comment">% build the dataset</span>
-    STA(:,:,n)=v_aux;
+    STA(1:size(v,1),:,n)=v;
 
     <span class="comment">% Sequence generation</span>
-    <span class="comment">%</span>
-    <span class="comment">% Now, we shall generate our sequence! Keep in mind that the *fresnel* simulator</span>
-    <span class="comment">% takes the same sequence definition as the USTB beamformer. In UFF and</span>
-    <span class="comment">% USTB a sequence is defined as a collection of *wave* structures.</span>
-    <span class="comment">%</span>
-    <span class="comment">% For our example here, we define a sequence of 128</span>
-    <span class="comment">% waves each emanating from a single element on the probe aperture.</span>
-
     seq(n)=uff.wave();
     seq(n).probe=probe;
     seq(n).source.xyz=[probe.x(n) probe.y(n) probe.z(n)];
     seq(n).sound_speed=c0;
-
+    seq(n).delay = probe.r(n)/c0 - lag*dt + t; <span class="comment">% t0 and center of pulse compensation</span>
     seq(n).apodization = uff.apodization();
     seq(n).apodization.window=uff.window.sta;
-    seq(n).apodization.apex=seq(n).source;
+    seq(n).apodization.origin=seq(n).source;
 <span class="keyword">end</span>
 close(wb);
 </pre><pre class="codeoutput">Field II: Computing STA dataset
@@ -196,19 +184,17 @@ channel_data_field_ii.pulse = pulse;
 channel_data_field_ii.probe = probe;
 channel_data_field_ii.sequence = seq;
 channel_data_field_ii.data = STA;
-</pre><h2 id="11">Scan</h2><p>The scan area is defines as a collection of pixels spanning our region of interest. For our example here, we use the <b>linear_scan</b> structure, which is defined with two components: the lateral range and the depth range. <b>scan</b> too has a useful <b>plot</b> method it can call.</p><pre class="codeinput">sca=uff.linear_scan(linspace(-4e-3,4e-3,256).', linspace(16e-3,24e-3,256).');
-</pre><h2 id="12">Beamformer</h2><p>With <b>channel_data</b> and a <b>scan</b> we have all we need to produce an ultrasound image. We now use a USTB structure <b>beamformer</b>, that takes an <b>apodization</b> structure in addition to the <b>channel_data</b> and <b>scan</b>.</p><pre class="codeinput">bmf=beamformer();
-bmf.channel_data=channel_data_field_ii;
-bmf.scan=sca;
+</pre><h2 id="11">Scan</h2><p>The scan area is defines as a collection of pixels spanning our region of interest. For our example here, we use the <b>linear_scan</b> structure, which is defined with two components: the lateral range and the depth range. <b>scan</b> too has a useful <b>plot</b> method it can call.</p><pre class="codeinput">sca=uff.linear_scan(<span class="string">'x_axis'</span>,linspace(-4e-3,4e-3,256).',<span class="string">'z_axis'</span>, linspace(16e-3,24e-3,256).');
+</pre><h2 id="12">Pipeline</h2><p>With <b>channel_data</b> and a <b>scan</b> we have all we need to produce an ultrasound image. We now use a USTB structure <b>pipeline</b>, that takes an <b>apodization</b> structure in addition to the <b>channel_data</b> and <b>scan</b>.</p><pre class="codeinput">pipe=pipeline();
+pipe.channel_data=channel_data_field_ii;
+pipe.scan=sca;
 
-bmf.receive_apodization.window=uff.window.boxcar;
-bmf.receive_apodization.f_number=1.7;
-bmf.receive_apodization.apex.distance=Inf;
-
-bmf.transmit_apodization.window=uff.window.boxcar;
-bmf.transmit_apodization.f_number=1.7;
-bmf.transmit_apodization.apex.distance=Inf;
-</pre><p>The <b>beamformer</b> structure allows you to implement different beamformers by combination of multiple built-in <b>processes</b>. By changing the <b>process</b> chain other beamforming sequences can be implemented. It returns yet another <b>UFF</b> structure: <b>beamformed_data</b>.</p><p>To achieve the goal of this example, we use delay-and-sum (implemented in the <b>das_mex()</b> process) as well as coherent compounding.</p><pre class="codeinput">b_data_field_ii =bmf.go({process.das_mex() process.coherent_compounding()});
+pipe.receive_apodization.window=uff.window.boxcar;
+pipe.receive_apodization.f_number=1.7;
+pipe.transmit_apodization.window=uff.window.boxcar;
+pipe.transmit_apodization.f_number=1.7;
+</pre><p>The <b>beamformer</b> structure allows you to implement different beamformers by combination of multiple built-in <b>processes</b>. By changing the <b>process</b> chain other beamforming sequences can be implemented. It returns yet another <b>UFF</b> structure: <b>beamformed_data</b>.</p><p>To achieve the goal of this example, we use delay-and-sum (implemented in the <b>das_mex()</b> process) as well as coherent compounding.</p><pre class="codeinput">b_data_field_ii =pipe.go({midprocess.das() postprocess.coherent_compounding()});
+</pre><pre class="codeoutput">USTB General beamformer MEX v1.1.2 .............done!
 </pre><h2 id="14">Compute STA signals using USTB's Fresnel simulator</h2><p>We also generate STA (Synthetic Transmit Aperture) data with the help of USTB's Fresnel simulator in order to compare it with Field II.</p><pre class="codeinput">sim=fresnel();
 
 <span class="comment">% setting input data</span>
@@ -220,18 +206,50 @@ sim.sampling_frequency=channel_data_field_ii.sampling_frequency;  <span class="c
 
 <span class="comment">% we launch the simulation</span>
 channel_data_fresnel=sim.go();
-</pre><pre class="codeoutput">USTB's Fresnel impulse response simulator (v1.0.5)
+</pre><pre class="codeoutput">USTB's Fresnel impulse response simulator (v1.0.7)
 ---------------------------------------------------------------
-</pre><h2 id="15">BEAMFORM data from Fresnel simulation</h2><pre class="codeinput">bmf.channel_data=channel_data_fresnel;
+</pre><h2 id="15">BEAMFORM data from Fresnel simulation</h2><pre class="codeinput">pipe.channel_data=channel_data_fresnel;
 <span class="comment">% Delay and sum on receive, then coherent compounding</span>
-b_data_fresnel =bmf.go({process.das_mex() process.coherent_compounding()});
+b_data_fresnel =pipe.go({midprocess.das() postprocess.coherent_compounding()});
+</pre><pre class="codeoutput">uff.apodization: Inputs and outputs are unchanged. Skipping process.
+USTB General beamformer MEX v1.1.2 .............done!
 </pre><h2 id="16">Display images</h2><pre class="codeinput">figure(101);
 ax1 = subplot(121);
 ax2 = subplot(122);
 
 b_data_field_ii.plot(ax1,<span class="string">'Field II Simulation'</span>)
 b_data_fresnel.plot(ax2,<span class="string">'Fresnel Simulation'</span>)
-</pre><img vspace="5" hspace="5" src="STAI_theoretical_PSF_04.png" alt=""> <h2 id="17">compare lateral profile to sinc</h2><pre class="codeinput">img_field_ii = b_data_field_ii.get_image;
+</pre><pre class="codeoutput">
+ans = 
+
+  Axes (Field II Simulation) with properties:
+
+             XLim: [-4 4]
+             YLim: [16 24]
+           XScale: 'linear'
+           YScale: 'linear'
+    GridLineStyle: '-'
+         Position: [0.1300 0.1100 0.2288 0.8150]
+            Units: 'normalized'
+
+  Use GET to show all properties
+
+
+ans = 
+
+  Axes (Fresnel Simulation) with properties:
+
+             XLim: [-4 4]
+             YLim: [16 24]
+           XScale: 'linear'
+           YScale: 'linear'
+    GridLineStyle: '-'
+         Position: [0.5848 0.1100 0.2158 0.8150]
+            Units: 'normalized'
+
+  Use GET to show all properties
+
+</pre><img vspace="5" hspace="5" src="STAI_theoretical_PSF_03.png" alt=""> <h2 id="17">compare lateral profile to sinc</h2><pre class="codeinput">img_field_ii = b_data_field_ii.get_image;
 lateral_profile_field_ii=img_field_ii(128,:);
 lateral_profile_field_ii=lateral_profile_field_ii-max(lateral_profile_field_ii);
 
@@ -239,7 +257,7 @@ img_fresnel = b_data_fresnel.get_image;
 lateral_profile_fresnel=img_fresnel(128,:);
 lateral_profile_fresnel=lateral_profile_fresnel-max(lateral_profile_fresnel);
 
-theoretical_profile=20*log10(sinc(1/bmf.receive_apodization.f_number(1)/lambda*b_data_field_ii.scan.x_axis).^2);
+theoretical_profile=20*log10(sinc(1/pipe.receive_apodization.f_number(1)/lambda*b_data_field_ii.scan.x_axis).^2);
 
 figure;
 plot(b_data_field_ii.scan.x_axis*1e3,lateral_profile_field_ii); hold <span class="string">all</span>; grid <span class="string">on</span>;
@@ -249,7 +267,7 @@ legend(<span class="string">'Field II Simulation'</span>,<span class="string">'F
 xlabel(<span class="string">'x [mm]'</span>);
 ylabel(<span class="string">'Amplitude [dB]'</span>);
 title(<span class="string">'Lateral (x-axis) profile '</span>);
-</pre><img vspace="5" hspace="5" src="STAI_theoretical_PSF_05.png" alt=""> <h2 id="18">compare axial profile</h2><pre class="codeinput">axial_profile_field_ii=img_field_ii(:,128);
+</pre><img vspace="5" hspace="5" src="STAI_theoretical_PSF_04.png" alt=""> <h2 id="18">compare axial profile</h2><pre class="codeinput">axial_profile_field_ii=img_field_ii(:,128);
 axial_profile_field_ii=axial_profile_field_ii-max(axial_profile_field_ii);
 
 axial_profile_fresnel=img_fresnel(:,128);
@@ -262,7 +280,7 @@ legend(<span class="string">'Field II Simulation'</span>,<span class="string">'F
 xlabel(<span class="string">'z [mm]'</span>);
 ylabel(<span class="string">'Amplitude [dB]'</span>);
 title(<span class="string">'Axial (z-axis) profile '</span>);
-</pre><img vspace="5" hspace="5" src="STAI_theoretical_PSF_06.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+</pre><img vspace="5" hspace="5" src="STAI_theoretical_PSF_05.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% A comparison of axial and lateral PSF profiles of Field II against USTB's Fresnel simulator.
 %
@@ -301,7 +319,7 @@ dt=1/fs;     % Sampling step [s]
 % Field II simulation program (<field-ii.dk>) is in MATLAB's path. We also
 % pass our set constants to it.
 
-field_init;
+field_init(0);
 set_field('c',c0);              % Speed of sound [m/s]
 set_field('fs',fs);             % Sampling frequency [Hz]
 set_field('use_rectangles',1);  % use rectangular elements
@@ -328,12 +346,13 @@ probe.N                 =128;             % Number of elements
 % *fresnel* simulator's *pulse* structure. We could also use 
 % <http://field-ii.dk/ 'Field II'> for a more accurate model.
 
-pulse = uff.pulse(f0);
+pulse = uff.pulse();
+pulse.center_frequency = f0;
 pulse.fractional_bandwidth = 0.1;             % probe bandwidth [1]
 t0=(-1.0/pulse.fractional_bandwidth /f0): dt : (1.0/pulse.fractional_bandwidth /f0);
 excitation=1;
 impulse_response=gauspuls(t0, f0, pulse.fractional_bandwidth );
-two_ways_ir= conv(conv(impulse_response,impulse_response),excitation);
+two_ways_ir= conv(conv(impulse_response,impulse_response),excitation)./norm(impulse_response).^2;
 if mod(length(impulse_response),2)
     lag=(length(two_ways_ir)-1)/2;          
 else
@@ -343,15 +362,13 @@ end
 % We display the pulse to check that the lag estimation is on place 
 % (and that the pulse is symmetric)
 
-figure;
-plot((0:(length(two_ways_ir)-1))*dt -lag*dt,two_ways_ir); hold on; grid on; axis tight
-plot((0:(length(two_ways_ir)-1))*dt -lag*dt,abs(hilbert(two_ways_ir)),'r')
+fig_handle=figure;
+plot(((0:(length(two_ways_ir)-1))*dt -lag*dt)*1e6,two_ways_ir); hold on; grid on; axis tight
+plot(((0:(length(two_ways_ir)-1))*dt -lag*dt)*1e6,abs(hilbert(two_ways_ir)),'r')
 plot([0 0],[min(two_ways_ir) max(two_ways_ir)],'g');
 legend('2-ways pulse','Envelope','Estimated lag');
 title('2-ways impulse response Field II');
-
-% Plot the pulse from USTB simulation
-pulse.plot([],'2-way pulse for Fresnel simulator');
+pulse.plot(fig_handle,'','REPLACE_WITH_DASH_DASH');
 
 %% Aperture Objects
 % Next, we define the the mesh geometry with the help of Field II's
@@ -409,30 +426,18 @@ for n=1:probe.N
     % do calculation
     [v,t]=calc_scat_multi(Th, Rh, pha.points(1:3), pha.points(4));
     
-    % lag compensation
-    t_in=(0:dt:((size(v,1)-1)*dt))+t-lag*dt + probe.r(n)/c0;
-    v_aux=interp1(t_in,v,t_out,'linear',0);
-
     % build the dataset
-    STA(:,:,n)=v_aux;
+    STA(1:size(v,1),:,n)=v;
     
     % Sequence generation
-    %     
-    % Now, we shall generate our sequence! Keep in mind that the *fresnel* simulator
-    % takes the same sequence definition as the USTB beamformer. In UFF and
-    % USTB a sequence is defined as a collection of *wave* structures. 
-    % 
-    % For our example here, we define a sequence of 128
-    % waves each emanating from a single element on the probe aperture.
-    
     seq(n)=uff.wave();
     seq(n).probe=probe;
     seq(n).source.xyz=[probe.x(n) probe.y(n) probe.z(n)];
     seq(n).sound_speed=c0;
-    
+    seq(n).delay = probe.r(n)/c0 - lag*dt + t; % t0 and center of pulse compensation
     seq(n).apodization = uff.apodization();
     seq(n).apodization.window=uff.window.sta;
-    seq(n).apodization.apex=seq(n).source;
+    seq(n).apodization.origin=seq(n).source;
 end
 close(wb);
 
@@ -457,24 +462,23 @@ channel_data_field_ii.data = STA;
 % which is defined with two components: the lateral range and the 
 % depth range. *scan* too has a useful *plot* method it can call.
 
-sca=uff.linear_scan(linspace(-4e-3,4e-3,256).', linspace(16e-3,24e-3,256).');
-%% Beamformer
+sca=uff.linear_scan('x_axis',linspace(-4e-3,4e-3,256).','z_axis', linspace(16e-3,24e-3,256).');
+
+%% Pipeline
 %
 % With *channel_data* and a *scan* we have all we need to produce an
-% ultrasound image. We now use a USTB structure *beamformer*, that takes an
+% ultrasound image. We now use a USTB structure *pipeline*, that takes an
 % *apodization* structure in addition to the *channel_data* and *scan*.
 
-bmf=beamformer();
-bmf.channel_data=channel_data_field_ii;
-bmf.scan=sca;
+pipe=pipeline();
+pipe.channel_data=channel_data_field_ii;
+pipe.scan=sca;
 
-bmf.receive_apodization.window=uff.window.boxcar;
-bmf.receive_apodization.f_number=1.7;
-bmf.receive_apodization.apex.distance=Inf;
+pipe.receive_apodization.window=uff.window.boxcar;
+pipe.receive_apodization.f_number=1.7;
+pipe.transmit_apodization.window=uff.window.boxcar;
+pipe.transmit_apodization.f_number=1.7;
 
-bmf.transmit_apodization.window=uff.window.boxcar;
-bmf.transmit_apodization.f_number=1.7;
-bmf.transmit_apodization.apex.distance=Inf;
 %% 
 %
 % The *beamformer* structure allows you to implement different beamformers 
@@ -485,7 +489,7 @@ bmf.transmit_apodization.apex.distance=Inf;
 % To achieve the goal of this example, we use delay-and-sum (implemented in 
 % the *das_mex()* process) as well as coherent compounding.
 
-b_data_field_ii =bmf.go({process.das_mex() process.coherent_compounding()});
+b_data_field_ii =pipe.go({midprocess.das() postprocess.coherent_compounding()});
 
 %% Compute STA signals using USTB's Fresnel simulator
 % 
@@ -506,9 +510,9 @@ channel_data_fresnel=sim.go();
 
 
 %% BEAMFORM data from Fresnel simulation
-bmf.channel_data=channel_data_fresnel;
+pipe.channel_data=channel_data_fresnel;
 % Delay and sum on receive, then coherent compounding
-b_data_fresnel =bmf.go({process.das_mex() process.coherent_compounding()});
+b_data_fresnel =pipe.go({midprocess.das() postprocess.coherent_compounding()});
 
 
 %% Display images
@@ -529,7 +533,7 @@ img_fresnel = b_data_fresnel.get_image;
 lateral_profile_fresnel=img_fresnel(128,:);
 lateral_profile_fresnel=lateral_profile_fresnel-max(lateral_profile_fresnel);
 
-theoretical_profile=20*log10(sinc(1/bmf.receive_apodization.f_number(1)/lambda*b_data_field_ii.scan.x_axis).^2);
+theoretical_profile=20*log10(sinc(1/pipe.receive_apodization.f_number(1)/lambda*b_data_field_ii.scan.x_axis).^2);
 
 figure;
 plot(b_data_field_ii.scan.x_axis*1e3,lateral_profile_field_ii); hold all; grid on; 

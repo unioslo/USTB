@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Reading CPWC data from an UFF file recorded from an Alpinion scanner</title><meta name="generator" content="MATLAB 8.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-06-01"><meta name="DC.source" content="CPWC_UFF_Alpinion.m"><style type="text/css">
+      --><title>Reading CPWC data from an UFF file recorded from an Alpinion scanner</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-08-02"><meta name="DC.source" content="CPWC_UFF_Alpinion.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -66,32 +67,19 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>Reading CPWC data from an UFF file recorded from an Alpinion scanner</h1><!--introduction--><p>In this example we show how to read channel and beamformed data from a UFF (Ultrasound File Format) file recorded with an Alpinion scanner. You will need an internet connection to download data.</p><p><i>by Ole Marius Hoel Rindal <a href="olemarius@olemarius.net">olemarius@olemarius.net</a>  and Muyinatu Lediju Bell <a href="mledijubell@jhu.edu">mledijubell@jhu.edu</a> 27.05.2017</i></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Checking the file is in the path</a></li><li><a href="#2">Reading channel data</a></li><li><a href="#10">Display image</a></li><li><a href="#11">Write info about channel data</a></li></ul></div><h2>Checking the file is in the path<a name="1"></a></h2><p>To read data from a UFF file the first we need is, you guessed it, a UFF file. We check if it is on the current path and download it from the USTB websever.</p><pre class="codeinput">clear <span class="string">all</span>; close <span class="string">all</span>;
+  </style></head><body><div class="content"><h1>Reading CPWC data from an UFF file recorded from an Alpinion scanner</h1><!--introduction--><p>In this example we show how to read channel and beamformed data from a UFF (Ultrasound File Format) file recorded with an Alpinion scanner. You will need an internet connection to download data.</p><p><i>by Ole Marius Hoel Rindal <a href="olemarius@olemarius.net">olemarius@olemarius.net</a>  and Muyinatu Lediju Bell <a href="mledijubell@jhu.edu">mledijubell@jhu.edu</a></i></p><pre class="language-matlab">$Last updated: 2017/09/15$
+</pre><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Checking the file is in the path</a></li><li><a href="#2">Reading channel data</a></li><li><a href="#4">Beamform data</a></li><li><a href="#7">Display image</a></li><li><a href="#8">Write info about channel data</a></li></ul></div><h2 id="1">Checking the file is in the path</h2><p>To read data from a UFF file the first we need is, you guessed it, a UFF file. We check if it is on the current path and download it from the USTB websever.</p><pre class="codeinput">clear <span class="string">all</span>; close <span class="string">all</span>;
+
 <span class="comment">% data location</span>
 url=<span class="string">'http://ustb.no/datasets/'</span>;      <span class="comment">% if not found downloaded from here</span>
-local_path = [ustb_path(),<span class="string">'/data/'</span>]; <span class="comment">% location of example data</span>
-addpath(local_path);
-
-<span class="comment">% We have to different Alpinion CPWC datasets, comment out the one to use</span>
 filename=<span class="string">'Alpinion_L3-8_CPWC_hyperechoic_scatterers.uff'</span>;
-<span class="comment">%filename='Alpinion_L3-8_CPWC_hypoechoic.uff';</span>
 
-<span class="comment">% check if the file is available in the local path &amp; downloads otherwise</span>
-tools.download(filename, url, local_path);
-</pre><pre class="codeoutput">Downloading http://ustb.no/datasets/Alpinion_L3-8_CPWC_hyperechoic_scatterers.uff. This may take a while.
-</pre><h2>Reading channel data<a name="2"></a></h2><p>Now that the file is on the path let us create a <b>UFF</b> object to interact with the file. We open it in "append" mode.</p><pre class="codeinput">uff_file=uff(filename)
-</pre><pre class="codeoutput">
-uff_file = 
-
-  uff with properties:
-
-    filename: 'Alpinion_L3-8_CPWC_hyperechoic_scatterers.uff'
-     version: 'v1.0.1'
-        mode: 'append'
-     verbose: 1
-
-</pre><p>Let's first check if we are lucky and the file allready contains beamformed_data that we can display.</p><pre class="codeinput">display=true;
-content = uff_file.index(<span class="string">'/'</span>,display);
+<span class="comment">% checks if the data is in your data path, and downloads it otherwise.</span>
+<span class="comment">% The defaults data path is under USTB's folder, but you can change this</span>
+<span class="comment">% by setting an environment variable with setenv(DATA_PATH,'the_path_you_want_to_use');</span>
+tools.download(filename, url, data_path);
+</pre><h2 id="2">Reading channel data</h2><p>Let's first check if we are lucky and the file allready contains beamformed_data that we can display.</p><pre class="codeinput">display=true;
+content = uff.index([data_path filesep filename],<span class="string">'/'</span>,display);
 
 has_b_data = false;
 <span class="keyword">for</span> i = 1:length(content)
@@ -99,42 +87,38 @@ has_b_data = false;
         has_b_data = true; <span class="comment">% We found a beamformed data object!</span>
     <span class="keyword">end</span>
 <span class="keyword">end</span>
-</pre><pre class="codeoutput">UFF: Contents of Alpinion_L3-8_CPWC_hyperechoic_scatterers.uff at /
-   - /channel_data: channel_data [uff.channel_data] size(1,1)
+</pre><pre class="codeoutput error">Error using h5infoc
+The filename specified was either not found on the MATLAB path or it contains unsupported characters.
+
+Error in h5info (line 108)
+    hinfo = h5infoc(filename,location, useUtf8);
+
+Error in uff/index (line 23)
+    info=h5info(filename,location);
+
+Error in CPWC_UFF_Alpinion (line 34)
+content = uff.index([data_path filesep filename],'/',display);
 </pre><p>If the file had beamformed data, let's read that and the channeldata, before we can jump straight to displaying the data since it's allready beamformed</p><pre class="codeinput"><span class="keyword">if</span> has_b_data
-    b_data=uff_file.read(<span class="string">'/b_data'</span>);
-    channel_data=uff_file.read(<span class="string">'/channel_data'</span>);
-<span class="keyword">else</span>
-</pre><p>If it doesn't have any beamformed data at least it should have some channel_data. So let's read that.</p><pre class="codeinput">    channel_data=uff_file.read(<span class="string">'/channel_data'</span>);
-</pre><pre class="codeoutput">UFF: reading channel_data [uff.channel_data]
-UFF: reading sequence [uff.wave]
-Processed 21/21
-</pre><p>And then do the normal routine of defining the scan,</p><pre class="codeinput">    sca=uff.linear_scan();
-    sca.x_axis = linspace(channel_data.probe.x(1),channel_data.probe.x(end),512).';
-    sca.z_axis = linspace(1e-3,50e-3,512).';
-</pre><p>setting up and running the beamforming</p><pre class="codeinput">    bmf=beamformer();
-    bmf.channel_data=channel_data;
-    bmf.scan=sca;
+    b_data=uff.read_object([data_path filesep filename],<span class="string">'/b_data'</span>);
+    b_data.plot([],<span class="string">'Stored image'</span>);
+<span class="keyword">end</span>
+</pre><h2 id="4">Beamform data</h2><p>If it doesn't have any beamformed data at least it should have some channel_data. So let's read that.</p><pre class="codeinput">channel_data=uff.read_object([data_path filesep filename],<span class="string">'/channel_data'</span>);
+</pre><p>And then do the normal routine of defining the scan,</p><pre class="codeinput">scan=uff.linear_scan();
+scan.x_axis = linspace(channel_data.probe.x(1),channel_data.probe.x(end),512).';
+scan.z_axis = linspace(1e-3,50e-3,512).';
+</pre><p>setting up midprocessor</p><pre class="codeinput">mid=midprocess.das();
+mid.dimension = dimension.both;
 
-    bmf.receive_apodization.window=uff.window.tukey25;
-    bmf.receive_apodization.f_number=1.7;
-    bmf.receive_apodization.apex.distance=Inf;
+mid.channel_data=channel_data;
+mid.scan=scan;
 
-    b_data=bmf.go({process.das_mex process.coherent_compounding});
-</pre><p>Now we can save this beamformed image to that file, so that we don't have to wait for the beamforming next time.</p><pre class="codeinput">    uff_file.write(b_data,<span class="string">'b_data'</span>);
-</pre><pre class="codeoutput">UFF: writting b_data [uff.beamformed_data] at 
-</pre><pre class="codeinput"><span class="keyword">end</span>
-</pre><h2>Display image<a name="10"></a></h2><p>And finally display the image.</p><pre class="codeinput">b_data.plot([],strrep(filename,<span class="string">'_'</span>,<span class="string">' '</span>));
-</pre><img vspace="5" hspace="5" src="CPWC_UFF_Alpinion_01.png" alt=""> <h2>Write info about channel data<a name="11"></a></h2><p>Let's look at the info given about this dataset</p><pre class="codeinput">channel_data.print_info()
-</pre><pre class="codeoutput">Name: 		 CPWC dataset of hyperechoic cyst and points  
-		 scatterers recorded on an Alpinion scanner with a  
-		 L3-8 Probe from a CIRC General Purpose Ultrasound  
-		 Phantom 
-Reference: 	 www.ustb.no 
-Author(s): 	 Ole Marius Hoel Rindal &lt;olemarius@olemarius.no&gt; 
-		 Muyinatu Lediju Bell &lt;mledijubell@jhu.edu&gt; 
-Version: 	 1.0.1 
-</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015a</a><br></p></div><!--
+mid.receive_apodization.window=uff.window.tukey25;
+mid.receive_apodization.f_number=1.7;
+
+b_data2=mid.go();
+</pre><h2 id="7">Display image</h2><p>And finally display the image.</p><pre class="codeinput">b_data2.plot([],<span class="string">'Beamformed image'</span>);
+</pre><h2 id="8">Write info about channel data</h2><p>Let's look at the info given about this dataset</p><pre class="codeinput">channel_data.print_authorship();
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Reading CPWC data from an UFF file recorded from an Alpinion scanner
 %
@@ -143,7 +127,9 @@ Version: 	 1.0.1
 % You will need an internet connection to download data.
 %
 % _by Ole Marius Hoel Rindal <olemarius@olemarius.net>
-%  and Muyinatu Lediju Bell <mledijubell@jhu.edu> 27.05.2017_
+%  and Muyinatu Lediju Bell <mledijubell@jhu.edu>_
+%
+%   $Last updated: 2017/09/15$
 
 %% Checking the file is in the path
 %
@@ -152,31 +138,22 @@ Version: 	 1.0.1
 % websever.
 
 clear all; close all;
+
 % data location
 url='http://ustb.no/datasets/';      % if not found downloaded from here
-local_path = [ustb_path(),'/data/']; % location of example data
-addpath(local_path);
-
-% We have to different Alpinion CPWC datasets, comment out the one to use
 filename='Alpinion_L3-8_CPWC_hyperechoic_scatterers.uff';
-%filename='Alpinion_L3-8_CPWC_hypoechoic.uff';
 
-% check if the file is available in the local path & downloads otherwise
-tools.download(filename, url, local_path);
+% checks if the data is in your data path, and downloads it otherwise.
+% The defaults data path is under USTB's folder, but you can change this
+% by setting an environment variable with setenv(DATA_PATH,'the_path_you_want_to_use');
+tools.download(filename, url, data_path);   
 
 %% Reading channel data
-%
-% Now that the file is on the path let us create a *UFF* object to interact
-% with the file. We open it in "append" mode.
-
-uff_file=uff(filename)
-
-%%
 %
 % Let's first check if we are lucky and the file allready contains
 % beamformed_data that we can display.
 display=true;
-content = uff_file.index('/',display);
+content = uff.index([data_path filesep filename],'/',display);
 
 has_b_data = false;
 for i = 1:length(content)
@@ -186,57 +163,52 @@ for i = 1:length(content)
 end
 
 %%
-% If the file had beamformed data, let's read that and the channeldata, 
+% If the file had beamformed data, let's read that and the channeldata,
 % before we can jump straight to displaying the data since it's allready
 % beamformed
 
 if has_b_data
-    b_data=uff_file.read('/b_data');
-    channel_data=uff_file.read('/channel_data');
-else
-    %%
-    % If it doesn't have any beamformed data at least it should have some
-    % channel_data. So let's read that.
-    
-    channel_data=uff_file.read('/channel_data');
-    
-    %%
-    %
-    % And then do the normal routine of defining the scan,
-    
-    sca=uff.linear_scan();
-    sca.x_axis = linspace(channel_data.probe.x(1),channel_data.probe.x(end),512).';
-    sca.z_axis = linspace(1e-3,50e-3,512).';
-    
-    %%
-    %
-    % setting up and running the beamforming
-    bmf=beamformer();
-    bmf.channel_data=channel_data;
-    bmf.scan=sca;
-    
-    bmf.receive_apodization.window=uff.window.tukey25;
-    bmf.receive_apodization.f_number=1.7;
-    bmf.receive_apodization.apex.distance=Inf;
-    
-    b_data=bmf.go({process.das_mex process.coherent_compounding});
-   
-    %%
-    %
-    % Now we can save this beamformed image to that file, so that we don't
-    % have to wait for the beamforming next time.
-    uff_file.write(b_data,'b_data');
+    b_data=uff.read_object([data_path filesep filename],'/b_data');
+    b_data.plot([],'Stored image');
 end
+
+%% Beamform data
+% If it doesn't have any beamformed data at least it should have some
+% channel_data. So let's read that.
+
+channel_data=uff.read_object([data_path filesep filename],'/channel_data');
+
+%%
+%
+% And then do the normal routine of defining the scan,
+
+scan=uff.linear_scan();
+scan.x_axis = linspace(channel_data.probe.x(1),channel_data.probe.x(end),512).';
+scan.z_axis = linspace(1e-3,50e-3,512).';
+
+%%
+%
+% setting up midprocessor
+mid=midprocess.das();
+mid.dimension = dimension.both;
+
+mid.channel_data=channel_data;
+mid.scan=scan;
+
+mid.receive_apodization.window=uff.window.tukey25;
+mid.receive_apodization.f_number=1.7;
+
+b_data2=mid.go();
 
 %% Display image
 %
 % And finally display the image.
-b_data.plot([],strrep(filename,'_',' '));
+b_data2.plot([],'Beamformed image');
 
 %% Write info about channel data
 %
 % Let's look at the info given about this dataset
-channel_data.print_info()
+channel_data.print_authorship();
 
 ##### SOURCE END #####
 --></body></html>

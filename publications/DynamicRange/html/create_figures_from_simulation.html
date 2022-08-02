@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Create the figures from the simulated dynamic range phantom</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-03-12"><meta name="DC.source" content="create_figures_from_simulation.m"><style type="text/css">
+      --><title>Create the figures from the simulated dynamic range phantom</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-08-02"><meta name="DC.source" content="create_figures_from_simulation.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -172,7 +173,14 @@ colormap <span class="string">gray</span>;caxis([-60 0]);axis <span class="strin
 set(gca,<span class="string">'FontSize'</span>,14)
 axis([-15 3 27 33]);
 saveas(f101,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/simulation/GLT_zoomed'</span>],<span class="string">'eps2c'</span>)
-</pre><img vspace="5" hspace="5" src="create_figures_from_simulation_03.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_04.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_05.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_06.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_07.png" alt=""> <h2 id="5">CF - Coherence Factor</h2><pre class="codeinput">cf_img = b_data_cf.get_image(<span class="string">'none'</span>).*weights;
+</pre><pre class="codeoutput error">Undefined function 'fit' for input arguments of type 'double'.
+
+Error in postprocess/scurve_gray_level_transform/go (line 61)
+            gamma = fit(x.',x_compressed.','cubicspline');
+
+Error in create_figures_from_simulation (line 87)
+b_data_glt = glt_s.go();
+</pre><h2 id="5">CF - Coherence Factor</h2><pre class="codeinput">cf_img = b_data_cf.get_image(<span class="string">'none'</span>).*weights;
 b_data_cf.data = cf_img(:);
 cf_img = db(abs(cf_img./max(cf_img(:))));                 <span class="comment">% Normalize on max</span>
 f2 = figure(2);
@@ -186,7 +194,7 @@ colormap <span class="string">gray</span>;caxis([-60 0]);axis <span class="strin
 set(gca,<span class="string">'FontSize'</span>,14)
 axis([-15 3 27 33]);
 saveas(f22,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/simulation/CF_zoomed'</span>],<span class="string">'eps2c'</span>)
-</pre><img vspace="5" hspace="5" src="create_figures_from_simulation_08.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_09.png" alt=""> <h2 id="6">PCF - Phase Coherence Factor</h2><pre class="codeinput">pcf_img = b_data_pcf.get_image(<span class="string">'none'</span>).*weights;
+</pre><h2 id="6">PCF - Phase Coherence Factor</h2><pre class="codeinput">pcf_img = b_data_pcf.get_image(<span class="string">'none'</span>).*weights;
 b_data_pcf.data = pcf_img(:);
 b_data_pcf.data(isinf(b_data_pcf.data)) = eps;
 b_data_pcf.data(b_data_pcf.data==0) = eps;
@@ -204,7 +212,7 @@ colormap <span class="string">gray</span>;caxis([-60 0]);axis <span class="strin
 set(gca,<span class="string">'FontSize'</span>,14)
 axis([-15 3 27 33]);
 saveas(f33,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/simulation/PCF_zoomed'</span>],<span class="string">'eps2c'</span>)
-</pre><img vspace="5" hspace="5" src="create_figures_from_simulation_10.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_11.png" alt=""> <h2 id="7">GCF - Generalized Coherence Factor</h2><pre class="codeinput">gcf_img = b_data_gcf.get_image(<span class="string">'none'</span>).*weights;
+</pre><h2 id="7">GCF - Generalized Coherence Factor</h2><pre class="codeinput">gcf_img = b_data_gcf.get_image(<span class="string">'none'</span>).*weights;
 b_data_gcf.data = gcf_img(:);
 gcf_img = db(abs(gcf_img./max(gcf_img(:))));
 f4 = figure(4);clf;
@@ -218,7 +226,7 @@ colormap <span class="string">gray</span>;caxis([-60 0]);axis <span class="strin
 set(gca,<span class="string">'FontSize'</span>,14)
 axis([-15 3 27 33]);
 saveas(f44,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/simulation/GCF_zoomed'</span>],<span class="string">'eps2c'</span>)
-</pre><img vspace="5" hspace="5" src="create_figures_from_simulation_12.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_13.png" alt=""> <h2 id="8">MV - Capon's Minimum Variance</h2><pre class="codeinput">mv_img = b_data_mv.get_image(<span class="string">'none'</span>).*weights;
+</pre><h2 id="8">MV - Capon's Minimum Variance</h2><pre class="codeinput">mv_img = b_data_mv.get_image(<span class="string">'none'</span>).*weights;
 b_data_mv.data = mv_img(:);
 mv_img = db(abs(mv_img./max(mv_img(:))));
 f6 = figure(6);clf;
@@ -232,7 +240,7 @@ colormap <span class="string">gray</span>;caxis([-60 0]);axis <span class="strin
 set(gca,<span class="string">'FontSize'</span>,14)
 axis([-15 3 27 33]);
 saveas(f66,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/simulation/MV_zoomed'</span>],<span class="string">'eps2c'</span>)
-</pre><img vspace="5" hspace="5" src="create_figures_from_simulation_14.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_15.png" alt=""> <h2 id="9">F-DMAS - Filtered-Delay-Multiply-and-Sum</h2><pre class="codeinput">dmas_img = b_data_dmas.get_image(<span class="string">'none'</span>).*weights;
+</pre><h2 id="9">F-DMAS - Filtered-Delay-Multiply-and-Sum</h2><pre class="codeinput">dmas_img = b_data_dmas.get_image(<span class="string">'none'</span>).*weights;
 b_data_dmas.data = dmas_img(:);
 dmas_img = db(abs(dmas_img./max(dmas_img(:))));
 f7 = figure(7);clf;
@@ -246,7 +254,7 @@ colormap <span class="string">gray</span>;caxis([-60 0]);axis <span class="strin
 set(gca,<span class="string">'FontSize'</span>,14)
 axis([-15 3 27 33]);
 saveas(f77,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/simulation/DMAS_zoomed'</span>],<span class="string">'eps2c'</span>)
-</pre><img vspace="5" hspace="5" src="create_figures_from_simulation_16.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_17.png" alt=""> <h2 id="10">EBMV - Eigenspace Based Minimum Variance</h2><pre class="codeinput">ebmv_img = b_data_ebmv.get_image(<span class="string">'none'</span>).*weights;
+</pre><h2 id="10">EBMV - Eigenspace Based Minimum Variance</h2><pre class="codeinput">ebmv_img = b_data_ebmv.get_image(<span class="string">'none'</span>).*weights;
 b_data_ebmv.data = ebmv_img(:);
 ebmv_img = db(abs(ebmv_img./max(ebmv_img(:))));
 f8 = figure(8);clf;
@@ -260,7 +268,7 @@ colormap <span class="string">gray</span>;caxis([-60 0]);axis <span class="strin
 set(gca,<span class="string">'FontSize'</span>,14)
 axis([-15 3 27 33]);
 saveas(f88,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/simulation/EBMV_zoomed'</span>],<span class="string">'eps2c'</span>)
-</pre><img vspace="5" hspace="5" src="create_figures_from_simulation_18.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_19.png" alt=""> <h2 id="11">Putting the dB images and the signal in a cell array</h2><pre class="codeinput">addpath([ustb_path,<span class="string">'/publications/DynamicRange/functions'</span>]);
+</pre><h2 id="11">Putting the dB images and the signal in a cell array</h2><pre class="codeinput">addpath([ustb_path,<span class="string">'/publications/DynamicRange/functions'</span>]);
 image.all{1} = das_img;
 image.all_signal{1} = double(b_data_das.get_image(<span class="string">'none'</span>));
 image.all_signal{1} = (image.all_signal{1}./max(image.all_signal{1}(:)));
@@ -344,7 +352,7 @@ theory_axial = (gradient*(b_data_das.scan.z_axis(mask_axial)-10e-3))*10^3;
     saveas(f88,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/simulation/gradient/'</span>,image.tags{i}],<span class="string">'eps2c'</span>)
     <span class="comment">%saveas(f88,[ustb_path,filesep,'publications/DynamicRange/figures/simulation/gradient/',image.tags{i}],'png')</span>
 <span class="keyword">end</span>
-</pre><img vspace="5" hspace="5" src="create_figures_from_simulation_20.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_21.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_22.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_23.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_24.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_25.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_26.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_27.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_28.png" alt=""> <h2 id="13">Plot the lateral line through the boxes</h2><pre class="codeinput">[meanLines,x_axis] = getMeanLateralLines(b_data_das,image,27.5,32.5,b_data_das.scan.x(1)*10^3,b_data_das.scan.x(end)*10^3);
+</pre><h2 id="13">Plot the lateral line through the boxes</h2><pre class="codeinput">[meanLines,x_axis] = getMeanLateralLines(b_data_das,image,27.5,32.5,b_data_das.scan.x(1)*10^3,b_data_das.scan.x(end)*10^3);
 theoretical = [-100 ones(1,255)*0 ones(1,255)*-10 -100 ones(1,256)*-100 ones(1,256)*-100 -100 ones(1,255)*0 ones(1,255)*-35 -100];
 x_axis_theoretical = linspace(-13,2,1536);
 
@@ -364,8 +372,8 @@ xlim([-14 8]);
 legend(<span class="string">'Location'</span>,<span class="string">'best'</span>); grid <span class="string">on</span>;
 ylabel(<span class="string">'Normalized amplitude [dB]'</span>);
 xlabel(<span class="string">'x [mm]'</span>);
-</pre><img vspace="5" hspace="5" src="create_figures_from_simulation_29.png" alt=""> <pre class="codeinput">saveas(f89,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/simulation/boxes'</span>],<span class="string">'eps2c'</span>)
-</pre><img vspace="5" hspace="5" src="create_figures_from_simulation_30.png" alt=""> <h2 id="15">Calibrate images</h2><pre class="codeinput">[image_calibrated_on_theoretical] = calibrateImage_on_theoretical(b_data_das,image,40,48.5,-14,14,3,1.8,colors);
+</pre><pre class="codeinput">saveas(f89,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/simulation/boxes'</span>],<span class="string">'eps2c'</span>)
+</pre><h2 id="15">Calibrate images</h2><pre class="codeinput">[image_calibrated_on_theoretical] = calibrateImage_on_theoretical(b_data_das,image,40,48.5,-14,14,3,1.8,colors);
 
 x_axis_grad_start = 14;
 mask_lateral=abs(b_data_das.scan.x_axis)&lt;x_axis_grad_start*10^-3;
@@ -386,7 +394,7 @@ xlim([-50 0])
 ylim([-80 0])
 legend <span class="string">show</span>
 saveas(f10,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/simulation/calibrated/calibrated_all_curves_on_theoretical'</span>],<span class="string">'eps2c'</span>)
-</pre><img vspace="5" hspace="5" src="create_figures_from_simulation_31.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_32.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_33.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_34.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_35.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_36.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_37.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_38.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_39.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_40.png" alt=""> <h2 id="16">Plot the lateral line through the boxes after calibration</h2><pre class="codeinput">[meanLines,x_axis] = getMeanLateralLines(b_data_das,image_calibrated_on_theoretical,27.5,32.5,b_data_das.scan.x(1)*10^3,b_data_das.scan.x(end)*10^3);
+</pre><h2 id="16">Plot the lateral line through the boxes after calibration</h2><pre class="codeinput">[meanLines,x_axis] = getMeanLateralLines(b_data_das,image_calibrated_on_theoretical,27.5,32.5,b_data_das.scan.x(1)*10^3,b_data_das.scan.x(end)*10^3);
 theoretical = [-100 ones(1,255)*0 ones(1,255)*-10 -100 ones(1,256)*-100 ones(1,256)*-100 -100 ones(1,255)*0 ones(1,255)*-35 -100];
 x_axis_theoretical = linspace(-13,2,1536);
 
@@ -406,12 +414,12 @@ xlim([-14 8]);
 legend(<span class="string">'Location'</span>,<span class="string">'best'</span>); grid <span class="string">on</span>;
 ylabel(<span class="string">'Normalized amplitude [dB]'</span>);
 xlabel(<span class="string">'x [mm]'</span>);
-</pre><img vspace="5" hspace="5" src="create_figures_from_simulation_41.png" alt=""> <pre class="codeinput">saveas(f89,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/simulation/calibrated/boxes_calibrated_lines_on_theoretical'</span>],<span class="string">'eps2c'</span>)
+</pre><pre class="codeinput">saveas(f89,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/simulation/calibrated/boxes_calibrated_lines_on_theoretical'</span>],<span class="string">'eps2c'</span>)
 saveas(f89,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/simulation/calibrated/boxes_calibrated_lines_on_theoretical'</span>],<span class="string">'png'</span>)
-</pre><img vspace="5" hspace="5" src="create_figures_from_simulation_42.png" alt=""> <h2 id="18">Measure contrast and plot together with the experimental</h2><pre class="codeinput">[CR_signal_sim, CR_signal_dagger, CR_image_sim, CNR_signal_sim, CNR_image_sim] = measureContrast(b_data_das,image,-5.5,17.5,3.5,5,8,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/simulation/DAS_cyst_indicated'</span>]);
+</pre><h2 id="18">Measure contrast and plot together with the experimental</h2><pre class="codeinput">[CR_signal_sim, CR_signal_dagger, CR_image_sim, CNR_signal_sim, CNR_image_sim] = measureContrast(b_data_das,image,-5.5,17.5,3.5,5,8,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/simulation/DAS_cyst_indicated'</span>]);
 
 load(<span class="string">'Experimental.mat'</span>,<span class="string">'CR_signal_exp'</span>,<span class="string">'CNR_signal_exp'</span>,<span class="string">'CR_image_exp'</span>,<span class="string">'CNR_image_exp'</span>);
-</pre><img vspace="5" hspace="5" src="create_figures_from_simulation_43.png" alt=""> <pre class="codeinput">f9 = figure;
+</pre><pre class="codeinput">f9 = figure;
 subplot(211);
 bar([10*log10(CR_signal_sim)' 10*log10(CR_signal_exp)'])
 set(gca,<span class="string">'XTick'</span>,linspace(1,length(image.tags),length(image.tags)))
@@ -430,8 +438,8 @@ text(x_pos,double(10*log10(CR_signal_exp(:))),num2str(round(10*log10(CR_signal_e
 set(gca,<span class="string">'Ydir'</span>,<span class="string">'reverse'</span>)
 legend(<span class="string">'Sim.'</span>,<span class="string">'Exp.'</span>,<span class="string">'Location'</span>,<span class="string">'nw'</span>)
 grid <span class="string">on</span>
-</pre><img vspace="5" hspace="5" src="create_figures_from_simulation_44.png" alt=""> <pre class="codeinput">saveas(f9,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/simulation/CR'</span>],<span class="string">'eps2c'</span>)
-</pre><img vspace="5" hspace="5" src="create_figures_from_simulation_45.png" alt=""> <pre class="codeinput">f90 = figure;
+</pre><pre class="codeinput">saveas(f9,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/simulation/CR'</span>],<span class="string">'eps2c'</span>)
+</pre><pre class="codeinput">f90 = figure;
 subplot(212);
 bar([CR_image_sim' CR_image_exp'])
 set(gca,<span class="string">'XTick'</span>,linspace(1,length(image.tags),length(image.tags)))
@@ -450,8 +458,8 @@ text(x_pos,double(CR_image_exp(:)),num2str(round(CR_image_exp(:)),<span class="s
 ylim([0 125])
 legend(<span class="string">'Sim.'</span>,<span class="string">'Exp.'</span>,<span class="string">'Location'</span>,<span class="string">'nw'</span>)
 grid <span class="string">on</span>
-</pre><img vspace="5" hspace="5" src="create_figures_from_simulation_46.png" alt=""> <pre class="codeinput">saveas(f90,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/simulation/CR_LC'</span>],<span class="string">'eps2c'</span>)
-</pre><img vspace="5" hspace="5" src="create_figures_from_simulation_47.png" alt=""> <pre class="codeinput">f77 = figure(77);clf;
+</pre><pre class="codeinput">saveas(f90,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/simulation/CR_LC'</span>],<span class="string">'eps2c'</span>)
+</pre><pre class="codeinput">f77 = figure(77);clf;
 subplot(211);
 bar([CNR_signal_sim' CNR_signal_exp'])
 set(gca,<span class="string">'XTick'</span>,linspace(1,length(image.tags),length(image.tags)))
@@ -470,8 +478,8 @@ text(x_pos,double(CNR_signal_exp(:)),num2str((CNR_signal_exp(:)),<span class="st
 ylim([0 1.45])
 legend(<span class="string">'Sim.'</span>,<span class="string">'Exp.'</span>,<span class="string">'Location'</span>,<span class="string">'nw'</span>)
 grid <span class="string">on</span>
-</pre><img vspace="5" hspace="5" src="create_figures_from_simulation_48.png" alt=""> <pre class="codeinput">saveas(f77,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/simulation/CNR'</span>],<span class="string">'eps2c'</span>)
-</pre><img vspace="5" hspace="5" src="create_figures_from_simulation_49.png" alt=""> <pre class="codeinput">f78 = figure(78);clf;
+</pre><pre class="codeinput">saveas(f77,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/simulation/CNR'</span>],<span class="string">'eps2c'</span>)
+</pre><pre class="codeinput">f78 = figure(78);clf;
 subplot(212);
 bar([CNR_image_sim' CNR_image_exp'])
 set(gca,<span class="string">'XTick'</span>,linspace(1,length(image.tags),length(image.tags)))
@@ -490,8 +498,8 @@ text(x_pos,double(CNR_image_exp(:)),num2str((CNR_image_exp(:)),<span class="stri
 legend(<span class="string">'Sim.'</span>,<span class="string">'Exp.'</span>,<span class="string">'Location'</span>,<span class="string">'nw'</span>)
 grid <span class="string">on</span>
 ylim([0 9])
-</pre><img vspace="5" hspace="5" src="create_figures_from_simulation_50.png" alt=""> <pre class="codeinput">saveas(f78,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/simulation/CNR_LC'</span>],<span class="string">'eps2c'</span>)
-</pre><img vspace="5" hspace="5" src="create_figures_from_simulation_51.png" alt=""> <h2 id="27">Run Dynamic Range Test</h2><pre class="codeinput">diff{1} = tools.dynamic_range_test(channel_data,b_data_das,<span class="string">'DAS'</span>);
+</pre><pre class="codeinput">saveas(f78,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/simulation/CNR_LC'</span>],<span class="string">'eps2c'</span>)
+</pre><h2 id="27">Run Dynamic Range Test</h2><pre class="codeinput">diff{1} = tools.dynamic_range_test(channel_data,b_data_das,<span class="string">'DAS'</span>);
 set(gcf,<span class="string">'Position'</span>,[7 222 1271 347]);
 saveas(gcf,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/simulation/dynamic_range_test/'</span>,<span class="string">'DAS'</span>],<span class="string">'eps2c'</span>);
 diff{2} = tools.dynamic_range_test(channel_data,b_data_mv,<span class="string">'MV'</span>);
@@ -515,7 +523,7 @@ saveas(gcf,[ustb_path,filesep,<span class="string">'publications/DynamicRange/fi
 diff{8} = tools.dynamic_range_test(channel_data,b_data_glt,<span class="string">'GLT'</span>);
 set(gcf,<span class="string">'Position'</span>,[7 222 1271 347]);
 saveas(gcf,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/simulation/dynamic_range_test/'</span>,<span class="string">'GLT'</span>],<span class="string">'eps2c'</span>);
-</pre><img vspace="5" hspace="5" src="create_figures_from_simulation_52.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_53.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_54.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_55.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_56.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_57.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_58.png" alt=""> <img vspace="5" hspace="5" src="create_figures_from_simulation_59.png" alt=""> <pre class="codeinput"><span class="keyword">for</span> i = 1:length(image.tags)
+</pre><pre class="codeinput"><span class="keyword">for</span> i = 1:length(image.tags)
     DRT_value(i) = (mean(diff{i}));
 <span class="keyword">end</span>
 </pre><pre class="codeinput">cr_improvement = CR_image_sim - CR_image_sim(1);
@@ -548,36 +556,7 @@ legend <span class="string">show</span>
 legend([{image.tags{1:8}} hLegend.String],<span class="string">'Location'</span>,<span class="string">'nw'</span>);
 
 saveas(f113,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/simulation/correlation_simulation'</span>],<span class="string">'eps2c'</span>)
-</pre><pre class="codeoutput">
-lmd_sim_slope = 
-
-
-Linear regression model:
-    y ~ 1 + x1
-
-Estimated Coefficients:
-                   Estimate       SE       tStat      pValue  
-                   ________    ________    ______    _________
-
-    (Intercept)     0.86838     0.16773    5.1773    0.0020598
-    x1             0.018225    0.004179     4.361    0.0047651
-
-
-Number of observations: 8, Error degrees of freedom: 6
-Root Mean Squared Error: 0.256
-R-squared: 0.76,  Adjusted R-Squared 0.72
-F-statistic vs. constant model: 19, p-value = 0.00477
-
-ans =
-
-    0.7602
-
-
-ans =
-
-    0.7202
-
-</pre><img vspace="5" hspace="5" src="create_figures_from_simulation_60.png" alt=""> <pre class="codeinput">lmd_sim_slope = fitlm(cr_improvement(1:7),DRT_value(1:7))
+</pre><pre class="codeinput">lmd_sim_slope = fitlm(cr_improvement(1:7),DRT_value(1:7))
 
 lmd_sim_slope.Rsquared.Ordinary
 lmd_sim_slope.Rsquared.Adjusted
@@ -593,7 +572,7 @@ set(hline,<span class="string">'LineWidth'</span>,3);
 set(hline(3),<span class="string">'Color'</span>,[0 0 0]);
 set(hline(3),<span class="string">'DisplayName'</span>,<span class="string">'Fitted line'</span>);
 title(<span class="string">''</span>)
-xlabel(<span class="string">'CR_{LC} improve compared to DAS [dB]'</span>,<span class="string">'Interpreter'</span>, <span class="string">'tex'</span>);
+xlabel(<span class="string">'CR_{LC} improvement compared to DAS [dB]'</span>,<span class="string">'Interpreter'</span>, <span class="string">'tex'</span>);
 ylabel(<span class="string">'DRT value'</span>);
 text(40,1,sprintf(<span class="string">'R-Squared: %.2f'</span>,lmd_sim_slope.Rsquared.Ordinary),<span class="string">'FontSize'</span>,18);
 text(40,0.9,sprintf(<span class="string">'R-Squared adj: %.2f'</span>,lmd_sim_slope.Rsquared.Adjusted),<span class="string">'FontSize'</span>,18);
@@ -606,43 +585,14 @@ legend([{image.tags{1:7}} hLegend.String],<span class="string">'Location'</span>
 
 
 saveas(f113,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/simulation/correlation_simulation_without_glt'</span>],<span class="string">'eps2c'</span>)
-</pre><pre class="codeoutput">
-lmd_sim_slope = 
-
-
-Linear regression model:
-    y ~ 1 + x1
-
-Estimated Coefficients:
-                   Estimate       SE        tStat       pValue  
-                   ________    _________    ______    __________
-
-    (Intercept)     0.94049     0.075572    12.445    5.9395e-05
-    x1             0.013554    0.0020665    6.5588      0.001235
-
-
-Number of observations: 7, Error degrees of freedom: 5
-Root Mean Squared Error: 0.113
-R-squared: 0.896,  Adjusted R-Squared 0.875
-F-statistic vs. constant model: 43, p-value = 0.00123
-
-ans =
-
-    0.8959
-
-
-ans =
-
-    0.8750
-
-</pre><img vspace="5" hspace="5" src="create_figures_from_simulation_61.png" alt=""> <pre class="codeinput">load([ustb_path,<span class="string">'/publications/DynamicRange/'</span>,<span class="string">'Experimental.mat'</span>],<span class="string">'DRT_value_exp'</span>);
+</pre><pre class="codeinput">load([ustb_path,<span class="string">'/publications/DynamicRange/'</span>,<span class="string">'Experimental.mat'</span>],<span class="string">'DRT_value_exp'</span>);
 f10 = figure(10);clf;
 subplot(211);
 bar([DRT_value' DRT_value_exp'])
 set(gca,<span class="string">'XTick'</span>,linspace(1,length(image.tags),length(image.tags)))
 set(gca,<span class="string">'XTickLabel'</span>,image.tags)
 ylabel(<span class="string">'DRT value'</span>);
-legend(<span class="string">'Location'</span>,<span class="string">'nw'</span>,<span class="string">'sim.'</span>,<span class="string">'exp.'</span>)
+legend(<span class="string">'Location'</span>,<span class="string">'nw'</span>,<span class="string">'Sim.'</span>,<span class="string">'Exp.'</span>)
 x_pos = [0.75 1.25 1.75 2.25 2.75 3.25 3.75 4.25 4.75 5.25 5.75 6.25 6.75 7.25 7.75 8.25];
 DRT_value_all = [];
 <span class="keyword">for</span> i = 1:length(DRT_value_exp)
@@ -656,7 +606,7 @@ grid <span class="string">on</span>;
 ylim([0 2.7])
 
 saveas(f10,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/simulation/DRT'</span>],<span class="string">'eps2c'</span>)
-</pre><img vspace="5" hspace="5" src="create_figures_from_simulation_62.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018a</a><br></p></div><!--
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Create the figures from the simulated dynamic range phantom
 % For the publication Rindal, O. M. H., Austeng, A., Fatemi, A., 
@@ -1204,7 +1154,7 @@ set(hline,'LineWidth',3);
 set(hline(3),'Color',[0 0 0]);
 set(hline(3),'DisplayName','Fitted line');
 title('')
-xlabel('CR_{LC} improve compared to DAS [dB]','Interpreter', 'tex');
+xlabel('CR_{LC} improvement compared to DAS [dB]','Interpreter', 'tex');
 ylabel('DRT value');
 text(40,1,sprintf('R-Squared: %.2f',lmd_sim_slope.Rsquared.Ordinary),'FontSize',18);
 text(40,0.9,sprintf('R-Squared adj: %.2f',lmd_sim_slope.Rsquared.Adjusted),'FontSize',18);
@@ -1226,7 +1176,7 @@ bar([DRT_value' DRT_value_exp'])
 set(gca,'XTick',linspace(1,length(image.tags),length(image.tags)))
 set(gca,'XTickLabel',image.tags)
 ylabel('DRT value');
-legend('Location','nw','sim.','exp.')
+legend('Location','nw','Sim.','Exp.')
 x_pos = [0.75 1.25 1.75 2.25 2.75 3.25 3.75 4.25 4.75 5.25 5.75 6.25 6.75 7.25 7.75 8.25];
 DRT_value_all = [];
 for i = 1:length(DRT_value_exp) 

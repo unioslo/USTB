@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>CPWC simulation to compare speeds of the various USTB beamformers.</title><meta name="generator" content="MATLAB 8.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-05-20"><meta name="DC.source" content="CPWC_linear_array_beamformer_speed.m"><style type="text/css">
+      --><title>CPWC simulation to compare speeds of the various USTB beamformers.</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-08-02"><meta name="DC.source" content="CPWC_linear_array_beamformer_speed.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -66,26 +67,26 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>CPWC simulation to compare speeds of the various USTB beamformers.</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">Phantom</a></li><li><a href="#3">Probe</a></li><li><a href="#4">Pulse</a></li><li><a href="#5">Sequence generation</a></li><li><a href="#6">The Fresnel simulator</a></li><li><a href="#7">Scan</a></li><li><a href="#8">Beamformer</a></li></ul></div><p>In this example, we conduct a simple simulation to compare the speeds achieved with USTB's:</p><div><ol><li>MATLAB delay implementation</li><li>Mex delay implementation</li><li>MATLAB delay-and-sum implementation</li><li>Mex delay-and-sum implementation.</li></ol></div><p>This tutorial assumes familiarity with the contents of the <a href="./CPWC_linear_array.html">'CPWC simulation with the USTB built-in Fresnel simulator'</a> tutorial. Please feel free to refer back to that for more details.</p><p><i>by Alfonso Rodriguez-Molares <a href="alfonso.r.molares@ntnu.no">alfonso.r.molares@ntnu.no</a> and Arun Asokan Nair <a href="anair8@jhu.edu">anair8@jhu.edu</a> 16.05.2017</i></p><pre class="codeinput">clear <span class="string">all</span>;
+  </style></head><body><div class="content"><h1>CPWC simulation to compare speeds of the various USTB beamformers.</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">Phantom</a></li><li><a href="#3">Probe</a></li><li><a href="#4">Pulse</a></li><li><a href="#5">Sequence generation</a></li><li><a href="#6">The Fresnel simulator</a></li><li><a href="#7">Scan</a></li><li><a href="#8">Pipeline</a></li><li><a href="#10">- MATLAB</a></li><li><a href="#11">- MATLAB GPU</a></li><li><a href="#12">- MEX</a></li></ul></div><p>In this example, we conduct a simple simulation to compare the speeds achieved with USTB's:</p><div><ol><li>MATLAB delay implementation</li><li>Mex delay implementation</li><li>MATLAB delay-and-sum implementation</li><li>Mex delay-and-sum implementation.</li></ol></div><p>This tutorial assumes familiarity with the contents of the <a href="./CPWC_linear_array.html">'CPWC simulation with the USTB built-in Fresnel simulator'</a> tutorial. Please feel free to refer back to that for more details.</p><p><i>by Alfonso Rodriguez-Molares <a href="alfonso.r.molares@ntnu.no">alfonso.r.molares@ntnu.no</a> and Arun Asokan Nair <a href="anair8@jhu.edu">anair8@jhu.edu</a> 16.05.2017</i></p><pre class="codeinput">clear <span class="string">all</span>;
 close <span class="string">all</span>;
-</pre><h2>Phantom<a name="2"></a></h2><p>Our first step is to define an appropriate <b>phantom</b> structure as input. Our phantom here is simply a collection of point scatterers. USTB's implementation of <b>phantom</b> comes with a <b>plot</b> method for free!</p><pre class="codeinput">x_sca=[zeros(1,7) -15e-3:5e-3:15e-3];
+</pre><h2 id="2">Phantom</h2><p>Our first step is to define an appropriate <b>phantom</b> structure as input. Our phantom here is simply a collection of point scatterers. USTB's implementation of <b>phantom</b> comes with a <b>plot</b> method for free!</p><pre class="codeinput">x_sca=[zeros(1,7) -15e-3:5e-3:15e-3];
 z_sca=[5e-3:5e-3:35e-3 20e-3*ones(1,7)];
 N_sca=length(x_sca);
 pha=uff.phantom();
 pha.sound_speed=1540;            <span class="comment">% speed of sound [m/s]</span>
 pha.points=[x_sca.', zeros(N_sca,1), z_sca.', ones(N_sca,1)];    <span class="comment">% point scatterer position [m]</span>
 fig_handle=pha.plot();
-</pre><img vspace="5" hspace="5" src="CPWC_linear_array_beamformer_speed_01.png" alt=""> <h2>Probe<a name="3"></a></h2><p>The next step is to define the <b>probe</b> structure which contains information about the probe's geometry. This too comes with % a <b>plot</b> method that enables visualization of the probe with respect to the phantom. The probe we will use in our example is a linear array transducer with 128 elements.</p><pre class="codeinput">prb=uff.linear_array();
+</pre><img vspace="5" hspace="5" src="CPWC_linear_array_beamformer_speed_01.png" alt=""> <h2 id="3">Probe</h2><p>The next step is to define the <b>probe</b> structure which contains information about the probe's geometry. This too comes with % a <b>plot</b> method that enables visualization of the probe with respect to the phantom. The probe we will use in our example is a linear array transducer with 128 elements.</p><pre class="codeinput">prb=uff.linear_array();
 prb.N=128;                  <span class="comment">% number of elements</span>
 prb.pitch=300e-6;           <span class="comment">% probe pitch in azimuth [m]</span>
 prb.element_width=270e-6;   <span class="comment">% element width [m]</span>
 prb.element_height=5000e-6; <span class="comment">% element height [m]</span>
 prb.plot(fig_handle);
-</pre><img vspace="5" hspace="5" src="CPWC_linear_array_beamformer_speed_02.png" alt=""> <h2>Pulse<a name="4"></a></h2><p>We then define the pulse-echo signal which is done here using the <b>fresnel</b> simulator's <b>pulse</b> structure. We could also use <a href="http://field-ii.dk/">'Field II'</a> for a more accurate model.</p><pre class="codeinput">pul=uff.pulse();
+</pre><img vspace="5" hspace="5" src="CPWC_linear_array_beamformer_speed_02.png" alt=""> <h2 id="4">Pulse</h2><p>We then define the pulse-echo signal which is done here using the <b>fresnel</b> simulator's <b>pulse</b> structure. We could also use <a href="http://field-ii.dk/">'Field II'</a> for a more accurate model.</p><pre class="codeinput">pul=uff.pulse();
 pul.center_frequency=5.2e6;       <span class="comment">% transducer frequency [MHz]</span>
 pul.fractional_bandwidth=0.6;     <span class="comment">% fractional bandwidth [unitless]</span>
 pul.plot([],<span class="string">'2-way pulse'</span>);
-</pre><img vspace="5" hspace="5" src="CPWC_linear_array_beamformer_speed_03.png" alt=""> <h2>Sequence generation<a name="5"></a></h2><p>Now, we shall generate our sequence! Keep in mind that the <b>fresnel</b> simulator takes the same sequence definition as the USTB beamformer. In UFF and USTB a sequence is defined as a collection of <b>wave</b> structures.</p><p>For our example here, we define a sequence of 15 plane-waves covering an angle span of <img src="CPWC_linear_array_beamformer_speed_eq14339125197225071258.png" alt="$[-0.3, 0.3]$"> radians. The <b>wave</b> structure has a <b>plot</b> method which plots the direction of the transmitted plane-wave.</p><pre class="codeinput">N_plane_waves=15;
+</pre><img vspace="5" hspace="5" src="CPWC_linear_array_beamformer_speed_03.png" alt=""> <h2 id="5">Sequence generation</h2><p>Now, we shall generate our sequence! Keep in mind that the <b>fresnel</b> simulator takes the same sequence definition as the USTB beamformer. In UFF and USTB a sequence is defined as a collection of <b>wave</b> structures.</p><p>For our example here, we define a sequence of 15 plane-waves covering an angle span of <img src="CPWC_linear_array_beamformer_speed_eq14339125197225071258.png" alt="$[-0.3, 0.3]$"> radians. The <b>wave</b> structure has a <b>plot</b> method which plots the direction of the transmitted plane-wave.</p><pre class="codeinput">N_plane_waves=15;
 angles=linspace(-0.3,0.3,N_plane_waves);
 seq=uff.wave();
 <span class="keyword">for</span> n=1:N_plane_waves
@@ -98,7 +99,7 @@ seq=uff.wave();
     <span class="comment">% show source</span>
     fig_handle=seq(n).source.plot(fig_handle);
 <span class="keyword">end</span>
-</pre><img vspace="5" hspace="5" src="CPWC_linear_array_beamformer_speed_04.png" alt=""> <h2>The Fresnel simulator<a name="6"></a></h2><p>Finally, we launch the built-in simulator. The simulator takes in a <b>phantom</b>, <b>pulse</b>, <b>probe</b> and a sequence of <b>wave</b> structures along with the desired sampling frequency, and returns a <b>channel_data</b> UFF structure.</p><pre class="codeinput">sim=fresnel();
+</pre><img vspace="5" hspace="5" src="CPWC_linear_array_beamformer_speed_04.png" alt=""> <h2 id="6">The Fresnel simulator</h2><p>Finally, we launch the built-in simulator. The simulator takes in a <b>phantom</b>, <b>pulse</b>, <b>probe</b> and a sequence of <b>wave</b> structures along with the desired sampling frequency, and returns a <b>channel_data</b> UFF structure.</p><pre class="codeinput">sim=fresnel();
 
 <span class="comment">% setting input data</span>
 sim.phantom=pha;                <span class="comment">% phantom</span>
@@ -109,22 +110,22 @@ sim.sampling_frequency=41.6e6;  <span class="comment">% sampling frequency [Hz]<
 
 <span class="comment">% we launch the simulation. Go!</span>
 channel_data=sim.go();
-</pre><pre class="codeoutput">USTB's Fresnel impulse response simulator (v1.0.5)
+</pre><pre class="codeoutput">USTB's Fresnel impulse response simulator (v1.0.7)
 ---------------------------------------------------------------
-</pre><h2>Scan<a name="7"></a></h2><p>The scan area is defines as a collection of pixels spanning our region of interest. For our example here, we use the <b>linear_scan</b> structure, which is defined with just two axes. <b>scan</b> too has a useful <b>plot</b> method it can call.</p><pre class="codeinput">sca=uff.linear_scan(linspace(-20e-3,20e-3,256).', linspace(0e-3,40e-3,256).');
+</pre><h2 id="7">Scan</h2><p>The scan area is defines as a collection of pixels spanning our region of interest. For our example here, we use the <b>linear_scan</b> structure, which is defined with just two axes. <b>scan</b> too has a useful <b>plot</b> method it can call.</p><pre class="codeinput">sca=uff.linear_scan(<span class="string">'x_axis'</span>,linspace(-20e-3,20e-3,256).', <span class="string">'z_axis'</span>, linspace(0e-3,40e-3,256).');
 sca.plot(fig_handle,<span class="string">'Scenario'</span>);    <span class="comment">% show mesh</span>
-</pre><img vspace="5" hspace="5" src="CPWC_linear_array_beamformer_speed_05.png" alt=""> <h2>Beamformer<a name="8"></a></h2><p>With <b>channel_data</b> and a <b>scan</b> we have all we need to produce an ultrasound image. We now use a USTB structure <b>beamformer</b>, that takes an <b>apodization</b> structure in addition to the <b>channel_data</b> and <b>scan</b>.</p><pre class="codeinput">bmf=beamformer();
-bmf.channel_data=channel_data;
-bmf.scan=sca;
+</pre><img vspace="5" hspace="5" src="CPWC_linear_array_beamformer_speed_05.png" alt=""> <h2 id="8">Pipeline</h2><p>With <b>channel_data</b> and a <b>scan</b> we have all we need to produce an ultrasound image. We now use a USTB structure <b>pipeline</b>, that takes an <b>apodization</b> structure in addition to the <b>channel_data</b> and <b>scan</b>.</p><pre class="codeinput">pipe=pipeline();
+pipe.channel_data=channel_data;
+pipe.scan=sca;
 
-bmf.receive_apodization.window=uff.window.tukey50;
-bmf.receive_apodization.f_number=1.0;
-bmf.receive_apodization.apex.distance=Inf;
+pipe.receive_apodization.window=uff.window.tukey50;
+pipe.receive_apodization.f_number=1.0;
+pipe.receive_apodization.origin=uff.point(<span class="string">'xyz'</span>,[0 0 -Inf]);
 
-bmf.transmit_apodization.window=uff.window.tukey50;
-bmf.transmit_apodization.f_number=1.0;
-bmf.transmit_apodization.apex.distance=Inf;
-</pre><p>The <b>beamformer</b> structure allows you to implement different beamformers by combination of multiple built-in <b>processes</b>. By changing the <b>process</b> chain other beamforming sequences can be implemented. It returns yet another <b>UFF</b> structure: <b>beamformed_data</b>.</p><pre class="codeinput"><span class="comment">% To achieve the goal of this example, we combine 4 pairs of *processes*</span>
+pipe.transmit_apodization.window=uff.window.tukey50;
+pipe.transmit_apodization.f_number=1.0;
+pipe.transmit_apodization.origin=uff.point(<span class="string">'xyz'</span>,[0 0 -Inf]);
+</pre><p>The <b>pipeline</b> structure allows you to implement different beamformers by combination of multiple built-in <b>processes</b>. By changing the <b>process</b> chain other beamforming sequences can be implemented. It returns yet another <b>UFF</b> structure: <b>beamformed_data</b>.</p><pre class="codeinput"><span class="comment">% To achieve the goal of this example, we combine 4 pairs of *processes*</span>
 <span class="comment">% # *das_matlab* and % *coherent_compounding*</span>
 <span class="comment">% # *delay_matlab* and % *coherent_compounding*</span>
 <span class="comment">% # *das_mex* and % *coherent_compounding*</span>
@@ -133,48 +134,156 @@ bmf.transmit_apodization.apex.distance=Inf;
 <span class="comment">% respect to the others for increasing amounts of data.</span>
 
 <span class="comment">% beamforming</span>
-n_frame=1:2:10
+n_frame=1:2:10;
 <span class="keyword">for</span> n=1:length(n_frame)
     <span class="comment">% replicate frames</span>
     channel_data.data=repmat(channel_data.data(:,:,:,1),[1 1 1 n_frame(n)]);
-
-    <span class="comment">% Time USTB's MATLAB delay-and-sum implementation</span>
+</pre><h2 id="10">- MATLAB</h2><pre class="codeinput">    <span class="comment">% Time USTB's MATLAB delay implementation</span>
+    proc=midprocess.das();
+    proc.code = code.matlab;
+    proc.dimension = dimension.none;
     tic
-    b_data=bmf.go({process.das_matlab() process.coherent_compounding()});
-    das_matlab_time(n)=toc;
+    b_data=pipe.go({proc postprocess.coherent_compounding()});
+    delay_matlab_time(n)=toc
+
+    <span class="comment">%b_data.plot()</span>
 
     <span class="comment">% Time USTB's MATLAB delay implementation</span>
+    proc=midprocess.das();
+    proc.code = code.matlab_gpu;
+    proc.dimension = dimension.none;
     tic
-    b_data=bmf.go({process.delay_matlab() process.coherent_compounding()});
-    delay_matlab_time(n)=toc;
+    b_data=pipe.go({proc postprocess.coherent_compounding()});
+    delay_matlab_gpu_time(n)=toc
 
-    <span class="comment">% Time USTB's MEX delay-and-sum implementation</span>
-    tic
-    b_data=bmf.go({process.das_mex() process.coherent_compounding()});
-    das_mex_time(n)=toc;
+    <span class="comment">%b_data.plot()</span>
 
-    <span class="comment">% Time USTB's MEX delay implementation</span>
+
+
+    <span class="comment">% Time USTB's MATLAB delay-and-sum implementation</span>
+    proc=midprocess.das();
+    proc.code = code.matlab;
+    proc.dimension = dimension.receive;
     tic
-    b_data=bmf.go({process.delay_mex() process.coherent_compounding()});
+    b_data=pipe.go({proc postprocess.coherent_compounding()});
+    das_rx_matlab_time(n)=toc;
+
+    <span class="comment">% Time USTB's MATLAB delay-and-sum transmit implementation</span>
+    proc=midprocess.das();
+    proc.code = code.matlab;
+    proc.dimension = dimension.transmit;
+    tic
+    b_data=pipe.go({proc postprocess.coherent_compounding()});
+    das_tx_matlab_time(n)=toc;
+
+    <span class="comment">% Time USTB's MATLAB delay-and-sum transmit implementation</span>
+    proc=midprocess.das();
+    proc.code = code.matlab;
+    proc.dimension = dimension.both;
+    tic
+    b_data=pipe.go({proc});
+    das_both_matlab_time(n)=toc;
+</pre><h2 id="11">- MATLAB GPU</h2><pre class="codeinput">    <span class="comment">% Time USTB's MATLAB delay implementation</span>
+    proc=midprocess.das_matlab_gpu_nvidia();
+    proc.dimension = dimension.none;
+    tic
+    b_data=pipe.go({proc postprocess.coherent_compounding()});
+    delay_matlab_gpu_time(n)=toc;
+
+    <span class="comment">% Time USTB's MATLAB delay-and-sum implementation</span>
+    proc=midprocess.das_matlab_gpu_nvidia();
+    proc.dimension = dimension.receive;
+    tic
+    b_data=pipe.go({proc postprocess.coherent_compounding()});
+    das_rx_matlab_gpu_time(n)=toc;
+
+    <span class="comment">% Time USTB's MATLAB delay-and-sum transmit implementation</span>
+    proc=midprocess.das_matlab_gpu_nvidia();
+    proc.dimension = dimension.transmit;
+    tic
+    b_data=pipe.go({proc postprocess.coherent_compounding()});
+    das_tx_matlab_gpu_time(n)=toc;
+
+    <span class="comment">% Time USTB's MATLAB delay-and-sum transmit implementation</span>
+    proc=midprocess.das_matlab_gpu_nvidia();
+    proc.dimension = dimension.both;
+    tic
+    b_data=pipe.go({proc});
+    das_both_matlab_gpu_time(n)=toc;
+</pre><h2 id="12">- MEX</h2><pre class="codeinput">    <span class="comment">% Time USTB's MATLAB delay implementation</span>
+    proc=midprocess.das();
+    proc.code = code.mex;
+    proc.dimension = dimension.none;
+    tic
+    b_data=pipe.go({proc postprocess.coherent_compounding()});
     delay_mex_time(n)=toc;
+
+    <span class="comment">% Time USTB's MATLAB delay-and-sum implementation</span>
+    proc=midprocess.das();
+    proc.code = code.mex;
+    proc.dimension = dimension.receive;
+    tic
+    b_data=pipe.go({proc postprocess.coherent_compounding()});
+    das_rx_mex_time(n)=toc;
+
+    <span class="comment">% Time USTB's MATLAB delay-and-sum transmit implementation</span>
+    proc=midprocess.das();
+    proc.code = code.mex;
+    proc.dimension = dimension.transmit;
+    tic
+    b_data=pipe.go({proc postprocess.coherent_compounding()});
+    das_tx_mex_time(n)=toc;
+
+    <span class="comment">% Time USTB's MATLAB delay-and-sum transmit implementation</span>
+    proc=midprocess.das();
+    proc.code = code.mex;
+    proc.dimension = dimension.both;
+    tic
+    b_data=pipe.go({proc});
+    das_both_mex_time(n)=toc;
 
     <span class="comment">% Plot the runtimes</span>
     figure(101);
-    plot(n_frame(1:n),das_matlab_time(1:n),<span class="string">'ro-'</span>,<span class="string">'linewidth'</span>,2); hold <span class="string">on</span>; grid <span class="string">on</span>;
-    plot(n_frame(1:n),delay_matlab_time(1:n),<span class="string">'gx-'</span>,<span class="string">'linewidth'</span>,2);
-    plot(n_frame(1:n),das_mex_time(1:n),<span class="string">'bs-'</span>,<span class="string">'linewidth'</span>,2);
-    plot(n_frame(1:n),delay_mex_time(1:n),<span class="string">'k^-'</span>,<span class="string">'linewidth'</span>,2);
-    legend(<span class="string">'das matlab'</span>,<span class="string">'delay matlab'</span>,<span class="string">'das mex'</span>,<span class="string">'delay mex'</span>);
+    plot(n_frame(1:n),delay_matlab_time(1:n),<span class="string">'bs--'</span>,<span class="string">'linewidth'</span>,2);  hold <span class="string">on</span>; grid <span class="string">on</span>;
+    plot(n_frame(1:n),das_rx_matlab_time(1:n),<span class="string">'ro--'</span>,<span class="string">'linewidth'</span>,2);
+    plot(n_frame(1:n),das_tx_matlab_time(1:n),<span class="string">'gx--'</span>,<span class="string">'linewidth'</span>,2);
+    plot(n_frame(1:n),das_both_matlab_time(1:n),<span class="string">'k^--'</span>,<span class="string">'linewidth'</span>,2);
+
+    plot(n_frame(1:n),delay_mex_time(1:n),<span class="string">'bs-'</span>,<span class="string">'linewidth'</span>,2);
+    plot(n_frame(1:n),das_rx_mex_time(1:n),<span class="string">'ro-'</span>,<span class="string">'linewidth'</span>,2);
+    plot(n_frame(1:n),das_tx_mex_time(1:n),<span class="string">'gx-'</span>,<span class="string">'linewidth'</span>,2);
+    plot(n_frame(1:n),das_both_mex_time(1:n),<span class="string">'k^-'</span>,<span class="string">'linewidth'</span>,2);
+
+    text(n_frame(n)+0.2,delay_matlab_time(n),sprintf(<span class="string">'%0.2f s'</span>,delay_matlab_time(n)));
+    text(n_frame(n)+0.2,delay_mex_time(n),sprintf(<span class="string">'%0.2f s'</span>,delay_mex_time(n)));
+
+    text(n_frame(n)+0.2,das_rx_matlab_time(n),sprintf(<span class="string">'%0.2f s'</span>,das_rx_matlab_time(n)));
+    text(n_frame(n)+0.2,das_rx_mex_time(n),sprintf(<span class="string">'%0.2f s'</span>,das_rx_mex_time(n)));
+
+    text(n_frame(n)+0.2,das_tx_matlab_time(n),sprintf(<span class="string">'%0.2f s'</span>,das_tx_matlab_time(n)));
+    text(n_frame(n)+0.2,das_tx_mex_time(n),sprintf(<span class="string">'%0.2f s'</span>,das_tx_mex_time(n)));
+
+    text(n_frame(n)+0.2,das_both_matlab_time(n),sprintf(<span class="string">'%0.2f s'</span>,das_both_matlab_time(n)));
+    text(n_frame(n)+0.2,das_both_mex_time(n),sprintf(<span class="string">'%0.2f s'</span>,das_both_mex_time(n)));
+
+
+    legend(<span class="string">'delay MATLAB'</span>,<span class="string">'das RX MATLAB'</span>,<span class="string">'das TX MATLAB'</span>,<span class="string">'das RX&amp;TX MATLAB'</span>,<span class="string">'delay mex'</span>,<span class="string">'das RX mex'</span>,<span class="string">'das TX mex'</span>,<span class="string">'das RX&amp;TX mex'</span>,<span class="string">'Location'</span>,<span class="string">'NorthWest'</span>);
     xlabel(<span class="string">'Frames'</span>);
     ylabel(<span class="string">'Elapsed time [s]'</span>);
     set(gca,<span class="string">'fontsize'</span>,14)
+    ylim([0 80]);
+    xlim([0 10]);
 <span class="keyword">end</span>
 </pre><pre class="codeoutput">
-n_frame =
+delay_matlab_time =
 
-     1     3     5     7     9
+    5.5443
 
-</pre><img vspace="5" hspace="5" src="CPWC_linear_array_beamformer_speed_06.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015a</a><br></p></div><!--
+</pre><pre class="codeoutput error">The class code has no Constant property or Static method named 'matlab_gpu'.
+
+Error in CPWC_linear_array_beamformer_speed (line 169)
+    proc.code = code.matlab_gpu;
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% CPWC simulation to compare speeds of the various USTB beamformers.
 %
@@ -288,30 +397,30 @@ channel_data=sim.go();
 % which is defined with just two axes. *scan* too has a useful *plot*
 % method it can call.
 
-sca=uff.linear_scan(linspace(-20e-3,20e-3,256).', linspace(0e-3,40e-3,256).');
+sca=uff.linear_scan('x_axis',linspace(-20e-3,20e-3,256).', 'z_axis', linspace(0e-3,40e-3,256).');
 sca.plot(fig_handle,'Scenario');    % show mesh
  
-%% Beamformer
+%% Pipeline
 %
 % With *channel_data* and a *scan* we have all we need to produce an
-% ultrasound image. We now use a USTB structure *beamformer*, that takes an
+% ultrasound image. We now use a USTB structure *pipeline*, that takes an
 % *apodization* structure in addition to the *channel_data* and *scan*.
 
-bmf=beamformer();
-bmf.channel_data=channel_data;
-bmf.scan=sca;
+pipe=pipeline();
+pipe.channel_data=channel_data;
+pipe.scan=sca;
 
-bmf.receive_apodization.window=uff.window.tukey50;
-bmf.receive_apodization.f_number=1.0;
-bmf.receive_apodization.apex.distance=Inf;
+pipe.receive_apodization.window=uff.window.tukey50;
+pipe.receive_apodization.f_number=1.0;
+pipe.receive_apodization.origin=uff.point('xyz',[0 0 -Inf]);
 
-bmf.transmit_apodization.window=uff.window.tukey50;
-bmf.transmit_apodization.f_number=1.0;
-bmf.transmit_apodization.apex.distance=Inf;
+pipe.transmit_apodization.window=uff.window.tukey50;
+pipe.transmit_apodization.f_number=1.0;
+pipe.transmit_apodization.origin=uff.point('xyz',[0 0 -Inf]);
 
 %% 
 %
-% The *beamformer* structure allows you to implement different beamformers 
+% The *pipeline* structure allows you to implement different beamformers 
 % by combination of multiple built-in *processes*. By changing the *process*
 % chain other beamforming sequences can be implemented. It returns yet 
 % another *UFF* structure: *beamformed_data*.
@@ -325,41 +434,154 @@ bmf.transmit_apodization.apex.distance=Inf;
 % respect to the others for increasing amounts of data.
 
 % beamforming
-n_frame=1:2:10
+n_frame=1:2:10;
 for n=1:length(n_frame)
     % replicate frames
     channel_data.data=repmat(channel_data.data(:,:,:,1),[1 1 1 n_frame(n)]);
-    
-    % Time USTB's MATLAB delay-and-sum implementation
-    tic
-    b_data=bmf.go({process.das_matlab() process.coherent_compounding()}); 
-    das_matlab_time(n)=toc;
+
+    %%% - MATLAB
     
     % Time USTB's MATLAB delay implementation
+    proc=midprocess.das();
+    proc.code = code.matlab;
+    proc.dimension = dimension.none;
     tic
-    b_data=bmf.go({process.delay_matlab() process.coherent_compounding()});
-    delay_matlab_time(n)=toc;
+    b_data=pipe.go({proc postprocess.coherent_compounding()});
+    delay_matlab_time(n)=toc
     
-    % Time USTB's MEX delay-and-sum implementation
+    %b_data.plot()
+    
+    % Time USTB's MATLAB delay implementation
+    proc=midprocess.das();
+    proc.code = code.matlab_gpu;
+    proc.dimension = dimension.none;
     tic
-    b_data=bmf.go({process.das_mex() process.coherent_compounding()});
-    das_mex_time(n)=toc;
-
-    % Time USTB's MEX delay implementation
+    b_data=pipe.go({proc postprocess.coherent_compounding()});
+    delay_matlab_gpu_time(n)=toc
+    
+    %b_data.plot()
+    
+    
+    
+    % Time USTB's MATLAB delay-and-sum implementation
+    proc=midprocess.das();
+    proc.code = code.matlab;
+    proc.dimension = dimension.receive;
     tic
-    b_data=bmf.go({process.delay_mex() process.coherent_compounding()});
+    b_data=pipe.go({proc postprocess.coherent_compounding()}); 
+    das_rx_matlab_time(n)=toc;
+    
+    % Time USTB's MATLAB delay-and-sum transmit implementation
+    proc=midprocess.das();
+    proc.code = code.matlab;
+    proc.dimension = dimension.transmit;
+    tic
+    b_data=pipe.go({proc postprocess.coherent_compounding()}); 
+    das_tx_matlab_time(n)=toc;
+    
+    % Time USTB's MATLAB delay-and-sum transmit implementation
+    proc=midprocess.das();
+    proc.code = code.matlab;
+    proc.dimension = dimension.both;
+    tic
+    b_data=pipe.go({proc}); 
+    das_both_matlab_time(n)=toc;
+    
+    %%% - MATLAB GPU
+    
+    % Time USTB's MATLAB delay implementation
+    proc=midprocess.das_matlab_gpu_nvidia();
+    proc.dimension = dimension.none;
+    tic
+    b_data=pipe.go({proc postprocess.coherent_compounding()});
+    delay_matlab_gpu_time(n)=toc;
+    
+    % Time USTB's MATLAB delay-and-sum implementation
+    proc=midprocess.das_matlab_gpu_nvidia();
+    proc.dimension = dimension.receive;
+    tic
+    b_data=pipe.go({proc postprocess.coherent_compounding()}); 
+    das_rx_matlab_gpu_time(n)=toc;
+    
+    % Time USTB's MATLAB delay-and-sum transmit implementation
+    proc=midprocess.das_matlab_gpu_nvidia();
+    proc.dimension = dimension.transmit;
+    tic
+    b_data=pipe.go({proc postprocess.coherent_compounding()}); 
+    das_tx_matlab_gpu_time(n)=toc;
+    
+    % Time USTB's MATLAB delay-and-sum transmit implementation
+    proc=midprocess.das_matlab_gpu_nvidia();
+    proc.dimension = dimension.both;
+    tic
+    b_data=pipe.go({proc}); 
+    das_both_matlab_gpu_time(n)=toc;
+    
+    %%% - MEX
+    
+    % Time USTB's MATLAB delay implementation
+    proc=midprocess.das();
+    proc.code = code.mex;
+    proc.dimension = dimension.none;
+    tic
+    b_data=pipe.go({proc postprocess.coherent_compounding()});
     delay_mex_time(n)=toc;
-
+    
+    % Time USTB's MATLAB delay-and-sum implementation
+    proc=midprocess.das();
+    proc.code = code.mex;
+    proc.dimension = dimension.receive;
+    tic
+    b_data=pipe.go({proc postprocess.coherent_compounding()}); 
+    das_rx_mex_time(n)=toc;
+    
+    % Time USTB's MATLAB delay-and-sum transmit implementation
+    proc=midprocess.das();
+    proc.code = code.mex;
+    proc.dimension = dimension.transmit;
+    tic
+    b_data=pipe.go({proc postprocess.coherent_compounding()}); 
+    das_tx_mex_time(n)=toc;
+    
+    % Time USTB's MATLAB delay-and-sum transmit implementation
+    proc=midprocess.das();
+    proc.code = code.mex;
+    proc.dimension = dimension.both;
+    tic
+    b_data=pipe.go({proc}); 
+    das_both_mex_time(n)=toc;
+    
     % Plot the runtimes
     figure(101);
-    plot(n_frame(1:n),das_matlab_time(1:n),'ro-','linewidth',2); hold on; grid on;
-    plot(n_frame(1:n),delay_matlab_time(1:n),'gx-','linewidth',2); 
-    plot(n_frame(1:n),das_mex_time(1:n),'bs-','linewidth',2); 
-    plot(n_frame(1:n),delay_mex_time(1:n),'k^-','linewidth',2); 
-    legend('das matlab','delay matlab','das mex','delay mex');
+    plot(n_frame(1:n),delay_matlab_time(1:n),'bsREPLACE_WITH_DASH_DASH','linewidth',2);  hold on; grid on;
+    plot(n_frame(1:n),das_rx_matlab_time(1:n),'roREPLACE_WITH_DASH_DASH','linewidth',2);
+    plot(n_frame(1:n),das_tx_matlab_time(1:n),'gxREPLACE_WITH_DASH_DASH','linewidth',2); 
+    plot(n_frame(1:n),das_both_matlab_time(1:n),'k^REPLACE_WITH_DASH_DASH','linewidth',2); 
+    
+    plot(n_frame(1:n),delay_mex_time(1:n),'bs-','linewidth',2); 
+    plot(n_frame(1:n),das_rx_mex_time(1:n),'ro-','linewidth',2); 
+    plot(n_frame(1:n),das_tx_mex_time(1:n),'gx-','linewidth',2); 
+    plot(n_frame(1:n),das_both_mex_time(1:n),'k^-','linewidth',2); 
+
+    text(n_frame(n)+0.2,delay_matlab_time(n),sprintf('%0.2f s',delay_matlab_time(n))); 
+    text(n_frame(n)+0.2,delay_mex_time(n),sprintf('%0.2f s',delay_mex_time(n))); 
+
+    text(n_frame(n)+0.2,das_rx_matlab_time(n),sprintf('%0.2f s',das_rx_matlab_time(n))); 
+    text(n_frame(n)+0.2,das_rx_mex_time(n),sprintf('%0.2f s',das_rx_mex_time(n))); 
+    
+    text(n_frame(n)+0.2,das_tx_matlab_time(n),sprintf('%0.2f s',das_tx_matlab_time(n))); 
+    text(n_frame(n)+0.2,das_tx_mex_time(n),sprintf('%0.2f s',das_tx_mex_time(n))); 
+    
+    text(n_frame(n)+0.2,das_both_matlab_time(n),sprintf('%0.2f s',das_both_matlab_time(n))); 
+    text(n_frame(n)+0.2,das_both_mex_time(n),sprintf('%0.2f s',das_both_mex_time(n))); 
+
+    
+    legend('delay MATLAB','das RX MATLAB','das TX MATLAB','das RX&TX MATLAB','delay mex','das RX mex','das TX mex','das RX&TX mex','Location','NorthWest');
     xlabel('Frames');
     ylabel('Elapsed time [s]');
     set(gca,'fontsize',14)
+    ylim([0 80]);
+    xlim([0 10]);
 end
 
 

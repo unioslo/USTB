@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Reading data from an UFF file recorded with the Verasonics CPWC_L7 example</title><meta name="generator" content="MATLAB 8.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-06-01"><meta name="DC.source" content="CPWC_UFF_Verasonics.m"><style type="text/css">
+      --><title>Reading data from an UFF file recorded with the Verasonics CPWC_L7 example</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-08-02"><meta name="DC.source" content="CPWC_UFF_Verasonics.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -66,59 +67,46 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>Reading data from an UFF file recorded with the Verasonics CPWC_L7 example</h1><!--introduction--><p>In this example we show how to read channel and beamformed data from a UFF (Ultrasound File Format) file recorded with the Verasonics example. You will need an internet connectionto download data. Otherwise, you can run the <b>CPWC_L7.m</b> Verasonics example so the file 'L7_CPWC_193328.uff' is in the current path.</p><p><i>by Alfonso Rodriguez-Molares <a href="alfonso.r.molares@ntnu.no">alfonso.r.molares@ntnu.no</a>  and Ole Marius Hoel Rindal <a href="olemarius@olemarius.net">olemarius@olemarius.net</a> 15.05.2017</i></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Checking the file is in the path</a></li><li><a href="#2">Reading channel data</a></li></ul></div><h2>Checking the file is in the path<a name="1"></a></h2><p>To read data from a UFF file the first we need is, you guessed it, a UFF file. We check if it is on the current path and download it from the USTB websever.</p><pre class="codeinput"><span class="comment">% data location</span>
+  </style></head><body><div class="content"><h1>Reading data from an UFF file recorded with the Verasonics CPWC_L7 example</h1><!--introduction--><p>In this example we show how to read channel and beamformed data from a UFF (Ultrasound File Format) file recorded with the Verasonics example. You will need an internet connectionto download data. Otherwise, you can run the <b>CPWC_L7.m</b> Verasonics example so the file 'L7_CPWC_193328.uff' is in the current path.</p><p><i>by Alfonso Rodriguez-Molares <a href="alfonso.r.molares@ntnu.no">alfonso.r.molares@ntnu.no</a>  and Ole Marius Hoel Rindal <a href="olemarius@olemarius.net">olemarius@olemarius.net</a></i></p><pre class="language-matlab">$Last updated: 2017/09/15$
+</pre><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Checking the file is in the path</a></li><li><a href="#2">Checking what's inside</a></li></ul></div><h2 id="1">Checking the file is in the path</h2><p>To read data from a UFF file the first we need is, you guessed it, a UFF file. We check if it is on the current path and download it from the USTB websever.</p><pre class="codeinput"><span class="comment">% data location</span>
 url=<span class="string">'http://ustb.no/datasets/'</span>;      <span class="comment">% if not found data will be downloaded from here</span>
-local_path = [ustb_path(),<span class="string">'/data/'</span>]; <span class="comment">% location of example data in this computer</span>
-addpath(local_path);
 filename=<span class="string">'L7_CPWC_193328.uff'</span>;
 
-<span class="comment">% check if the file is available in the local path &amp; downloads otherwise</span>
-tools.download(filename, url, local_path);
-</pre><h2>Reading channel data<a name="2"></a></h2><p>Now that the file is on the path let us create a <b>UFF</b> object to interact with the file. We open it in "append" mode.</p><pre class="codeinput">uff_file=uff(filename)
-</pre><pre class="codeoutput">
-uff_file = 
+<span class="comment">% checks if the data is in your data path, and downloads it otherwise.</span>
+<span class="comment">% The defaults data path is under USTB's folder, but you can change this</span>
+<span class="comment">% by setting an environment variable with setenv(DATA_PATH,'the_path_you_want_to_use');</span>
+tools.download(filename, url, data_path);
+</pre><h2 id="2">Checking what's inside</h2><p>Now that the file is in the machine we can start loading data. The first would be to check what is in there with the <b>uff.index</b> function</p><pre class="codeinput">uff.index([data_path filesep filename],<span class="string">'/'</span>,true);
+</pre><pre class="codeoutput error">Error using h5infoc
+The filename specified was either not found on the MATLAB path or it contains unsupported characters.
 
-  uff with properties:
+Error in h5info (line 108)
+    hinfo = h5infoc(filename,location, useUtf8);
 
-    filename: 'L7_CPWC_193328.uff'
-     version: 'v1.0.1'
-        mode: 'append'
-     verbose: 1
+Error in uff/index (line 23)
+    info=h5info(filename,location);
 
-</pre><p>Let's first check if we are lucky and the file allready contains beamformed_data that we can display.</p><pre class="codeinput">display=true;
-content = uff_file.index(<span class="string">'/'</span>,display);
+Error in CPWC_UFF_Verasonics (line 33)
+uff.index([data_path filesep filename],'/',true);
+</pre><p>Let's read the channel data,</p><pre class="codeinput">channel_data=uff.read_object([data_path filesep filename],<span class="string">'/channel_data'</span>);
+</pre><p>define a scan</p><pre class="codeinput">scan=uff.linear_scan();
+scan.x_axis = linspace(channel_data.probe.x(1),channel_data.probe.x(end),256).';
+scan.z_axis = linspace(0,50e-3,256).';
+</pre><p>and beamform</p><pre class="codeinput">mid=midprocess.das();
+mid.dimension = dimension.both;
 
-has_b_data = false;
-<span class="keyword">for</span> i = 1:length(content)
-    <span class="keyword">if</span> strcmp(content{i}.class,<span class="string">'uff.beamformed_data'</span>)
-        has_b_data = true; <span class="comment">% We found a beamformed data object!</span>
-    <span class="keyword">end</span>
-<span class="keyword">end</span>
-</pre><pre class="codeoutput">UFF: Contents of L7_CPWC_193328.uff at /
-   - /b_data: b_data [uff.beamformed_data] size(1,1)
-   - /channel_data: channel_data [uff.channel_data] size(1,1)
-</pre><p>If it doesn't have any beamformed data at least it should have some channel_data. So let's read that. If the file did have beamformed data, will will jump straight to the display part later on :)</p><pre class="codeinput"><span class="keyword">if</span> ~has_b_data
-</pre><pre class="codeinput">    channel_data=uff_file.read(<span class="string">'/channel_data'</span>);
-</pre><p>And then the normal routine of defining the scan,</p><pre class="codeinput">    sca=uff.linear_scan();
-    sca.x_axis = linspace(channel_data.probe.x(1),channel_data.probe.x(end),256).';
-    sca.z_axis = linspace(0,50e-3,256).';
-</pre><p>setting up and running the beamforming</p><pre class="codeinput">    bmf=beamformer();
-    bmf.channel_data=channel_data;
-    bmf.scan=sca;
+mid.channel_data=channel_data;
+mid.scan=scan;
 
-    bmf.receive_apodization.window=uff.window.none;
-    bmf.receive_apodization.f_number=1.7;
-    bmf.receive_apodization.apex.distance=Inf;
+mid.transmit_apodization.window=uff.window.none;
+mid.transmit_apodization.f_number=1.7;
 
-    bmf.transmit_apodization.window=uff.window.none;
-    bmf.transmit_apodization.f_number=1.7;
-    bmf.transmit_apodization.apex.distance=Inf;
+mid.receive_apodization.window=uff.window.none;
+mid.receive_apodization.f_number=1.7;
 
-    b_data=bmf.go({process.delay_matlab process.coherent_compounding});
-</pre><p>Now we can save this beamformed image to that file, so that we don't have to wait for the beamforming again.</p><pre class="codeinput">    uff_file.write(b_data,<span class="string">'b_data'</span>);
-</pre><pre class="codeinput"><span class="keyword">end</span>
-</pre><p>And finally display the image.</p><pre class="codeinput">b_data.plot();
-</pre><img vspace="5" hspace="5" src="CPWC_UFF_Verasonics_01.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015a</a><br></p></div><!--
+b_data2=mid.go();
+b_data2.plot();
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Reading data from an UFF file recorded with the Verasonics CPWC_L7 example
 %
@@ -129,7 +117,9 @@ has_b_data = false;
 % is in the current path.
 %
 % _by Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no> 
-%  and Ole Marius Hoel Rindal <olemarius@olemarius.net> 15.05.2017_
+%  and Ole Marius Hoel Rindal <olemarius@olemarius.net>_ 
+%
+%   $Last updated: 2017/09/15$
 
 %% Checking the file is in the path
 %
@@ -139,83 +129,49 @@ has_b_data = false;
 
 % data location
 url='http://ustb.no/datasets/';      % if not found data will be downloaded from here
-local_path = [ustb_path(),'/data/']; % location of example data in this computer
-addpath(local_path);
 filename='L7_CPWC_193328.uff';
 
-% check if the file is available in the local path & downloads otherwise
-tools.download(filename, url, local_path);
+% checks if the data is in your data path, and downloads it otherwise.
+% The defaults data path is under USTB's folder, but you can change this
+% by setting an environment variable with setenv(DATA_PATH,'the_path_you_want_to_use');
+tools.download(filename, url, data_path);   
 
-%% Reading channel data
+%% Checking what's inside
 %
-% Now that the file is on the path let us create a *UFF* object to interact
-% with the file. We open it in "append" mode.
+% Now that the file is in the machine we can start loading data. The first 
+% would be to check what is in there with the *uff.index* function 
+uff.index([data_path filesep filename],'/',true);
 
-uff_file=uff(filename)
+%%
+% Let's read the channel data,
+    
+channel_data=uff.read_object([data_path filesep filename],'/channel_data');
 
 %%
 %
-% Let's first check if we are lucky and the file allready contains
-% beamformed_data that we can display.
-display=true;
-content = uff_file.index('/',display);
-
-has_b_data = false;
-for i = 1:length(content)
-    if strcmp(content{i}.class,'uff.beamformed_data')
-        has_b_data = true; % We found a beamformed data object!
-    end
-end
-
-
+% define a scan
+   
+scan=uff.linear_scan();
+scan.x_axis = linspace(channel_data.probe.x(1),channel_data.probe.x(end),256).';
+scan.z_axis = linspace(0,50e-3,256).';
+    
 %%
 %
-%
-% If it doesn't have any beamformed data at least it should have some
-% channel_data. So let's read that.
-% If the file did have beamformed data, will will jump straight to the
-% display part later on :)
-if ~has_b_data
-    
-    channel_data=uff_file.read('/channel_data');
-    
-    %%
-    %
-    % And then the normal routine of defining the scan,
-    
-    sca=uff.linear_scan();
-    sca.x_axis = linspace(channel_data.probe.x(1),channel_data.probe.x(end),256).';
-    sca.z_axis = linspace(0,50e-3,256).';
-    
-    %%
-    %
-    % setting up and running the beamforming
-    bmf=beamformer();
-    bmf.channel_data=channel_data;
-    bmf.scan=sca;
-    
-    bmf.receive_apodization.window=uff.window.none;
-    bmf.receive_apodization.f_number=1.7;
-    bmf.receive_apodization.apex.distance=Inf;
-    
-    bmf.transmit_apodization.window=uff.window.none;
-    bmf.transmit_apodization.f_number=1.7;
-    bmf.transmit_apodization.apex.distance=Inf;
-    
-    b_data=bmf.go({process.delay_matlab process.coherent_compounding});
-    %%
-    %
-    % Now we can save this beamformed image to that file, so that we don't have
-    % to wait for the beamforming again.
-    uff_file.write(b_data,'b_data');
-end
+% and beamform
+mid=midprocess.das();
+mid.dimension = dimension.both;
 
-%%
-%
-% And finally display the image.
-b_data.plot();
+mid.channel_data=channel_data;
+mid.scan=scan;
 
+mid.transmit_apodization.window=uff.window.none;
+mid.transmit_apodization.f_number=1.7;
 
+mid.receive_apodization.window=uff.window.none;
+mid.receive_apodization.f_number=1.7;
+    
+b_data2=mid.go();
+b_data2.plot();
 
 ##### SOURCE END #####
 --></body></html>

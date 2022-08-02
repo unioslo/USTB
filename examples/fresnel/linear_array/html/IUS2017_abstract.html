@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>IUS2017_abstract</title><meta name="generator" content="MATLAB 8.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-10-04"><meta name="DC.source" content="IUS2017_abstract.m"><style type="text/css">
+      --><title>IUS2017_abstract</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-08-02"><meta name="DC.source" content="IUS2017_abstract.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -66,7 +67,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">PHANTOM</a></li><li><a href="#3">PROBE</a></li><li><a href="#4">PULSE</a></li><li><a href="#5">SCAN</a></li><li><a href="#6">STAI</a></li><li><a href="#7">SEQUENCE GENERATION</a></li><li><a href="#8">fresnel</a></li><li><a href="#9">PIPELINE</a></li><li><a href="#10">FI</a></li><li><a href="#11">SEQUENCE GENERATION</a></li><li><a href="#12">fresnel</a></li><li><a href="#13">SCAN</a></li><li><a href="#14">PIPELINE</a></li><li><a href="#15">CPWC</a></li><li><a href="#16">SEQUENCE GENERATION</a></li><li><a href="#17">fresnel</a></li><li><a href="#18">PIPELINE</a></li><li><a href="#19">DWI</a></li><li><a href="#20">SEQUENCE GENERATION</a></li><li><a href="#21">fresnel</a></li><li><a href="#22">PIPELINE</a></li><li><a href="#23">RTB</a></li><li><a href="#24">SEQUENCE GENERATION</a></li><li><a href="#25">fresnel</a></li><li><a href="#26">PIPELINE</a></li><li><a href="#27">Analyze results</a></li></ul></div><pre class="codeinput"><span class="comment">% Generating the images for IUS 2017 abstract with USTB built-in Fresnel simulator</span>
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">PHANTOM</a></li><li><a href="#3">PROBE</a></li><li><a href="#4">PULSE</a></li><li><a href="#5">SCAN</a></li><li><a href="#6">FI</a></li><li><a href="#7">SEQUENCE GENERATION</a></li><li><a href="#8">fresnel</a></li><li><a href="#9">PIPELINE</a></li><li><a href="#10">STAI</a></li><li><a href="#11">SEQUENCE GENERATION</a></li><li><a href="#12">fresnel</a></li><li><a href="#13">PIPELINE</a></li><li><a href="#14">CPWC</a></li><li><a href="#15">SEQUENCE GENERATION</a></li><li><a href="#16">fresnel</a></li><li><a href="#17">PIPELINE</a></li><li><a href="#18">DWI</a></li><li><a href="#19">SEQUENCE GENERATION</a></li><li><a href="#20">fresnel</a></li><li><a href="#21">PIPELINE</a></li><li><a href="#22">RTB</a></li><li><a href="#23">SEQUENCE GENERATION</a></li><li><a href="#24">fresnel</a></li><li><a href="#25">PIPELINE</a></li><li><a href="#26">Analyze results</a></li></ul></div><pre class="codeinput"><span class="comment">% Generating the images for IUS 2017 abstract with USTB built-in Fresnel simulator</span>
 
 <span class="comment">%   authors: Alfonso Rodriguez-Molares (alfonso.r.molares@ntnu.no)</span>
 
@@ -78,39 +79,84 @@ z0=20e-3;           <span class="comment">% depth of the scatterer [m]</span>
 Fs=41.6e6;          <span class="comment">% sampling frequency [Hz]</span>
 F_number=1.2;       <span class="comment">% F-number</span>
 uwindow=uff.window.boxcar;
-</pre><h2>PHANTOM<a name="2"></a></h2><pre class="codeinput">pha=uff.phantom();
+</pre><h2 id="2">PHANTOM</h2><pre class="codeinput">pha=uff.phantom();
 pha.sound_speed=1540;         <span class="comment">% speed of sound [m/s]</span>
 pha.points=[0,  0, z0, 1];    <span class="comment">% point scatterer position [m]</span>
 fig_handle=pha.plot();
-</pre><img vspace="5" hspace="5" src="IUS2017_abstract_01.png" alt=""> <h2>PROBE<a name="3"></a></h2><pre class="codeinput">prb=uff.linear_array();
+</pre><img vspace="5" hspace="5" src="IUS2017_abstract_01.png" alt=""> <h2 id="3">PROBE</h2><pre class="codeinput">prb=uff.linear_array();
 prb.N=128;                  <span class="comment">% number of elements</span>
 prb.pitch=300e-6;           <span class="comment">% probe pitch in azimuth [m]</span>
 prb.element_width=270e-6;   <span class="comment">% element width [m]</span>
 prb.element_height=5000e-6; <span class="comment">% element height [m]</span>
 prb.plot(fig_handle);
-</pre><img vspace="5" hspace="5" src="IUS2017_abstract_02.png" alt=""> <h2>PULSE<a name="4"></a></h2><pre class="codeinput">pul=uff.pulse();
+</pre><img vspace="5" hspace="5" src="IUS2017_abstract_02.png" alt=""> <h2 id="4">PULSE</h2><pre class="codeinput">pul=uff.pulse();
 pul.center_frequency=5.2e6;       <span class="comment">% transducer frequency [MHz]</span>
 pul.fractional_bandwidth=0.6;     <span class="comment">% fractional bandwidth [unitless]</span>
 pul.plot([],<span class="string">'2-way pulse'</span>);
-</pre><img vspace="5" hspace="5" src="IUS2017_abstract_03.png" alt=""> <h2>SCAN<a name="5"></a></h2><pre class="codeinput">sca=uff.linear_scan(<span class="string">'x_axis'</span>,linspace(-2e-3,2e-3,200).', <span class="string">'z_axis'</span>,linspace(z0-1e-3,z0+1e-3,100).');
-sca.plot(fig_handle,<span class="string">'Scenario'</span>);    <span class="comment">% show mesh</span>
+</pre><img vspace="5" hspace="5" src="IUS2017_abstract_03.png" alt=""> <h2 id="5">SCAN</h2><pre class="codeinput">scan=uff.linear_scan(<span class="string">'x_axis'</span>,linspace(-2e-3,2e-3,200).', <span class="string">'z_axis'</span>,linspace(z0-1e-3,z0+1e-3,100).');
+scan.plot(fig_handle,<span class="string">'Scenario'</span>);    <span class="comment">% show mesh</span>
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+</pre><img vspace="5" hspace="5" src="IUS2017_abstract_04.png" alt=""> <h2 id="6">FI</h2><pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+</pre><h2 id="7">SEQUENCE GENERATION</h2><pre class="codeinput">seq=uff.wave();
+<span class="keyword">for</span> n=1:scan.N_x_axis
+    seq(n)=uff.wave();
+    seq(n).probe=prb;
+    seq(n).source.xyz=[scan.x_axis(n) 0 z0];
+
+    seq(n).apodization=uff.apodization();
+    seq(n).apodization.window=uwindow;
+    seq(n).apodization.f_number=F_number;
+    seq(n).apodization.focus=uff.scan(<span class="string">'xyz'</span>,seq(n).source.xyz);
+
+    seq(n).sound_speed=pha.sound_speed;
+<span class="keyword">end</span>
+</pre><h2 id="8">fresnel</h2><pre class="codeinput">sim=fresnel();
+
+<span class="comment">% setting input data</span>
+sim.phantom=pha;                <span class="comment">% phantom</span>
+sim.pulse=pul;                  <span class="comment">% transmitted pulse</span>
+sim.probe=prb;                  <span class="comment">% probe</span>
+sim.sequence=seq;               <span class="comment">% beam sequence</span>
+sim.sampling_frequency=Fs;      <span class="comment">% sampling frequency [Hz]</span>
+
+<span class="comment">% we launch the simulation</span>
+channel_data=sim.go();
+</pre><pre class="codeoutput">USTB's Fresnel impulse response simulator (v1.0.7)
+---------------------------------------------------------------
+</pre><h2 id="9">PIPELINE</h2><pre class="codeinput">mid=midprocess.das();
+mid.dimension = dimension.both;
+mid.channel_data=channel_data;
+mid.scan=scan;
+
+mid.transmit_apodization.window = uff.window.scanline;
+
+mid.receive_apodization.window=uwindow;
+mid.receive_apodization.f_number=F_number;
+
+<span class="comment">% beamforming</span>
+fi_data=mid.go();
+
+<span class="comment">% show</span>
+fi_data.plot([],<span class="string">'FI'</span>);
 
 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
-</pre><img vspace="5" hspace="5" src="IUS2017_abstract_04.png" alt=""> <h2>STAI<a name="6"></a></h2><pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+</pre><pre class="codeoutput">USTB General beamformer MEX v1.1.2 .............done!
+</pre><img vspace="5" hspace="5" src="IUS2017_abstract_05.png" alt=""> <h2 id="10">STAI</h2><pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
-</pre><h2>SEQUENCE GENERATION<a name="7"></a></h2><pre class="codeinput">N=128;                      <span class="comment">% number of waves</span>
+</pre><h2 id="11">SEQUENCE GENERATION</h2><pre class="codeinput">N=128;                      <span class="comment">% number of waves</span>
 seq=uff.wave();
 <span class="keyword">for</span> n=1:N
     seq(n)=uff.wave();
     seq(n).probe=prb;
     seq(n).source.xyz=[prb.x(n) prb.y(n) prb.z(n)];
-
-    seq(n).apodization=uff.apodization(<span class="string">'window'</span>,uff.window.sta,<span class="string">'origo'</span>,seq(n).source);
+    seq(n).apodization=uff.apodization(<span class="string">'window'</span>,uff.window.sta,<span class="string">'origin'</span>,seq(n).source);
 
     seq(n).sound_speed=pha.sound_speed;
 <span class="keyword">end</span>
-</pre><h2>fresnel<a name="8"></a></h2><pre class="codeinput">sim=fresnel();
+</pre><h2 id="12">fresnel</h2><pre class="codeinput">sim=fresnel();
 
 <span class="comment">% setting input data</span>
 sim.phantom=pha;            <span class="comment">% phantom</span>
@@ -123,76 +169,24 @@ sim.sampling_frequency=Fs;  <span class="comment">% sampling frequency [Hz]</spa
 channel_data=sim.go();
 </pre><pre class="codeoutput">USTB's Fresnel impulse response simulator (v1.0.7)
 ---------------------------------------------------------------
-</pre><h2>PIPELINE<a name="9"></a></h2><pre class="codeinput">pipe=pipeline();
-pipe.channel_data=channel_data;
-pipe.scan=sca;
+</pre><h2 id="13">PIPELINE</h2><pre class="codeinput">mid.channel_data=channel_data;
 
-pipe.receive_apodization.window=uwindow;
-pipe.receive_apodization.f_number=F_number;
-
-pipe.transmit_apodization.window=uwindow;
-pipe.transmit_apodization.f_number=F_number;
+mid.transmit_apodization.window=uwindow;
+mid.transmit_apodization.f_number=F_number;
 
 <span class="comment">% beamforming</span>
-stai_data=pipe.go({midprocess.das_matlab() postprocess.coherent_compounding()});
+stai_data=mid.go();
 
 <span class="comment">% show</span>
 stai_data.plot([],<span class="string">'STAI'</span>);
 
 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
-</pre><img vspace="5" hspace="5" src="IUS2017_abstract_05.png" alt=""> <h2>FI<a name="10"></a></h2><pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+</pre><pre class="codeoutput">uff.apodization: Inputs and outputs are unchanged. Skipping process.
+USTB General beamformer MEX v1.1.2 .............done!
+</pre><img vspace="5" hspace="5" src="IUS2017_abstract_06.png" alt=""> <h2 id="14">CPWC</h2><pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
-</pre><h2>SEQUENCE GENERATION<a name="11"></a></h2><pre class="codeinput">seq=uff.wave();
-<span class="keyword">for</span> n=1:sca.N_x_axis
-    seq(n)=uff.wave();
-    seq(n).probe=prb;
-    seq(n).source.xyz=[sca.x_axis(n) 0 z0];
-
-    seq(n).apodization=uff.apodization();
-    seq(n).apodization.window=uwindow;
-    seq(n).apodization.f_number=F_number;
-    seq(n).apodization.origo.distance=Inf;
-    seq(n).apodization.focus=uff.scan(<span class="string">'xyz'</span>,seq(n).source.xyz);
-
-    seq(n).sound_speed=pha.sound_speed;
-<span class="keyword">end</span>
-</pre><h2>fresnel<a name="12"></a></h2><pre class="codeinput">sim=fresnel();
-
-<span class="comment">% setting input data</span>
-sim.phantom=pha;                <span class="comment">% phantom</span>
-sim.pulse=pul;                  <span class="comment">% transmitted pulse</span>
-sim.probe=prb;                  <span class="comment">% probe</span>
-sim.sequence=seq;               <span class="comment">% beam sequence</span>
-sim.sampling_frequency=Fs;      <span class="comment">% sampling frequency [Hz]</span>
-
-<span class="comment">% we launch the simulation</span>
-channel_data=sim.go();
-</pre><pre class="codeoutput">USTB's Fresnel impulse response simulator (v1.0.7)
----------------------------------------------------------------
-</pre><h2>SCAN<a name="13"></a></h2><pre class="codeinput">fi_sca=uff.linear_scan();
-<span class="keyword">for</span> n=1:sca.N_x_axis
-    fi_sca(n)=uff.linear_scan(<span class="string">'x_axis'</span>,sca.x_axis(n),<span class="string">'z_axis'</span>,sca.z_axis);
-    fi_sca(n).plot(fig_handle,<span class="string">'Scenario'</span>);
-<span class="keyword">end</span>
-</pre><img vspace="5" hspace="5" src="IUS2017_abstract_06.png" alt=""> <h2>PIPELINE<a name="14"></a></h2><pre class="codeinput">pipe=pipeline();
-pipe.channel_data=channel_data;
-pipe.scan=fi_sca;
-pipe.receive_apodization.window=uwindow;
-pipe.receive_apodization.f_number=F_number;
-
-<span class="comment">% beamforming</span>
-fi_data=pipe.go({midprocess.das_matlab() postprocess.stack()});
-
-<span class="comment">% show</span>
-fi_data.plot([],<span class="string">'FI'</span>);
-
-<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
-<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
-</pre><pre class="codeoutput">Warning: Inputs and outputs are unchanged. Skipping process... 
-</pre><img vspace="5" hspace="5" src="IUS2017_abstract_07.png" alt=""> <h2>CPWC<a name="15"></a></h2><pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
-<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
-</pre><h2>SEQUENCE GENERATION<a name="16"></a></h2><pre class="codeinput">angle_max=atan(1/2/F_number);
+</pre><h2 id="15">SEQUENCE GENERATION</h2><pre class="codeinput">angle_max=atan(1/2/F_number);
 lambda=pha.sound_speed/pul.center_frequency;
 N=round(prb.pitch*prb.N_elements/lambda/F_number);
 angles=linspace(-angle_max,angle_max,N);
@@ -204,7 +198,7 @@ seq=uff.wave();
     seq(n).source.distance=Inf;
     seq(n).sound_speed=pha.sound_speed;
 <span class="keyword">end</span>
-</pre><h2>fresnel<a name="17"></a></h2><pre class="codeinput">sim=fresnel();
+</pre><h2 id="16">fresnel</h2><pre class="codeinput">sim=fresnel();
 
 <span class="comment">% setting input data</span>
 sim.phantom=pha;                <span class="comment">% phantom</span>
@@ -217,27 +211,21 @@ sim.sampling_frequency=Fs;      <span class="comment">% sampling frequency [Hz]<
 channel_data=sim.go();
 </pre><pre class="codeoutput">USTB's Fresnel impulse response simulator (v1.0.7)
 ---------------------------------------------------------------
-</pre><h2>PIPELINE<a name="18"></a></h2><pre class="codeinput">pipe=pipeline();
-pipe.channel_data=channel_data;
-pipe.scan=sca;
-
-pipe.receive_apodization.window=uwindow;
-pipe.receive_apodization.f_number=F_number;
-
-pipe.transmit_apodization.window=uwindow;
-pipe.transmit_apodization.f_number=F_number;
+</pre><h2 id="17">PIPELINE</h2><pre class="codeinput">mid.channel_data=channel_data;
 
 <span class="comment">% beamforming</span>
-cpwc_data=pipe.go({midprocess.das_matlab() postprocess.coherent_compounding()});
+cpwc_data=mid.go();
 
 <span class="comment">% show</span>
 cpwc_data.plot([],<span class="string">'CPWC'</span>);
 
 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
-</pre><img vspace="5" hspace="5" src="IUS2017_abstract_08.png" alt=""> <h2>DWI<a name="19"></a></h2><pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+</pre><pre class="codeoutput">uff.apodization: Inputs and outputs are unchanged. Skipping process.
+USTB General beamformer MEX v1.1.2 .............done!
+</pre><img vspace="5" hspace="5" src="IUS2017_abstract_07.png" alt=""> <h2 id="18">DWI</h2><pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
-</pre><h2>SEQUENCE GENERATION<a name="20"></a></h2><pre class="codeinput">zs=-10e-3;
+</pre><h2 id="19">SEQUENCE GENERATION</h2><pre class="codeinput">zs=-10e-3;
 xs=(z0-zs)*tan(angles);
 seq=uff.wave();
 <span class="keyword">for</span> n=1:N
@@ -247,7 +235,7 @@ seq=uff.wave();
 
     seq(n).sound_speed=pha.sound_speed;
 <span class="keyword">end</span>
-</pre><h2>fresnel<a name="21"></a></h2><pre class="codeinput">sim=fresnel();
+</pre><h2 id="20">fresnel</h2><pre class="codeinput">sim=fresnel();
 
 <span class="comment">% setting input data</span>
 sim.phantom=pha;                <span class="comment">% phantom</span>
@@ -260,27 +248,21 @@ sim.sampling_frequency=Fs;      <span class="comment">% sampling frequency [Hz]<
 channel_data=sim.go();
 </pre><pre class="codeoutput">USTB's Fresnel impulse response simulator (v1.0.7)
 ---------------------------------------------------------------
-</pre><h2>PIPELINE<a name="22"></a></h2><pre class="codeinput">pipe=pipeline();
-pipe.channel_data=channel_data;
-pipe.scan=sca;
-
-pipe.receive_apodization.window=uwindow;
-pipe.receive_apodization.f_number=F_number;
-
-pipe.transmit_apodization.window=uwindow;
-pipe.transmit_apodization.f_number=F_number;
+</pre><h2 id="21">PIPELINE</h2><pre class="codeinput">mid.channel_data=channel_data;
 
 <span class="comment">% beamforming</span>
-dwi_data=pipe.go({midprocess.das_matlab() postprocess.coherent_compounding()});
+dwi_data=mid.go();
 
 <span class="comment">% show</span>
 dwi_data.plot([],<span class="string">'DWI'</span>);
 
 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
-</pre><img vspace="5" hspace="5" src="IUS2017_abstract_09.png" alt=""> <h2>RTB<a name="23"></a></h2><pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+</pre><pre class="codeoutput">uff.apodization: Inputs and outputs are unchanged. Skipping process.
+USTB General beamformer MEX v1.1.2 .............done!
+</pre><img vspace="5" hspace="5" src="IUS2017_abstract_08.png" alt=""> <h2 id="22">RTB</h2><pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
-</pre><h2>SEQUENCE GENERATION<a name="24"></a></h2><pre class="codeinput">zs=40e-3;
+</pre><h2 id="23">SEQUENCE GENERATION</h2><pre class="codeinput">zs=40e-3;
 xs=(zs-z0)*tan(angles);
 seq=uff.wave();
 <span class="keyword">for</span> n=1:N
@@ -293,7 +275,7 @@ seq=uff.wave();
     <span class="comment">% show source</span>
     fig_handle=seq(n).source.plot(fig_handle);
 <span class="keyword">end</span>
-</pre><img vspace="5" hspace="5" src="IUS2017_abstract_10.png" alt=""> <h2>fresnel<a name="25"></a></h2><pre class="codeinput">sim=fresnel();
+</pre><img vspace="5" hspace="5" src="IUS2017_abstract_09.png" alt=""> <h2 id="24">fresnel</h2><pre class="codeinput">sim=fresnel();
 
 <span class="comment">% setting input data</span>
 sim.phantom=pha;                <span class="comment">% phantom</span>
@@ -306,44 +288,38 @@ sim.sampling_frequency=Fs;      <span class="comment">% sampling frequency [Hz]<
 channel_data=sim.go();
 </pre><pre class="codeoutput">USTB's Fresnel impulse response simulator (v1.0.7)
 ---------------------------------------------------------------
-</pre><h2>PIPELINE<a name="26"></a></h2><pre class="codeinput">pipe=pipeline();
-pipe.channel_data=channel_data;
-pipe.scan=sca;
-
-pipe.receive_apodization.window=uwindow;
-pipe.receive_apodization.f_number=F_number;
-
-pipe.transmit_apodization.window=uwindow;
-pipe.transmit_apodization.f_number=F_number;
+</pre><h2 id="25">PIPELINE</h2><pre class="codeinput">mid.channel_data=channel_data;
 
 <span class="comment">% beamforming</span>
-rtb_data=pipe.go({midprocess.das_matlab() postprocess.coherent_compounding()});
+rtb_data=mid.go();
 
 <span class="comment">% show</span>
 rtb_data.plot([],<span class="string">'RTB'</span>);
 
 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%</span>
-</pre><img vspace="5" hspace="5" src="IUS2017_abstract_11.png" alt=""> <h2>Analyze results<a name="27"></a></h2><pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%</span>
-mask=sca.x&gt;-0.5e-3&amp;sca.x&lt;0.5e-3&amp;sca.z&gt;19.6e-3&amp;sca.z&lt;20.4e-3;
+</pre><pre class="codeoutput">uff.apodization: Inputs and outputs are unchanged. Skipping process.
+USTB General beamformer MEX v1.1.2 .............done!
+</pre><img vspace="5" hspace="5" src="IUS2017_abstract_10.png" alt=""> <h2 id="26">Analyze results</h2><pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+mask=scan.x&gt;-0.5e-3&amp;scan.x&lt;0.5e-3&amp;scan.z&gt;19.6e-3&amp;scan.z&lt;20.4e-3;
 <span class="keyword">for</span> n=1:5
     <span class="keyword">switch</span> n
         <span class="keyword">case</span> 1
-            data=reshape(stai_data.data,[sca.N_z_axis sca.N_x_axis]);
+            data=reshape(stai_data.data,[scan.N_z_axis scan.N_x_axis]);
         <span class="keyword">case</span> 2
-            data=reshape(fi_data.data,[sca.N_z_axis sca.N_x_axis]);
+            data=reshape(fi_data.data,[scan.N_z_axis scan.N_x_axis]);
         <span class="keyword">case</span> 3
-            data=reshape(cpwc_data.data,[sca.N_z_axis sca.N_x_axis]);
+            data=reshape(cpwc_data.data,[scan.N_z_axis scan.N_x_axis]);
         <span class="keyword">case</span> 4
-            data=reshape(dwi_data.data,[sca.N_z_axis sca.N_x_axis]);
+            data=reshape(dwi_data.data,[scan.N_z_axis scan.N_x_axis]);
         <span class="keyword">case</span> 5
-            data=reshape(rtb_data.data,[sca.N_z_axis sca.N_x_axis]);
+            data=reshape(rtb_data.data,[scan.N_z_axis scan.N_x_axis]);
     <span class="keyword">end</span>
 
     <span class="comment">%</span>
     temp=sum(abs(data(:,100:200)),1);
     temp=temp./max(temp);
     temp=20*log10(temp);
-    xlat=interp1(temp,sca.x_axis(100:200),-6);
+    xlat=interp1(temp(2:end),scan.x_axis(101:200),-6);
     lateral_profile(n,:)=temp;
     fwhm(n)=2*xlat;
 
@@ -358,7 +334,7 @@ disp(sprintf(<span class="string">'SLL %0.2f&plusmn;%0.2f'</span>,mean(sll),std(
 
 
 figure;
-plot(sca.x_axis(100:200)*1e3,lateral_profile,<span class="string">'linewidth'</span>,2); grid <span class="string">on</span>; hold <span class="string">on</span>;
+plot(scan.x_axis(100:200)*1e3,lateral_profile,<span class="string">'linewidth'</span>,2); grid <span class="string">on</span>; hold <span class="string">on</span>;
 legend(<span class="string">'STAI'</span>,<span class="string">'FI'</span>,<span class="string">'CPWC'</span>,<span class="string">'DWI'</span>,<span class="string">'RTB'</span>);
 xlabel(<span class="string">'x [mm]'</span>); axis <span class="string">tight</span>
 ylabel(<span class="string">'Intensity [dB]'</span>);
@@ -384,9 +360,9 @@ plot(0:6,ones(1,7)*mean(sll),<span class="string">'r--'</span>,<span class="stri
 plot(0:6,ones(1,7)*mean(sll)+std(sll),<span class="string">'r-'</span>,<span class="string">'linewidth'</span>,2)
 plot(0:6,ones(1,7)*mean(sll)-std(sll),<span class="string">'r-'</span>,<span class="string">'linewidth'</span>,2)
 xlim([0 6]);
-</pre><pre class="codeoutput">FWHM 352.27&plusmn;4.09
+</pre><pre class="codeoutput">FWHM 351.96&plusmn;3.85
 SLL -31.24&plusmn;0.17
-</pre><img vspace="5" hspace="5" src="IUS2017_abstract_12.png" alt=""> <img vspace="5" hspace="5" src="IUS2017_abstract_13.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014b</a><br></p></div><!--
+</pre><img vspace="5" hspace="5" src="IUS2017_abstract_11.png" alt=""> <img vspace="5" hspace="5" src="IUS2017_abstract_12.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 % Generating the images for IUS 2017 abstract with USTB built-in Fresnel simulator
 
@@ -422,58 +398,8 @@ pul.fractional_bandwidth=0.6;     % fractional bandwidth [unitless]
 pul.plot([],'2-way pulse');
 
 %% SCAN
-sca=uff.linear_scan('x_axis',linspace(-2e-3,2e-3,200).', 'z_axis',linspace(z0-1e-3,z0+1e-3,100).');
-sca.plot(fig_handle,'Scenario');    % show mesh
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% STAI
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%% SEQUENCE GENERATION
-N=128;                      % number of waves
-seq=uff.wave();
-for n=1:N 
-    seq(n)=uff.wave();
-    seq(n).probe=prb;
-    seq(n).source.xyz=[prb.x(n) prb.y(n) prb.z(n)];
-    
-    seq(n).apodization=uff.apodization('window',uff.window.sta,'origo',seq(n).source);
-    
-    seq(n).sound_speed=pha.sound_speed;
-end
-
-%% fresnel
-sim=fresnel();
-
-% setting input data 
-sim.phantom=pha;            % phantom
-sim.pulse=pul;              % transmitted pulse
-sim.probe=prb;              % probe
-sim.sequence=seq;           % beam sequence
-sim.sampling_frequency=Fs;  % sampling frequency [Hz]
-
-% we launch the simulation
-channel_data=sim.go();
-  
-%% PIPELINE
-pipe=pipeline();
-pipe.channel_data=channel_data;
-pipe.scan=sca;
-
-pipe.receive_apodization.window=uwindow;
-pipe.receive_apodization.f_number=F_number;
-
-pipe.transmit_apodization.window=uwindow;
-pipe.transmit_apodization.f_number=F_number;
-
-% beamforming
-stai_data=pipe.go({midprocess.das_matlab() postprocess.coherent_compounding()});
-
-% show
-stai_data.plot([],'STAI');
-
+scan=uff.linear_scan('x_axis',linspace(-2e-3,2e-3,200).', 'z_axis',linspace(z0-1e-3,z0+1e-3,100).');
+scan.plot(fig_handle,'Scenario');    % show mesh
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% FI
@@ -482,15 +408,14 @@ stai_data.plot([],'STAI');
 
 %% SEQUENCE GENERATION
 seq=uff.wave();
-for n=1:sca.N_x_axis 
+for n=1:scan.N_x_axis 
     seq(n)=uff.wave();
     seq(n).probe=prb;
-    seq(n).source.xyz=[sca.x_axis(n) 0 z0];
+    seq(n).source.xyz=[scan.x_axis(n) 0 z0];
     
     seq(n).apodization=uff.apodization();
     seq(n).apodization.window=uwindow;
     seq(n).apodization.f_number=F_number;
-    seq(n).apodization.origo.distance=Inf;
     seq(n).apodization.focus=uff.scan('xyz',seq(n).source.xyz);
     
     seq(n).sound_speed=pha.sound_speed;
@@ -509,25 +434,65 @@ sim.sampling_frequency=Fs;      % sampling frequency [Hz]
 % we launch the simulation
 channel_data=sim.go();
  
-%% SCAN
-fi_sca=uff.linear_scan();
-for n=1:sca.N_x_axis
-    fi_sca(n)=uff.linear_scan('x_axis',sca.x_axis(n),'z_axis',sca.z_axis);
-    fi_sca(n).plot(fig_handle,'Scenario');    
-end
- 
 %% PIPELINE
-pipe=pipeline();
-pipe.channel_data=channel_data;
-pipe.scan=fi_sca;
-pipe.receive_apodization.window=uwindow;
-pipe.receive_apodization.f_number=F_number;
+mid=midprocess.das();
+mid.dimension = dimension.both;
+mid.channel_data=channel_data;
+mid.scan=scan;
+
+mid.transmit_apodization.window = uff.window.scanline;
+
+mid.receive_apodization.window=uwindow;
+mid.receive_apodization.f_number=F_number;
 
 % beamforming
-fi_data=pipe.go({midprocess.das_matlab() postprocess.stack()});
+fi_data=mid.go();
 
 % show
 fi_data.plot([],'FI');
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% STAI
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% SEQUENCE GENERATION
+N=128;                      % number of waves
+seq=uff.wave();
+for n=1:N 
+    seq(n)=uff.wave();
+    seq(n).probe=prb;
+    seq(n).source.xyz=[prb.x(n) prb.y(n) prb.z(n)];
+    seq(n).apodization=uff.apodization('window',uff.window.sta,'origin',seq(n).source);
+    
+    seq(n).sound_speed=pha.sound_speed;
+end
+
+%% fresnel
+sim=fresnel();
+
+% setting input data 
+sim.phantom=pha;            % phantom
+sim.pulse=pul;              % transmitted pulse
+sim.probe=prb;              % probe
+sim.sequence=seq;           % beam sequence
+sim.sampling_frequency=Fs;  % sampling frequency [Hz]
+
+% we launch the simulation
+channel_data=sim.go();
+  
+%% PIPELINE
+mid.channel_data=channel_data;
+
+mid.transmit_apodization.window=uwindow;
+mid.transmit_apodization.f_number=F_number;
+
+% beamforming
+stai_data=mid.go();
+
+% show
+stai_data.plot([],'STAI');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -563,18 +528,10 @@ sim.sampling_frequency=Fs;      % sampling frequency [Hz]
 channel_data=sim.go();
  
 %% PIPELINE
-pipe=pipeline();
-pipe.channel_data=channel_data;
-pipe.scan=sca;
-
-pipe.receive_apodization.window=uwindow;
-pipe.receive_apodization.f_number=F_number;
-
-pipe.transmit_apodization.window=uwindow;
-pipe.transmit_apodization.f_number=F_number;
+mid.channel_data=channel_data;
 
 % beamforming
-cpwc_data=pipe.go({midprocess.das_matlab() postprocess.coherent_compounding()});
+cpwc_data=mid.go();
 
 % show
 cpwc_data.plot([],'CPWC');
@@ -611,18 +568,10 @@ sim.sampling_frequency=Fs;      % sampling frequency [Hz]
 channel_data=sim.go();
  
 %% PIPELINE
-pipe=pipeline();
-pipe.channel_data=channel_data;
-pipe.scan=sca;
-
-pipe.receive_apodization.window=uwindow;
-pipe.receive_apodization.f_number=F_number;
-
-pipe.transmit_apodization.window=uwindow;
-pipe.transmit_apodization.f_number=F_number;
+mid.channel_data=channel_data;
 
 % beamforming
-dwi_data=pipe.go({midprocess.das_matlab() postprocess.coherent_compounding()});
+dwi_data=mid.go();
 
 % show
 dwi_data.plot([],'DWI');
@@ -662,18 +611,10 @@ sim.sampling_frequency=Fs;      % sampling frequency [Hz]
 channel_data=sim.go();
  
 %% PIPELINE
-pipe=pipeline();
-pipe.channel_data=channel_data;
-pipe.scan=sca;
-
-pipe.receive_apodization.window=uwindow;
-pipe.receive_apodization.f_number=F_number;
-
-pipe.transmit_apodization.window=uwindow;
-pipe.transmit_apodization.f_number=F_number;
+mid.channel_data=channel_data;
 
 % beamforming
-rtb_data=pipe.go({midprocess.das_matlab() postprocess.coherent_compounding()});
+rtb_data=mid.go();
 
 % show
 rtb_data.plot([],'RTB');
@@ -681,26 +622,26 @@ rtb_data.plot([],'RTB');
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %% Analyze results
 %%%%%%%%%%%%%%%%%%%%%%%%%
-mask=sca.x>-0.5e-3&sca.x<0.5e-3&sca.z>19.6e-3&sca.z<20.4e-3;
+mask=scan.x>-0.5e-3&scan.x<0.5e-3&scan.z>19.6e-3&scan.z<20.4e-3;
 for n=1:5
     switch n
         case 1
-            data=reshape(stai_data.data,[sca.N_z_axis sca.N_x_axis]);
+            data=reshape(stai_data.data,[scan.N_z_axis scan.N_x_axis]);
         case 2
-            data=reshape(fi_data.data,[sca.N_z_axis sca.N_x_axis]);
+            data=reshape(fi_data.data,[scan.N_z_axis scan.N_x_axis]);
         case 3
-            data=reshape(cpwc_data.data,[sca.N_z_axis sca.N_x_axis]);
+            data=reshape(cpwc_data.data,[scan.N_z_axis scan.N_x_axis]);
         case 4
-            data=reshape(dwi_data.data,[sca.N_z_axis sca.N_x_axis]);
+            data=reshape(dwi_data.data,[scan.N_z_axis scan.N_x_axis]);
         case 5
-            data=reshape(rtb_data.data,[sca.N_z_axis sca.N_x_axis]);
+            data=reshape(rtb_data.data,[scan.N_z_axis scan.N_x_axis]);
     end
     
     %
     temp=sum(abs(data(:,100:200)),1); 
     temp=temp./max(temp);
     temp=20*log10(temp);
-    xlat=interp1(temp,sca.x_axis(100:200),-6);
+    xlat=interp1(temp(2:end),scan.x_axis(101:200),-6);
     lateral_profile(n,:)=temp;
     fwhm(n)=2*xlat;
     
@@ -715,7 +656,7 @@ disp(sprintf('SLL %0.2f±%0.2f',mean(sll),std(sll)));
 
 
 figure;
-plot(sca.x_axis(100:200)*1e3,lateral_profile,'linewidth',2); grid on; hold on;
+plot(scan.x_axis(100:200)*1e3,lateral_profile,'linewidth',2); grid on; hold on;
 legend('STAI','FI','CPWC','DWI','RTB');
 xlabel('x [mm]'); axis tight
 ylabel('Intensity [dB]');
