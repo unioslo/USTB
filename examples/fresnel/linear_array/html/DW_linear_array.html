@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>DW simulation with a linear array using the USTB built-in Fresnel simulator</title><meta name="generator" content="MATLAB 8.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-10-04"><meta name="DC.source" content="DW_linear_array.m"><style type="text/css">
+      --><title>DW simulation with a linear array using the USTB built-in Fresnel simulator</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-08-02"><meta name="DC.source" content="DW_linear_array.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -66,23 +67,27 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>DW simulation with a linear array using the USTB built-in Fresnel simulator</h1><!--introduction--><p>In this example, we show how to use the built-in Fresnel simulator in USTB to generate a Diverging Wave (DW) dataset on a linear array, and then beamform it with USTB.</p><p>This tutorial assumes familiarity with the contents of the <a href="./CPWC_linear_array.html">'CPWC simulation with the USTB built-in Fresnel simulator'</a> tutorial. Please feel free to refer back to that for more details.</p><p><i>by Alfonso Rodriguez-Molares <a href="alfonso.r.molares@ntnu.no">alfonso.r.molares@ntnu.no</a> and Arun Asokan Nair <a href="anair8@jhu.edu">anair8@jhu.edu</a> 23.02.2017</i></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">Phantom</a></li><li><a href="#3">Probe</a></li><li><a href="#4">Pulse</a></li><li><a href="#5">Sequence generation</a></li><li><a href="#6">The Fresnel simulator</a></li><li><a href="#7">Scan</a></li><li><a href="#8">Pipeline</a></li></ul></div><pre class="codeinput">clear <span class="string">all</span>;
-close <span class="string">all</span>;
-</pre><h2>Phantom<a name="2"></a></h2><p>First step - define our phantom. Here, our phantom is a single point scatterer. USTB's implementation of <b>phantom</b> comes with a <b>plot</b> method for free!</p><pre class="codeinput">pha=uff.phantom();
-pha.sound_speed=1540;            <span class="comment">% speed of sound [m/s]</span>
-pha.points=[0,  0, 40e-3, 1];    <span class="comment">% point scatterer position [m]</span>
+  </style></head><body><div class="content"><h1>DW simulation with a linear array using the USTB built-in Fresnel simulator</h1><!--introduction--><p>In this example, we show how to use the built-in Fresnel simulator in USTB to generate a Diverging Wave (DW) dataset on a linear array, and then beamform it with USTB.</p><p>This tutorial assumes familiarity with the contents of the <a href="./CPWC_linear_array.html">'CPWC simulation with the USTB built-in Fresnel simulator'</a> tutorial. Please feel free to refer back to that for more details.</p><p><i>by Alfonso Rodriguez-Molares <a href="alfonso.r.molares@ntnu.no">alfonso.r.molares@ntnu.no</a> and Arun Asokan Nair <a href="anair8@jhu.edu">anair8@jhu.edu</a> 23.02.2017</i></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Phantom</a></li><li><a href="#2">Probe</a></li><li><a href="#3">Pulse</a></li><li><a href="#4">Sequence generation</a></li><li><a href="#5">The Fresnel simulator</a></li><li><a href="#6">Scan</a></li><li><a href="#7">Midprocessor</a></li></ul></div><h2 id="1">Phantom</h2><p>First step - define our phantom. Here, our phantom is a single point scatterer. USTB's implementation of <b>phantom</b> comes with a <b>plot</b> method for free!</p><pre class="codeinput">pha=uff.phantom();
+pha.sound_speed=1540;                 <span class="comment">% speed of sound [m/s]</span>
+pha.points=[0,  0,  5e-3, 1;<span class="keyword">...</span>
+            0,  0, 10e-3, 1;<span class="keyword">...</span>
+            0,  0, 20e-3, 1;<span class="keyword">...</span>
+            0,  0, 30e-3, 1;<span class="keyword">...</span>
+            0,  0, 40e-3, 1;<span class="keyword">...</span>
+             10e-3,  0, 20e-3, 1;<span class="keyword">...</span>
+            -10e-3,  0, 20e-3, 1];    <span class="comment">% point scatterer position [m]</span>
 fig_handle=pha.plot();
-</pre><img vspace="5" hspace="5" src="DW_linear_array_01.png" alt=""> <h2>Probe<a name="3"></a></h2><p>The next step is to define the <b>probe</b> structure which contains information about the probe's geometry. This too comes with a <b>plot</b> method that enables visualization of the probe with respect to the phantom. The probe we will use in our example is a linear array transducer with 128 elements.</p><pre class="codeinput">prb=uff.linear_array();
+</pre><img vspace="5" hspace="5" src="DW_linear_array_01.png" alt=""> <h2 id="2">Probe</h2><p>The next step is to define the <b>probe</b> structure which contains information about the probe's geometry. This too comes with a <b>plot</b> method that enables visualization of the probe with respect to the phantom. The probe we will use in our example is a linear array transducer with 128 elements.</p><pre class="codeinput">prb=uff.linear_array();
 prb.N=128;                  <span class="comment">% number of elements</span>
 prb.pitch=300e-6;           <span class="comment">% probe pitch in azimuth [m]</span>
 prb.element_width=270e-6;   <span class="comment">% element width [m]</span>
 prb.element_height=5000e-6; <span class="comment">% element height [m]</span>
 prb.plot(fig_handle);
-</pre><img vspace="5" hspace="5" src="DW_linear_array_02.png" alt=""> <h2>Pulse<a name="4"></a></h2><p>We then define the pulse-echo signal which is done here using the <b>fresnel</b> simulator's <b>pulse</b> structure. We could also use <a href="http://field-ii.dk/">'Field II'</a> for a more accurate model.</p><pre class="codeinput">pul=uff.pulse();
+</pre><img vspace="5" hspace="5" src="DW_linear_array_02.png" alt=""> <h2 id="3">Pulse</h2><p>We then define the pulse-echo signal which is done here using the <b>fresnel</b> simulator's <b>pulse</b> structure. We could also use <a href="http://field-ii.dk/">'Field II'</a> for a more accurate model.</p><pre class="codeinput">pul=uff.pulse();
 pul.center_frequency=5.2e6;       <span class="comment">% transducer frequency [MHz]</span>
 pul.fractional_bandwidth=0.6;     <span class="comment">% fractional bandwidth [unitless]</span>
 pul.plot([],<span class="string">'2-way pulse'</span>);
-</pre><img vspace="5" hspace="5" src="DW_linear_array_03.png" alt=""> <h2>Sequence generation<a name="5"></a></h2><p>Now, we shall generate our sequence! Keep in mind that the <b>fresnel</b> simulator takes the same sequence definition as the USTB beamformer. In UFF and USTB a sequence is defined as a collection of <b>wave</b> structures.</p><p>For our example here, we define a sequence of 31 diverging waves. The <b>wave</b> structure has a <b>plot</b> method which plots the direction of the transmitted waves.</p><pre class="codeinput">N=31;                      <span class="comment">% number of diverging waves</span>
+</pre><img vspace="5" hspace="5" src="DW_linear_array_03.png" alt=""> <h2 id="4">Sequence generation</h2><p>Now, we shall generate our sequence! Keep in mind that the <b>fresnel</b> simulator takes the same sequence definition as the USTB beamformer. In UFF and USTB a sequence is defined as a collection of <b>wave</b> structures.</p><p>For our example here, we define a sequence of 31 diverging waves. The <b>wave</b> structure has a <b>plot</b> method which plots the direction of the transmitted waves.</p><pre class="codeinput">N=31;                      <span class="comment">% number of diverging waves</span>
 x0=linspace(-19.2e-3,19.2e-3,N);
 z0=-20e-3;
 seq=uff.wave();
@@ -95,7 +100,7 @@ seq=uff.wave();
     <span class="comment">% show source</span>
     fig_handle=seq(n).source.plot(fig_handle);
 <span class="keyword">end</span>
-</pre><img vspace="5" hspace="5" src="DW_linear_array_04.png" alt=""> <h2>The Fresnel simulator<a name="6"></a></h2><p>Finally, we launch the built-in simulator. The simulator takes in a <b>phantom</b>, <b>pulse</b>, <b>probe</b> and a sequence of <b>wave</b> structures along with the desired sampling frequency, and returns a <b>channel_data</b> UFF structure.</p><pre class="codeinput">sim=fresnel();
+</pre><img vspace="5" hspace="5" src="DW_linear_array_04.png" alt=""> <h2 id="5">The Fresnel simulator</h2><p>Finally, we launch the built-in simulator. The simulator takes in a <b>phantom</b>, <b>pulse</b>, <b>probe</b> and a sequence of <b>wave</b> structures along with the desired sampling frequency, and returns a <b>channel_data</b> UFF structure.</p><pre class="codeinput">sim=fresnel();
 
 <span class="comment">% setting input data</span>
 sim.phantom=pha;                <span class="comment">% phantom</span>
@@ -108,21 +113,26 @@ sim.sampling_frequency=41.6e6;  <span class="comment">% sampling frequency [Hz]<
 channel_data=sim.go();
 </pre><pre class="codeoutput">USTB's Fresnel impulse response simulator (v1.0.7)
 ---------------------------------------------------------------
-</pre><h2>Scan<a name="7"></a></h2><p>The scan area is defines as a collection of pixels spanning our region of interest. For our example here, we use the <b>linear_scan</b> structure, which is defined with two axes - the lateral axis and the depth axis. <b>scan</b> too has a useful <b>plot</b> method it can call.</p><pre class="codeinput">scan=uff.linear_scan(<span class="string">'x_axis'</span>, linspace(-2e-3,2e-3,200).', <span class="string">'z_axis'</span>, linspace(39e-3,41e-3,100).');
+</pre><h2 id="6">Scan</h2><p>The scan area is defines as a collection of pixels spanning our region of interest. For our example here, we use the <b>linear_scan</b> structure, which is defined with two axes - the lateral axis and the depth axis. <b>scan</b> too has a useful <b>plot</b> method it can call.</p><pre class="codeinput">scan=uff.linear_scan(<span class="string">'x_axis'</span>, linspace(-19.2e-3,19.2e-3,200).', <span class="string">'z_axis'</span>, linspace(0e-3,45e-3,100).');
 scan.plot(fig_handle,<span class="string">'Scenario'</span>);    <span class="comment">% show mesh</span>
-</pre><img vspace="5" hspace="5" src="DW_linear_array_05.png" alt=""> <h2>Pipeline<a name="8"></a></h2><p>With <b>channel_data</b> and a <b>scan</b> we have all we need to produce an ultrasound image. We now use a USTB structure <b>pipeline</b>, that takes an <b>apodization</b> structure in addition to the <b>channel_data</b> and <b>scan</b>.</p><pre class="codeinput">pipe=pipeline();
-pipe.channel_data=channel_data;
-pipe.scan=scan;
+</pre><img vspace="5" hspace="5" src="DW_linear_array_05.png" alt=""> <h2 id="7">Midprocessor</h2><p>With <b>channel_data</b> and a <b>scan</b> we have all we need to produce an ultrasound image. We now use a USTB structure <b>pipeline</b>, that takes an <b>apodization</b> structure in addition to the <b>channel_data</b> and <b>scan</b>.</p><pre class="codeinput">mid=midprocess.das();
+mid.dimension = dimension.both;
+mid.channel_data=channel_data;
+mid.scan=scan;
 
-pipe.receive_apodization.window=uff.window.tukey50;
-pipe.receive_apodization.f_number=1.7;
+F_number=1.7;
+mid.receive_apodization.window=uff.window.hanning;
+mid.receive_apodization.f_number=F_number;
+mid.receive_apodization.minimum_aperture = [3e-3 3e-3];
 
-pipe.transmit_apodization.window=uff.window.tukey50;
-pipe.transmit_apodization.f_number=1.7;
-</pre><p>The <b>pipeline</b> structure allows you to implement different beamformers by combination of multiple built-in <b>processes</b>. By changing the <b>process</b> chain other beamforming sequences can be implemented. It returns a <b>uff.beamformed_data</b>.</p><p>We use the <b>das_matlab</b> process followed by the <b>coherent_compounding</b> process in order to produce coherently compounded output images.</p><pre class="codeinput"><span class="comment">% beamforming</span>
-b_data=pipe.go({midprocess.das_matlab() postprocess.coherent_compounding()});
-</pre><p>Finally, show our results</p><pre class="codeinput">b_data.plot();
-</pre><img vspace="5" hspace="5" src="DW_linear_array_06.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014b</a><br></p></div><!--
+mid.transmit_apodization.window=uff.window.hanning;
+mid.transmit_apodization.f_number=F_number;
+mid.transmit_apodization.minimum_aperture = [3e-3 3e-3];
+
+b_data=mid.go();
+b_data.plot();
+</pre><pre class="codeoutput">USTB General beamformer MEX v1.1.2 .............done!
+</pre><img vspace="5" hspace="5" src="DW_linear_array_06.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% DW simulation with a linear array using the USTB built-in Fresnel simulator
 %
@@ -138,10 +148,6 @@ b_data=pipe.go({midprocess.das_matlab() postprocess.coherent_compounding()});
 % _by Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no> and Arun Asokan 
 % Nair <anair8@jhu.edu> 23.02.2017_
 
-%%
-clear all;
-close all;
-
 %% Phantom
 %
 % First step - define our phantom. Here, our phantom is a single point 
@@ -149,8 +155,14 @@ close all;
 % for free!
 
 pha=uff.phantom();
-pha.sound_speed=1540;            % speed of sound [m/s]
-pha.points=[0,  0, 40e-3, 1];    % point scatterer position [m]
+pha.sound_speed=1540;                 % speed of sound [m/s]
+pha.points=[0,  0,  5e-3, 1;...
+            0,  0, 10e-3, 1;...
+            0,  0, 20e-3, 1;...
+            0,  0, 30e-3, 1;...
+            0,  0, 40e-3, 1;...
+             10e-3,  0, 20e-3, 1;...
+            -10e-3,  0, 20e-3, 1];    % point scatterer position [m]
 fig_handle=pha.plot();             
              
 %% Probe
@@ -229,41 +241,30 @@ channel_data=sim.go();
 % which is defined with two axes - the lateral axis and the depth axis. 
 % *scan* too has a useful *plot* method it can call.
 
-scan=uff.linear_scan('x_axis', linspace(-2e-3,2e-3,200).', 'z_axis', linspace(39e-3,41e-3,100).');
+scan=uff.linear_scan('x_axis', linspace(-19.2e-3,19.2e-3,200).', 'z_axis', linspace(0e-3,45e-3,100).');
 scan.plot(fig_handle,'Scenario');    % show mesh
  
-%% Pipeline
+%% Midprocessor
 %
 % With *channel_data* and a *scan* we have all we need to produce an
 % ultrasound image. We now use a USTB structure *pipeline*, that takes an
 % *apodization* structure in addition to the *channel_data* and *scan*.
 
-pipe=pipeline();
-pipe.channel_data=channel_data;
-pipe.scan=scan;
+mid=midprocess.das();
+mid.dimension = dimension.both;
+mid.channel_data=channel_data;
+mid.scan=scan;
 
-pipe.receive_apodization.window=uff.window.tukey50;
-pipe.receive_apodization.f_number=1.7;
+F_number=1.7;
+mid.receive_apodization.window=uff.window.hanning;
+mid.receive_apodization.f_number=F_number;
+mid.receive_apodization.minimum_aperture = [3e-3 3e-3];
 
-pipe.transmit_apodization.window=uff.window.tukey50;
-pipe.transmit_apodization.f_number=1.7;
+mid.transmit_apodization.window=uff.window.hanning;
+mid.transmit_apodization.f_number=F_number;
+mid.transmit_apodization.minimum_aperture = [3e-3 3e-3];
 
-%% 
-%
-% The *pipeline* structure allows you to implement different beamformers 
-% by combination of multiple built-in *processes*. By changing the *process*
-% chain other beamforming sequences can be implemented. It returns a
-% *uff.beamformed_data*.
-%
-% We use the *das_matlab* process followed by the *coherent_compounding*
-% process in order to produce coherently compounded output images.
-
-% beamforming
-b_data=pipe.go({midprocess.das_matlab() postprocess.coherent_compounding()});
-
-%%
-% Finally, show our results
-
+b_data=mid.go();
 b_data.plot();
 ##### SOURCE END #####
 --></body></html>

@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Proceedings_FI_UFF_Verasonics_RTB_delay_models</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-10-20"><meta name="DC.source" content="Proceedings_FI_UFF_Verasonics_RTB_delay_models.m"><style type="text/css">
+      --><title>Proceedings_FI_UFF_Verasonics_RTB_delay_models</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-08-02"><meta name="DC.source" content="Proceedings_FI_UFF_Verasonics_RTB_delay_models.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -66,8 +67,8 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Focused Linear scan with L7-4 probe in Verasonics demonstrating RTB</a></li><li><a href="#2">Read channel data</a></li><li><a href="#3">Define Scan</a></li><li><a href="#4">Conventional Scanline Beamforming</a></li><li><a href="#5">Display the Conventional Scanline Image</a></li><li><a href="#6">Create scan with MLA's</a></li><li><a href="#7">Retrospective beamforming (RTB) with conventional spherical model</a></li><li><a href="#8">Show and save the individual transmit image from the convetional spherical model</a></li><li><a href="#9">Adjust the beamforming to apply the tukey window on the individual transmit images</a></li><li><a href="#10">Adjust the beamforming to create the full RTB image from the spherical model</a></li><li><a href="#13">RTB using Nguyen &amp; Prager's unified transmit model</a></li><li><a href="#14">Show and save the individual transmit image from the unfied model</a></li><li><a href="#15">Adjust the beamforming to apply the tukey window on the individual transmit images</a></li><li><a href="#16">Adjust the beamforming to create the full RTB image from the unified model</a></li><li><a href="#18">RTB using our introduced model, the hybrid transmit delay model.</a></li><li><a href="#19">Show and save the individual transmit image from the unfied model</a></li><li><a href="#20">Adjust the beamforming to apply the tukey window on the individual transmit images</a></li><li><a href="#21">Adjust the beamforming to create the full RTB image from our hybrid model</a></li><li><a href="#23">Create Fig. 5. comparing resolution of the scatterer at z = 58.5</a></li><li><a href="#24">Create plot that was used in the abstract showing the images and the TX delays</a></li><li><a href="#25">Plot the calculated delays for the 64/128 transmitted wave in Fig. 6.</a></li></ul></div><h2 id="1">Focused Linear scan with L7-4 probe in Verasonics demonstrating RTB</h2><p>This script is available in the USTB repository as /USTB/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/</p><p>This example demonstrates the RTB implementation and demonstrates different fixes to the artifact occuring near the focus.</p><p>One solution is the transmit delay model introduced in  Nguyen, N. Q., &amp; Prager, R. W. (2016). High-Resolution Ultrasound Imaging With Unified Pixel-Based Beamforming. IEEE Trans. Med. Imaging, 35(1), 98-108.</p><p>Another solution is a simpler model assuming PW around focus.</p><p>This scripts creates the figure used in the procedings paper</p><pre class="codeinput"><span class="comment">%&#65279;Rindal, O. M. H., Rodriguez-Molares, A., Austeng, A. (2018). A simple, artifact-free,</span>
-<span class="comment">% virtual source model. Ultrasonics Symposium (IUS), 2018 IEEE International, 1&#8211;4.</span>
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Focused Linear scan with L7-4 probe in Verasonics demonstrating RTB</a></li><li><a href="#2">Read channel data</a></li><li><a href="#3">Define Scan</a></li><li><a href="#4">Conventional Scanline Beamforming</a></li><li><a href="#5">Display the Conventional Scanline Image</a></li><li><a href="#6">Create scan with MLA's</a></li><li><a href="#7">Retrospective beamforming (RTB) with conventional spherical model</a></li><li><a href="#8">Show and save the individual transmit image from the convetional spherical model</a></li><li><a href="#9">Adjust the beamforming to apply the tukey window on the individual transmit images</a></li><li><a href="#10">Adjust the beamforming to create the full RTB image from the spherical model</a></li><li><a href="#13">RTB using Nguyen &amp; Prager's unified transmit model</a></li><li><a href="#14">Show and save the individual transmit image from the unfied model</a></li><li><a href="#15">Adjust the beamforming to apply the tukey window on the individual transmit images</a></li><li><a href="#16">Adjust the beamforming to create the full RTB image from the unified model</a></li><li><a href="#18">RTB using our introduced model, the hybrid transmit delay model.</a></li><li><a href="#19">Show and save the individual transmit image from the unfied model</a></li><li><a href="#20">Adjust the beamforming to apply the tukey window on the individual transmit images</a></li><li><a href="#21">Adjust the beamforming to create the full RTB image from our hybrid model</a></li><li><a href="#23">Create Fig. 5. comparing resolution of the scatterer at z = 58.5</a></li><li><a href="#24">Create plot that was used in the abstract showing the images and the TX delays</a></li><li><a href="#25">Plot the calculated delays for the 64/128 transmitted wave in Fig. 6.</a></li></ul></div><h2 id="1">Focused Linear scan with L7-4 probe in Verasonics demonstrating RTB</h2><p>This script is available in the USTB repository as /USTB/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/</p><p>This example demonstrates the RTB implementation and demonstrates different fixes to the artifact occuring near the focus.</p><p>One solution is the transmit delay model introduced in  Nguyen, N. Q., &amp; Prager, R. W. (2016). High-Resolution Ultrasound Imaging With Unified Pixel-Based Beamforming. IEEE Trans. Med. Imaging, 35(1), 98-108.</p><p>Another solution is a simpler model assuming PW around focus.</p><p>This scripts creates the figure used in the proceedings paper</p><pre class="codeinput"><span class="comment">%&#65279;Rindal, O. M. H., Rodriguez-Molares, A., Austeng, A. (2018). A simple, artifact-free,</span>
+<span class="comment">% virtual source model. 2018 IEEE International Ultrasonics Symposium (IUS), 1&#8211;4.</span>
 <span class="comment">%</span>
 <span class="comment">% _by Ole Marius Hoel Rindal &lt;olemarius@olemarius.net&gt; Last updated: 2018/10/05</span>
 </pre><h2 id="2">Read channel data</h2><pre class="codeinput">clear <span class="string">all</span>; close <span class="string">all</span>;
@@ -117,7 +118,7 @@ mid_RTB_spherical_model.dimension = dimension.receive();
 
 mid_RTB_spherical_model.channel_data=channel_data;
 mid_RTB_spherical_model.scan=scan_RTB;
-mid_RTB_spherical_model.transmit_delay_model = transmit_delay_model.spherical;
+mid_RTB_spherical_model.spherical_transmit_delay_model = spherical_transmit_delay_model.spherical;
 
 mid_RTB_spherical_model.transmit_apodization.window=uff.window.none;
 mid_RTB_spherical_model.transmit_apodization.f_number = 2;
@@ -138,7 +139,7 @@ ans =
 
       Number: 767
         Name: ''
-       Color: [0.9400 0.9400 0.9400]
+       Color: [1 1 1]
     Position: [100 100 600 700]
        Units: 'pixels'
 
@@ -200,7 +201,7 @@ f456 =
       Number: 456
         Name: ''
        Color: [0.9400 0.9400 0.9400]
-    Position: [440 378 560 420]
+    Position: [680 558 560 420]
        Units: 'pixels'
 
   Use GET to show all properties
@@ -210,7 +211,7 @@ mid_RTB_unified_model.dimension = dimension.receive();
 
 mid_RTB_unified_model.channel_data=channel_data;
 mid_RTB_unified_model.scan=scan_RTB;
-mid_RTB_unified_model.transmit_delay_model = transmit_delay_model.unified;
+mid_RTB_unified_model.spherical_transmit_delay_model = spherical_transmit_delay_model.unified;
 
 mid_RTB_unified_model.transmit_apodization.window=uff.window.none;
 mid_RTB_unified_model.transmit_apodization.f_number = 2;
@@ -269,7 +270,7 @@ USTB General beamformer MEX v1.1.2 .............done!
 uff.apodization: Inputs and outputs are unchanged. Skipping process.
 </pre><img vspace="5" hspace="5" src="Proceedings_FI_UFF_Verasonics_RTB_delay_models_11.png" alt=""> <img vspace="5" hspace="5" src="Proceedings_FI_UFF_Verasonics_RTB_delay_models_12.png" alt=""> <p>Their model sucessfully removes the artifact at focus (29.6 mm)!</p><h2 id="18">RTB using our introduced model, the hybrid transmit delay model.</h2><p>This is a simple model using conventional spherical transmit delay, but we assuming PW ware propagation around focus We firs set up the beamforming to create all the images created from each transmit.</p><pre class="codeinput">mid_RTB_with_plane_model=midprocess.das();
 mid_RTB_with_plane_model.dimension = dimension.receive();
-mid_RTB_with_plane_model.transmit_delay_model = transmit_delay_model.hybrid;
+mid_RTB_with_plane_model.spherical_transmit_delay_model = spherical_transmit_delay_model.hybrid;
 
 <span class="comment">%Optionally set the margin of the region around focus to use PW tx delay</span>
 mid_RTB_with_plane_model.pw_margin = 1/1000;
@@ -410,7 +411,7 @@ set(gca,<span class="string">'Fontsize'</span>,15)
 axis <span class="string">image</span>;
 caxis(c); colormap <span class="string">jet</span>
 saveas(f68,[ustb_path,<span class="string">'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/delay_hybrid.eps'</span>],<span class="string">'eps2c'</span>)
-</pre><img vspace="5" hspace="5" src="Proceedings_FI_UFF_Verasonics_RTB_delay_models_21.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018a</a><br></p></div><!--
+</pre><img vspace="5" hspace="5" src="Proceedings_FI_UFF_Verasonics_RTB_delay_models_21.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Focused Linear scan with L7-4 probe in Verasonics demonstrating RTB
 %
@@ -426,9 +427,9 @@ saveas(f68,[ustb_path,<span class="string">'/publications/IUS2018/Rindal_et_al_A
 %
 % Another solution is a simpler model assuming PW around focus.
 %
-% This scripts creates the figure used in the procedings paper 
+% This scripts creates the figure used in the proceedings paper 
 %﻿Rindal, O. M. H., Rodriguez-Molares, A., Austeng, A. (2018). A simple, artifact-free, 
-% virtual source model. Ultrasonics Symposium (IUS), 2018 IEEE International, 1–4. 
+% virtual source model. 2018 IEEE International Ultrasonics Symposium (IUS), 1–4. 
 %
 % _by Ole Marius Hoel Rindal <olemarius@olemarius.net> Last updated: 2018/10/05
 
@@ -492,7 +493,7 @@ mid_RTB_spherical_model.dimension = dimension.receive();
 
 mid_RTB_spherical_model.channel_data=channel_data;
 mid_RTB_spherical_model.scan=scan_RTB;
-mid_RTB_spherical_model.transmit_delay_model = transmit_delay_model.spherical;
+mid_RTB_spherical_model.spherical_transmit_delay_model = spherical_transmit_delay_model.spherical;
 
 mid_RTB_spherical_model.transmit_apodization.window=uff.window.none;
 mid_RTB_spherical_model.transmit_apodization.f_number = 2;
@@ -576,7 +577,7 @@ mid_RTB_unified_model.dimension = dimension.receive();
 
 mid_RTB_unified_model.channel_data=channel_data;
 mid_RTB_unified_model.scan=scan_RTB;
-mid_RTB_unified_model.transmit_delay_model = transmit_delay_model.unified;
+mid_RTB_unified_model.spherical_transmit_delay_model = spherical_transmit_delay_model.unified;
 
 mid_RTB_unified_model.transmit_apodization.window=uff.window.none;
 mid_RTB_unified_model.transmit_apodization.f_number = 2;
@@ -646,7 +647,7 @@ saveas(f456,[ustb_path,'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVi
 
 mid_RTB_with_plane_model=midprocess.das();
 mid_RTB_with_plane_model.dimension = dimension.receive();
-mid_RTB_with_plane_model.transmit_delay_model = transmit_delay_model.hybrid;
+mid_RTB_with_plane_model.spherical_transmit_delay_model = spherical_transmit_delay_model.hybrid;
 
 %Optionally set the margin of the region around focus to use PW tx delay
 mid_RTB_with_plane_model.pw_margin = 1/1000; 

@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>dynamic_range_test</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-03-13"><meta name="DC.source" content="dynamic_range_test.m"><style type="text/css">
+      --><title>dynamic_range_test</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-08-02"><meta name="DC.source" content="dynamic_range_test.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -66,7 +67,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">The Dynamic Range Test</a></li><li><a href="#2">Delay the data</a></li><li><a href="#4">DELAY AND SUM</a></li><li><a href="#5">COHERENCE FACTOR</a></li><li><a href="#6">MINIMUM VARIANCE</a></li><li><a href="#7">Running the Dynamic Range Test</a></li></ul></div><h2 id="1">The Dynamic Range Test</h2><p>The dynamic range test (DRT) was introduced in Rindal, O. M. H., Austeng, A., Fatemi, A., &amp; Rodriguez-Molares, A. (2019). The effect of dynamic range alterations in the estimation of contrast. Submitted to IEEE Transactions on Ultrasonics, Ferroelectrics, and Frequency Control. We encourage you to use it, and provide here the datasets and code to run it. You have to reference the publication above when using the test. This script runs the DRT on the DAS (delay-and-sum), CF (coherence factor) and MV (minimum variance) beamformer.</p><p>The code and data is awilable through <a href="http://www.bitbucket.org/ustb/ustb">http://www.bitbucket.org/ustb/ustb</a></p><p>Defining the DRT: To investigate wether a beamforming method is alternating the dynamic range, we have introduced a dynamic range test. This test uses the gradients  in  the  simulated  or the  experimental dataset. The dynamic range test (DRT) is defined as                   DRT=&#8710;/&#8710;_0 where &#8710; denotes the gradient of a given beamforming method, estimated via linear regression, and &#8710;_0 denotes the theoretical gradient, as fixed in the simulated and experimental data. DRT measures  how  many  dB  the output  dynamic  range  deviate sfrom the theoretical, for each dB of the input dynamic range.</p><p>For the simulated dataset we have both an axial and a lateral gradient and the DRT  can  be  estimated  for  both.  For  simplicity, the reported DRT value will be the average of the DRT in theaxial  and  lateral  direction. For  the  experimental  dataset  DRT is estimated in the lateral gradient.</p><pre class="codeinput"><span class="comment">%clear all; close all;</span>
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">The Dynamic Range Test</a></li><li><a href="#2">Delay the data</a></li><li><a href="#4">DELAY AND SUM</a></li><li><a href="#5">COHERENCE FACTOR</a></li><li><a href="#6">MINIMUM VARIANCE</a></li><li><a href="#7">Running the Dynamic Range Test</a></li></ul></div><h2 id="1">The Dynamic Range Test</h2><p>The dynamic range test (DRT) was introduced in Rindal, O. M. H., Austeng, A., Fatemi, A., &amp; Rodriguez-Molares, A. (2019). The effect of dynamic range alterations in the estimation of contrast. Submitted to IEEE Transactions on Ultrasonics, Ferroelectrics, and Frequency Control. We encourage you to use it, and provide here the datasets and code to run it. You have to reference the publication above when using the test. This script runs the DRT on the DAS (delay-and-sum), CF (coherence factor) and MV (minimum variance) beamformer.</p><p>The code and data is awilable through <a href="http://www.bitbucket.org/ustb/ustb">http://www.bitbucket.org/ustb/ustb</a></p><p>Defining the DRT: To investigate wether a beamforming method is alternating the dynamic range, we have introduced a dynamic range test. This test uses the gradients  in  the  simulated  or the  experimental dataset. The dynamic range test (DRT) is defined as                   DRT=&#8710;/&#8710;_0 where &#8710; denotes the gradient of a given beamforming method, estimated via linear regression, and &#8710;_0 denotes the theoretical gradient, as fixed in the simulated and experimental data. DRT measures  how  many  dB  the output  dynamic  range  deviate sfrom the theoretical, for each dB of the input dynamic range.</p><p>For the simulated dataset we have both an axial and a lateral gradient and the DRT  can  be  estimated  for  both.  For  simplicity, the reported DRT value will be the average of the DRT in theaxial  and  lateral  direction. For  the  experimental  dataset  DRT is estimated in the lateral gradient.</p><pre class="codeinput">clear <span class="string">all</span>; close <span class="string">all</span>;
 
 <span class="comment">% Comment out wether you want to run the experimental or simulated data</span>
 <span class="comment">%filename = 'experimental_STAI_dynamic_range.uff';</span>
@@ -153,14 +154,7 @@ drt_value_mv =
 
     0.9922    0.9289
 
-</pre>
-<img vspace="5" hspace="5" src="dynamic_range_test_04.png" alt="">
-<img vspace="5" hspace="5" src="dynamic_range_test_exp_DAS.png" alt="">
-<img vspace="5" hspace="5" src="dynamic_range_test_05.png" alt=""> 
-<img vspace="5" hspace="5" src="dynamic_range_test_exp_CF.png" alt="">
-<img vspace="5" hspace="5" src="dynamic_range_test_06.png" alt=""> 
-<img vspace="5" hspace="5" src="dynamic_range_test_exp_MV.png" alt="">
-    <p>The DRT test reveals that DAS is quite linear for both the simulated and experimental test. The MV compresses the dynamic range slightly, while the CF stretches the dynamic range.</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018a</a><br></p></div><!--
+</pre><img vspace="5" hspace="5" src="dynamic_range_test_04.png" alt=""> <img vspace="5" hspace="5" src="dynamic_range_test_05.png" alt=""> <img vspace="5" hspace="5" src="dynamic_range_test_06.png" alt=""> <p>The DRT test reveals that DAS is quite linear for both the simulated and experimental test. The MV compresses the dynamic range slightly, while the CF stretches the dynamic range.</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% The Dynamic Range Test
 % The dynamic range test (DRT) was introduced in Rindal, O. M. H., Austeng, A., Fatemi, A., 
@@ -191,7 +185,7 @@ drt_value_mv =
 % value will be the average of the DRT in theaxial  and  lateral  direction.  
 % For  the  experimental  dataset  DRT is estimated in the lateral gradient.
 
-%clear all; close all;
+clear all; close all;
 
 % Comment out wether you want to run the experimental or simulated data
 %filename = 'experimental_STAI_dynamic_range.uff';

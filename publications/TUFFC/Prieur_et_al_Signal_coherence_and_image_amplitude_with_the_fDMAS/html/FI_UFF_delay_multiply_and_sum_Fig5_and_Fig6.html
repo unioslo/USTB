@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Delay Multiply And Sum on FI data from an UFF file</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-05-18"><meta name="DC.source" content="FI_UFF_delay_multiply_and_sum_Fig5_and_Fig6.m"><style type="text/css">
+      --><title>Delay Multiply And Sum on FI data from an UFF file</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-08-02"><meta name="DC.source" content="FI_UFF_delay_multiply_and_sum_Fig5_and_Fig6.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -79,21 +80,35 @@ filename=<span class="string">'L7_FI_Verasonics_CIRS_points.uff'</span>;
 <span class="comment">% check if the file is available in the local path or downloads otherwise</span>
 tools.download(filename, url, local_path);
 </pre><h2 id="2">Reading channel data from UFF file</h2><pre class="codeinput">channel_data=uff.read_object([local_path filename],<span class="string">'/channel_data'</span>);
-</pre><pre class="codeoutput">UFF: reading /channel_data [uff.channel_data]
-UFF: reading sequence [uff.wave] [====================] 100%
+</pre><pre class="codeoutput error">Error using hdf5lib2
+The filename specified was either not found on the MATLAB path or it contains unsupported characters.
+
+Error in H5F.open (line 60)
+file_id = H5ML.hdf5lib2('H5Fopen', filename, flags, fapl);            
+
+Error in h5readatt&gt;open_file_split (line 183)
+    fid = H5F.open(filename,'H5F_ACC_RDONLY',fapl);
+
+Error in h5readatt&gt;open_file_multi (line 167)
+        fid = open_file_split(filename);
+
+Error in h5readatt&gt;open_file_family (line 147)
+        fid = open_file_multi(filename);
+
+Error in h5readatt&gt;open_file (line 126)
+        fid = open_file_family(filename);
+
+Error in h5readatt (line 47)
+file_id = open_file(options.Filename);
+
+Error in uff/read_object (line 37)
+file_version=h5readatt(filename, '/', 'version');    % read file version
+
+Error in FI_UFF_delay_multiply_and_sum_Fig5_and_Fig6 (line 42)
+channel_data=uff.read_object([local_path filename],'/channel_data');
 </pre><pre class="codeinput"><span class="comment">%Print info about the dataset</span>
 channel_data.print_authorship
-</pre><pre class="codeoutput">Name: 		 Dataset recorded on a Verasonics Vantage 256.  
-		 Focused Imaging using L7-4 linear probe 
-Reference: 	 F. Prieur, O. M. H. Rindal and A. Austeng,  
-		 "Signal coherence and image amplitude with the  
-		 Filtered-Delay-Multiply-And-Sum beamformer," in  
-		 IEEE Transactions on Ultrasonics, Ferroelectrics,  
-		 and Frequency Control. doi:  
-		 10.1109/TUFFC.2018.2831789 
-Author(s): 	 Ole Marius Hoel Rindal &lt;olemarius@olemarius.net&gt; 
-		 Fabruce Prieur &lt;fabrice@ifi.uio.no&gt; 
-Version: 	 </pre><h2 id="4">Define Scan</h2><p>Define the image coordinates we want to beamform in the scan object. Notice that we need to use quite a lot of samples in the z-direction. This is because the DMAS creates an "artificial" second harmonic signal, so we need high enough sampling frequency in the image to get a second harmonic signal.</p><pre class="codeinput">z_axis=linspace(5e-3,45e-3,1700).';
+</pre><h2 id="4">Define Scan</h2><p>Define the image coordinates we want to beamform in the scan object. Notice that we need to use quite a lot of samples in the z-direction. This is because the DMAS creates an "artificial" second harmonic signal, so we need high enough sampling frequency in the image to get a second harmonic signal.</p><pre class="codeinput">z_axis=linspace(5e-3,45e-3,1700).';
 x_axis=zeros(channel_data.N_waves,1);
 <span class="keyword">for</span> n=1:channel_data.N_waves
     x_axis(n) = channel_data.sequence(n).source.x;
@@ -111,13 +126,12 @@ delay.receive_apodization.window=uff.window.none;
 delay.receive_apodization.f_number=1.7;
 
 delayed_b_data = delay.go();
-</pre><pre class="codeoutput">USTB General beamformer MEX v1.1.2 .............done!
 </pre><h2 id="6">Define the DAS beamformer using coherent compounding of delayed data</h2><pre class="codeinput">das = postprocess.coherent_compounding();
 das.input = delayed_b_data;
 b_data_das = das.go();
 
 b_data_das.plot([],<span class="string">'DAS'</span>);
-</pre><img vspace="5" hspace="5" src="FI_UFF_delay_multiply_and_sum_Fig5_and_Fig6_01.png" alt=""> <h2 id="7">Create the DMAS image using the delay_multiply_and_sum postprocess</h2><pre class="codeinput">dmas = postprocess.delay_multiply_and_sum();
+</pre><h2 id="7">Create the DMAS image using the delay_multiply_and_sum postprocess</h2><pre class="codeinput">dmas = postprocess.delay_multiply_and_sum();
 dmas.dimension = dimension.receive;
 dmas.channel_data = channel_data;
 dmas.input = delayed_b_data;
@@ -127,11 +141,7 @@ b_data_dmas=dmas.go();
 
 <span class="comment">% beamforming</span>
 b_data_dmas.plot(100,<span class="string">'F-DMAS'</span>);
-</pre><pre class="codeoutput">Warning: Missing probe and apodization data; full aperture is assumed. 
-Warning: If the result looks funky, you might need to tune the filter paramters
-of DMAS using the filter_freqs property. Use the plot to check that everything
-is OK. 
-</pre><img vspace="5" hspace="5" src="FI_UFF_delay_multiply_and_sum_Fig5_and_Fig6_02.png" alt=""> <h2 id="8">Calculate the coherence factor (CF) image</h2><pre class="codeinput">cf = postprocess.coherence_factor();
+</pre><h2 id="8">Calculate the coherence factor (CF) image</h2><pre class="codeinput">cf = postprocess.coherence_factor();
 cf.dimension = dimension.receive();
 cf.input = delayed_b_data;
 b_data_CF_multiplied_DAS = cf.go();
@@ -140,7 +150,7 @@ b_data_CF_multiplied_DAS.plot(101,<span class="string">'CF multiplied DAS'</span
 
 <span class="comment">% Get just the CF "factor"</span>
 cfImg = cf.CF.get_image(<span class="string">'none'</span>);
-</pre><img vspace="5" hspace="5" src="FI_UFF_delay_multiply_and_sum_Fig5_and_Fig6_03.png" alt=""> <h2 id="9">Plot all three images in same plot - Fig. 5</h2><pre class="codeinput">f3 = figure(3);clf
+</pre><h2 id="9">Plot all three images in same plot - Fig. 5</h2><pre class="codeinput">f3 = figure(3);clf
 b_data_das.plot(subplot(1,3,1),<span class="string">'DAS'</span>); <span class="comment">% Display image</span>
 ax(1) = gca;
 b_data_dmas.plot(subplot(1,3,2),<span class="string">'F DMAS'</span>); <span class="comment">% Display image</span>
@@ -153,7 +163,7 @@ set(gca,<span class="string">'FontSize'</span>,15);
 ax(3) = gca;
 linkaxes(ax);
 set(gcf,<span class="string">'Position'</span>,[195   446   793   253]);
-</pre><img vspace="5" hspace="5" src="FI_UFF_delay_multiply_and_sum_Fig5_and_Fig6_04.png" alt=""> <pre class="codeinput">dmas_img = b_data_dmas.get_image();
+</pre><pre class="codeinput">dmas_img = b_data_dmas.get_image();
 das_img = b_data_das.get_image();
 line_idx = find(b_data_dmas.scan.z_axis&gt;=29.52e-3,1,<span class="string">'first'</span>);
 x_axis=b_data_dmas.scan.x_axis;
@@ -181,7 +191,7 @@ title(sprintf(<span class="string">'Lateral line through %.2f mm'</span>,<span c
                                   b_data_dmas.scan.z_axis(line_idx)*10^3));
 h=legend(<span class="string">'DAS'</span>,<span class="string">'F-DMAS'</span>,<span class="string">'Coherence Factor'</span>,<span class="string">'location'</span>,<span class="string">'northwest'</span>);grid
 set(h,<span class="string">'fontsize'</span>,13,<span class="string">'fontweight'</span>,<span class="string">'bold'</span>)
-</pre><img vspace="5" hspace="5" src="FI_UFF_delay_multiply_and_sum_Fig5_and_Fig6_05.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018a</a><br></p></div><!--
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Delay Multiply And Sum on FI data from an UFF file
 %

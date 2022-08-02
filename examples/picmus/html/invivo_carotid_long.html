@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>PICMUS challenge: in vivo carotid longitudinal-section</title><meta name="generator" content="MATLAB 8.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-05-29"><meta name="DC.source" content="invivo_carotid_long.m"><style type="text/css">
+      --><title>PICMUS challenge: in vivo carotid longitudinal-section</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-08-02"><meta name="DC.source" content="invivo_carotid_long.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -66,207 +67,49 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>PICMUS challenge: in vivo carotid longitudinal-section</h1><!--introduction--><p>This example reads (or downloads if the data is not local) a dataset used in the <a href="http://ieeexplore.ieee.org/document/7728908/">PICMUS challenge</a> and beamforms it with USTB's general beamformer. A 75 plane-wave sequence was recorded with a Verasonics Vantage 256 research scanner and a L11 probe (Verasonics Inc., Redmond, WA). The dataset was recorded on the carotid artery of a volunteer.</p><p><i>by Alfonso Rodriguez-Molares <a href="alfonso.r.molares@ntnu.no">alfonso.r.molares@ntnu.no</a>  and Olivier Bernard <a href="olivier.bernard@insa-lyon.fr">olivier.bernard@insa-lyon.fr</a> 26.05.2017</i></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Getting the data</a></li><li><a href="#2">Reading channel data</a></li><li><a href="#5">Plotting beamformed_data</a></li><li><a href="#6">Loading channel data &amp; scan</a></li><li><a href="#7">Beamforming</a></li><li><a href="#8">Comparing results</a></li></ul></div><h2>Getting the data<a name="1"></a></h2><p>We define the local path and the url where the data is stored</p><pre class="codeinput"><span class="comment">% data location</span>
+  </style></head><body><div class="content"><h1>PICMUS challenge: in vivo carotid longitudinal-section</h1><!--introduction--><p>This example reads (or downloads if the data is not local) a dataset used in the <a href="http://ieeexplore.ieee.org/document/7728908/">PICMUS challenge</a> and beamforms it with USTB's general beamformer. A 75 plane-wave sequence was recorded with a Verasonics Vantage 256 research scanner and a L11 probe (Verasonics Inc., Redmond, WA). The dataset was recorded on the carotid artery of a volunteer.</p><p>_by Alfonso Rodriguez-Molares <a href="alfonso.r.molares@ntnu.no">alfonso.r.molares@ntnu.no</a>  and Olivier Bernard <a href="olivier.bernard@insa-lyon.fr">olivier.bernard@insa-lyon.fr</a></p><pre class="language-matlab">$Last updated: 2017/09/15$
+</pre><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Getting the data</a></li><li><a href="#2">What's inside?</a></li><li><a href="#3">Plotting beamformed_data</a></li><li><a href="#4">Loading channel data &amp; scan</a></li><li><a href="#5">Beamforming</a></li><li><a href="#6">Comparing results</a></li></ul></div><h2 id="1">Getting the data</h2><p>We define the local path and the url where the data is stored</p><pre class="codeinput"><span class="comment">% data location</span>
 url=<span class="string">'http://ustb.no/datasets/'</span>;      <span class="comment">% if not found data will be downloaded from here</span>
-local_path = [ustb_path(),<span class="string">'/data/'</span>]; <span class="comment">% location of example data in this computer</span>
-addpath(local_path);
-filename=<span class="string">'PICMUS_carotid_long.uff'</span>;
+filename=<span class="string">'PICMUS_carotid_cross.uff'</span>;
 
-<span class="comment">% check if the file is available in the local path &amp; downloads otherwise</span>
-tools.download(filename, url, local_path);
-</pre><pre class="codeoutput">Downloading http://ustb.no/datasets/PICMUS_carotid_long.uff. This may take a while.
-</pre><h2>Reading channel data<a name="2"></a></h2><p>Now that the file is on the path we deine a <b>UFF</b> object to interact with it.</p><pre class="codeinput">uff_file=uff(filename,<span class="string">'read'</span>);
-</pre><p>This dataset should contain the following structures: * <b>channel_data</b>, * <b>beamformed_data</b> and, * <b>scan</b></p><p>We can check it out with the <b>index</b> function</p><pre class="codeinput">display=true;
-content = uff_file.index(<span class="string">'/'</span>,display);
-</pre><pre class="codeoutput">UFF: Contents of PICMUS_carotid_long.uff at /
+<span class="comment">% checks if the data is in your data path, and downloads it otherwise.</span>
+<span class="comment">% The defaults data path is under USTB's folder, but you can change this</span>
+<span class="comment">% by setting an environment variable with setenv(DATA_PATH,'the_path_you_want_to_use');</span>
+tools.download(filename, url, data_path);
+</pre><h2 id="2">What's inside?</h2><p>This dataset should contain the following structures: * <b>channel_data</b>, * <b>beamformed_data</b> and, * <b>scan</b></p><p>We can check it out with the <b>index</b> function</p><pre class="codeinput">display=true;
+content = uff.index([data_path filesep filename],<span class="string">'/'</span>,display);
+</pre><pre class="codeoutput">UFF: Contents of C:\Users\47456\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\USTB\data\PICMUS_carotid_cross.uff at /
    - /beamformed_data: beamformed_data [uff.beamformed_data] size(1,1)
    - /channel_data: channel_data [uff.channel_data] size(1,1)
    - /scan: scan [uff.linear_scan] size(1,1)
-</pre><p>This dataset should contain the following structures: * <b>channel_data</b>, * <b>beamformed_data</b> and, * <b>scan</b></p><p>We can check it out with the <b>index</b> function</p><pre class="codeinput">display=true;
-content = uff_file.index(<span class="string">'/'</span>,display);
-</pre><pre class="codeoutput">UFF: Contents of PICMUS_carotid_long.uff at /
-   - /beamformed_data: beamformed_data [uff.beamformed_data] size(1,1)
-   - /channel_data: channel_data [uff.channel_data] size(1,1)
-   - /scan: scan [uff.linear_scan] size(1,1)
-</pre><h2>Plotting beamformed_data<a name="5"></a></h2><p>We can read the <b>beamformed_data</b> object and plot it</p><pre class="codeinput">b_data=uff_file.read(<span class="string">'/beamformed_data'</span>);
+</pre><h2 id="3">Plotting beamformed_data</h2><p>We can read the <b>beamformed_data</b> object and plot it</p><pre class="codeinput">b_data=uff.read_object([data_path filesep filename],<span class="string">'/beamformed_data'</span>);
 b_data.plot();
 </pre><pre class="codeoutput">UFF: reading beamformed_data [uff.beamformed_data]
-UFF: reading sequence [uff.wave]
-UFF: reading sequence_0001 [uff.wave]
-UFF: reading sequence_0002 [uff.wave]
-UFF: reading sequence_0003 [uff.wave]
-UFF: reading sequence_0004 [uff.wave]
-UFF: reading sequence_0005 [uff.wave]
-UFF: reading sequence_0006 [uff.wave]
-UFF: reading sequence_0007 [uff.wave]
-UFF: reading sequence_0008 [uff.wave]
-UFF: reading sequence_0009 [uff.wave]
-UFF: reading sequence_0010 [uff.wave]
-UFF: reading sequence_0011 [uff.wave]
-UFF: reading sequence_0012 [uff.wave]
-UFF: reading sequence_0013 [uff.wave]
-UFF: reading sequence_0014 [uff.wave]
-UFF: reading sequence_0015 [uff.wave]
-UFF: reading sequence_0016 [uff.wave]
-UFF: reading sequence_0017 [uff.wave]
-UFF: reading sequence_0018 [uff.wave]
-UFF: reading sequence_0019 [uff.wave]
-UFF: reading sequence_0020 [uff.wave]
-UFF: reading sequence_0021 [uff.wave]
-UFF: reading sequence_0022 [uff.wave]
-UFF: reading sequence_0023 [uff.wave]
-UFF: reading sequence_0024 [uff.wave]
-UFF: reading sequence_0025 [uff.wave]
-UFF: reading sequence_0026 [uff.wave]
-UFF: reading sequence_0027 [uff.wave]
-UFF: reading sequence_0028 [uff.wave]
-UFF: reading sequence_0029 [uff.wave]
-UFF: reading sequence_0030 [uff.wave]
-UFF: reading sequence_0031 [uff.wave]
-UFF: reading sequence_0032 [uff.wave]
-UFF: reading sequence_0033 [uff.wave]
-UFF: reading sequence_0034 [uff.wave]
-UFF: reading sequence_0035 [uff.wave]
-UFF: reading sequence_0036 [uff.wave]
-UFF: reading sequence_0037 [uff.wave]
-UFF: reading sequence_0038 [uff.wave]
-UFF: reading sequence_0039 [uff.wave]
-UFF: reading sequence_0040 [uff.wave]
-UFF: reading sequence_0041 [uff.wave]
-UFF: reading sequence_0042 [uff.wave]
-UFF: reading sequence_0043 [uff.wave]
-UFF: reading sequence_0044 [uff.wave]
-UFF: reading sequence_0045 [uff.wave]
-UFF: reading sequence_0046 [uff.wave]
-UFF: reading sequence_0047 [uff.wave]
-UFF: reading sequence_0048 [uff.wave]
-UFF: reading sequence_0049 [uff.wave]
-UFF: reading sequence_0050 [uff.wave]
-UFF: reading sequence_0051 [uff.wave]
-UFF: reading sequence_0052 [uff.wave]
-UFF: reading sequence_0053 [uff.wave]
-UFF: reading sequence_0054 [uff.wave]
-UFF: reading sequence_0055 [uff.wave]
-UFF: reading sequence_0056 [uff.wave]
-UFF: reading sequence_0057 [uff.wave]
-UFF: reading sequence_0058 [uff.wave]
-UFF: reading sequence_0059 [uff.wave]
-UFF: reading sequence_0060 [uff.wave]
-UFF: reading sequence_0061 [uff.wave]
-UFF: reading sequence_0062 [uff.wave]
-UFF: reading sequence_0063 [uff.wave]
-UFF: reading sequence_0064 [uff.wave]
-UFF: reading sequence_0065 [uff.wave]
-UFF: reading sequence_0066 [uff.wave]
-UFF: reading sequence_0067 [uff.wave]
-UFF: reading sequence_0068 [uff.wave]
-UFF: reading sequence_0069 [uff.wave]
-UFF: reading sequence_0070 [uff.wave]
-UFF: reading sequence_0071 [uff.wave]
-UFF: reading sequence_0072 [uff.wave]
-UFF: reading sequence_0073 [uff.wave]
-UFF: reading sequence_0074 [uff.wave]
-UFF: reading sequence_0075 [uff.wave]
-</pre><img vspace="5" hspace="5" src="invivo_carotid_long_01.png" alt=""> <h2>Loading channel data &amp; scan<a name="6"></a></h2><p>The file also contain channel_data and scan. We read it so we can replicate the beamformed image in the UFF file.</p><pre class="codeinput">channel_data=uff_file.read(<span class="string">'/channel_data'</span>);
-scan=uff_file.read(<span class="string">'/scan'</span>);
+UFF: reading sequence [uff.wave] [====================] 100%
+</pre><img vspace="5" hspace="5" src="invivo_carotid_long_01.png" alt=""> <h2 id="4">Loading channel data &amp; scan</h2><p>The file also contain channel_data and scan. We read it so we can replicate the beamformed image in the UFF file.</p><pre class="codeinput">channel_data=uff.read_object([data_path filesep filename],<span class="string">'/channel_data'</span>);
+scan=uff.read_object([data_path filesep filename],<span class="string">'/scan'</span>);
 </pre><pre class="codeoutput">UFF: reading channel_data [uff.channel_data]
-UFF: reading sequence [uff.wave]
-UFF: reading sequence_0001 [uff.wave]
-UFF: reading sequence_0002 [uff.wave]
-UFF: reading sequence_0003 [uff.wave]
-UFF: reading sequence_0004 [uff.wave]
-UFF: reading sequence_0005 [uff.wave]
-UFF: reading sequence_0006 [uff.wave]
-UFF: reading sequence_0007 [uff.wave]
-UFF: reading sequence_0008 [uff.wave]
-UFF: reading sequence_0009 [uff.wave]
-UFF: reading sequence_0010 [uff.wave]
-UFF: reading sequence_0011 [uff.wave]
-UFF: reading sequence_0012 [uff.wave]
-UFF: reading sequence_0013 [uff.wave]
-UFF: reading sequence_0014 [uff.wave]
-UFF: reading sequence_0015 [uff.wave]
-UFF: reading sequence_0016 [uff.wave]
-UFF: reading sequence_0017 [uff.wave]
-UFF: reading sequence_0018 [uff.wave]
-UFF: reading sequence_0019 [uff.wave]
-UFF: reading sequence_0020 [uff.wave]
-UFF: reading sequence_0021 [uff.wave]
-UFF: reading sequence_0022 [uff.wave]
-UFF: reading sequence_0023 [uff.wave]
-UFF: reading sequence_0024 [uff.wave]
-UFF: reading sequence_0025 [uff.wave]
-UFF: reading sequence_0026 [uff.wave]
-UFF: reading sequence_0027 [uff.wave]
-UFF: reading sequence_0028 [uff.wave]
-UFF: reading sequence_0029 [uff.wave]
-UFF: reading sequence_0030 [uff.wave]
-UFF: reading sequence_0031 [uff.wave]
-UFF: reading sequence_0032 [uff.wave]
-UFF: reading sequence_0033 [uff.wave]
-UFF: reading sequence_0034 [uff.wave]
-UFF: reading sequence_0035 [uff.wave]
-UFF: reading sequence_0036 [uff.wave]
-UFF: reading sequence_0037 [uff.wave]
-UFF: reading sequence_0038 [uff.wave]
-UFF: reading sequence_0039 [uff.wave]
-UFF: reading sequence_0040 [uff.wave]
-UFF: reading sequence_0041 [uff.wave]
-UFF: reading sequence_0042 [uff.wave]
-UFF: reading sequence_0043 [uff.wave]
-UFF: reading sequence_0044 [uff.wave]
-UFF: reading sequence_0045 [uff.wave]
-UFF: reading sequence_0046 [uff.wave]
-UFF: reading sequence_0047 [uff.wave]
-UFF: reading sequence_0048 [uff.wave]
-UFF: reading sequence_0049 [uff.wave]
-UFF: reading sequence_0050 [uff.wave]
-UFF: reading sequence_0051 [uff.wave]
-UFF: reading sequence_0052 [uff.wave]
-UFF: reading sequence_0053 [uff.wave]
-UFF: reading sequence_0054 [uff.wave]
-UFF: reading sequence_0055 [uff.wave]
-UFF: reading sequence_0056 [uff.wave]
-UFF: reading sequence_0057 [uff.wave]
-UFF: reading sequence_0058 [uff.wave]
-UFF: reading sequence_0059 [uff.wave]
-UFF: reading sequence_0060 [uff.wave]
-UFF: reading sequence_0061 [uff.wave]
-UFF: reading sequence_0062 [uff.wave]
-UFF: reading sequence_0063 [uff.wave]
-UFF: reading sequence_0064 [uff.wave]
-UFF: reading sequence_0065 [uff.wave]
-UFF: reading sequence_0066 [uff.wave]
-UFF: reading sequence_0067 [uff.wave]
-UFF: reading sequence_0068 [uff.wave]
-UFF: reading sequence_0069 [uff.wave]
-UFF: reading sequence_0070 [uff.wave]
-UFF: reading sequence_0071 [uff.wave]
-UFF: reading sequence_0072 [uff.wave]
-UFF: reading sequence_0073 [uff.wave]
-UFF: reading sequence_0074 [uff.wave]
-UFF: reading sequence_0075 [uff.wave]
-</pre><h2>Beamforming<a name="7"></a></h2><p>We define a beamformer, and the corresponding transmit and apodization windows, and launch it.</p><pre class="codeinput">bmf=beamformer();
-bmf.channel_data=channel_data;
-bmf.scan=scan;
+UFF: reading sequence [uff.wave] [====================] 100%
+</pre><h2 id="5">Beamforming</h2><p>We define a beamformer, and the corresponding transmit and apodization windows, and launch it.</p><pre class="codeinput">pipe=pipeline();
+pipe.channel_data=channel_data;
+pipe.scan=scan;
 
 <span class="comment">% receive apodization</span>
-bmf.receive_apodization.window=uff.window.tukey50;
-bmf.receive_apodization.f_number=1.7;
-bmf.receive_apodization.apex.distance=Inf;
+pipe.receive_apodization.window=uff.window.tukey50;
+pipe.receive_apodization.f_number=1.7;
 
 <span class="comment">% transmit apodization</span>
-bmf.transmit_apodization.window=uff.window.tukey50;
-bmf.transmit_apodization.f_number=1.7;
-bmf.transmit_apodization.apex.distance=Inf;
+pipe.transmit_apodization.window=uff.window.tukey50;
+pipe.transmit_apodization.f_number=1.7;
 
 <span class="comment">% launch beamforming</span>
-b_data_new=bmf.go({process.das_mex process.coherent_compounding});
-</pre><h2>Comparing results<a name="8"></a></h2><p>We plot both images side by side.</p><pre class="codeinput">figure;
+b_data_new=pipe.go({midprocess.das postprocess.coherent_compounding});
+</pre><pre class="codeoutput">USTB General beamformer MEX v1.1.2 .............done!
+</pre><h2 id="6">Comparing results</h2><p>We plot both images side by side.</p><pre class="codeinput">figure;
 b_data.plot(subplot(1,2,1),<span class="string">'Original'</span>);
 b_data_new.plot(subplot(1,2,2),<span class="string">'New'</span>);
 set(gcf,<span class="string">'Position'</span>,[100   100   750   450])
-</pre><img vspace="5" hspace="5" src="invivo_carotid_long_02.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015a</a><br></p></div><!--
+</pre><img vspace="5" hspace="5" src="invivo_carotid_long_02.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% PICMUS challenge: in vivo carotid longitudinal-section
 %
@@ -278,7 +121,9 @@ set(gcf,<span class="string">'Position'</span>,[100   100   750   450])
 % the carotid artery of a volunteer. 
 %
 % _by Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no> 
-%  and Olivier Bernard <olivier.bernard@insa-lyon.fr> 26.05.2017_
+%  and Olivier Bernard <olivier.bernard@insa-lyon.fr>
+%
+%   $Last updated: 2017/09/15$
 
 %% Getting the data
 %
@@ -286,21 +131,14 @@ set(gcf,<span class="string">'Position'</span>,[100   100   750   450])
 
 % data location
 url='http://ustb.no/datasets/';      % if not found data will be downloaded from here
-local_path = [ustb_path(),'/data/']; % location of example data in this computer
-addpath(local_path);
-filename='PICMUS_carotid_long.uff';
+filename='PICMUS_carotid_cross.uff';
 
-% check if the file is available in the local path & downloads otherwise
-tools.download(filename, url, local_path);
+% checks if the data is in your data path, and downloads it otherwise.
+% The defaults data path is under USTB's folder, but you can change this
+% by setting an environment variable with setenv(DATA_PATH,'the_path_you_want_to_use');
+tools.download(filename, url, data_path);   
 
-%% Reading channel data
-%
-% Now that the file is on the path we deine a *UFF* object to interact
-% with it.
-
-uff_file=uff(filename,'read');
-
-%%
+%% What's inside?
 %
 % This dataset should contain the following structures:
 % * *channel_data*,
@@ -309,24 +147,13 @@ uff_file=uff(filename,'read');
 %
 % We can check it out with the *index* function
 display=true;
-content = uff_file.index('/',display);
-
-%%
-%
-% This dataset should contain the following structures:
-% * *channel_data*,
-% * *beamformed_data* and,
-% * *scan*
-%
-% We can check it out with the *index* function
-display=true;
-content = uff_file.index('/',display);
+content = uff.index([data_path filesep filename],'/',display);
 
 %% Plotting beamformed_data
 %
 % We can read the *beamformed_data* object and plot it 
 
-b_data=uff_file.read('/beamformed_data');
+b_data=uff.read_object([data_path filesep filename],'/beamformed_data');
 b_data.plot();
 
 %% Loading channel data & scan
@@ -334,30 +161,29 @@ b_data.plot();
 % The file also contain channel_data and scan. We read it so we can
 % replicate the beamformed image in the UFF file.
 
-channel_data=uff_file.read('/channel_data');
-scan=uff_file.read('/scan');
+channel_data=uff.read_object([data_path filesep filename],'/channel_data');
+scan=uff.read_object([data_path filesep filename],'/scan');
+
 
 %% Beamforming
 %
 % We define a beamformer, and the corresponding transmit and apodization
 % windows, and launch it.
 
-bmf=beamformer();
-bmf.channel_data=channel_data;
-bmf.scan=scan;
+pipe=pipeline();
+pipe.channel_data=channel_data;
+pipe.scan=scan;
     
 % receive apodization
-bmf.receive_apodization.window=uff.window.tukey50;
-bmf.receive_apodization.f_number=1.7;
-bmf.receive_apodization.apex.distance=Inf;
+pipe.receive_apodization.window=uff.window.tukey50;
+pipe.receive_apodization.f_number=1.7;
 
 % transmit apodization
-bmf.transmit_apodization.window=uff.window.tukey50;
-bmf.transmit_apodization.f_number=1.7;
-bmf.transmit_apodization.apex.distance=Inf;
+pipe.transmit_apodization.window=uff.window.tukey50;
+pipe.transmit_apodization.f_number=1.7;
 
 % launch beamforming
-b_data_new=bmf.go({process.das_mex process.coherent_compounding});
+b_data_new=pipe.go({midprocess.das postprocess.coherent_compounding});
 
 %% Comparing results
 %

@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>STA simulation on a phased array with the USTB built-in Fresnel simulator</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-06-02"><meta name="DC.source" content="STA_phased_array.m"><style type="text/css">
+      --><title>STA simulation on a phased array with the USTB built-in Fresnel simulator</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-08-02"><meta name="DC.source" content="STA_phased_array.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -88,8 +89,9 @@ pul.plot([],<span class="string">'2-way pulse'</span>);
     seq(n).probe=prb;
     seq(n).source.xyz=[prb.x(n) prb.y(n) prb.z(n)];
 
+    seq(n).apodization=uff.apodization();
     seq(n).apodization.window=uff.window.sta;
-    seq(n).apodization.apex=seq(n).source;
+    seq(n).apodization.origin=seq(n).source;
 
     seq(n).sound_speed=pha.sound_speed;
 
@@ -107,24 +109,25 @@ sim.sampling_frequency=4*pul.center_frequency;  <span class="comment">% sampling
 
 <span class="comment">% we launch the simulation</span>
 channel_data=sim.go();
-</pre><pre class="codeoutput">USTB's Fresnel impulse response simulator (v1.0.5)
+</pre><pre class="codeoutput">USTB's Fresnel impulse response simulator (v1.0.7)
 ---------------------------------------------------------------
-</pre><h2 id="7">Scan</h2><p>The scan area is defines as a collection of pixels spanning our region of interest. For our example here, we use the <b>sector_scan</b> structure, which is defined with two components: the azimuthal(angle) range and the depth(radial) range. <b>scan</b> too has a useful <b>plot</b> method it can call.</p><pre class="codeinput">sca=uff.sector_scan(linspace(-10*pi/180,10*pi/180,200).', linspace(35e-3,45e-3,100).');
+</pre><h2 id="7">Scan</h2><p>The scan area is defines as a collection of pixels spanning our region of interest. For our example here, we use the <b>sector_scan</b> structure, which is defined with two components: the azimuthal(angle) range and the depth(radial) range. <b>scan</b> too has a useful <b>plot</b> method it can call.</p><pre class="codeinput">sca=uff.sector_scan(<span class="string">'azimuth_axis'</span>,linspace(-10*pi/180,10*pi/180,200).',<span class="string">'depth_axis'</span>, linspace(35e-3,45e-3,100).');
 sca.plot(fig_handle,<span class="string">'Scenario'</span>);    <span class="comment">% show mesh</span>
-</pre><img vspace="5" hspace="5" src="STA_phased_array_05.png" alt=""> <h2 id="8">Beamformer</h2><p>With <b>channel_data</b> and a <b>scan</b> we have all we need to produce an ultrasound image. We now use a USTB structure <b>beamformer</b>, that takes an <b>apodization</b> structure in addition to the <b>channel_data</b> and <b>scan</b>.</p><pre class="codeinput">bmf=beamformer();
-bmf.channel_data=channel_data;
-bmf.scan=sca;
+</pre><img vspace="5" hspace="5" src="STA_phased_array_05.png" alt=""> <h2 id="8">Beamformer</h2><p>With <b>channel_data</b> and a <b>scan</b> we have all we need to produce an ultrasound image. We now use a USTB structure <b>beamformer</b>, that takes an <b>apodization</b> structure in addition to the <b>channel_data</b> and <b>scan</b>.</p><pre class="codeinput">pipe=pipeline();
+pipe.channel_data=channel_data;
+pipe.scan=sca;
 
-bmf.receive_apodization.window=uff.window.tukey50;
-bmf.receive_apodization.f_number=1.7;
+pipe.receive_apodization.window=uff.window.tukey50;
+pipe.receive_apodization.f_number=1.7;
 
-bmf.transmit_apodization.window=uff.window.tukey50;
-bmf.transmit_apodization.f_number=1.7;
-</pre><p>The <b>beamformer</b> structure allows you to implement different beamformers by combination of multiple built-in <b>processes</b>. By changing the <b>process</b> chain other beamforming sequences can be implemented. It returns yet another <b>UFF</b> structure: <b>beamformed_data</b>.</p><p>To achieve the goal of this example, we use delay-and-sum (implemented in the <b>das_matlab()</b> process) as well as coherent compounding.</p><pre class="codeinput">b_data=bmf.go({process.das_matlab() process.coherent_compounding()});
+pipe.transmit_apodization.window=uff.window.tukey50;
+pipe.transmit_apodization.f_number=1.7;
+</pre><p>The <b>beamformer</b> structure allows you to implement different beamformers by combination of multiple built-in <b>processes</b>. By changing the <b>process</b> chain other beamforming sequences can be implemented. It returns yet another <b>UFF</b> structure: <b>beamformed_data</b>.</p><p>To achieve the goal of this example, we use delay-and-sum (implemented in the <b>das()</b> process) as well as coherent compounding.</p><pre class="codeinput">b_data=pipe.go({midprocess.das() postprocess.coherent_compounding()});
 
 <span class="comment">% show</span>
 b_data.plot();
-</pre><img vspace="5" hspace="5" src="STA_phased_array_06.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+</pre><pre class="codeoutput">USTB General beamformer MEX v1.1.2 .............done!
+</pre><img vspace="5" hspace="5" src="STA_phased_array_06.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% STA simulation on a phased array with the USTB built-in Fresnel simulator
 %
@@ -202,8 +205,9 @@ for n=1:prb.N_elements
     seq(n).probe=prb;
     seq(n).source.xyz=[prb.x(n) prb.y(n) prb.z(n)];
     
+    seq(n).apodization=uff.apodization();
     seq(n).apodization.window=uff.window.sta;
-    seq(n).apodization.apex=seq(n).source;
+    seq(n).apodization.origin=seq(n).source;
     
     seq(n).sound_speed=pha.sound_speed;
     
@@ -237,7 +241,7 @@ channel_data=sim.go();
 % which is defined with two components: the azimuthal(angle) range and the 
 % depth(radial) range. *scan* too has a useful *plot* method it can call.
 
-sca=uff.sector_scan(linspace(-10*pi/180,10*pi/180,200).', linspace(35e-3,45e-3,100).');
+sca=uff.sector_scan('azimuth_axis',linspace(-10*pi/180,10*pi/180,200).','depth_axis', linspace(35e-3,45e-3,100).');
 sca.plot(fig_handle,'Scenario');    % show mesh
  
 %% Beamformer
@@ -246,15 +250,15 @@ sca.plot(fig_handle,'Scenario');    % show mesh
 % ultrasound image. We now use a USTB structure *beamformer*, that takes an
 % *apodization* structure in addition to the *channel_data* and *scan*.
 
-bmf=beamformer();
-bmf.channel_data=channel_data;
-bmf.scan=sca;
+pipe=pipeline();
+pipe.channel_data=channel_data;
+pipe.scan=sca;
 
-bmf.receive_apodization.window=uff.window.tukey50;
-bmf.receive_apodization.f_number=1.7;
+pipe.receive_apodization.window=uff.window.tukey50;
+pipe.receive_apodization.f_number=1.7;
 
-bmf.transmit_apodization.window=uff.window.tukey50;
-bmf.transmit_apodization.f_number=1.7;
+pipe.transmit_apodization.window=uff.window.tukey50;
+pipe.transmit_apodization.f_number=1.7;
 
 %% 
 %
@@ -264,9 +268,9 @@ bmf.transmit_apodization.f_number=1.7;
 % another *UFF* structure: *beamformed_data*.
 % 
 % To achieve the goal of this example, we use delay-and-sum (implemented in 
-% the *das_matlab()* process) as well as coherent compounding.
+% the *das()* process) as well as coherent compounding.
 
-b_data=bmf.go({process.das_matlab() process.coherent_compounding()});
+b_data=pipe.go({midprocess.das() postprocess.coherent_compounding()});
 
 % show
 b_data.plot();
