@@ -20,22 +20,21 @@ The USTB is made possible through the contribution of several labs around the wo
 
 The USTB is still under development, so there might be larger structural changes. The current version in main is;
 
-* v2.2: https://bitbucket.org/ustb/ustb/commits/tag/v2.2.3
+* v2.3: https://bitbucket.org/ustb/ustb/commits/tag/v2.3.0
 
 compared to the previous version
 
-* v2.1: https://bitbucket.org/ustb/ustb/commits/tag/v2.1.2
+* v2.2: https://bitbucket.org/ustb/ustb/commits/tag/v2.2.4
 
 the main changes are:
 
-* added function to save to GIF
-* added the FLUST simulator 
-* improved implementation of demodulation and filtering
-* improved download tool to include dowloads from Google drive
-* added "dark mode plotting"
-* adding code from several publications under /publications/
-* more tests have been added
+* major update of the FLUST simulator
+* corrected issue with divering wave delay calculation
+* corrected data location for unit tests
+* added examples and exercises used in the course IN3015/4015 Ultrasound Imaging at the University of Oslo.
 * several bugfixes and other improvements have been done as well.
+* more tests have been added
+
 
 ### Documentation ###
 Unfortunately, we have not had the time or resources to write a full documentation of the USTB. However, there are plenty of well documented examples that will help you to get started and hopefully understand the code. You find the examples under the /examples folder. 
