@@ -20,7 +20,7 @@ The USTB is made possible through the contribution of several labs around the wo
 
 The USTB is still under development, so there might be larger structural changes. The current version in main is;
 
-* v2.3: https://bitbucket.org/ustb/ustb/commits/tag/v2.3.0
+* v2.3: https://bitbucket.org/ustb/ustb/commits/tag/v2.3.2
 
 compared to the previous version
 
@@ -28,6 +28,7 @@ compared to the previous version
 
 the main changes are:
 
+* corrected implementation of Unified Delay Model for RTB/MLA processing
 * major update of the FLUST simulator
 * corrected issue with divering wave delay calculation
 * corrected data location for unit tests
