@@ -23,7 +23,7 @@ StackOverflow, and notably the documentation provided by MathWorks (the company 
  well worth spending some time getting familiar with how functions (e.g., [sum] (https://se.mathworks.com/help/matlab/ref/sum.html) are documented.
 
 The experience from earlier years in IN3015/IN4015 is that students have varied backgrounds. Ideally you should know a
-programming language already, and for many this will be Python. The ``scientific stack'' in Python includes Numpy and 
+programming language already, and for many this will be Python. The scientific stack in Python includes Numpy and 
 Scipy, which is very similar to MATLAB. Two relevant resources for those with a Python background are 
 [Numpy for Matlab users] (https://numpy.org/doc/stable/user/numpy-for-matlab-users.html) 
 or [Matlab for Python users] at (https://blogs.mathworks.com/student-lounge/2021/02/19/introduction-to-matlab-for-python-users/)
@@ -34,14 +34,15 @@ An alternative is the onramp tutorial that starts from the very basics, and lets
 
 \section*{Within MATLAB}
 
-In Fig.~\ref{fig:window} we can see the MATLAB user interface. The left pane is the ``current folder'' which shows us what files MATLAB has access to. One of these functions is the \texttt{test\_function.m} that is also shown in the ``editor''. This function takes in a number $x$, and returns a complex number $x+2ix$. The ``command window'' allows us to run this function, and we assign the output to the variable \texttt{a}. This variable is now known to MATLAB as we can see it in the ``workspace'', but when we can use it depends on the \textit{scope} (scope determines where in your program a name is visible).
+In Fig.~\ref{fig:window} we can see the MATLAB user interface. The left pane is the current folder which shows us what files MATLAB has access to.
+One of these functions is the test\_function.m that is also shown in the editor. This function takes in a number $x$, and returns a complex number $x+2ix$. The ``command window'' allows us to run this function, and we assign the output to the variable \texttt{a}. This variable is now known to MATLAB as we can see it in the ``workspace'', but when we can use it depends on the \textit{scope} (scope determines where in your program a name is visible).
 
-![Scheme](window.jpg)
+![Scheme](window.png)
 
 In many cases, such as when we are working with USTB, our functions are not located in our current folder. We then need to make sure the functions are on the MATLAB ``path''. MATLAB uses the search path to locate files in the system. You can include folders from anywhere to the path by navigating to them, right-clicking, and selecting add to path, or by using the \texttt{addpath} function.
 
-%\setcounter{section}{1}
-\section*{TASKS}
+
+## TASKS
 In the \texttt{Matlab\_intro.m} file, you will find sections of code (separated by \texttt{\%\%}) that can be run individually. Run the code and answer the questions in the file.
 
 \subsection*{Hints: 1) Arrays - lists of numbers}
