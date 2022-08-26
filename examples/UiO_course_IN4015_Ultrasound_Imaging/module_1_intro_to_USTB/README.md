@@ -1,4 +1,28 @@
-# Module 1 Introduction to the USTB: Getting familiar with the USTB
+# Module 1 Introduction to the USTB: Getting familiar with the USTB and MATLAB
+
+This module contains two exercises. The first exercise is to demonstrate that you have installed MATLAB and have set up the USTB. The second exercise is
+is to familiarize ourselves with some MATLAB concepts that will come in handy later in the course.
+
+## Delivery:
+Please provide a written report that
+
+- report the results you are asked to find
+- answers the question raised
+- provides the main code lines needed to solve the questions directly in the report
+- all plots needed for supporting your arguments when answering the exercise parts
+
+The report should be uploaded to [devilry.ifi.uio.no](devilry.ifi.uio.no).  
+**Deadline for uploading: Tuesday 6. September at 10:00. **
+
+## Exercise 1 : Set up MATLAB and the USTB
+The first exercise is simply to demonstrate that you have installed MATLAB and sucessfully set up the USTB. Run the "minimal_example.m" in this folder and add
+your name to the title of the figure of the ultrasound image. Save this figure and add it to your report.
+
+## Exercise 2 : 
+The second exercise is an introduction to MATLAB and pointing to relevant resoureces to learn MATLAB. You need to answer each task with the given hints by running the
+code in the MATLAB_intro.m file.
+
+## Additional USTB exercise
 
 The lab assignments for module 1 consists of using existing USTB examples to set ut the tools necessary for the rest of the exercises.
 
