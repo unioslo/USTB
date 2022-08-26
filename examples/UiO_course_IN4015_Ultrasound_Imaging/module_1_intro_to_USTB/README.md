@@ -11,7 +11,7 @@ Please provide a written report that
 - provides the main code lines needed to solve the questions directly in the report
 - all plots needed for supporting your arguments when answering the exercise parts
 
-The report should be uploaded to [devilry.ifi.uio.no](devilry.ifi.uio.no).  
+The report should be uploaded to [devilry.ifi.uio.no](https//devilry.ifi.uio.no).  
 **Deadline for uploading: Tuesday 6. September at 10:00. **
 
 ## Exercise 1 : Set up MATLAB and the USTB
@@ -22,14 +22,14 @@ NB! If you have trouble downloading the data using the download tool you can dow
 Delete the corrupt file with the same filename and move the downloaded data to the "data/" folder in the USTB repository and rerun the example. 
 
 ## Exercise 2 : Introduction to MATLAB
-The second exercise is an introduction to MATLAB and pointing to relevant resoureces to learn MATLAB. You need to answer each task with the given hints by running the
-code in the MATLAB_intro.m file.
+The second exercise can be found in the document IN3015_IN4015_MATLAB_intro.pdf in this folder, and is a brief introuction to MATLAB and also pointing to relevant resoureces to 
+learn MATLAB. You need to answer each task with the given hints by running the code in the MATLAB_intro.m file.
 
 ## Additional USTB exercise:
 NB! You don't need add anything to the report from this exercise.
 
-You are going to use the USTB quite alot in this course below are a few relevant examples you can work thorugh. You can also install the simulation tools Field II and kWave that 
-is used quite a lot together with the USTB.
+You are going to use the USTB quite alot in this course. Below are a few relevant USTB examples you should work thorugh. You should also install the simulation tools Field II and kWave that 
+is used quite a lot together with the USTB. The kWave toolbox will for example be used in the exercise for module 2.
 
 + Get to know the UltraSound ToolBox by running and getting familiar with multiple examples 
 	+ Pure USTB examples. Run at least five of these
