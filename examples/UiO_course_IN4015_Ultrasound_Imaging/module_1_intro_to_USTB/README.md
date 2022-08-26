@@ -18,11 +18,16 @@ The report should be uploaded to [devilry.ifi.uio.no](devilry.ifi.uio.no).
 The first exercise is simply to demonstrate that you have installed MATLAB and sucessfully set up the USTB. Run the "minimal_example.m" in this folder and add
 your name to the title of the figure of the ultrasound image. Save this figure and add it to your report.
 
+NB! If you have trouble downloading the data using the download tool you can download the data directly from https://ustb.no/datasets/Verasonics_P2-4_parasternal_long_small.uff . 
+Delete the corrupt file with the same filename and move the downloaded data to the "data/" folder in the USTB repository and rerun the example. 
+
 ## Exercise 2 : Introduction to MATLAB
 The second exercise is an introduction to MATLAB and pointing to relevant resoureces to learn MATLAB. You need to answer each task with the given hints by running the
 code in the MATLAB_intro.m file.
 
 ## Additional USTB exercise:
+NB! You don't need add anything to the report from this exercise.
+
 You are going to use the USTB quite alot in this course below are a few relevant examples you can work thorugh. You can also install the simulation tools Field II and kWave that 
 is used quite a lot together with the USTB.
 
