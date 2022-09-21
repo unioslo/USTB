@@ -27,7 +27,7 @@ Please provide a written report that
 - all plots needed for supporting your arguments when answering the exercise parts
 
 The report should be uploaded to [devilry.ifi.uio.no](devilry.ifi.uio.no).  
-**Deadline for uploading: Tuesday 28. September at 12:00. **
+**Deadline for uploading: Tuesday 4. October at 10:00. **
 
 ## Datasets
 You have two available datasets you can use for this exercise
@@ -87,10 +87,8 @@ you are done with the exercise. We only show differences larger than -100 dB.
 Differences smaller than -90 dB can be ignored, since they most likely originate from  numerical
 differences resulting from minor differences in implementation.
 
-### Optional Part III :  Inspecting receive apodization 
-This part is optional, meaning it will not be required to pass this exercise. 
-However, you might leare something by doing it. In this exercise you will inspect
-how the receive apodization influences the image.  You should change the receive
+### Part III :  Inspecting receive apodization 
+In this exercise you will inspect how the receive apodization influences the image.  You should change the receive
 beamforming window to a Hamming window, and set the f# to 2 by commenting out and filling
 out the lines marked with "<--- UNCOMMENT AND FILL OUT THIS LINE".
 
