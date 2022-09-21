@@ -150,7 +150,7 @@ ylabel(['z [mm]']); xlabel('x [mm]');
 colormap gray;caxis([-60 0])
 title('Your image scan converted')
 
-%% Part III : Optional exercise : Inspecting receive apodization 
+%% Part III : Inspecting receive apodization 
 % In this exercise you will inspect how the receive apodization influences
 % the image.
 
