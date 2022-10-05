@@ -1,4 +1,4 @@
-# Module 5 - Postprocessing analysis quantification
+# Module 4 - Postprocessing analysis quantification
 This example and exercise demonstrates what we in the USTB define as
 postprocessing processing objects. Thus, how one can work with the
 delayed data after beamforming. More specificly we are going to look at
@@ -21,7 +21,7 @@ Please provide a written report that
 - all plots needed for supporting your arguments when answering the exercise parts and displaying your results.
 
 The report should be uploaded to [devilry.ifi.uio.no](devilry.ifi.uio.no).  
-**Deadline for uploading: Tuesday 26. October at 12:00. **
+**Deadline for uploading: Tuesday 18. October at 10:00. **
 
 ## Datasets
 You have two available datasets you can use for this exercise

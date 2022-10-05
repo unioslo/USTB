@@ -1,10 +1,10 @@
 %% Coherent and incoherent compounding
 %
 %   See the README.md in the current folder
-%   module_5_postprocessing_analysis_quantification.
+%   module_4_postprocessing_analysis_quantification.
 %
 %   Author: Ole Marius Hoel Rindal <olemarius@olemarius.net>
-%   Update 18.10.2021
+%   Update 05.10.2022
 
 clear all;
 close all;
