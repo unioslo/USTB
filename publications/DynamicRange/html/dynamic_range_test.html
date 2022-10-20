@@ -1,0 +1,272 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>dynamic_range_test</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-08-02"><meta name="DC.source" content="dynamic_range_test.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">The Dynamic Range Test</a></li><li><a href="#2">Delay the data</a></li><li><a href="#4">DELAY AND SUM</a></li><li><a href="#5">COHERENCE FACTOR</a></li><li><a href="#6">MINIMUM VARIANCE</a></li><li><a href="#7">Running the Dynamic Range Test</a></li></ul></div><h2 id="1">The Dynamic Range Test</h2><p>The dynamic range test (DRT) was introduced in Rindal, O. M. H., Austeng, A., Fatemi, A., &amp; Rodriguez-Molares, A. (2019). The effect of dynamic range alterations in the estimation of contrast. Submitted to IEEE Transactions on Ultrasonics, Ferroelectrics, and Frequency Control. We encourage you to use it, and provide here the datasets and code to run it. You have to reference the publication above when using the test. This script runs the DRT on the DAS (delay-and-sum), CF (coherence factor) and MV (minimum variance) beamformer.</p><p>The code and data is awilable through <a href="http://www.bitbucket.org/ustb/ustb">http://www.bitbucket.org/ustb/ustb</a></p><p>Defining the DRT: To investigate wether a beamforming method is alternating the dynamic range, we have introduced a dynamic range test. This test uses the gradients  in  the  simulated  or the  experimental dataset. The dynamic range test (DRT) is defined as                   DRT=&#8710;/&#8710;_0 where &#8710; denotes the gradient of a given beamforming method, estimated via linear regression, and &#8710;_0 denotes the theoretical gradient, as fixed in the simulated and experimental data. DRT measures  how  many  dB  the output  dynamic  range  deviate sfrom the theoretical, for each dB of the input dynamic range.</p><p>For the simulated dataset we have both an axial and a lateral gradient and the DRT  can  be  estimated  for  both.  For  simplicity, the reported DRT value will be the average of the DRT in theaxial  and  lateral  direction. For  the  experimental  dataset  DRT is estimated in the lateral gradient.</p><pre class="codeinput">clear <span class="string">all</span>; close <span class="string">all</span>;
+
+<span class="comment">% Comment out wether you want to run the experimental or simulated data</span>
+<span class="comment">%filename = 'experimental_STAI_dynamic_range.uff';</span>
+filename = <span class="string">'FieldII_STAI_dynamic_range.uff'</span>;
+url=<span class="string">'http://ustb.no/datasets/'</span>;      <span class="comment">% if not found downloaded from here</span>
+
+<span class="comment">% checks if the data is in your data path, and downloads it otherwise.</span>
+<span class="comment">% The defaults data path is under USTB's folder, but you can change this</span>
+<span class="comment">% by setting an environment variable with setenv(DATA_PATH,'the_path_you_want_to_use');</span>
+tools.download(filename, url, data_path);
+
+channel_data = uff.channel_data();
+channel_data.read([data_path,filesep,filename],<span class="string">'/channel_data'</span>);
+</pre><pre class="codeoutput">UFF: reading channel_data [uff.channel_data]
+UFF: reading sequence [uff.wave] [====================] 100%
+</pre><h2 id="2">Delay the data</h2><p>Define the scan (notice less pixels than in the paper to speed it up), this actually degrades the quality of the MV image since to few lateral pixels causes some signal cancelling. But I guess it's a fair tradeoff :)</p><pre class="codeinput">scan=uff.linear_scan(<span class="string">'x_axis'</span>,linspace(-20e-3,20e-3,256).', <span class="string">'z_axis'</span>, linspace(5e-3,50e-3,256).');
+
+mid = midprocess.das();
+mid.channel_data=channel_data;
+mid.scan=scan;
+mid.dimension = dimension.transmit();
+mid.receive_apodization.window=uff.window.boxcar;
+mid.receive_apodization.f_number=1.75;
+mid.transmit_apodization.window=uff.window.boxcar;
+mid.transmit_apodization.f_number=1.75;
+b_data_tx = mid.go();
+</pre><pre class="codeoutput">USTB General beamformer MEX v1.1.2 .............done!
+</pre><p>Calculate weights to get uniform FOV. See example at <a href="http://www.ustb.no/examples/uniform-fov-in-field-ii-simulations/">http://www.ustb.no/examples/uniform-fov-in-field-ii-simulations/</a></p><pre class="codeinput"><span class="keyword">if</span> strcmp(filename,<span class="string">'FieldII_STAI_dynamic_range.uff'</span>)
+    [weights,array_gain_compensation,geo_spreading_compensation] = tools.uniform_fov_weighting(mid);
+<span class="keyword">else</span>
+    weights = 1;
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">uff.apodization: Inputs and outputs are unchanged. Skipping process.
+uff.apodization: Inputs and outputs are unchanged. Skipping process.
+</pre><h2 id="4">DELAY AND SUM</h2><pre class="codeinput">das=postprocess.coherent_compounding();
+das.input = b_data_tx;
+b_data_das = das.go();
+b_data_das.data = b_data_das.data.*weights(:); <span class="comment">%Compensate for geometrical spreading</span>
+b_data_das.plot();
+</pre><img vspace="5" hspace="5" src="dynamic_range_test_01.png" alt=""> <h2 id="5">COHERENCE FACTOR</h2><pre class="codeinput">cf = postprocess.coherence_factor();
+cf.dimension = dimension.receive;
+cf.receive_apodization = mid.receive_apodization;
+cf.transmit_apodization = mid.transmit_apodization;
+cf.input = b_data_tx;
+b_data_cf = cf.go();
+b_data_cf.data = b_data_cf.data.*weights(:); <span class="comment">%Compensate for geometrical spreading</span>
+b_data_cf.plot();
+</pre><pre class="codeoutput">uff.apodization: Inputs and outputs are unchanged. Skipping process.
+</pre><img vspace="5" hspace="5" src="dynamic_range_test_02.png" alt=""> <h2 id="6">MINIMUM VARIANCE</h2><pre class="codeinput">mv = postprocess.capon_minimum_variance();
+mv.dimension = dimension.receive;
+mv.transmit_apodization = mid.transmit_apodization;
+mv.receive_apodization = mid.receive_apodization;
+mv.input = b_data_tx;
+mv.scan = scan;
+mv.channel_data = channel_data;
+mv.K_in_lambda = 1.5;
+mv.L_elements = channel_data.probe.N/2;
+mv.regCoef = 1/100;
+b_data_mv = mv.go();
+b_data_mv.data = b_data_mv.data.*weights(:); <span class="comment">%Compensate for geometrical spreading</span>
+b_data_mv.plot();
+</pre><pre class="codeoutput">uff.apodization: Inputs and outputs are unchanged. Skipping process.
+</pre><img vspace="5" hspace="5" src="dynamic_range_test_03.png" alt=""> <h2 id="7">Running the Dynamic Range Test</h2><p>To run the dynamic range test we call the implementation under tools and pass the channel data object, the beamformed data object an the name of the beamformer.</p><pre class="codeinput">drt_value_das = tools.dynamic_range_test(channel_data,b_data_das,<span class="string">'DAS'</span>)
+drt_value_cf = tools.dynamic_range_test(channel_data,b_data_cf,<span class="string">'CF'</span>)
+drt_value_mv = tools.dynamic_range_test(channel_data,b_data_mv,<span class="string">'MV'</span>)
+</pre><pre class="codeoutput">
+drt_value_das =
+
+  1&times;2 single row vector
+
+    1.0126    0.9595
+
+
+drt_value_cf =
+
+  1&times;2 single row vector
+
+    1.6499    1.4194
+
+
+drt_value_mv =
+
+  1&times;2 single row vector
+
+    0.9922    0.9289
+
+</pre><img vspace="5" hspace="5" src="dynamic_range_test_04.png" alt=""> <img vspace="5" hspace="5" src="dynamic_range_test_05.png" alt=""> <img vspace="5" hspace="5" src="dynamic_range_test_06.png" alt=""> <p>The DRT test reveals that DAS is quite linear for both the simulated and experimental test. The MV compresses the dynamic range slightly, while the CF stretches the dynamic range.</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% The Dynamic Range Test
+% The dynamic range test (DRT) was introduced in Rindal, O. M. H., Austeng, A., Fatemi, A., 
+% & Rodriguez-Molares, A. (2019). The effect of dynamic range alterations
+% in the estimation of contrast. Submitted to IEEE Transactions on Ultrasonics,
+% Ferroelectrics, and Frequency Control. We encourage you to use it, and
+% provide here the datasets and code to run it. You have to reference the
+% publication above when using the test.
+% This script runs the DRT on the DAS (delay-and-sum), CF (coherence
+% factor) and MV (minimum variance) beamformer.
+%
+% The code and data is awilable through http://www.bitbucket.org/ustb/ustb
+%
+% Defining the DRT:
+% To investigate wether a beamforming method is alternating the dynamic
+% range, we have introduced a dynamic range test.
+% This test uses the gradients  in  the  simulated  or the  experimental dataset.
+% The dynamic range test (DRT) is defined as
+%                   DRT=∆/∆_0
+% where ∆ denotes the gradient of a given beamforming method, estimated via
+% linear regression, and ∆_0 denotes the theoretical gradient, as fixed in
+% the simulated and experimental data. DRT measures  how  many  dB  the  
+% output  dynamic  range  deviate sfrom the theoretical, for each dB of the
+% input dynamic range. 
+% 
+% For the simulated dataset we have both an axial and a lateral gradient  
+% and the DRT  can  be  estimated  for  both.  For  simplicity, the reported DRT 
+% value will be the average of the DRT in theaxial  and  lateral  direction.  
+% For  the  experimental  dataset  DRT is estimated in the lateral gradient.
+
+clear all; close all;
+
+% Comment out wether you want to run the experimental or simulated data
+%filename = 'experimental_STAI_dynamic_range.uff';
+filename = 'FieldII_STAI_dynamic_range.uff';
+url='http://ustb.no/datasets/';      % if not found downloaded from here
+
+% checks if the data is in your data path, and downloads it otherwise.
+% The defaults data path is under USTB's folder, but you can change this
+% by setting an environment variable with setenv(DATA_PATH,'the_path_you_want_to_use');
+tools.download(filename, url, data_path);   
+
+channel_data = uff.channel_data();
+channel_data.read([data_path,filesep,filename],'/channel_data');
+
+%% Delay the data
+% Define the scan (notice less pixels than in the paper to speed it up), 
+% this actually degrades the quality of the MV image since to few lateral
+% pixels causes some signal cancelling. But I guess it's a fair tradeoff :)
+scan=uff.linear_scan('x_axis',linspace(-20e-3,20e-3,256).', 'z_axis', linspace(5e-3,50e-3,256).');
+
+mid = midprocess.das();
+mid.channel_data=channel_data;
+mid.scan=scan;
+mid.dimension = dimension.transmit();
+mid.receive_apodization.window=uff.window.boxcar;
+mid.receive_apodization.f_number=1.75;
+mid.transmit_apodization.window=uff.window.boxcar;
+mid.transmit_apodization.f_number=1.75;
+b_data_tx = mid.go();
+
+%%
+% Calculate weights to get uniform FOV. 
+% See example at http://www.ustb.no/examples/uniform-fov-in-field-ii-simulations/
+if strcmp(filename,'FieldII_STAI_dynamic_range.uff')
+    [weights,array_gain_compensation,geo_spreading_compensation] = tools.uniform_fov_weighting(mid);
+else
+    weights = 1;
+end
+%% DELAY AND SUM
+das=postprocess.coherent_compounding();
+das.input = b_data_tx;
+b_data_das = das.go();
+b_data_das.data = b_data_das.data.*weights(:); %Compensate for geometrical spreading
+b_data_das.plot();
+
+%% COHERENCE FACTOR
+cf = postprocess.coherence_factor();
+cf.dimension = dimension.receive;
+cf.receive_apodization = mid.receive_apodization;
+cf.transmit_apodization = mid.transmit_apodization;
+cf.input = b_data_tx;
+b_data_cf = cf.go();
+b_data_cf.data = b_data_cf.data.*weights(:); %Compensate for geometrical spreading
+b_data_cf.plot();
+
+%% MINIMUM VARIANCE
+mv = postprocess.capon_minimum_variance();
+mv.dimension = dimension.receive;
+mv.transmit_apodization = mid.transmit_apodization;
+mv.receive_apodization = mid.receive_apodization;
+mv.input = b_data_tx;
+mv.scan = scan;
+mv.channel_data = channel_data;
+mv.K_in_lambda = 1.5;
+mv.L_elements = channel_data.probe.N/2;
+mv.regCoef = 1/100;
+b_data_mv = mv.go();
+b_data_mv.data = b_data_mv.data.*weights(:); %Compensate for geometrical spreading
+b_data_mv.plot();
+
+%% Running the Dynamic Range Test
+% To run the dynamic range test we call the implementation under tools and
+% pass the channel data object, the beamformed data object an the name of
+% the beamformer.
+drt_value_das = tools.dynamic_range_test(channel_data,b_data_das,'DAS')
+drt_value_cf = tools.dynamic_range_test(channel_data,b_data_cf,'CF')
+drt_value_mv = tools.dynamic_range_test(channel_data,b_data_mv,'MV')
+
+%%
+% The DRT test reveals that DAS is quite linear for both the simulated and
+% experimental test. The MV compresses the dynamic range slightly, while the
+% CF stretches the dynamic range.
+##### SOURCE END #####
+--></body></html>

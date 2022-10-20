@@ -4,7 +4,7 @@
    <type>toolbox</type>
    <icon>HelpIcon.DEMOS</icon>
    <website/>
-   <description>The aim of USTB is to facilitate the comparison between beamforming techniques and encourage the publication of datasets and algorithms. It is free, open source, and open to all contributors. USTB is a joint effort of the Norwegian University of Science and Technology, the University of Oslo, the University of Lyon, and John Hopkins University.</description>
+   <description>USTB is a free MATLAB toolbox for processing ultrasonic signals Its aim is to facilitate the comparison of imaging techniques and the dissemination of research results. USTB covers processing techniques for both tissue and flow visualization, as well as other image processing techniques.</description>
    <demosection>
       <label>advanced_beamforming</label>
       <demoitem>
@@ -33,6 +33,15 @@
          <type>other</type>
          <source>STA_matrix_array</source>
          <file>examples/fresnel/matrix_array/html/STA_matrix_array.html</file>
+      </demoitem>
+   </demosection>
+   <demosection>
+      <label>Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel</label>
+      <demoitem>
+         <label>Proceedings_FI_UFF_Verasonics_RTB_delay_models</label>
+         <type>other</type>
+         <source>Proceedings_FI_UFF_Verasonics_RTB_delay_models</source>
+         <file>publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/html/Proceedings_FI_UFF_Verasonics_RTB_delay_models.html</file>
       </demoitem>
    </demosection>
    <demosection>
@@ -210,6 +219,21 @@
       </demoitem>
    </demosection>
    <demosection>
+      <label>Prieur_et_al_Signal_coherence_and_image_amplitude_with_the_fDMAS</label>
+      <demoitem>
+         <label>FI_UFF_FIeldII_simulations_Fig2_and_Fig3</label>
+         <type>other</type>
+         <source>FI_UFF_FIeldII_simulations_Fig2_and_Fig3</source>
+         <file>publications/TUFFC/Prieur_et_al_Signal_coherence_and_image_amplitude_with_the_fDMAS/html/FI_UFF_FIeldII_simulations_Fig2_and_Fig3.html</file>
+      </demoitem>
+      <demoitem>
+         <label>FI_UFF_delay_multiply_and_sum_Fig5_and_Fig6</label>
+         <type>other</type>
+         <source>FI_UFF_delay_multiply_and_sum_Fig5_and_Fig6</source>
+         <file>publications/TUFFC/Prieur_et_al_Signal_coherence_and_image_amplitude_with_the_fDMAS/html/FI_UFF_delay_multiply_and_sum_Fig5_and_Fig6.html</file>
+      </demoitem>
+   </demosection>
+   <demosection>
       <label>curvilinear_array</label>
       <demoitem>
          <label>DW_curvilinear_array</label>
@@ -237,6 +261,27 @@
          <type>other</type>
          <source>STAI_theoretical_PSF</source>
          <file>examples/field_II/html/STAI_theoretical_PSF.html</file>
+      </demoitem>
+   </demosection>
+   <demosection>
+      <label>DynamicRange</label>
+      <demoitem>
+         <label>create_figures_from_experimental</label>
+         <type>other</type>
+         <source>create_figures_from_experimental</source>
+         <file>publications/DynamicRange/html/create_figures_from_experimental.html</file>
+      </demoitem>
+      <demoitem>
+         <label>create_figures_from_simulation</label>
+         <type>other</type>
+         <source>create_figures_from_simulation</source>
+         <file>publications/DynamicRange/html/create_figures_from_simulation.html</file>
+      </demoitem>
+      <demoitem>
+         <label>dynamic_range_test</label>
+         <type>other</type>
+         <source>dynamic_range_test</source>
+         <file>publications/DynamicRange/html/dynamic_range_test.html</file>
       </demoitem>
    </demosection>
 </demos>

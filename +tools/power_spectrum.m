@@ -1,17 +1,19 @@
-function [fx, F] = power_spectrum(data,fs,normalised)
-    % function [fx, F] = power_spectrum(data,fs)
+function [fx, pw] = power_spectrum(data, fs, normalised, N)
+    % function [fx, pw] = power_spectrum(data,fs)
     
-    if ~exist('normalised')
-        normalised=0;
+    if nargin < 3
+        normalised = true;
+    end
+    if nargin < 4    
+        N = min(5, size(data, 4));     % number of temporal frames to average
     end
     
-    Nfft=size(data,1);
-    F = fftshift(fft(data, Nfft));
-    F = abs(squeeze(mean(mean(mean(abs(F(:,:,:,:)),4),3),2)));
+    pw = fftshift(fft(data(:,:,:,1:N), [], 1));
+    pw = mean(abs(pw).^2, [2, 3, 4]);
     if normalised 
-        F = F/max(F); 
+        pw = pw/max(pw); 
     end
-    fx = linspace(-fs/2,fs/2, Nfft);
-    
+    fx = linspace(-fs/2,fs/2, size(data, 1)+1);
+    fx(end) = []; 
 end
 

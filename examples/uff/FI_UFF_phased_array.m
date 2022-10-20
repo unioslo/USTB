@@ -61,8 +61,7 @@ b_data.plot(3,['DAS']);
 MLA = 4;
 scan_MLA=uff.sector_scan('azimuth_axis',...
     linspace(channel_data.sequence(1).source.azimuth,channel_data.sequence(end).source.azimuth,...
-    length(channel_data.sequence)*MLA)'...
-    ,'depth_axis',depth_axis);
+    length(channel_data.sequence)*MLA)','depth_axis',depth_axis);
 
 mid_MLA=midprocess.das();
 mid_MLA.channel_data=channel_data;

@@ -4,15 +4,10 @@
 <tocitem target="ustb.html" image="$toolbox/matlab/icons/book_mat.gif">UltraSound ToolBox (USTB)
 
     <tocitem target="getting_started.html" image="HelpIcon.GETTING_STARTED">Getting Started</tocitem>
-		
-    <tocitem target="examples.html" image="HelpIcon.EXAMPLES">Examples</tocitem>
 
-    <tocitem target="fresnel.html" image="HelpIcon.USER_GUIDE">Data from built-in Fresnel simulator
-        <tocitem target="../examples/fresnel/linear_array/html/CPWC_linear_array.html">Example: CPWC linear array</tocitem>
-    </tocitem>
-        
     <tocitem target="http://www.ustb.no" image="$toolbox/matlab/icons/webicon.gif">USTB Web Site</tocitem>
-    <tocitem target="http://www.ustb.no/forum" image="$toolbox/matlab/icons/webicon.gif">USTB Forum</tocitem>
+    <tocitem target="https://bitbucket.org/ustb/ustb/src/master/" image="$toolbox/matlab/icons/webicon.gif">USTB repository</tocitem>
+    <tocitem target="https://bitbucket.org/ustb/ustb/issues?" image="$toolbox/matlab/icons/webicon.gif">USTB Issue tracker</tocitem>
 	
 </tocitem>
 </toc>

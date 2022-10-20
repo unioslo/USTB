@@ -124,4 +124,9 @@ mid.transmit_apodization.minimum_aperture = 3e-3;
 b_data=mid.go();
 b_data.plot();
 
-mid.transmit_apodization.plot()
+%% Analyse the transmit apodization used
+% We can plot the apodization and get a GUI to choose which pixel in the
+% scan we want to plot the apodization across the aperture by using the
+% transmit_apodization.plot() function. To exit press "enter".
+
+%mid.transmit_apodization.plot()

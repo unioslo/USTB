@@ -87,10 +87,15 @@ classdef generalized_coherence_factor < postprocess
             h.GCF=uff.beamformed_data(h.input); % ToDo: instead we should copy everything but the data
 
             % integrated cofficients
+            apertureIndeces = 1;
+            waveIndeces = 1;
             if h.M0 > 1
-                indToSumFFT = [1:h.M0+1 h.input.N_channels-h.M0+1:h.input.N_channels];
-            else
-                indToSumFFT = 1;
+                if h.input.N_channels>1
+                    apertureIndeces = [1:h.M0+1 h.input.N_channels-h.M0+1:h.input.N_channels];
+                end
+                if h.input.N_waves>1
+                    waveIndeces = [1:h.M0+1 h.input.N_waves-h.M0+1:h.input.N_waves];
+                end
             end
 
             switch h.dimension
@@ -98,21 +103,21 @@ classdef generalized_coherence_factor < postprocess
                     active_elements=double(bsxfun(@times,tx_apodization,rx_apodization)>h.active_element_criterium);
                     coherent_sum=sum(sum(h.input.data,2),3);
                     fft_data=permute(fft2(permute(h.input.data,[2 3 1 4])),[3 1 2 4]);
-                    LF_sum=sum(sum(abs(fft_data(:,indToSumFFT,indToSumFFT,:)).^2,2),3);
+                    LF_sum=sum(sum(abs(fft_data(:,apertureIndeces,waveIndeces,:)).^2,2),3);
                     total_sum=sum(sum(abs(fft_data).^2,2),3);
                     M=sum(sum(active_elements,2),3);
                 case dimension.transmit
                     active_elements=double(tx_apodization>h.active_element_criterium);
                     coherent_sum=sum(h.input.data,3);
                     fft_data=fft(h.input.data,[],3);
-                    LF_sum=sum(abs(fft_data(:,:,indToSumFFT,:)).^2,3);
+                    LF_sum=sum(abs(fft_data(:,:,waveIndeces,:)).^2,3);
                     total_sum=sum(abs(fft_data).^2,3);
                     M=sum(active_elements,3);
                 case dimension.receive
                     active_elements=double(rx_apodization>h.active_element_criterium);
                     coherent_sum=sum(h.input.data,2);
                     fft_data=fft(h.input.data,[],2);
-                    LF_sum=sum(abs(fft_data(:,indToSumFFT,:,:)).^2,2);
+                    LF_sum=sum(abs(fft_data(:,apertureIndeces,:,:)).^2,2);
                     total_sum=sum(abs(fft_data).^2,2);
                     M=sum(active_elements,2);
                 otherwise

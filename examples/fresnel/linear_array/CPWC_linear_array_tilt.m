@@ -99,6 +99,7 @@ h2=subplot(2,2,2)
 b_data.plot(h2,'TX 20 degrees');
 
 %% receive tilt
+das.transmit_apodization.tilt=0;
 das.receive_apodization.tilt=-30*pi/180;
 b_data=das.go();
 h3=subplot(2,2,3)

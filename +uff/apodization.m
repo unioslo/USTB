@@ -181,7 +181,7 @@ classdef apodization < uff
                     % TUKEY80
                 case uff.window.tukey80
                     roll=0.80;
-                    data=h.tukey_ang(ratio_theta,roll).*h.tukey_ang(ratio_phi,roll);
+                    data=h.tukey(ratio_theta,roll).*h.tukey(ratio_phi,roll);
                 otherwise
                     error('Unknown apodization type!');
             end
@@ -323,7 +323,7 @@ classdef apodization < uff
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%
         %% incidence aperture
-        function [tan_theta tan_phi] = incidence_aperture(h)
+        function [tan_theta tan_phi distance] = incidence_aperture(h)
             % Location of the elements
             x=ones(h.focus.N_pixels,1)*(h.probe.x.');
             y=ones(h.focus.N_pixels,1)*(h.probe.y.');
@@ -378,15 +378,20 @@ classdef apodization < uff
             % minimum aperture
             z_dist(z_dist>=0 & z_dist<h.minimum_aperture(1)/h.f_number(1)) = h.minimum_aperture(1)/h.f_number(1);
             z_dist(z_dist<0 & z_dist>-h.minimum_aperture(1)/h.f_number(1)) = -h.minimum_aperture(1)/h.f_number(1);
+
+            % maximum aperture
+            z_dist(z_dist>=0 & z_dist>h.maximum_aperture(1)/h.f_number(1)) = h.maximum_aperture(1)/h.f_number(1);
+            z_dist(z_dist<0 & z_dist<-h.maximum_aperture(1)/h.f_number(1)) = -h.maximum_aperture(1)/h.f_number(1);
             
             % azimuth and elevation tangents, including tilting overwrite
             tan_theta = x_dist./z_dist;
             tan_phi = y_dist./z_dist;
+            distance = z_dist;
         end
-        
+
         %%%%%%%%%%%%%%%%%%%%%%%%%
         %% incidence wave
-        function [tan_theta tan_phi] = incidence_wave(h)
+        function [tan_theta tan_phi distance] = incidence_wave(h)
             
             assert(numel(h.sequence)>0,'The SEQUENCE is not set.');
             tan_theta=zeros(h.focus.N_pixels,length(h.sequence));
@@ -399,6 +404,7 @@ classdef apodization < uff
                     
                     tan_theta(:,n)=ones(h.focus.N_pixels,1)*tan(h.sequence(n).source.azimuth - h.tilt(1));
                     tan_phi(:,n)=ones(h.focus.N_pixels,1)*tan(h.sequence(n).source.elevation - h.tilt(2));
+                    distance(:,n) = h.focus.z;
                     
                 % diverging or converging waves
                 else
@@ -425,10 +431,15 @@ classdef apodization < uff
                         % minimum aperture
                         z_dist(z_dist>=0 & z_dist<h.minimum_aperture(1)/h.f_number(1)) = h.minimum_aperture(1)/h.f_number(1);
                         z_dist(z_dist<0 & z_dist>-h.minimum_aperture(1)/h.f_number(1)) = -h.minimum_aperture(1)/h.f_number(1);
+
+                        % maximum aperture
+                        z_dist(z_dist>=0 & z_dist>h.maximum_aperture(1)/h.f_number(1)) = h.maximum_aperture(1)/h.f_number(1);
+                        z_dist(z_dist<0 & z_dist<-h.maximum_aperture(1)/h.f_number(1)) = -h.maximum_aperture(1)/h.f_number(1);
                         
                         % compute tangents & distance
                         tan_theta(:,n) = x_dist./z_dist;
                         tan_phi(:,n) = y_dist./z_dist;
+                        distance(:,n) = z_dist;
                         
                     else
                         % distance to source
@@ -444,10 +455,15 @@ classdef apodization < uff
                         % minimum aperture
                         z_dist(z_dist>=0 & z_dist<h.minimum_aperture(1)/h.f_number(1)) = h.minimum_aperture(1)/h.f_number(1);
                         z_dist(z_dist<0 & z_dist>-h.minimum_aperture(1)/h.f_number(1)) = -h.minimum_aperture(1)/h.f_number(1);
+
+                        % maximum aperture
+                        z_dist(z_dist>=0 & z_dist>h.maximum_aperture(1)/h.f_number(1)) = h.maximum_aperture(1)/h.f_number(1);
+                        z_dist(z_dist<0 & z_dist<-h.maximum_aperture(1)/h.f_number(1)) = -h.maximum_aperture(1)/h.f_number(1);
                         
                         % compute tangents & distance
                         tan_theta(:,n) = x_dist./z_dist;
                         tan_phi(:,n) = y_dist./z_dist;
+                        distance(:,n) = z_dist;
                     end
                 end
             end

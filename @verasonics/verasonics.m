@@ -116,7 +116,7 @@ classdef verasonics < handle
         
         % Generate a USTB probe object from the Verasonics parameters
         function prb = create_probe_object(h)
-            if strcmp(h.Trans.name,'L7-4') || strcmp(h.Trans.name,'P4-2v') || strcmp(h.Trans.name,'L11-4v') || strcmp(h.Trans.name,'GE9L-D')
+            if strcmp(h.Trans.name,'L7-4') || strcmp(h.Trans.name,'P4-2v') || strcmp(h.Trans.name,'L11-4v') || strcmp(h.Trans.name,'L11-5v') || strcmp(h.Trans.name,'GE9L-D')
                 prb=uff.linear_array();
                 prb.N=h.Trans.numelements;                  % number of elements
                 prb.pitch=h.Trans.spacingMm/1000;           % probe pitch in azimuth [m]
@@ -144,9 +144,10 @@ classdef verasonics < handle
             else
                 D = D - D(Indices(1));
             end
-            %figure(101);
-            %plot(D); hold on;
-            %plot(h.TX(n_tx).Delay*h.lambda)
+            
+            %figure(101);clf;
+            %plot(D,'b'); hold on;
+            %plot(h.TX(n_tx).Delay*h.lambda,'r')
             
             trans_delays = D;
         end

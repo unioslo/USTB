@@ -21,7 +21,7 @@ classdef sector_scan < uff.scan
     properties  (Access = public)
         azimuth_axis                % Vector containing the azimuth coordinates of the azimuth axis [rad]
         depth_axis                  % Vector containing the distance coordinates of the distance axis [m]
-        apex         = uff.point()  % POINT class
+        apex                        % POINT class
     end
     
     properties  (Dependent)
@@ -41,6 +41,7 @@ classdef sector_scan < uff.scan
         function h=sector_scan(varargin)
             h = h@uff.scan(varargin{:});
             h.update_pixel_position();
+            if ~isa(h.apex, 'uff.point'), h.apex = uff.point(); end
         end
     end
     

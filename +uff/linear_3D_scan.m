@@ -35,6 +35,10 @@ classdef linear_3D_scan < uff.scan
         function h=linear_3D_scan(varargin)
             h = h@uff.scan(varargin{:});
             h.update_pixel_position();
+            
+            if isempty(h.roll)
+                h.roll = 0
+            end
         end
     end
     

@@ -19,6 +19,7 @@ development/
 data/
 examples/huff/recording.h5
 !multi_frame_gui.fig
+!window.png
 !*.keep_this_folder_in_git
 +mex/include/
 +mex/lib/win64/microsoft/libmwcoder_connectivity_comm.lib
@@ -37,3 +38,5 @@ examples/huff/recording.h5
 .mex/include/
 .mex/lib/
 .mex
+*.eps
+*.m~

@@ -148,7 +148,12 @@ pipe.transmit_apodization.f_number=F_number;
 % To achieve the goal of this example, we use delay-and-sum (implemented in 
 % the *das_matlab()* process) as well as coherent compounding.
 
-b_data=pipe.go({midprocess.das postprocess.coherent_compounding});
+% Since we are doing 3D imaging with a 3D scan we need to use the spherical
+% transmit delay model
+das = midprocess.das();
+das.spherical_transmit_delay_model = spherical_transmit_delay_model.spherical();
+%%
+b_data=pipe.go({das postprocess.coherent_compounding});
 
 % show
 fig_plot=pha.plot();

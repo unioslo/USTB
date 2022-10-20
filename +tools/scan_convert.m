@@ -43,7 +43,7 @@ Zs = minZ:(maxZ-minZ)/(sizeZ-1):maxZ;
 [thetaGridOut, rangeGridOut] = cart2pol(Zs, Xs);
 
 % Finally do a simple linear interpolation in polar-coordinate-space:
-scanConvertedImage = interp2(double(thetaGrid), double(rangeGrid), double(inputImage), double(thetaGridOut), double(rangeGridOut), interpolationMethod,0);
+scanConvertedImage = interp2(double(thetaGrid), double(rangeGrid), double(inputImage), double(thetaGridOut), double(rangeGridOut), interpolationMethod,-inf);
 
 % We are resampling using a rectangular grid, so need only the X-s and the Z-s as vectors:
 Xs = Xs(1,:)';

@@ -46,7 +46,12 @@ classdef point < uff
     methods  
          function h=set.distance(h,in_distance)
              assert(numel(in_distance)==1, 'The distance should be a escalar in [m]');
-             h.distance=in_distance;
+             if in_distance >= 0
+                h.distance=in_distance;
+             else
+                h.distance=-in_distance;
+                h.xyz = -h.xyz;
+             end    
          end
          function h=set.azimuth(h,in_azimuth)
              assert(numel(in_azimuth)==1, 'The azimuth should be a escalar in [rad]');

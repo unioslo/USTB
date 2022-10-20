@@ -102,6 +102,7 @@ mv_data.plot([],mv.name);
 cf=postprocess.coherence_factor();
 cf.transmit_apodization=pipe.transmit_apodization;
 cf.receive_apodization=pipe.receive_apodization;
+cf.dimension = dimension.transmit;
 cf.input=b_data;
 cf_data=cf.go();
 cf.CF.plot([],'Mallart-Fink Coherence factor',60,'none'); % show the coherence factor

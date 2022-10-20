@@ -93,7 +93,7 @@ classdef phase_coherence_factor < postprocess
             if isempty(h.center_frequency)
                 aux_data=h.input.data;
             else
-                rx_propagation_distance=(h.receive_apodization.propagation_distance);
+                [dummy dummy rx_propagation_distance]=h.receive_apodization.incidence_aperture();
                 aux_data=bsxfun(@times,h.input.data,exp(-1i*2*pi*h.center_frequency*2*rx_propagation_distance/h.sound_speed));
             end
             signal_phase = angle(aux_data);

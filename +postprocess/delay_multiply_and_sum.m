@@ -147,8 +147,8 @@ classdef delay_multiply_and_sum < postprocess
             %%
             if isempty(h.filter_freqs)
                 [f0, bw] = tools.estimate_frequency(2*h.input(1).scan.z_axis/h.channel_data.sound_speed,data_cube);
-                f_start = 2*f0-f0;
-                f_stop = 2*f0+f0;
+                f_start = 1.5*f0; 
+                f_stop = 2.5*f0
                 f_transition = f0/4;
 
                 F = [f_start f_start+f_transition f_stop f_stop+f_transition];
@@ -157,7 +157,7 @@ classdef delay_multiply_and_sum < postprocess
             end
             
             
-            %fCheck that the pixel sampling frequency is high enogh to
+            %Check that the pixel sampling frequency is high enogh to
             %support 2 times the center frequency, aaand the later hilbert
             %transform. Added a extra transition for the Hilbert transform
             assert(fs/2>(F(end)),['We need ',num2str(ceil((F(end))*2/fs)),...
@@ -202,23 +202,25 @@ classdef delay_multiply_and_sum < postprocess
             
             
             warning('If the result looks funky, you might need to tune the filter paramters of DMAS using the filter_freqs property. Use the plot to check that everything is OK.')
-            if 0 %Plot to check the filtering
+            plot_filtering = false;
+            if plot_filtering %Plot to check the filtering
                 %%
                 [freq_resp,f_ax]=freqz(b);
                 
                 freq_axis = linspace(-fs/2,fs/2,length(filtered_y_dmas_signed));
+                ax = fs/2*(2*[0:size(filtered_y_dmas_signed,1)-1]/size(filtered_y_dmas_signed,1)-1);
                 figure(100);clf;
                 subplot(411)
                 plot(freq_axis*10^-6,orig_plot);
                 subplot(412)
                 F_temp = (abs(fftshift(fft(sum(y_dmas_signed,3)))));
-                plot(freq_axis(floor(end/2):end)*10^-6,F_temp(floor(end/2):end,:));hold on
+                plot(ax(floor(end/2):end)*10^-6,F_temp(floor(end/2):end,:));hold on
                 axis tight
                 subplot(413)
                 plot(f_ax,db(abs(freq_resp)));
                 axis tight
                 subplot(414)
-                plot(freq_axis*10^-6,(abs(fftshift(fft(filtered_y_dmas_signed)))));
+                plot(freq_axis*10^-6,db(abs(fftshift(fft(filtered_y_dmas_signed)))));
                 axis tight
             end
             

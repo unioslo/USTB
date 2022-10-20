@@ -182,6 +182,7 @@ mv_data.plot([],mv.name);
 % We could also use the *coherence_factor* process which implements the 
 % Mallart-Fink coherence factor beamforming to beamform the data.
 cf=postprocess.coherence_factor();
+cf.dimension = dimension.receive;
 cf.transmit_apodization=pipe.transmit_apodization;
 cf.receive_apodization=pipe.receive_apodization;
 cf.input=b_data;
@@ -190,8 +191,8 @@ cf_data=cf.go();
 figure;
 ax1=subplot(1,2,1);
 ax2=subplot(1,2,2);
-cf_data.plot(ax1,'CF image')
-cf.CF.plot(ax2,'CF factor',60,'none')
+cf_data.plot(ax1,'CF image');
+cf.CF.plot(ax2,'CF factor',60,'none');
 
 %% 
 %
@@ -199,6 +200,7 @@ cf.CF.plot(ax2,'CF factor',60,'none')
 % implements the Camacho-Fritsch phase coherence factor beamforming method.
 % We are truly spoilt for choice!
 pcf=postprocess.phase_coherence_factor();
+pcf.dimension = dimension.receive;
 pcf.transmit_apodization=pipe.transmit_apodization;
 pcf.receive_apodization=pipe.receive_apodization;
 pcf.input=b_data;
@@ -207,5 +209,5 @@ pcf_data=pcf.go();
 figure;
 ax1=subplot(1,2,1);
 ax2=subplot(1,2,2);
-pcf_data.plot(ax1,'FCC image')
-pcf.FCC.plot(ax2,'FCC factor',60,'none')
+pcf_data.plot(ax1,'FCC image');
+pcf.FCC.plot(ax2,'FCC factor',60,'none');

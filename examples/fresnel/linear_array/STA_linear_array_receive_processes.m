@@ -102,6 +102,7 @@ mv_data.plot([],mv.name);
 cf=postprocess.coherence_factor();
 cf.transmit_apodization=pipe.transmit_apodization;
 cf.receive_apodization=pipe.receive_apodization;
+cf.dimension = dimension.receive;
 cf.input=b_data;
 cf_data=cf.go();
 cf.CF.plot([],'Mallart-Fink Coherence factor',60,'none'); % show the coherence factor
@@ -111,6 +112,7 @@ cf_data.plot([],cf.name);
 pcf=postprocess.phase_coherence_factor();
 pcf.transmit_apodization=pipe.transmit_apodization;
 pcf.receive_apodization=pipe.receive_apodization;
+pcf.dimension = dimension.receive;
 pcf.input=b_data;
 pcf_data=pcf.go();
 pcf.FCC.plot([],'Camacho-Fritsch Phase coherence factor',60,'none'); % show the phase coherence factor

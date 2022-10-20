@@ -149,4 +149,9 @@ b_data=mid.go();
 % show
 b_data.plot();
 
-mid.transmit_apodization.plot([],N/2)
+%% Analyse the transmit apodization used
+% We can plot the apodization and get a GUI to choose which pixel in the
+% scan we want to plot the apodization across the aperture by using the
+% transmit_apodization.plot() function. To exit press "enter".
+
+%mid.transmit_apodization.plot([],N/2)
