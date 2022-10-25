@@ -22,8 +22,8 @@ close all
 clc
 
 do_demodulation = true;
-% nFrames = 1:100:500;
-nFrames = 10000;
+nFrames = 1:100:1000;
+% nFrames = 5000;
 %% Phantom
 x_sca=[zeros(1,7) -15e-3:5e-3:15e-3];
 z_sca=[5e-3:5e-3:35e-3 20e-3*ones(1,7)];
@@ -50,7 +50,7 @@ pul.fractional_bandwidth=0.8;     % fractional bandwidth [unitless]
 
 %% Sequence generation
 
-nPlaneWaves=1;
+nPlaneWaves=3;
 angles=linspace(-10, 10, nPlaneWaves)/180*pi;
 seq=uff.wave();
 for n=1:nPlaneWaves 
@@ -93,7 +93,7 @@ pipe.scan=scan;
 pipe.receive_apodization.window=uff.window.hamming;
 pipe.receive_apodization.f_number=1.5;
 
-pipe.transmit_apodization.window=uff.window.hamming;
+pipe.transmit_apodization.window=uff.window.none;
 pipe.transmit_apodization.f_number=1.5;
 
 proc            = midprocess.das();
