@@ -18,11 +18,11 @@
 % Last edited: 03-01-2018
 
 clear all
-close all
+% close all
 clc
 
 do_demodulation = true;
-nFrames = 1:100:1000;
+nFrames = 1:500:5000;
 % nFrames = 5000;
 %% Phantom
 x_sca=[zeros(1,7) -15e-3:5e-3:15e-3];
@@ -50,7 +50,7 @@ pul.fractional_bandwidth=0.8;     % fractional bandwidth [unitless]
 
 %% Sequence generation
 
-nPlaneWaves=3;
+nPlaneWaves=5;
 angles=linspace(-10, 10, nPlaneWaves)/180*pi;
 seq=uff.wave();
 for n=1:nPlaneWaves 
@@ -82,7 +82,9 @@ if do_demodulation
 end
 
 %% Scan
-scan = uff.linear_scan('x_axis',linspace(-20e-3,20e-3,256).', 'z_axis', linspace(0e-3,40e-3,256).');
+dz = 2*channel_data.sound_speed / channel_data.sampling_frequency;
+
+scan = uff.linear_scan('x_axis',linspace(-20e-3,20e-3,256).', 'z_axis', (0:dz:40e-3).');
  
 %% Pipeline
 
@@ -91,10 +93,9 @@ pipe.channel_data=channel_data;
 pipe.scan=scan;
 
 pipe.receive_apodization.window=uff.window.hamming;
-pipe.receive_apodization.f_number=1.5;
+pipe.receive_apodization.f_number=2.5;
 
 pipe.transmit_apodization.window=uff.window.none;
-pipe.transmit_apodization.f_number=1.5;
 
 proc            = midprocess.das();
 proc.code       = code.mex();
@@ -110,7 +111,7 @@ if do_demodulation
     dOp_per_frame = dOp_per_frame * 2; % complex data
 end
 
-das_mexFast_time = zeros([length(nFrames), 1]);
+% das_mexFast_time = zeros([length(nFrames), 1]);
 das_mex_gpu_time = zeros([length(nFrames), 1]);
 
 for n=1:length(nFrames)
@@ -127,18 +128,18 @@ for n=1:length(nFrames)
     das_mex_gpu_time(n) = toc();
 
     % Time USTB's MEX FAST CPU implementation
-    proc            = midprocess.das();
-    proc.code       = code.mexFast;
-    proc.dimension  = dimension.both;
-    fprintf(1, 'Processing %d frames: MEX C\n', nFrames(n))
-    tic()
-    bf_data_mexFast_cpu = pipe.go({proc});
-    das_mexFast_time(n) = toc();
+    %     proc            = midprocess.das();
+    %     proc.code       = code.mexFast;
+    %     proc.dimension  = dimension.both;
+    %     fprintf(1, 'Processing %d frames: MEX C\n', nFrames(n))
+    %     tic()
+    %     bf_data_mexFast_cpu = pipe.go({proc});
+    %     das_mexFast_time(n) = toc();
 end
 
 %% Plot the images for visual inspection of the results
 figure('Color', 'white')
-tiledlayout(1, 3, "TileSpacing", "compact", "Padding", "compact")
+tiledlayout(1, 1, "TileSpacing", "compact", "Padding", "compact")
 hAx(1) = nexttile();
 imagesc(scan.x_axis*1e2, scan.z_axis*1e2, ...
     20*log10(abs(reshape(bf_data_mex_gpu.data(:,1), [scan.N_z_axis, scan.N_x_axis])) / ...
@@ -150,34 +151,34 @@ xlabel("x [cm]")
 ylabel("z [cm]")
 title("mex CUDA")
 
-hAx(2) = nexttile();
-imagesc(scan.x_axis*1e2, scan.z_axis*1e2, ...
-    20*log10(abs(reshape(bf_data_mexFast_cpu.data(:,1), [scan.N_z_axis, scan.N_x_axis])) / ...
-    max(abs(bf_data_mexFast_cpu.data(:,1)))), [-60, 0])
-grid on
-box on
-axis equal tight
-xlabel("x [cm]")
-ylabel("z [cm]")
-title("mexFast")
+% hAx(2) = nexttile();
+% imagesc(scan.x_axis*1e2, scan.z_axis*1e2, ...
+%     20*log10(abs(reshape(bf_data_mexFast_cpu.data(:,1), [scan.N_z_axis, scan.N_x_axis])) / ...
+%     max(abs(bf_data_mexFast_cpu.data(:,1)))), [-60, 0])
+% grid on
+% box on
+% axis equal tight
+% xlabel("x [cm]")
+% ylabel("z [cm]")
+% title("mexFast")
+% 
+% hAx(3) = nexttile();
+% diff_data = bf_data_mex_gpu.data(:,1) - bf_data_mexFast_cpu.data(:,1);
 
-hAx(3) = nexttile();
-diff_data = bf_data_mex_gpu.data(:,1) - bf_data_mexFast_cpu.data(:,1);
-
-imagesc(scan.x_axis*1e2, scan.z_axis*1e2, reshape(20*log10(abs(diff_data)), ...
-    [scan.N_z_axis, scan.N_x_axis]), [-60, 0])
+% imagesc(scan.x_axis*1e2, scan.z_axis*1e2, reshape(20*log10(abs(diff_data)), ...
+%     [scan.N_z_axis, scan.N_x_axis]), [-60, 0])
 
 % imagesc(scan.x_axis*1e2, scan.z_axis*1e2, reshape(angle(diff_data), ...
 %     [scan.N_z_axis, scan.N_x_axis]), [-pi, pi])
 
-grid on
-box on
-axis equal tight
-xlabel("x [cm]")
-ylabel("z [cm]")
-title("Difference image")
-
-linkaxes(hAx)
+% grid on
+% box on
+% axis equal tight
+% xlabel("x [cm]")
+% ylabel("z [cm]")
+% title("Difference image")
+% 
+% linkaxes(hAx)
 
 %% Plot the runtimes
 figure('Color', 'white')
@@ -187,7 +188,7 @@ cMap = lines(3);
 hold on
 plot(nFrames(1:n)*dOp_per_frame/1e9,das_mex_gpu_time(1:n),'s-','linewidth',1.5,'color',cMap(1,:));
 % plot(nFrames(1:n)*dOp_per_frame/1e9,das_mex_time(1:n),'o-','linewidth',1.5,'color',cMap(2,:));
-plot(nFrames(1:n)*dOp_per_frame/1e9,das_mexFast_time(1:n),'o-','linewidth',1.5,'color',cMap(3,:));
+% plot(nFrames(1:n)*dOp_per_frame/1e9,das_mexFast_time(1:n),'o-','linewidth',1.5,'color',cMap(3,:));
 hold off
 
 for nn=1:length(nFrames)
@@ -195,14 +196,14 @@ for nn=1:length(nFrames)
         'horizontalalignment', 'left', 'verticalalignment', 'top','color',cMap(1,:),'fontweight','bold');
     %     text(nFrames(nn)*dOp_per_frame/1e9,das_mex_time(nn),sprintf('%0.2f s', das_mex_time(nn)), ...
     %         'horizontalalignment', 'right', 'verticalalignment', 'bottom','color',cMap(2,:),'fontweight','bold');
-    text(nFrames(nn)*dOp_per_frame/1e9,das_mexFast_time(nn),sprintf('%0.2f s', das_mexFast_time(nn)), ...
-        'horizontalalignment', 'right', 'verticalalignment', 'bottom','color',cMap(3,:),'fontweight','bold');
+%     text(nFrames(nn)*dOp_per_frame/1e9,das_mexFast_time(nn),sprintf('%0.2f s', das_mexFast_time(nn)), ...
+%         'horizontalalignment', 'right', 'verticalalignment', 'bottom','color',cMap(3,:),'fontweight','bold');
 end
 
 grid on
 box on
 
-legend('MEX CUDA', 'MEX FAST', 'Location','Best');
+% legend('MEX CUDA', 'MEX FAST', 'Location','Best');
 xlabel('Delay operations [Billions]');
 ylabel('Elapsed time [s]');
 
