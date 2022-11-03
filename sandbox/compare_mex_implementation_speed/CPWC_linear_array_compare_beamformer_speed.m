@@ -21,8 +21,8 @@ close all
 clc
 
 do_demodulation = true;
-nFrames = 1:100:1000;
-% nFrames = 5000;
+nFrames = 100:100:1000;
+
 %% Phantom
 x_sca=[zeros(1,7) -15e-3:5e-3:15e-3];
 z_sca=[5e-3:5e-3:35e-3 20e-3*ones(1,7)];
@@ -30,19 +30,15 @@ N_sca=length(x_sca);
 pha=uff.phantom();
 pha.sound_speed=1540;            % speed of sound [m/s]
 pha.points=[x_sca.', zeros(N_sca,1), z_sca.', ones(N_sca,1)];    % point scatterer position [m]
-% fig_handle=pha.plot();
 
 %% Probe
-
 prb=uff.linear_array();
 prb.N=128;                  % number of elements
 prb.pitch=300e-6;           % probe pitch in azimuth [m]
 prb.element_width=270e-6;   % element width [m]
 prb.element_height=5e-3;    % element height [m]
-% prb.plot(fig_handle);
 
 %% Pulse
-
 pul=uff.pulse();
 pul.center_frequency=5e6;       % transducer frequency [MHz]
 pul.fractional_bandwidth=0.8;     % fractional bandwidth [unitless]
@@ -52,6 +48,7 @@ pul.fractional_bandwidth=0.8;     % fractional bandwidth [unitless]
 nPlaneWaves=5;
 angles=linspace(-10, 10, nPlaneWaves)/180*pi;
 seq=uff.wave();
+
 for n=1:nPlaneWaves
     seq(n)=uff.wave();
     seq(n).probe=prb;
@@ -61,7 +58,6 @@ for n=1:nPlaneWaves
 end
 
 %% Fresnel simulator
-
 sim=fresnel();
 sim.phantom=pha;                % phantom
 sim.pulse=pul;                  % transmitted pulse
@@ -81,8 +77,6 @@ if do_demodulation
 end
 
 %% Scan
-dz = 2*channel_data.sound_speed / channel_data.sampling_frequency;
-
 scan = uff.linear_scan('x_axis',linspace(-2e-2,2e-2,256).', 'z_axis', linspace(0, 4e-2, 256).');
 
 %% Pipeline
@@ -140,8 +134,8 @@ figure('Color', 'white')
 tiledlayout(1, 2, "TileSpacing", "compact", "Padding", "compact")
 hAx(1) = nexttile();
 imagesc(scan.x_axis*1e2, scan.z_axis*1e2, ...
-    20*log10(abs(reshape(bf_data_mex_gpu.data(:,1), [scan.N_z_axis, scan.N_x_axis])) / ...
-    max(abs(bf_data_mex_gpu.data(:,1)))), [-40, 0])
+    20*log10(abs(reshape(bf_data_mex_gpu.data(:,end), [scan.N_z_axis, scan.N_x_axis])) / ...
+    max(abs(bf_data_mex_gpu.data(:,end)))), [-40, 0])
 grid on
 box on
 axis equal tight
@@ -151,8 +145,8 @@ title("mex CUDA")
 
 hAx(2) = nexttile();
 imagesc(scan.x_axis*1e2, scan.z_axis*1e2, ...
-    20*log10(abs(reshape(bf_data_mexFast_cpu.data(:,1), [scan.N_z_axis, scan.N_x_axis])) / ...
-    max(abs(bf_data_mexFast_cpu.data(:,1)))), [-40, 0])
+    20*log10(abs(reshape(bf_data_mexFast_cpu.data(:,end), [scan.N_z_axis, scan.N_x_axis])) / ...
+    max(abs(bf_data_mexFast_cpu.data(:,end)))), [-40, 0])
 grid on
 box on
 axis equal tight
@@ -188,7 +182,6 @@ box on
 legend('MEX CUDA', 'MEX FAST', 'Location','Best');
 xlabel('Delay operations [1e9]');
 ylabel('Elapsed time [s]');
-
 
 
 
