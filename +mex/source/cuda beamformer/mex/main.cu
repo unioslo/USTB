@@ -3,7 +3,7 @@
  * CUDA general beamformer for USTB
  *
  * Stefano Fiorentini <stefano.fiorentini@ntnu.no>
- * Last edit 02.11.2022
+ * Last edit 24.11.2022
  *
  *================================================*/
 

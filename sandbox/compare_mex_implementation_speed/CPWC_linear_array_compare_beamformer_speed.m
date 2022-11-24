@@ -13,7 +13,7 @@
 %
 % Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no>
 % Stefano Fiorentini <stefano.fiorentini@ntnu.no>
-% Last edited: 03-01-2022
+% Last edited: 24.11.2022
 
 clear all
 close all
