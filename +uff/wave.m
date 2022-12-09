@@ -43,7 +43,7 @@ classdef wave < uff
     %            Ole Marius Hoel Rindal <olemarius@olemarius.net>
     %            Anders E. Vrålstad <anders.e.vralstad@ntnu.no>
     %
-    %   $Last updated: 2022/11/22$
+    %   $Last updated: 2022/12/09$
     
     %% compulsory properties
     properties  (Access = public)
@@ -133,6 +133,10 @@ classdef wave < uff
             assert(isa(in_source,'uff.point'), 'The source is not a POINT class. Check HELP POINT');
             h.source=in_source;
         end
+        function h=set.origin(h,in_origin)
+            assert(isa(in_origin,'uff.point'), 'The origin is not a POINT class. Check HELP POINT');
+            h.source=in_origin;
+        end
         function h=set.probe(h,in_probe)
             assert(isa(in_probe,'uff.probe'), 'The probe is not a PROBE class. Check HELP PROBE');
             h.probe=in_probe;
@@ -153,16 +157,17 @@ classdef wave < uff
         function value=get.delay_values(h)
             assert(~isempty(h.probe),'The PROBE must be inserted for delay calculation');
             assert(~isempty(h.sound_speed),'The sound speed must be inserted for delay calculation');
-            
-            if ~isinf(h.source.distance)
+
+            source_origin_dist = sqrt(sum(h.source.xyz.^2-h.origin.xyz.^2));
+            if ~isinf(source_origin_dist)
                 dst=sqrt((h.probe.x-h.source.x).^2+(h.probe.y-h.source.y).^2+(h.probe.z-h.source.z).^2);
                 if(h.source.z<0)
-                    value=dst/h.sound_speed-abs(h.source.distance/h.sound_speed);
+                    value=dst/h.sound_speed-abs(source_origin_dist/h.sound_speed);
                 else
-                    value=h.source.distance/h.sound_speed-dst/h.sound_speed;
+                    value=source_origin_dist/h.sound_speed-dst/h.sound_speed;
                 end
             else
-                value=h.probe.x*sin(h.source.azimuth)/h.sound_speed+h.probe.y*sin(h.source.elevation)/h.sound_speed;
+                value=(h.probe.x-h.origin.x)*sin(h.source.azimuth)/h.sound_speed+(h.probe.y-h.origin.y)*sin(h.source.elevation)/h.sound_speed;
             end
         end
         
