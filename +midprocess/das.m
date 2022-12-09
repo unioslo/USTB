@@ -104,7 +104,7 @@ classdef das < midprocess
                                             mask_apod.minimum_aperture = [0 0];
                                             mask_apod.focus = h.scan;
                                             mask_apod.probe = h.channel_data.probe;
-                                            if isa(h.scan,'uff.sector_scan')
+                                            if isa(h.scan,'uff.sector_scan')||isa(h.scan,'uff.sector_scan2')
                                                 mask_apod.f_number = 4; %This should be set according to the actually transmitted f number
                                                 mask_all_waves = reshape(mask_apod.data,h.scan.N_depth_axis,h.scan.N_azimuth_axis,numel(h.channel_data.sequence));
                                             elseif isa(h.scan,'uff.linear_scan')
