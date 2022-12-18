@@ -244,7 +244,7 @@ classdef apodization < uff
                     h.data_backup=kron(ABlock,ones(h.focus.N_z_axis,1));
                     
                 % sector scan
-                elseif isa(h.focus,'uff.sector_scan')
+                elseif isa(h.focus,'uff.sector_scan')||isa(h.focus,'uff.sector_scan_na')
                     assert(N_waves==h.focus.N_azimuth_axis/h.MLA,'The number of waves in the sequence does not match with the number of scanlines and set MLA.');
                     ACell=repmat({ones(h.MLA,1)},[1,h.focus.N_azimuth_axis/h.MLA]);
                     if (h.MLA_overlap>0)

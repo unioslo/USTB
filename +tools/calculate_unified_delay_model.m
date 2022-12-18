@@ -10,7 +10,7 @@ try
         z_matrix = reshape(scan.z,scan.N_z_axis,scan.N_x_axis);
         dirtest = scan.x_axis(end)-scan.x_axis(1);
         N_lines = scan.N_x_axis;
-    elseif isa(scan,'uff.sector_scan')
+    elseif isa(scan,'uff.sector_scan')||isa(scan,'uff.sector_scan_na')
         tx_delay = reshape(transmit_delay_temp,scan.N_depth_axis,scan.N_azimuth_axis);
         x_matrix = reshape(scan.x,scan.N_depth_axis,scan.N_azimuth_axis);
         z_matrix = reshape(scan.z,scan.N_depth_axis,scan.N_azimuth_axis);
