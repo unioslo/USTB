@@ -139,7 +139,7 @@ void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 	float Fs = *mxGetSingles(prhs[1]);		// Sampling frequency
 	float t0 = *mxGetSingles(prhs[2]);		// Initial time
 	float Fd = *mxGetSingles(prhs[7]);		// Modulation frequency
-	float i0 = t0 * Fs;						// Normalised initial sample
+	float i0 = t0 * Fs -0.5;                // Normalised initial sample
 
 	bool IQ = fabsf(Fd) > eps;				// Toggle whether channel data is in IQ or RF format
 	float wd = IQ ? 2 * pi * Fd : 0.0;		// Demodulation frequency expressed in rad/s
@@ -269,13 +269,13 @@ void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 			// Call beamforming kernel
 			if (!IQ)
 			{
-				beamform << < N_blocks, block_size, 0, frame_stream[n_stream] >> > (N_pixels, N_channels, N_waves, Fs, device_bf_data[n_stream], tex[n_stream], device_tx_delay,
+				beamform <<< N_blocks, block_size, 0, frame_stream[n_stream] >>> (N_pixels, N_channels, N_waves, Fs, device_bf_data[n_stream], tex[n_stream], device_tx_delay,
 					device_rx_delay, device_tx_apod, device_rx_apod, i0);
 				cudaErrorCheck(cudaPeekAtLastError());
 			}
 			else
 			{
-				beamform_iq << < N_blocks, block_size, 0, frame_stream[n_stream] >> > (N_pixels, N_channels, N_waves, Fs, device_bf_data[n_stream], tex[n_stream], device_tx_delay,
+				beamform_iq <<< N_blocks, block_size, 0, frame_stream[n_stream] >>> (N_pixels, N_channels, N_waves, Fs, device_bf_data[n_stream], tex[n_stream], device_tx_delay,
 					device_rx_delay, device_tx_apod, device_rx_apod, i0, wd);
 				cudaErrorCheck(cudaPeekAtLastError());
 			}
