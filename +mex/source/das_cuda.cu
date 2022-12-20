@@ -69,7 +69,7 @@ __global__ void beamform(const size_t N_pixels, const size_t N_channels, const s
 
                         cuFloatComplex phase;
 
-                        sincosf(wd * delay, &phase.y, &phase.x);
+                        __sincosf(wd * delay, &phase.y, &phase.x);
 
                         // For maximum bandwidth usage adiacent threads must fetch adiacent memory locations in texture --> inputSamplingRate ~ outputSamplingRate
                         cuFloatComplex pre_bf_data = tex1DLayered<cuFloatComplex>(tex, denay, g + j * N_channels);
