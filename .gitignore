@@ -15,8 +15,6 @@
 *.gif
 *.png
 *.jpg
-*.lib
-*.exp
 *.pdb
 *.ilk
 development/
@@ -26,8 +24,3 @@ data/
 !*.keep_this_folder_in_git
 *.eps
 *.m~
-*.vcxproj
-*.vcxproj.user
-x64/
-.vs/
-*.sln
