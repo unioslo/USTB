@@ -3,7 +3,7 @@
  * CUDA MEX general beamformer for USTB
  *
  * Stefano Fiorentini <stefano.fiorentini@ntnu.no>
- * Last edit 19.12.2022
+ * Last edit 20.12.2022
  *
  *================================================*/
 
@@ -20,7 +20,8 @@
 
  //prhs[7]   modulation frequency (Hz)
  //prhs[8]   sum mode 0 -> NONE, 1->RX, 2->TX, 3->BOTH
-
+ //prhs[9]   gpu ID (default is 0)
+         
  //Output
  //plhs[0]   beanformed data [pixel, channel, wave, frame]
 
@@ -98,7 +99,7 @@ void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 	size_t* tx_delay_size = (size_t*) mxGetDimensions(prhs[5]);
 
 	size_t N_times	= channel_size[0];		// number of time samples
-	size_t N_channels	= channel_size[1];	// number of channels
+	size_t N_channels = channel_size[1];	// number of channels
 	size_t N_waves = (mxGetNumberOfDimensions(prhs[0]) > 2) ? channel_size[2] : 1;	// number of waves
 	size_t N_frames = (mxGetNumberOfDimensions(prhs[0]) > 3) ? channel_size[3] : 1;	// number of frames
 	size_t N_pixels = tx_delay_size[0];		// number of pixels
@@ -118,6 +119,10 @@ void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 	beamformed_size[3] = N_frames; 
 	plhs[0] = mxCreateNumericArray(4, (const size_t*)&beamformed_size, mxSINGLE_CLASS, mxCOMPLEX);
 
+    // Set gpuDevice to run CUDA code
+  	int gpuDevice = *mxGetInt32s(prhs[9]);
+    cudaErrorCheck(cudaSetDevice(gpuDevice))
+    
 	// Get pointer to beamformed data and pin memory for asynchronous memory transfer with the GPU
 	mxComplexSingle* host_bf_data = mxGetComplexSingles(plhs[0]);
 	cudaErrorCheck(cudaHostRegister(host_bf_data, beamformed_size[0] * beamformed_size[1] * beamformed_size[2] * beamformed_size[3] * sizeof(mxComplexSingle), cudaHostRegisterDefault)); // Pin paged memory for asynchronous transfers
@@ -271,7 +276,7 @@ void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 void mexCheckArguments(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 {
 	// Check number of arguments
-	if (nrhs != 9)
+	if (nrhs != 10)
 	{
 		mexErrMsgIdAndTxt("Toolbox:SRP_SRC:nrhs", "Wrong number of input arguments");
 	}

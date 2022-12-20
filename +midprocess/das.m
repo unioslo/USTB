@@ -10,10 +10,12 @@ classdef das < midprocess
     %% Additional properties
     properties
         dimension = dimension.receive;      % dimension enumeration class that specifies whether the process will run only on transmit, receive, both, or none.
-        code = code.mex;                    % code enumeration class that specifies the code to be run (code.matlab, code.mex)
-        % spherical transmit delay model enumeration for deciding model when the source is in front of the transducer
-        spherical_transmit_delay_model = spherical_transmit_delay_model.hybrid;  
+        code = code.mex;                    % code enumeration class that specifies the code to be run (code.matlab, code.mex, ...)
+        gpu_device = 0;
+        
+        spherical_transmit_delay_model = spherical_transmit_delay_model.hybrid; % spherical transmit delay model enumeration for deciding model when the source is in front of the transducer
         pw_margin = 1/1000;                 % The margin of the area around focus in m for the spherical_transmit_delay_model.hybrid
+        
         transmit_delay                      % Variable returning the calculated tx part of the receive delay so that it can be plotted
         receive_delay                       % Variable returning the calculated rx part of the receive delay so that it can be plotted
     end
@@ -211,7 +213,8 @@ classdef das < midprocess
                             transmit_delay,...
                             receive_delay,...
                             modulation_frequency,...
-                            int32(h.dimension));
+                            int32(h.dimension), ...
+                            int32(h.gpu_device));
                         
                     %% MEX FAST
                     case code.mexFast

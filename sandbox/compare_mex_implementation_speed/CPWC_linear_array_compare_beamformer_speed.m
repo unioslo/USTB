@@ -112,6 +112,7 @@ for n=1:length(nFrames)
     % Time USTB's MEX GPU implementation
     proc            = midprocess.das();
     proc.code       = code.mex_gpu;
+    proc.gpu_device = 0;
     proc.dimension  = dimension.both;
     fprintf(1, 'Processing %d frames: MEX CUDA\n', nFrames(n))
     tic()
