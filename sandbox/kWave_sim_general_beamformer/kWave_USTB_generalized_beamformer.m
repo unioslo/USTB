@@ -19,6 +19,7 @@ cycles=2;       % number of cycles in pulse
 c = 1540;      % medium speed of sound [m/s]
 rho_m = 1020;    % medium density [kg/m3]
 N_tx=1;            % number of waves in sequence
+focus_pnt_r = 40e-3; % focus depth
 alpha_max=deg2rad(20);          % maximum angle span [rad]
 
 %% uff.probe
@@ -31,6 +32,7 @@ prb.pitch=4e-4;           % probe pitch in azimuth [m]
 prb.element_width=4e-4;   % element width [m]
 prb.element_height=4e-3; % element height [m]
 fig_handle = prb.plot([],'Linear array');
+
 %% Computational grid
 %
 % We can define the computational grid as a uff.linear_scan strcuture. We
@@ -38,17 +40,28 @@ fig_handle = prb.plot([],'Linear array');
 % of sound.
 
 % mesh resolution, choose one
-dx=prb.pitch/4;                                         % 2 elements per pitch
+mesh_resolution='element4'; 
+switch mesh_resolution
+    case 'element2' % around 50 sec per wave
+        dx=prb.pitch/2;                                         % 2 elements per pitch 
+    case 'element4' % around 6min sec per wave
+        dx=prb.pitch/4;                                         % 2 elements per pitch 
+    case 'element8'
+        dx=prb.pitch/8;                                         % 2 elements per pitch 
+    otherwise
+        error('Not a valid option');
+end
 
 % mesh size
 PML_size = 20;                                          % size of the PML in grid points
-Nx=round(60e-3/dx); Nx=Nx+mod(Nx,2);
-Nz=round(60e-3/dx); Nz=Nz+mod(Nz,2);
+Nx=round(focus_pnt_r*2/dx); Nx=Nx+mod(Nx,2);
+Nz=round(focus_pnt_r*2/dx); Nz=Nz+mod(Nz,2);
 grid_width=Nx*dx;
 grid_depth=Nz*dx;
 domain=uff.linear_scan('x_axis', linspace(-grid_width/2,grid_width/2,Nx).', 'z_axis', linspace(0,grid_depth,Nz).');
 
 kgrid = kWaveGrid(domain.N_z_axis, domain.z_step, domain.N_x_axis, domain.x_step);
+
 
 %% Propagation medium
 % We define the medium based by setting the sound speed and density in
@@ -59,7 +72,7 @@ rho_m_std = 0.03;
 medium.sound_speed = c*ones(domain.N_z_axis, domain.N_x_axis);
 medium.density =  random('normal',rho_m,rho_m*rho_m_std,domain.N_z_axis, domain.N_x_axis);
 
-if 0
+if 1
 % Point Scatter 1
 cx=0; cz=30e-3; cr = 0.2e-3;
 cn=sqrt((domain.x-cx).^2+(domain.z-cz).^2)<cr;
@@ -121,11 +134,12 @@ title('\rho [kg/m^3]');
 % domain and the mean speed of sound.
 
 cfl=0.3;
-t_end=2.2*sqrt(grid_depth.^2+grid_depth.^2)/mean(medium.sound_speed(:));
+t_end=2*sqrt(grid_depth.^2+grid_depth.^2)/mean(medium.sound_speed(:));
 kgrid.makeTime(medium.sound_speed,cfl,t_end);
 
 
 %% Source & sensor mask
+%
 % Based on the uff.probe we find the pixels in the domain that must work as
 % source and sensors.
 
@@ -168,6 +182,7 @@ set(h,'edgecolor','none');
 set(gca,'YDir','reverse');
 xlabel('x [mm]');
 ylabel('z [mm]');
+
 %% Define Transmit Sequence
 if N_tx>1
     angles=linspace(-alpha_max,alpha_max,N_tx);    % angle vector [rad]
@@ -179,7 +194,7 @@ seq=uff.wave();
 for n=1:N_tx
     seq(n)=uff.wave();
     seq(n).source.azimuth=angles(n);
-    seq(n).source.distance = -inf;%focus_pnt_r;;%focus_pnt_r;%inf%5e-3%;
+    seq(n).source.distance = -25/1000%inf;%focus_pnt_r;;%focus_pnt_r;%inf%5e-3%;
     seq(n).probe=prb;
     seq(n).sound_speed=c;    % reference speed of sound [m/s]
     seq(n).delay = min(seq(n).delay_values);
@@ -216,6 +231,37 @@ for n=1:N_tx
     sensor_data(:,:,n) = permute(kspaceFirstOrder2D(kgrid, medium, current_source, current_sensor, input_args{:}),[2 1]);
 end
 sensor_data(isnan(sensor_data))=0;
+
+%% Calculation
+% %
+% % We are ready to launch the k-Wave calculation
+% disp('Launching kWave. This can take a while.');
+% for n=1:N_tx
+%     delay=seq(n).delay_values-seq(n).delay;
+%     denay=round(delay/kgrid.dt);
+%     seq(n).delay = seq(n).delay - cycles/f0/2;
+%     
+%     % offsets
+%     tone_burst_offset = [];
+%     for m=1:prb.N_elements
+%         tone_burst_offset = [tone_burst_offset repmat(denay(m),1,numel(source_pixels{m}))];
+%     end
+%     current_source = source;
+%     current_source.ux = toneBurst(1/kgrid.dt, f0, cycles, 'SignalOffset', tone_burst_offset);   % create the tone burst signals
+%     current_source.uy = 0.*current_source.ux;
+%     current_source.u_mode ='dirichlet';
+%     
+%     % set the input arguements: force the PML to be outside the computational
+%     % grid; switch off p0 smoothing within kspaceFirstOrder2D
+%     input_args = {'PMLInside', false, 'PMLSize', PML_size, 'PlotPML', false, 'Smooth', true,'PlotScale',[-1.2,1.2]*1e6, 'RecordMovie', false,'LogScale',1e5,'DataCast','gpuArray-single'};
+%     
+%     current_sensor = sensor;
+% %     current_sensor.directivity_angle = current_sensor.mask.*seq(n).source.azimuth;
+% 
+%     % run the simulation
+%     sensor_data(:,:,n) = permute(kspaceFirstOrder2D(kgrid, medium, current_source, current_sensor, input_args{:}),[2 1]);
+% end
+% sensor_data(isnan(sensor_data))=0;
 
 %% Gather element signals
 %
@@ -258,43 +304,18 @@ pre.modulation_frequency = f0;
 channel_data_demod = pre.go();
 channel_data = channel_data_demod;
 
-
-
 %% Beamforming
-%
-% To beamform we define a new (coarser) uff.linear_scan. We also define the
-% processing pipeline and launch the beamformer
-% N_MLA = 6;
-% scan=uff.sector_scan('azimuth_axis',deg2rad(linspace(-30,30,512))',...
-%     'depth_axis',linspace(domain.z_axis(1),domain.z_axis(end),1024).');
-scan = uff.linear_scan('x_axis',linspace(-40e-3,40e-3,512)','z_axis',linspace(0,domain.z_axis(end),1024)');
+scan = uff.linear_scan('x_axis',linspace(-40e-3,40e-3,512)','z_axis',linspace(5e-3,domain.z_axis(end),1024)');
 mid=midprocess.das();
-mid.code = code.matlab_gpu_frameloop;
-mid.spherical_transmit_delay_model = spherical_transmit_delay_model.hybrid;
+mid.code = code.mex;
+mid.spherical_transmit_delay_model = spherical_transmit_delay_model.unified;
 mid.channel_data=channel_data;
-mid.dimension = dimension.transmit();
-mid.scan=scan; % Depth compensated recronstruction points
-%     mid.c_Tx = c_Tx;
-% mid.pw_margin = 5e-3;
-% 	mid.transmit_apodization.window = uff.window.hamming;
+mid.dimension = dimension.both();
+mid.scan=scan;
 mid.transmit_apodization.window = uff.window.none;
-%mid.transmit_apodization.MLA = N_MLA;
-%mid.transmit_apodization.f_number = 2;
-%mid.transmit_apodization.minimum_aperture = [15e-3 0];
-
 mid.receive_apodization.window=uff.window.hamming;
 mid.receive_apodization.f_number = .5;
 
 % Delay the data
-b_data_delayed = mid.go();
-
-% Weight in tx apodization if using RTB
-tx_apod = mid.transmit_apodization.data;
-weighted = 1./sum(tx_apod,2);
-b_data_delayed.data = b_data_delayed.data.*weighted;
-
-cc = postprocess.coherent_compounding;
-cc.input = b_data_delayed;
-b_data_das = cc.go();
-figure();
-b_data_das.plot();
+b_data = mid.go();
+b_data.plot()
