@@ -27,7 +27,7 @@ classdef unit_test
     %% tests
     methods (Access = public)
         function ok=all(h)
-            if ~exist([ustb_path() '/data/ps'])
+            if ~isfolder(fullfile(ustb_path(), '/data', '/ps'))
                 h.download_UT_data()
             end
             
@@ -88,16 +88,16 @@ classdef unit_test
             end
         end
         
-        function download_UT_data(h)% data location
-            url='https://www.ustb.no/datasets/';   % if not found data will be downloaded from here
-            local_path=[ustb_path() '/data/'];                              % location of example data in this computer
-            zip_data='ps.zip';
+        function download_UT_data(~)% data location
+            url='https://www.ustb.no/datasets';   % if not found data will be downloaded from here           
+            filename='ps.zip';
+            data_path=fullfile(ustb_path(), 'data');
             
-            fprintf('Downloading and unzipping data for unit tests (this wile take some time)...');
-            websave([local_path,zip_data],[url,zip_data]);
-            unzip([local_path,zip_data],local_path)
-            delete([local_path,zip_data])
-            fprintf('...done!\n')
+            % Downlad data if needed
+            tools.download(filename, url, data_path);
+
+            unzip(fullfile(data_path,filename), data_path)
+            delete(fullfile(data_path,filename))
         end
     end
 end

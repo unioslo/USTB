@@ -1,4 +1,0 @@
-Test run by alfonsom at DMED6602 on 10-Mar-2017 10:20:24
-
-TE_ps_sta_iq 1 69.959 ............................. OK
-TE_ps_sta_rf 1 102.721 ............................ OK
