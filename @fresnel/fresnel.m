@@ -103,15 +103,7 @@ classdef fresnel < handle
             time_2w = ((2*min_range/c0 - 8/f0/bw + min_delay):1/fs:(2*max_range/c0 + 8/f0/bw + max_delay)).';                                               % time vector [s]
             N_samples = length(time_2w);  % number of time samples
             
-            % Check whether delays are imposed in each sequence
-            if any(abs([h.sequence.delay])>0)
-                out_dataset.initial_time = 0;
-                wave_delays=true;
-            else
-                out_dataset.initial_time = time_2w(1);
-                wave_delays  = false;
-            end
-                        
+
             F = griddedInterpolant();
             F.Method = 'linear';
             F.ExtrapolationMethod = 'none';
@@ -130,13 +122,10 @@ classdef fresnel < handle
                 transmit_delay = time_1w - (propagation_delay + h.sequence(n_wave).delay_values.');
                 transmit_signal = sum(h.pulse.signal(transmit_delay).*h.sequence(n_wave).apodization_values(:).'.*attenuation, 2);
                 
-                receive_delay = time_2w - propagation_delay;
+                receive_delay = time_2w - propagation_delay + h.sequence(n_wave).delay - time_2w(1);
 
                 % Computing the receive signal
-                if wave_delays
-                    receive_delay = receive_delay + h.sequence(n_wave).delay-time_2w(1);
-                end
-                
+               
                 for n_point = 1:h.phantom.N_points
                     F.Values = transmit_signal(:,1,n_point);
                     receive_signal(:,:,n_point) = F(receive_delay(:,:,n_point));
