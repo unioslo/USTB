@@ -120,7 +120,7 @@ classdef fresnel < handle
                 
                 % Computing the transmit signal
                 transmit_delay = time_1w - (propagation_delay + h.sequence(n_wave).delay_values.');
-                transmit_signal = sum(h.pulse.signal(transmit_delay).*h.sequence(n_wave).apodization_values(:).'.*attenuation, 2);
+                transmit_signal = sum(h.pulse.signal(transmit_delay).*h.sequence(n_wave).apodization_values.'.*attenuation, 2);
                 
                 receive_delay = time_2w - propagation_delay + h.sequence(n_wave).delay - time_2w(1);
 
@@ -135,6 +135,8 @@ classdef fresnel < handle
                 channel_data(:,:,n_wave) = sum(receive_signal.*attenuation, 3, 'omitnan');
             end
             close(w)
+            
+            out_dataset.initial_time = 0;
             out_dataset.data = channel_data;
         end
     end
