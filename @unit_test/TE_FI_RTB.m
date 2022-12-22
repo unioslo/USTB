@@ -5,16 +5,17 @@ function ok = TE_FI_RTB(h)
 % Author Ole Marius Hoel Rindal (olemarius@olemarius.net)
 
 % data location
-url='http://ustb.no/datasets/';      % if not found downloaded from here
+url='https://www.ustb.no/datasets/';      % if not found downloaded from here
 filename='L7_FI_IUS2018.uff';
 filename_reference='reference_RTB_data.uff';
+data_path=fullfile(ustb_path(), 'data');
 
 % Downlad data if needed
 tools.download(filename, url, data_path);
 tools.download(filename_reference, url, data_path);
 
 % Load channel data
-channel_data=uff.read_object([data_path filesep filename],'/channel_data');
+channel_data=uff.read_object(fullfile(data_path, filename),'/channel_data');
 
 % Define axis
 x_axis=zeros(channel_data.N_waves,1);

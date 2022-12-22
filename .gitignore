@@ -17,6 +17,7 @@
 *.jpg
 development/
 data/
+logs/
 examples/huff/recording.h5
 !multi_frame_gui.fig
 !window.png
