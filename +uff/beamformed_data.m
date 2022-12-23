@@ -72,7 +72,7 @@ classdef beamformed_data < uff
     
     %% display methods
     methods (Access = public)
-        function figure_handle=plot(h,figure_handle_in,in_title,dynamic_range,compression,indeces,frame_idex,spatial_units,mode)
+        function figure_handle=plot(h,parent_handle_in,in_title,dynamic_range,compression,indeces,frame_idex,spatial_units,mode)
             %PLOT Plots beamformed data
             %
             % Usage: figure_handle=plot(figure_handle,title,dynamic_range)
@@ -84,14 +84,14 @@ classdef beamformed_data < uff
             %   indeces         Pair of integers [nrx ntx] indicating receive and transmit events (default: [])
             %   indeces         Tripler of integers [nrx ntx frame] indicating which receive and transmit and frame must be plotted (default: [])
             
-            if (nargin>1 && ~isempty(figure_handle_in) && isa(figure_handle_in,'matlab.ui.Figure')) || ...
-                    (nargin>1 && ~isempty(figure_handle_in) && isa(figure_handle_in,'double'))
-                h.figure_handle=figure(figure_handle_in);
+            if (nargin>1 && ~isempty(parent_handle_in) && isa(parent_handle_in,'matlab.ui.Figure')) || ...
+                    (nargin>1 && ~isempty(parent_handle_in) && isa(parent_handle_in,'double'))
+                h.figure_handle=figure(parent_handle_in);
                 axis_handle = gca(h.figure_handle);
                 hold on;
-            elseif nargin>1 && ~isempty(figure_handle_in) && isa(figure_handle_in,'matlab.graphics.axis.Axes')
-                h.figure_handle = figure_handle_in;
-                axis_handle = figure_handle_in;
+            elseif nargin>1 && ~isempty(parent_handle_in) && isa(parent_handle_in,'matlab.graphics.axis.Axes')
+                axis_handle = parent_handle_in;
+                h.figure_handle = parent_handle_in.Parent;
             else
                 h.figure_handle=figure();
                 axis_handle = gca(h.figure_handle);
@@ -114,9 +114,9 @@ classdef beamformed_data < uff
                 data=h.data(:,indeces(1),indeces(2),indeces(3));
             end
             if nargin<7||isempty(frame_idex)
-                data=h.data;
+                data=data;
             else
-                data=h.data(:,:,:,frame_idex);
+                data=data(:,:,:,frame_idex);
             end
             if nargin<8||isempty(spatial_units)
                 spatial_units='mm';
@@ -137,7 +137,7 @@ classdef beamformed_data < uff
             
             % If more than one frame, add the GUI buttons
             [Npixels Nrx Ntx Nframes]=size(data);
-            if Nrx*Ntx*Nframes > 1
+            if Nrx*Ntx*Nframes > 1 && isa(parent_handle_in, 'matlab.ui.Figure')
                 set(h.figure_handle, 'Position', [100, 100, 600, 700]);
                 h.current_frame = 1;
                 h.add_buttons(h.figure_handle);
