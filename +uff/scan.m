@@ -6,6 +6,9 @@ classdef scan < uff
     %
     %   Compulsory properties:
     %         xyz                % Vector containing the [x, y, z] coordinates of each pixel in [m]
+    %
+    %   Read-only properties
+    %         x                  % Vector containing the x coordinates of each pixel in [m]
     %         y                  % Vector containing the y coordinates of each pixel in [m]
     %         z                  % Vector containing the z coordinates of each pixel in [m]
     %
@@ -13,10 +16,8 @@ classdef scan < uff
     %         sca = uff.scan();
     %         x_axis=linspace(-20e-3,20e-3,256);
     %         z_axis=linspace(0e-3,40e-3,256);
-    %         [X Z]=meshgrid(x_axis,z_axis);
-    %         sca.x=X(:);
-    %         sca.y=zeros(size(X(:)));
-    %         sca.z=Z(:);
+    %         [X, Z]=meshgrid(x_axis,z_axis);
+    %         sca.xyz = [X(:), zeros([numel(X), 1]), Z(:)];
     %
     %   See also UFF.LINEAR_SCAN, UFF.SECTOR_SCAN
 
