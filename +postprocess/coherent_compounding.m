@@ -1,7 +1,7 @@
 classdef coherent_compounding < postprocess
 %COHERENT_COMPOUNDING   Matlab implementation of Coherent compounding
-% If the window_size property is specified, a moving sum with window size
-% window_size is performed. Moving sum is only performed along the transmit
+% If the window_size property is specified, a sliding window compounding approach with window size
+% window_size is performed. Sliding window compounding is only performed along the transmit
 % dimension. The receive dimension is compounded as usual
 %
 %   authors: Alfonso Rodriguez-Molares (alfonso.r.molares@ntnu.no)
