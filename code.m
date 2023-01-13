@@ -10,6 +10,7 @@ classdef code < int32
       matlab(0)
       mex(1)
       mexFast(2)
-      matlab_gpu_frameloop(3)
+      matlab_gpu(3)
+      mex_gpu(4)
    end
 end

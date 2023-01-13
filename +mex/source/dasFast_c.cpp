@@ -2,9 +2,9 @@
 #include <vector>
 //#include <iostream>
 #include <complex>
-#if defined(_WIN_)
+#if defined(_WIN32)
 #include <ppl.h>           // Requires VS2010+
-#elif defined (_UNIX_)
+#elif (defined (__unix__) || defined(__unix))
 #include <parallel_for.h>  // Requires Intel tbb
 #endif
 
@@ -351,9 +351,9 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
     const int W_F = W_FN;
     const int F_F = F_FN;
 
-#if defined (_WIN_)
+#if defined (_WIN32)
     Concurrency::parallel_for(0, P, [&](int pp) { // pixel loop -> WIN
-#elif defined(_UNIX_)
+#elif (defined (__unix__) || defined(__unix))
     tbb::strict_ppl::parallel_for(0, P, [&](int pp) { // pixel loop -> UNIX
 #endif
 

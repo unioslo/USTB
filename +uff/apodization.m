@@ -247,8 +247,8 @@ classdef apodization < uff
                 elseif isa(h.focus,'uff.sector_scan')||isa(h.focus,'uff.sector_scan_na')
                     assert(N_waves==h.focus.N_azimuth_axis/h.MLA,'The number of waves in the sequence does not match with the number of scanlines and set MLA.');
                     ACell=repmat({ones(h.MLA,1)},[1,h.focus.N_azimuth_axis/h.MLA]);
-                    if (h.MLA_overlap>0)
-                        ABlock=filtfilt(ones(1,h.MLA_overlap+1)/(h.MLA_overlap+1),1,blkdiag(ACell{:}));
+                    if (h.MLA_overlap>0)                    
+                        ABlock=filtfilt(ones([1,h.MLA_overlap+1])/(h.MLA_overlap+1),1,blkdiag(ACell{:}));
                     else
                         ABlock=blkdiag(ACell{:});
                     end
@@ -284,9 +284,15 @@ classdef apodization < uff
             
             % check if overridden by apodization_vector
             if ~isempty(h.apodization_vector)
-                assert(numel(h.apodization_vector)==h.probe.N_elements,'uff.apodization:dimensions','If an apodization_vector is given its size must match the number of elements in the probe.');
+                assert(numel(h.apodization_vector)==h.probe.N_elements || all(size(h.apodization_vector)==[h.focus.N_pixels, h.probe.N_elements]),...
+                    'uff.apodization:dimensions','If an apodization_vector is given its size must match the number of elements in the probe.');
+
+                if numel(h.apodization_vector)==h.probe.N_elements
                 
-                h.data_backup = ones(h.focus.N_pixels,1)*h.apodization_vector.';
+                    h.data_backup = ones(h.focus.N_pixels,1)*h.apodization_vector.';
+                else
+                    h.data_backup = h.apodization_vector;
+                end
                 return;
             end
             
@@ -541,7 +547,7 @@ classdef apodization < uff
                 set(gca,'Ydir','reverse');
                 set(gca,'fontsize',14);
                 colorbar;
-                %caxis([0 1]);
+                caxis([0 1]);
                 if isreceive
                     title(sprintf('Apodization values for element %d',n));
                 else
@@ -581,7 +587,7 @@ classdef apodization < uff
                 set(gca,'YDir','reverse');
                 axis('tight','equal');
                 colorbar();
-                %caxis([0 1]);
+                caxis([0 1]);
                 if isreceive
                     title(sprintf('Apodization for element %d. Click or Enter.',n));
                 else
