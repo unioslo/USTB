@@ -22,7 +22,7 @@ classdef scan < uff
     %   See also UFF.LINEAR_SCAN, UFF.SECTOR_SCAN
 
 
-    properties  (GetAccess = public, SetAccess = protected)
+    properties  (Access = public)
         x                  % Vector containing the x coordinate of each pixel in the matrix
         y                  % Vector containing the x coordinate of each pixel in the matrix
         z                  % Vector containing the z coordinate of each pixel in the matrix
