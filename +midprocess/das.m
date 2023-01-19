@@ -160,19 +160,19 @@ classdef das < midprocess
             % Saving receive tx and rx delay to a public parameter to be able to plot it
             h.transmit_delay = transmit_delay;
             
-            
-            % precalculating hilbert (if needed)
-            tools.check_memory(prod([size(h.channel_data.data) 8]));
+            % Applying Hilbert transform on RF data
+            tools.check_memory(numel(h.channel_data.data*8));
+
             data=single(h.channel_data.data);
-            if ~(abs(w0)>eps)
-                data=single(reshape(hilbert(single(h.channel_data.data(:,:))),size(h.channel_data.data)));
+            if (abs(w0)<eps)
+                data = hilbert(h.channel_data.data);
             end
             
             % create beamformed data class
             h.beamformed_data=uff.beamformed_data();
             h.beamformed_data.scan=h.scan;
             
-            % auxiliary data
+            % Auxiliary data
             switch h.dimension
                 case dimension.none
                     tools.check_memory(prod([N_pixels N_channels N_waves N_frames 8]));
@@ -189,7 +189,7 @@ classdef das < midprocess
             end
             
             % delay & sum
-            if any(data(:)>0) % only process if any data > 0
+            if any(data, 'all') % only process if any data > 0
                 
                 switch h.code
                     %% MEX
@@ -367,12 +367,7 @@ classdef das < midprocess
 
                     otherwise
                         error('Unknown code implementation requested');
-                end % end switch
-                
-                % assign phase according to 2 times the receive propagation distance
-                if ( abs(w0) > eps )
-                    aux_data=bsxfun(@times,aux_data,exp(-1i*w0*2*h.scan.reference_distance/h.channel_data.sound_speed));
-                end                
+                end % end switch          
             end % end if
             
             % copy data to object
