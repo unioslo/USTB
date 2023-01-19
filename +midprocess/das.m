@@ -10,10 +10,12 @@ classdef das < midprocess
     %% Additional properties
     properties
         dimension = dimension.receive;      % dimension enumeration class that specifies whether the process will run only on transmit, receive, both, or none.
-        code = code.mex;                    % code enumeration class that specifies the code to be run (code.matlab, code.mex)
-        % spherical transmit delay model enumeration for deciding model when the source is in front of the transducer
-        spherical_transmit_delay_model = spherical_transmit_delay_model.hybrid;  
+        code = code.mex;                    % code enumeration class that specifies the code to be run (code.matlab, code.mex, ...)
+        gpu_device = 0;
+        
+        spherical_transmit_delay_model = spherical_transmit_delay_model.hybrid; % spherical transmit delay model enumeration for deciding model when the source is in front of the transducer
         pw_margin = 1/1000;                 % The margin of the area around focus in m for the spherical_transmit_delay_model.hybrid
+        
         transmit_delay                      % Variable returning the calculated tx part of the receive delay so that it can be plotted
         receive_delay                       % Variable returning the calculated rx part of the receive delay so that it can be plotted
     end
@@ -201,7 +203,20 @@ classdef das < midprocess
                                            receive_delay,...
                                            modulation_frequency,...
                                            int32(h.dimension));
-                    
+                    %% MEX CUDA                  
+                    case code.mex_gpu
+                        aux_data=mex.das_cuda(data,...
+                            sampling_frequency,...
+                            initial_time,...
+                            tx_apodization,...
+                            rx_apodization,...
+                            transmit_delay,...
+                            receive_delay,...
+                            modulation_frequency,...
+                            int32(h.dimension), ...
+                            int32(h.gpu_device));
+                        
+                    %% MEX FAST
                     case code.mexFast
                         aux_data=mex.dasFast_c(data,...
                                            sampling_frequency,...
@@ -258,9 +273,10 @@ classdef das < midprocess
                                 end
                             end
                         end
-                        
-                    %% MATLAB GPU FRAMELOOP
-                    case code.matlab_gpu_frameloop
+                        tools.workbar(1);
+                    
+                    %% MATLAB GPU 
+                    case code.matlab_gpu
                         
                         % clear GPU memory and show basic info
                         gpu_info=gpuDevice();
@@ -347,6 +363,8 @@ classdef das < midprocess
                             end
                         end % end frame loop
                         
+                        tools.workbar(1);
+
                     otherwise
                         error('Unknown code implementation requested');
                 end % end switch
@@ -354,10 +372,7 @@ classdef das < midprocess
                 % assign phase according to 2 times the receive propagation distance
                 if ( abs(w0) > eps )
                     aux_data=bsxfun(@times,aux_data,exp(-1i*w0*2*h.scan.reference_distance/h.channel_data.sound_speed));
-                end
-                
-                tools.workbar(1);
-                
+                end                
             end % end if
             
             % copy data to object

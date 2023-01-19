@@ -137,7 +137,7 @@ classdef beamformed_data < uff
             
             % If more than one frame, add the GUI buttons
             [Npixels Nrx Ntx Nframes]=size(data);
-            if Nrx*Ntx*Nframes > 1 && isa(parent_handle_in, 'matlab.ui.Figure')
+            if Nrx*Ntx*Nframes > 1 && (isa(parent_handle_in, 'matlab.ui.Figure') || isempty(parent_handle_in)) 
                 set(h.figure_handle, 'Position', [100, 100, 600, 700]);
                 h.current_frame = 1;
                 h.add_buttons(h.figure_handle);
@@ -195,7 +195,7 @@ classdef beamformed_data < uff
                     h.all_images = reshape(envelope,[h.scan.N_z_axis h.scan.N_x_axis Nrx*Ntx*Nframes]);
                     h.image_handle = pcolor(axis_handle,x_matrix*scale_factor,z_matrix*scale_factor,h.all_images(:,:,1));
                     shading(axis_handle,'flat');
-                    set(axis_handle,'fontsize',14);
+                    set(axis_handle,'fontsize',12);
                     set(axis_handle,'color',font_color);
                     set(axis_handle,'YDir','reverse');
                     axis(axis_handle,'tight','equal');
@@ -217,7 +217,7 @@ classdef beamformed_data < uff
                         % plot in 2D
                         h.image_handle = pcolor(axis_handle,radial_matrix*scale_factor,axial_matrix*scale_factor,h.all_images(:,:,1));
                         shading(axis_handle,'flat');
-                        set(axis_handle,'fontsize',14);
+                        set(axis_handle,'fontsize',12);
                         set(axis_handle,'YDir','reverse');
                         axis(axis_handle,'tight','equal');
                         colorbar(axis_handle);
@@ -233,7 +233,7 @@ classdef beamformed_data < uff
                         surface(axis_handle);
                         surface(x_matrix*scale_factor,y_matrix*scale_factor,z_matrix*scale_factor,h.all_images(:,:,1));
                         shading(axis_handle,'flat');
-                        set(axis_handle,'fontsize',14);
+                        set(axis_handle,'fontsize',12);
                         %set(axis_handle,'YDir','reverse');
                         axis(axis_handle,'tight','equal');
                         colorbar(axis_handle);
@@ -251,10 +251,13 @@ classdef beamformed_data < uff
                     h.all_images = reshape(envelope,[h.scan.N_depth_axis h.scan.N_azimuth_axis Nrx*Ntx*Nframes]);
                     h.image_handle = pcolor(axis_handle,x_matrix*scale_factor,z_matrix*scale_factor,h.all_images(:,:,1));
                     shading(axis_handle,'flat');
-                    set(axis_handle,'fontsize',14);
+                    set(axis_handle,'fontsize',12);
                     set(axis_handle,'YDir','reverse');
                     axis(axis_handle,'tight','equal');
                     cbar = colorbar(axis_handle);
+                    if strcmp(compression, 'log')
+                        ylabel(cbar, 'dB');
+                    end
                     set(cbar,'color',font_color);
                     colormap(axis_handle,'gray');
                     xlabel(axis_handle,['x[' spatial_units ']']); 
@@ -264,8 +267,8 @@ classdef beamformed_data < uff
                     set(gca,'YColor',font_color); 
                     set(gca,'XColor',font_color); 
                     set(gca,'Color',background_color);
-                    set(gca,'GridColor',background_color);
-                    set(gca,'GridLineStyle','none');
+                    set(gca,'GridColor',font_color);
+                    set(gca,'layer', 'top');
                     box off
                     drawnow;
                 case 'uff.sector_scan_na'
