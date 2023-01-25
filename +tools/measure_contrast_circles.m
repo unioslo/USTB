@@ -49,7 +49,7 @@ for f = 1:b_data.N_frames
     CNR(f) = abs(mean_ROI - mean_background) / sqrt(sigma_ROI^2 + sigma_background^2)
 
     % Calculate gCNR
-    x=linspace(min(db(abs(img_signal_current(:)))),max(db(abs(img_signal_current(:)))),100);
+    x=linspace(min(db(abs(img_signal_current(img_signal_current>eps)))),max(db(abs(img_signal_current(:)))),100);
     [pdf_i]=hist(db(abs(img_signal_current(idx_cyst(:)))),x);
     [pdf_o]=hist(db(abs(img_signal_current(idx_speckle(:)))),x);
 
