@@ -59,9 +59,9 @@ classdef pulse < uff
     
     %% get the signal for a given time
     methods
-        function s=signal(h,time)
+        function s=signal(h, time)
             % gaussian-pulsed pulse
-            s=cos(2*pi*h.center_frequency*time).*exp(-2.77*(1.1364*time*h.fractional_bandwidth/sqrt(2)*h.center_frequency).^2);
+            s=cos(2*pi*h.center_frequency*time).*exp(-1.7886*(time*h.fractional_bandwidth*h.center_frequency).^2);
         end
     end
 end

@@ -112,7 +112,9 @@ sim.probe=prb;                  % probe
 sim.sequence=seq;               % beam sequence
 sim.sampling_frequency=50e6;    % sampling frequency [Hz]
 
+tic()
 channel_data=sim.go();
+toc()
 
 if do_demodulation
     demod = preprocess.fast_demodulation();
