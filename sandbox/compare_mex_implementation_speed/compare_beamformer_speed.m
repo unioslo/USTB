@@ -15,7 +15,12 @@ clc
 
 testCase = 0; % 0 = linear/planewave, 1 = sector/focused
 do_demodulation = true;
-nFrames = 1:10:100;
+nFrames = 1:100:501;
+
+[cid, cnames] = enumeration("code");
+
+cid = cid([2, 3, 4]); % skip normal matlab-based scripts
+cnames = cnames([2, 3, 4]);
 
 %% Phantom
 switch testCase
@@ -67,7 +72,7 @@ end
 
 switch testCase
     case 0
-        nTx=15;
+        nTx=5;
         angles=linspace(-10, 10, nTx)/180*pi;
         seq=uff.wave();
 
@@ -126,73 +131,66 @@ end
 
 %% Pipeline
 
-pipe=pipeline();
-pipe.channel_data=channel_data;
-pipe.scan=scan;
+bmf=midprocess.das();
+bmf.channel_data=channel_data;
+bmf.scan=scan;
 
 switch testCase
     case 0
-        pipe.receive_apodization.window=uff.window.hamming;
-        pipe.receive_apodization.f_number=2;
+        bmf.receive_apodization.window=uff.window.hamming;
+        bmf.receive_apodization.f_number=2;
 
-        pipe.transmit_apodization.window=uff.window.hamming;
-        pipe.transmit_apodization.f_number=2;
+        bmf.transmit_apodization.window=uff.window.hamming;
+        bmf.transmit_apodization.f_number=2;
     case 1
-        pipe.receive_apodization.window=uff.window.none;
-        pipe.receive_apodization.f_number=3.5;
-        pipe.receive_apodization.maximum_aperture = 2e-2 * pipe.receive_apodization.f_number(1)^2;
+        bmf.receive_apodization.window=uff.window.none;
+        bmf.receive_apodization.f_number=3.5;
+        bmf.receive_apodization.maximum_aperture = 2e-2 * pipe.receive_apodization.f_number(1)^2;
 
-        pipe.transmit_apodization.window=uff.window.hamming;
-        pipe.transmit_apodization.f_number=3.5;
-        pipe.transmit_apodization.minimum_aperture = 5e-3 * pipe.transmit_apodization.f_number(1)^2;
+        bmf.transmit_apodization.window=uff.window.hamming;
+        bmf.transmit_apodization.f_number=3.5;
+        bmf.transmit_apodization.minimum_aperture = 5e-3 * pipe.transmit_apodization.f_number(1)^2;
 end
 
-proc            = midprocess.das();
-proc.code       = code.mex();
-proc.dimension  = dimension.both;
+bmf.code       = code.mex();
 fprintf(1, 'Precalculating apodization\n')
-pipe.go({proc});
+bmf.go();
 
+% Clear data
+bmf.output = [];
 %% Test beamforming speed
 
 dOp_per_frame = 2*scan.N_pixels*channel_data.N_channels*channel_data.N_waves;
 
-das_mex_c_time = zeros([length(nFrames), 1]);
-das_mex_cuda_time = zeros([length(nFrames), 1]);
+for c = 1:length(cid)
+    das_time.(cnames{c}) = zeros([length(nFrames), 1]);
+end
+
 
 if isscalar(nFrames)
     profile on
 end
 
 for n=1:length(nFrames)
-    % replicate frames
 
+    % Replicate frames
     channel_data.data=repmat(channel_data.data(:,:,:,1),[1, 1, 1, nFrames(n)]);
+    fprintf(1, 'Processing %d frames\n', nFrames(n))
 
-    % Time USTB MEX CUDA implementation
-    proc            = midprocess.das();
-    proc.code       = code.mex_gpu;
-    proc.gpu_id = 0;
-    proc.dimension  = dimension.both;
-    fprintf(1, 'Processing %d frames: MEX CUDA tex 2D\n', nFrames(n))
-    tic()
-    bf_data_mex_cuda = pipe.go({proc});
-    das_mex_cuda_time(n) = toc();
+    for c = 1:length(cid)
+        bmf.code       = cid(c);
+        bmf.gpu_id = 0;
 
-    % Time USTB MEX C implementation
-    proc            = midprocess.das();
-    proc.code       = code.mex;
-    proc.dimension  = dimension.both;
-    fprintf(1, 'Processing %d frames: MEX FAST\n', nFrames(n))
-    tic()
-    bf_data_mex_c = pipe.go({proc});
-    das_mex_c_time(n) = toc();
+        bf_data.(cnames{c}) = bmf.go();
+        das_time.(cnames{c})(n) = bmf.elapsed_time;
+    end
 end
 
 if isscalar(nFrames)
     profile off
     profile viewer
 end
+
 %% Plot the images for visual inspection of the results
 switch class(scan)
     case "uff.linear_scan"
@@ -209,64 +207,55 @@ Z = reshape(scan.z, dim);
 
 
 figure('Color', 'white')
-tiledlayout(1, 2, "TileSpacing", "compact", "Padding", "compact")
-hAx(1) = nexttile();
-surface(X*1e2, Y*1e2, Z*1e2, ...
-    20*log10(abs(reshape(bf_data_mex_cuda.data(:,end), dim)) / ...
-    max(abs(bf_data_mex_cuda.data(:,end)))), "LineStyle", "none")
-clim([-60, 0])
-view([0, 0])
-set(gca, "ZDir", "reverse", "Layer", "top")
-grid on
-box on
-axis equal tight
-xlabel("x [cm]")
-ylabel("z [cm]")
-title("mex CUDA")
-ylabel(colorbar, "dB")
+tiledlayout("flow", "TileSpacing", "compact", "Padding", "compact")
 
-hAx(2) = nexttile();
-surface(X*1e2, Y*1e2, Z*1e2, ...
-    20*log10(abs(reshape(bf_data_mex_c.data(:,end), dim)) / ...
-    max(abs(bf_data_mex_c.data(:,end)))), "LineStyle", "none")
-clim([-60, 0])
-view([0, 0])
-set(gca, "ZDir", "reverse", "Layer", "top")
-grid on
-box on
-axis equal tight
-xlabel("x [cm]")
-ylabel("z [cm]")
-title("mex C")
-ylabel(colorbar, "dB")
+for c = 1:length(cid)
+
+    hAx(c) = nexttile();
+    surface(X*1e2, Y*1e2, Z*1e2, ...
+        20*log10(abs(reshape(bf_data.(cnames{c}).data(:,end), dim)) / ...
+        max(abs(bf_data.(cnames{c}).data(:,end)))), "LineStyle", "none")
+    clim([-60, 0])
+    view([0, 0])
+    set(gca, "ZDir", "reverse", "Layer", "top")
+    grid on
+    box on
+    axis equal tight
+    xlabel("x [cm]")
+    ylabel("z [cm]")
+    title(upper(strjoin(strsplit(cnames{c}, "_"))))
+    ylabel(colorbar, "dB")
+
+end
 
 linkaxes(hAx)
 linkprop(hAx, {'CameraPosition','CameraUpVector'});
 
-diff = mean(abs(bf_data_mex_cuda.data(:,1) - bf_data_mex_c.data(:,1)), 1)
 
 %% Plot the runtimes
 figure('Color', 'white')
 
-cMap = lines(2);
+cMap = lines(length(cid));
 
 hold on
-plot(nFrames(1:n)*dOp_per_frame/1e9,das_mex_cuda_time(1:n),'s-','linewidth',1.5,'color',cMap(1,:));
-plot(nFrames(1:n)*dOp_per_frame/1e9,das_mex_c_time(1:n),'o-','linewidth',1.5,'color',cMap(2,:));
+for c = 1:length(cid)
+    plot(nFrames*dOp_per_frame/1e9,das_time.(cnames{c}),'s-','linewidth',1.5,'color',cMap(c,:), 'DisplayName', upper(strjoin(strsplit(cnames{c}, "_"))));
+end
 hold off
 
 for n=1:length(nFrames)
-    text(nFrames(n)*dOp_per_frame/1e9,das_mex_cuda_time(n),sprintf('%0.2f s', das_mex_cuda_time(n)), ...
-        'horizontalalignment', 'left', 'verticalalignment', 'top','color',cMap(1,:),'fontweight','bold');
+    for c = 1:length(cid)
 
-    text(nFrames(n)*dOp_per_frame/1e9,das_mex_c_time(n),sprintf('%0.2f s', das_mex_c_time(n)), ...
-        'horizontalalignment', 'right', 'verticalalignment', 'bottom','color',cMap(2,:),'fontweight','bold');
+        text(nFrames(n)*dOp_per_frame/1e9,das_time.(cnames{c})(n),sprintf('%0.2f s', das_time.(cnames{c})(n)), ...
+            'horizontalalignment', 'left', 'verticalalignment', 'top','color',cMap(c,:),'fontweight','bold');
+
+    end
 end
 
 grid on
 box on
 
-legend('MEX CUDA', 'MEX C', 'Location','Best');
+legend('Location','Best');
 xlabel('Delay operations [1e9]');
 ylabel('Elapsed time [s]');
 

@@ -1,11 +1,11 @@
 function bf_data = matlab_beamformer(ch_data, ch_data_time, tx_apodization,...
-                                        rx_apodization, transmit_delay, receive_delay, w0, dimension)
+                                        rx_apodization, transmit_delay, receive_delay, w0, dim)
 
 [~,N_channels,N_waves,N_frames] = size(ch_data);
 N_pixels = size(tx_apodization, 1);
 
 % Allocate RAM
-switch h.dimension
+switch dim
     case dimension.none
         bf_data=complex(zeros([N_pixels,N_channels,N_waves,N_frames], 'single'));
     case dimension.receive
@@ -35,7 +35,7 @@ for n_wave=1:N_waves
                 end
 
                 % set into auxiliary data
-                switch dimension
+                switch dim
                     case dimension.none
                         bf_data(:,n_rx,n_wave,:)=temp;
                     case dimension.receive

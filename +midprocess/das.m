@@ -18,6 +18,8 @@ classdef das < midprocess
         
         transmit_delay                      % Variable returning the calculated tx part of the receive delay so that it can be plotted
         receive_delay                       % Variable returning the calculated rx part of the receive delay so that it can be plotted
+
+        elapsed_time                        % Variable to store the beamforming time. Used for benchmarking
     end
     
     %% constructor
@@ -250,8 +252,8 @@ classdef das < midprocess
                         error('Unknown code implementation requested');
                 end % end switch          
 
-                elapsed_time = toc();
-                fprintf(1, "Completed in %.2f seconds.\n", elapsed_time);
+                h.elapsed_time = toc();
+                fprintf(1, "Completed in %.2f seconds.\n", h.elapsed_time);
             end % end if
 
             % assign phase according to 2 times the receive propagation distance
