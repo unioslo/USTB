@@ -340,7 +340,7 @@ classdef apodization < uff
         function [tan_theta, tan_phi, distance] = incidence_aperture(h)
 
             %% NEED TO LOOK INTO SECTOR SCAN APODIZATION
-            
+
             % Location of the elements
             x=ones(h.focus.N_pixels,1)*(h.probe.x.');
             y=ones(h.focus.N_pixels,1)*(h.probe.y.');
@@ -439,7 +439,7 @@ classdef apodization < uff
                     % distances
                     if logical(h.sequence(n).origin.distance)
 
-                        %% NOTE THIS CLAUSE SEEMS TO BE GENERIC ENOUGH TO BE ABLE TO REMOVE THE OTHER CASES THAT FOLLOW
+                        %% PROBABLY NEED TO MERGE THIS WITH THE FOLLOWING TWO. IF THIS ACTIVATES ON A SECTOR SCAN WITH NON-ZERO APEX, THEN WE MAY HAVE PROBLEMS
 
                         % distance to source
                         x_dist=h.focus.x-h.sequence(n).source.x;
