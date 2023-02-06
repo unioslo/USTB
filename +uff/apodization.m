@@ -207,12 +207,12 @@ classdef apodization < uff
                 h.focus=uff.scan('xyz',[0 0 0]);
             end
             
-            % aperture apodization
-            if ~(numel(h.sequence)>0)
+            % Aperture apodization
+            if ~isempty(h.probe)
                 h.compute_aperture_apodization();
                 
-            % wave apodization
-            else
+            % Wave apodization
+            elseif ~isempty(h.sequence)
                 h.compute_wave_apodization();
             end
             
@@ -357,9 +357,9 @@ classdef apodization < uff
                 pixel_azimuth = atan2(h.focus.x-h.origin.x, h.focus.z-h.origin.z);
                 pixel_distance = sqrt((h.focus.x-h.origin.x).^2+(h.focus.z-h.origin.z).^2);
                 
-                x_dist = h.probe.radius .* (pixel_azimuth-element_azimuth);
+                x_dist = h.origin.z .* (pixel_azimuth-element_azimuth);
                 y_dist = h.origin.y - y;
-                z_dist = pixel_distance .* ones(1,h.N_elements)-h.probe.radius;
+                z_dist = pixel_distance .* ones([1,h.N_elements])-h.origin.z;
 
             % If we have a sector scan, the apodization is centered at the
             % origin of the field of view
@@ -424,6 +424,7 @@ classdef apodization < uff
                 % Plane Wave case
                 if (h.sequence(n).wavefront==uff.wavefront.plane||isinf(h.sequence(n).source.distance))
 
+                    %% Probably needs to be adapted in case plane waves are used in combination with a non-zero origin.
                     tan_theta(:,n)=ones(h.focus.N_pixels,1)*tan(h.sequence(n).source.azimuth - h.tilt(1));
                     tan_phi(:,n)=ones(h.focus.N_pixels,1)*tan(h.sequence(n).source.elevation - h.tilt(2));
                     distance(:,n) = h.focus.z;
