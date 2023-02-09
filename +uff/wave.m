@@ -48,9 +48,9 @@ classdef wave < uff
     %% compulsory properties
     properties  (Access = public)
         wavefront = uff.wavefront.spherical % WAVEFRONT enumeration class
-        source            % POINT class
-        origin            % POINT class
-        apodization       % APODIZATION class
+        source = uff.point();               % POINT class
+        origin = uff.point()                % POINT class
+        apodization                         % APODIZATION class
     end
     
     %% optional properties
@@ -73,10 +73,6 @@ classdef wave < uff
     methods (Access = public)
         function h=wave(varargin)
             h = h@uff(varargin{:});
-            
-            % default values
-            if ~isa(h.source, 'uff.point'), h.source = uff.point(); end
-            if ~isa(h.origin, 'uff.point'), h.origin = uff.point(); end
         end
     end
     
