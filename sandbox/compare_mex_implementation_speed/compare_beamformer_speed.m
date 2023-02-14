@@ -1,19 +1,13 @@
 %% CPWC simulation to compare speeds of the various USTB beamformers.
 %
 % In this example, we conduct a simple simulation to compare the speeds
-% achieved with USTB's:
+% achieved with USTB:
 %
+% # MEX C beamformer
 % # MEX CUDA beamformer
-% # MEX FAST CPU beamformer
 %
-% This tutorial assumes familiarity with the contents of the
-% <./CPWC_linear_array.html 'CPWC simulation with the USTB built-in Fresnel
-% simulator'> tutorial. Please feel free to refer back to that for more
-% details.
-%
-% Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no>
 % Stefano Fiorentini <stefano.fiorentini@ntnu.no>
-% Last edited: 24.11.2022
+% Last edited: 01/02/2023
 
 clear all
 close all
@@ -21,7 +15,14 @@ clc
 
 testCase = 1; % 0 = linear/planewave, 1 = sector/focused
 do_demodulation = true;
-nFrames = 100;
+nFrames = 60;
+
+codeToBenchmark = [2, 4]; % check enumeration("code") to see which ones
+
+[cid, cnames] = enumeration("code");
+
+cid = cid(codeToBenchmark); % skip normal matlab-based scripts
+cnames = cnames(codeToBenchmark);
 
 %% Phantom
 switch testCase
@@ -85,9 +86,9 @@ switch testCase
             seq(n).sound_speed=pha.sound_speed;
         end
     case 1
-        nTx=192; % n transmits
+        nTx=81; % n transmits
         F = 6.5e-2; % focus speed
-        angles=linspace(-40, 40, nTx)/180*pi;
+        angles=linspace(-35, 35, nTx)/180*pi;
         seq=uff.wave();
 
         for n=1:nTx
@@ -134,73 +135,66 @@ end
 
 %% Pipeline
 
-pipe=pipeline();
-pipe.channel_data=channel_data;
-pipe.scan=scan;
+bmf=midprocess.das();
+bmf.channel_data=channel_data;
+bmf.scan=scan;
 
 switch testCase
     case 0
-        pipe.receive_apodization.window=uff.window.hamming;
-        pipe.receive_apodization.f_number=2;
+        bmf.receive_apodization.window=uff.window.hamming;
+        bmf.receive_apodization.f_number=2;
 
-        pipe.transmit_apodization.window=uff.window.hamming;
-        pipe.transmit_apodization.f_number=2;
+        bmf.transmit_apodization.window=uff.window.hamming;
+        bmf.transmit_apodization.f_number=2;
     case 1
-        pipe.receive_apodization.window=uff.window.none;
-        pipe.receive_apodization.f_number=3.5;
-        pipe.receive_apodization.maximum_aperture = 2e-2 * pipe.receive_apodization.f_number(1)^2;
+        bmf.receive_apodization.window=uff.window.none;
+        bmf.receive_apodization.f_number=3.5;
+        bmf.receive_apodization.maximum_aperture = 2e-2 * bmf.receive_apodization.f_number(1)^2;
 
-        pipe.transmit_apodization.window=uff.window.hamming;
-        pipe.transmit_apodization.f_number=3.5;
-        pipe.transmit_apodization.minimum_aperture = 5e-3 * pipe.transmit_apodization.f_number(1)^2;
+        bmf.transmit_apodization.window=uff.window.hamming;
+        bmf.transmit_apodization.f_number=3.5;
+        bmf.transmit_apodization.minimum_aperture = 4e-3 * bmf.transmit_apodization.f_number(1)^2;
 end
 
-proc            = midprocess.das();
-proc.code       = code.mex();
-proc.dimension  = dimension.both;
+bmf.code = code.mex();
 fprintf(1, 'Precalculating apodization\n')
-pipe.go({proc});
+bmf.go();
 
+% Clear data
+bmf.beamformed_data = [];
 %% Test beamforming speed
 
 dOp_per_frame = 2*scan.N_pixels*channel_data.N_channels*channel_data.N_waves;
 
-das_mexFast_time = zeros([length(nFrames), 1]);
-das_mex_gpu_time = zeros([length(nFrames), 1]);
+for c = 1:length(cid)
+    das_time.(cnames{c}) = zeros([length(nFrames), 1]);
+end
+
 
 if isscalar(nFrames)
     profile on
 end
 
 for n=1:length(nFrames)
-    % replicate frames
 
+    % Replicate frames
     channel_data.data=repmat(channel_data.data(:,:,:,1),[1, 1, 1, nFrames(n)]);
+    fprintf(1, 'Processing %d frames\n', nFrames(n))
 
-    % Time USTB's MEX GPU tex 2D implementation
-    proc            = midprocess.das();
-    proc.code       = code.mex_gpu_tex2D;
-    proc.gpu_device = 0;
-    proc.dimension  = dimension.both;
-    fprintf(1, 'Processing %d frames: MEX CUDA tex 2D\n', nFrames(n))
-    tic()
-    bf_data_mex_gpu = pipe.go({proc});
-    das_mex_gpu_time(n) = toc();
+    for c = 1:length(cid)
+        bmf.code       = cid(c);
+        bmf.gpu_id = 0;
 
-    % Time USTB's MEX FAST implementation
-    proc            = midprocess.das();
-    proc.code       = code.mexFast;
-    proc.dimension  = dimension.both;
-    fprintf(1, 'Processing %d frames: MEX FAST\n', nFrames(n))
-    tic()
-    bf_data_mexFast_cpu = pipe.go({proc});
-    das_mexFast_time(n) = toc();
+        bf_data.(cnames{c}) = bmf.go();
+        das_time.(cnames{c})(n) = bmf.elapsed_time;
+    end
 end
 
 if isscalar(nFrames)
     profile off
     profile viewer
 end
+
 %% Plot the images for visual inspection of the results
 switch class(scan)
     case "uff.linear_scan"
@@ -217,62 +211,55 @@ Z = reshape(scan.z, dim);
 
 
 figure('Color', 'white')
-tiledlayout(1, 2, "TileSpacing", "compact", "Padding", "compact")
-hAx(1) = nexttile();
-surface(X*1e2, Y*1e2, Z*1e2, ...
-    20*log10(abs(reshape(bf_data_mex_gpu.data(:,end), dim)) / ...
-    max(abs(bf_data_mex_gpu.data(:,end)))), "LineStyle", "none")
-clim([-60, 0])
-view([0, 0])
-set(gca, "ZDir", "reverse")
-grid on
-box on
-axis equal tight
-xlabel("x [cm]")
-ylabel("z [cm]")
-title("mex CUDA tex 2D")
+tiledlayout("flow", "TileSpacing", "compact", "Padding", "compact")
 
-hAx(2) = nexttile();
-surface(X*1e2, Y*1e2, Z*1e2, ...
-    20*log10(abs(reshape(bf_data_mexFast_cpu.data(:,end), dim)) / ...
-    max(abs(bf_data_mexFast_cpu.data(:,end)))), "LineStyle", "none")
-clim([-60, 0])
-view([0, 0])
-set(gca, "ZDir", "reverse")
-grid on
-box on
-axis equal tight
-xlabel("x [cm]")
-ylabel("z [cm]")
-title("mex FAST")
+for c = 1:length(cid)
+
+    hAx(c) = nexttile();
+    surface(X*1e2, Y*1e2, Z*1e2, ...
+        20*log10(abs(reshape(bf_data.(cnames{c}).data(:,end), dim)) / ...
+        max(abs(bf_data.(cnames{c}).data(:,end)))), "LineStyle", "none")
+    clim([-60, 0])
+    view([0, 0])
+    set(gca, "ZDir", "reverse", "Layer", "top")
+    grid on
+    box on
+    axis equal tight
+    xlabel("x [cm]")
+    ylabel("z [cm]")
+    title(upper(strjoin(strsplit(cnames{c}, "_"))))
+    ylabel(colorbar, "dB")
+
+end
 
 linkaxes(hAx)
 linkprop(hAx, {'CameraPosition','CameraUpVector'});
 
-diff = mean(abs(bf_data_mex_gpu.data(:,1) - bf_data_mexFast_cpu.data(:,1)), 1)
 
 %% Plot the runtimes
 figure('Color', 'white')
 
-cMap = lines(2);
+cMap = lines(length(cid));
 
 hold on
-plot(nFrames(1:n)*dOp_per_frame/1e9,das_mex_gpu_time(1:n),'s-','linewidth',1.5,'color',cMap(1,:));
-plot(nFrames(1:n)*dOp_per_frame/1e9,das_mexFast_time(1:n),'o-','linewidth',1.5,'color',cMap(2,:));
+for c = 1:length(cid)
+    plot(nFrames*dOp_per_frame/1e9,das_time.(cnames{c}),'s-','linewidth',1.5,'color',cMap(c,:), 'DisplayName', upper(strjoin(strsplit(cnames{c}, "_"))));
+end
 hold off
 
-for nn=1:length(nFrames)
-    text(nFrames(nn)*dOp_per_frame/1e9,das_mex_gpu_time(nn),sprintf('%0.2f s', das_mex_gpu_time(nn)), ...
-        'horizontalalignment', 'left', 'verticalalignment', 'top','color',cMap(1,:),'fontweight','bold');
+for n=1:length(nFrames)
+    for c = 1:length(cid)
 
-    text(nFrames(nn)*dOp_per_frame/1e9,das_mexFast_time(nn),sprintf('%0.2f s', das_mexFast_time(nn)), ...
-        'horizontalalignment', 'right', 'verticalalignment', 'bottom','color',cMap(2,:),'fontweight','bold');
+        text(nFrames(n)*dOp_per_frame/1e9,das_time.(cnames{c})(n),sprintf('%0.2f s', das_time.(cnames{c})(n)), ...
+            'horizontalalignment', 'left', 'verticalalignment', 'top','color',cMap(c,:),'fontweight','bold');
+
+    end
 end
 
 grid on
 box on
 
-legend('MEX CUDA tex 2D', 'MEX FAST', 'Location','Best');
+legend('Location','Best');
 xlabel('Delay operations [1e9]');
 ylabel('Elapsed time [s]');
 

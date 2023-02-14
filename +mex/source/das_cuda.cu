@@ -3,7 +3,7 @@
  * CUDA MEX general beamformer for USTB
  *
  * Stefano Fiorentini <stefano.fiorentini@ntnu.no>
- * Last edit 20.12.2022
+ * Last edit 01.02.2023
  *
  *================================================*/
 
@@ -34,12 +34,24 @@
 
 #include <cuComplex.h>
 #include <cuda_runtime.h>
+#include <cuda.h>
 #include <device_launch_parameters.h>
 
 // Constants
-#define eps 1E-6
+#define eps 1E-6f
 #define pi acosf(-1.0)
 #define thread_per_block 64
+
+// Interpolation function
+__device__  inline cuFloatComplex lerp(cuFloatComplex v0, cuFloatComplex v1, float t)
+{
+    cuFloatComplex v;
+    
+    v.x = fma(t, v1.x, fma(-t, v0.x, v0.x));
+    v.y = fma(t, v1.y, fma(-t, v0.y, v0.y));
+
+    return v;
+}
 
 // Beamforming kernel
 __global__ void beamform(const int N_pixels, const int N_channels, const int N_waves, const float Fs, cuFloatComplex* bf_data, const cudaTextureObject_t tex,
@@ -53,6 +65,7 @@ __global__ void beamform(const int N_pixels, const int N_channels, const int N_w
 	float *tDelay = t;
 	float *tApod = (float*)&tDelay[blockDim.x*N_waves];
 
+    // Load tx delay and tx apodization matrices in shared memory because they are read multiple times
 	for (int i = pixel_idx; i < N_pixels; i += pixel_stride)
 	{
 		for (int j = 0; j < N_waves; j++)
@@ -70,24 +83,27 @@ __global__ void beamform(const int N_pixels, const int N_channels, const int N_w
 		{
 			const float rApod = rx_apod[i + g * N_pixels];
 
-            if (rApod > 0.0)
+            if (rApod > 0.0f)
             {
-                const float rDelay = rx_delay[i + g * N_pixels];
+				const float rDelay = rx_delay[i + g * N_pixels];
 
                 for (int j = 0; j < N_waves; j++)
                 {
-                    const float apod = rApod * tApod[threadIdx.x+j*blockDim.x];
+					const float apod = rApod * tApod[threadIdx.x+j*blockDim.x];
 
-                    if (apod > 0.0)
+                    if (apod > 0.0f)
                     {
-                        const float delay = rDelay + tDelay[threadIdx.x+j*blockDim.x];
+						const float delay = rDelay + tDelay[threadIdx.x+j*blockDim.x];
                         const float denay = fma(delay, Fs, -i0);
 
                         cuFloatComplex phase;
 
                         __sincosf(wd * delay, &phase.y, &phase.x);
 
-                        const cuFloatComplex val = tex1DLayered<cuFloatComplex>(tex, denay, g + j * N_channels);
+				        const float n = denay - floor(denay);
+
+                        const cuFloatComplex val = lerp(tex2D<cuFloatComplex>(tex, denay, g + j * N_channels), 
+                                                        tex2D<cuFloatComplex>(tex, denay+1.0f, g + j * N_channels), n);
 
                         bf_data[i].x = fma((val.x * phase.x - val.y * phase.y), apod, bf_data[i].x);
                         bf_data[i].y = fma((val.x * phase.y + val.y * phase.x), apod, bf_data[i].y);
@@ -129,7 +145,7 @@ void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 	float Fs = *mxGetSingles(prhs[1]);		// Sampling frequency
 	float t0 = *mxGetSingles(prhs[2]);		// Initial time
 	float Fd = *mxGetSingles(prhs[7]);		// Modulation frequency
-	float i0 = t0 * Fs - 0.5;               // Normalised initial sample
+	float i0 = t0 * Fs;               // Normalised initial sample
 
 	float wd = fabsf(Fd) > eps ? 2 * pi * Fd : 0.0;		// Demodulation frequency expressed in rad/s
 
@@ -142,9 +158,14 @@ void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 	plhs[0] = mxCreateNumericArray(4, (const size_t*)&beamformed_size, mxSINGLE_CLASS, mxCOMPLEX);
 
     // Set gpuDevice to run CUDA code
-  	int gpuDevice = *mxGetInt32s(prhs[9]);
-    cudaErrorCheck(cudaSetDevice(gpuDevice))
+  	int dev = *mxGetInt32s(prhs[9]);
+    cudaErrorCheck(cudaSetDevice(dev))
     
+    // Get shared memory per block size of the selected GPU
+    // int sharedMemPerBlock;
+    //cudaErrorCheck(getCudaAttribute<int>(&sharedMemPerBlock,
+    //                      CU_DEVICE_ATTRIBUTE_MAX_SHARED_MEMORY_PER_BLOCK, dev));
+
 	// Get pointer to beamformed data and pin memory for asynchronous memory transfer with the GPU
 	mxComplexSingle* host_bf_data = mxGetComplexSingles(plhs[0]);
 	cudaErrorCheck(cudaHostRegister(host_bf_data, beamformed_size[0] * beamformed_size[1] * beamformed_size[2] * beamformed_size[3] * sizeof(mxComplexSingle), cudaHostRegisterDefault)); // Pin paged memory for asynchronous transfers
@@ -188,7 +209,7 @@ void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 		cudaErrorCheck(cudaMalloc((void**)&device_bf_data[n_stream], N_pixels * sizeof(cuFloatComplex)));
 	}
 
-	// Allocate an array of 1D Layered cudaArray and a cudaTextureObjects
+	// Allocate an array of 2D cudaArray and a cudaTextureObjects
 	// Need 2 elements in the array to allow for asynchronous operations
 	cudaArray** device_ch_data = (cudaArray**)malloc(N_streams * sizeof(cudaArray*)); // Array of pointers to cudaArrays
 	cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc(32, 32, 0, 0, cudaChannelFormatKindFloat); // channel descriptor for a cuFloatComplex type.
@@ -196,7 +217,7 @@ void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 
 	for (size_t n_stream = 0; n_stream < N_streams; n_stream++)
 	{
-		cudaErrorCheck(cudaMalloc3DArray(&device_ch_data[n_stream], &channelDesc, make_cudaExtent(N_times, 0, N_channels * N_waves), cudaArrayLayered)); // Allocate 1D Layered texture
+		cudaErrorCheck(cudaMallocArray(&device_ch_data[n_stream], &channelDesc, N_times, N_channels*N_waves, cudaArrayDefault)); // Allocate 2D texture
 
 		// Input data properties
 		cudaResourceDesc resDesc;
@@ -207,9 +228,10 @@ void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 		// Texture properties
 		cudaTextureDesc texDesc;
 		memset(&texDesc, 0, sizeof(cudaTextureDesc));
-		texDesc.filterMode = cudaFilterModeLinear; // linear interpolation between texels
-		texDesc.normalizedCoords = 0; // coordinates are not normalized [0, 1, ..., N_times-1]
+		texDesc.filterMode = cudaFilterModePoint; // nearest neighbour interpolation
+		texDesc.normalizedCoords = false; // coordinates are not normalized [0, 1, ..., N_times-1]
 		texDesc.addressMode[0] = cudaAddressModeBorder; // out of bound coordinates are 0
+        texDesc.addressMode[1] = cudaAddressModeBorder; // out of bound coordinates are 0
 		texDesc.readMode = cudaReadModeElementType;
 
 		// Texture Object
@@ -217,25 +239,14 @@ void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 	}
 
 	// Define block_size and N_blocks
-	dim3 block_size = dim3(thread_per_block);
-	dim3 N_blocks = dim3((N_pixels + block_size.x - 1) / block_size.x);
+	dim3 dimBlock = dim3(thread_per_block, 1, 1);
+	dim3 dimGrid = dim3((N_pixels + dimBlock.x - 1) / dimBlock.x, 1, 1);
 
 	// Setupt cudaStream for asynchronous operations
 	cudaStream_t* frame_stream = (cudaStream_t*)malloc(N_streams * sizeof(cudaStream_t));
 	for (size_t n_stream = 0; n_stream < N_streams; n_stream++)
 	{
 		cudaErrorCheck(cudaStreamCreate(&frame_stream[n_stream]));
-	}
-
-	// cudaMemcpy3D properties
-	cudaMemcpy3DParms* memcpyParams = (cudaMemcpy3DParms*) malloc(N_streams * sizeof(cudaMemcpy3DParms));
-
-	for (size_t n_stream = 0; n_stream < N_streams; n_stream++)
-	{
-		memset(&memcpyParams[n_stream], 0, sizeof(cudaMemcpy3DParms));
-		memcpyParams[n_stream].extent = make_cudaExtent(N_times, 1, N_channels * N_waves); // cudaExtent object for a 1D layered texture;
-		memcpyParams[n_stream].kind = cudaMemcpyHostToDevice;
-		memcpyParams[n_stream].dstArray = device_ch_data[n_stream];
 	}
 
 	// Beamforming loop
@@ -245,9 +256,11 @@ void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 
 		for (size_t n_stream = 0; n_stream < Nc_streams; n_stream++)
 		{
-			// Copy channel data into dedicated texture memory
-			memcpyParams[n_stream].srcPtr = make_cudaPitchedPtr(&host_ch_data[(n_frame + n_stream) * N_waves * N_channels * N_times], N_times * sizeof(cuFloatComplex), N_times, 1);
-			cudaErrorCheck(cudaMemcpy3DAsync(&memcpyParams[n_stream], frame_stream[n_stream]));
+			// Copy channel data into cudaArray
+			cudaErrorCheck(cudaMemcpy2DToArrayAsync(device_ch_data[n_stream], 
+            0, 0, &host_ch_data[(n_frame + n_stream) * N_waves * N_channels * N_times], 
+            N_times * sizeof(cuFloatComplex), N_times * sizeof(cuFloatComplex), N_channels * N_waves, 
+            cudaMemcpyHostToDevice, frame_stream[n_stream]));
 
 		}
 
@@ -257,7 +270,7 @@ void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 			cudaErrorCheck(cudaMemsetAsync(device_bf_data[n_stream], 0, N_pixels * sizeof(cuFloatComplex), frame_stream[n_stream]));
 
 			// Call beamforming kernel
-			beamform <<< N_blocks, block_size, 2*thread_per_block*N_waves*sizeof(float), frame_stream[n_stream] >>> ((int) N_pixels, (int) N_channels, (int) N_waves, Fs, device_bf_data[n_stream], tex[n_stream], device_tx_delay,
+			beamform <<< dimGrid, dimBlock, 2*thread_per_block*N_waves*sizeof(float), frame_stream[n_stream] >>> ((int) N_pixels, (int) N_channels, (int) N_waves, Fs, device_bf_data[n_stream], tex[n_stream], device_tx_delay,
 				device_rx_delay, device_tx_apod, device_rx_apod, i0, wd);
 			cudaErrorCheck(cudaPeekAtLastError());
 		}
