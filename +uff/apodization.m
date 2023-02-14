@@ -508,7 +508,6 @@ classdef apodization < uff
                     dim = [h.focus.N_depth_axis, h.focus.N_azimuth_axis];
                 otherwise
                     error('Plotting apodization is only supported for linear and sector scans')
-
             end
             
             X = reshape(h.focus.x, dim);
@@ -522,8 +521,8 @@ classdef apodization < uff
             xlabel('x [mm]');
             ylabel('z [mm]');
             set(gca,'Ydir','reverse');
-            set(gca,'fontsize',14);
             grid on
+            box on
             axis equal tight
             ylabel(colorbar(), 'Apodization value')
             clim([0, 1])
@@ -548,7 +547,6 @@ classdef apodization < uff
                     title(sprintf('Transmit apodization at pixel (%0.2f,%0.2f) mm.',x,z));
                     xlabel('wave');
                 end
-                set(gca,'fontsize',14);
 
                 subplot(1,2,1);
                 [x, z]=ginput(1);

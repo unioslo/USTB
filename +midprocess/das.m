@@ -103,11 +103,10 @@ classdef das < midprocess
                                             mask_apod = uff.apodization();
                                             mask_apod.window = uff.window.boxcar;
                                             mask_apod.sequence = h.channel_data.sequence;
-                                            mask_apod.minimum_aperture = [0 0];
+                                            mask_apod.minimum_aperture = [0,0];
                                             mask_apod.focus = h.scan;
-                                            mask_apod.probe = h.channel_data.probe;
                                             if isa(h.scan,'uff.sector_scan')
-                                                mask_apod.f_number = 4; %This should be set according to the actually transmitted f number
+                                                mask_apod.f_number = h.transmit_apodization.f_number; %This should be set according to the actually transmitted f number
                                                 mask_all_waves = reshape(mask_apod.data,h.scan.N_depth_axis,h.scan.N_azimuth_axis,numel(h.channel_data.sequence));
                                             elseif isa(h.scan,'uff.linear_scan')
                                                 mask_apod.f_number = 2; %This should be set according to the actually transmitted f number
