@@ -21,7 +21,6 @@
 *.lib
 development/
 log_*.txt
-examples/huff/recording.h5
 !multi_frame_gui.fig
 !window.png
 !*.keep_this_folder_in_git
