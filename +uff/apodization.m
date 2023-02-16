@@ -30,14 +30,14 @@ classdef apodization < uff
         focus                           % UFF.SCAN class (needed for transmit, receive & synthetic apodization)
         sequence                        % collection of UFF.WAVE classes (needed for synthetic apodizaton)
         
-        f_number  = [1 1]               % F-number [Fx Fy] [unitless unitless]
+        f_number  = [1, 1]              % F-number [Fx Fy] [unitless unitless]
         window    = uff.window.none     % UFF.WINDOW class, default uff.window.none
         MLA       = 1                   % number of multi-line acquisitions, only valid for uff.window.scanline
         MLA_overlap = 0                 % number of multi-line acquisitions, only valid for uff.window.scanline
         
-        tilt      = [0 0]               % tilt angle [azimuth elevation] [rad rad]
-        minimum_aperture = [1e-3 1e-3]  % minimum aperture size in the [x y] direction
-        maximum_aperture = [10 10]      % maximum aperture size in the [x y] direction
+        tilt      = [0, 0]              % tilt angle [azimuth elevation] [rad rad]
+        minimum_aperture = [1e-3, 1e-3] % minimum aperture size in the [x y] direction
+        maximum_aperture = [10, 10]     % maximum aperture size in the [x y] direction
     end
     
     %% optional properties
