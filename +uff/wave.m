@@ -75,7 +75,7 @@ classdef wave < uff
             h = h@uff(varargin{:});  
 
             if isempty(h.wavefront)
-                h.wavefront = uff.wavefront.plane;
+                h.wavefront = uff.wavefront.spherical;
             end
             
             if isempty(h.source)
