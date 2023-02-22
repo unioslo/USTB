@@ -134,7 +134,7 @@ classdef apodization < uff
                 value = h.data_backup;
             end
         end
-              
+
         %% get N_elements
         function value=get.N_elements(h)
             if isempty(h.sequence)
@@ -334,85 +334,25 @@ classdef apodization < uff
         %% Incidence aperture
         function [tan_theta, tan_phi, distance] = incidence_aperture(h)
 
-            azimuth = atan2(h.focus.x-h.probe.x.', h.focus.z-h.probe.z.');
-            elevation = atan2(h.focus.y-h.probe.y.', h.focus.z-h.probe.z.');
+            if isempty(h.origin)
+                x0 = h.probe.x.';
+                y0 = h.probe.y.';
+                z0 = h.probe.z.';
+            else
+                x0 = h.origin.x;
+                y0 = h.origin.y;
+                z0 = h.origin.z;
+            end
 
-            z_dist = sqrt((h.focus.x-h.probe.x.').^2+(h.focus.y-h.probe.y.').^2+(h.focus.z-h.probe.z.').^2);
+
+            azimuth = atan2(h.focus.x-x0, h.focus.z-z0);
+            elevation = atan2(h.focus.y-y0, h.focus.z-z0);
+
+            z_dist = sqrt((h.focus.x-x0).^2+(h.focus.y-y0).^2+(h.focus.z-z0).^2);
 
             x_dist = z_dist .* (azimuth-h.probe.theta.');
             y_dist = z_dist .* (elevation-h.probe.phi.');
 
-            
-%             % Location of the elements
-%             x = ones([h.focus.N_pixels,1]) .* h.probe.x.';
-%             y = ones([h.focus.N_pixels,1]) .* h.probe.y.';
-%             z = ones([h.focus.N_pixels,1]) .* h.probe.z.';
-%             
-%             % If the apodization center has not been set by the user
-%             if isempty(h.origin)
-%                 if isa(h.probe,'uff.curvilinear_array')
-%                     h.origin = uff.point('xyz', [0, 0, -h.probe.radius]);
-%                 elseif isa(h.probe,'uff.curvilinear_matrix_array')
-%                     h.origin = uff.point('xyz', [0, 0, -h.probe.radius_x]);
-%                 elseif isa(h.focus, 'uff.sector_scan')
-%                     h.origin = h.focus.origin;
-%                 end
-%             end
-% 
-%             % If we have a curvilinear array
-%             if isa(h.probe,'uff.curvilinear_array') || isa(h.probe,'uff.curvilinear_matrix_array')
-% 
-%                 % SF: element_azimuth is most likely necessary to account for
-%                 % the fact that the elements are tilted along the transducer
-%                 % curvature. If this quantity is precalculated and stored
-%                 % in the probe object, then we can probably merge all this
-%                 % receive apodization definition into a more general
-%                 % formulation, that does not contain if or switch clauses
-% 
-%                 % the probe class already includes the quantities theta and
-%                 % phi that define the element orientation
-%                 element_azimuth = atan2(x-h.origin.x, z-h.origin.z);
-%                 
-%                 pixel_azimuth = atan2(h.focus.x-h.origin.x, h.focus.z-h.origin.z);
-%                 pixel_distance = sqrt((h.focus.x-h.origin.x).^2+(h.focus.z-h.origin.z).^2);
-%                 
-%                 x_dist = h.origin.z .* (pixel_azimuth-element_azimuth);
-%                 y_dist = h.origin.y - y;
-%                 z_dist = pixel_distance .* ones([1,h.probe.N_elements])-h.origin.z;
-% 
-%             % If we have a sector scan, the apodization is centered at the
-%             % origin of the field of view
-%             elseif isa(h.focus,'uff.sector_scan')
-%                 if(isscalar(h.origin))
-%                     x0 = h.origin.x;
-%                     y0 = h.origin.y;
-%                     z0 = h.origin.z;
-%                 else
-%                     x0 = ones([h.focus.N_depth_axis,1]) .* [h.origin.x];
-%                     y0 = ones([h.focus.N_depth_axis,1]) .* [h.origin.y];
-%                     z0 = ones([h.focus.N_depth_axis,1]) .* [h.origin.z];
-%                 end
-% 
-%                 pixel_distance = sqrt((h.focus.x-x0(:)).^2+(h.focus.y-y0(:)).^2+(h.focus.z-z0(:)).^2);
-%                 
-%                 x_dist=  x - x0(:);
-%                 y_dist = y - y0(:);
-%                 z_dist = pixel_distance .* ones([1, h.probe.N_elements]);
-%                     
-%             % If not, then we have a flat probe and a linear scan. In this
-%             % case the aperture is centered at each beam's x coordinate
-%             else
-%                 if isempty(h.origin)
-%                     x_dist = h.focus.x - x;
-%                     y_dist = h.focus.y - y;
-%                     z_dist = h.focus.z - z;
-%                 else
-%                     x_dist = h.origin.x - x;
-%                     y_dist = h.origin.y - y;
-%                     z_dist = h.origin.z - z;                    
-%                 end
-%             end
-% 
             % Apply tilt
             [x_dist, y_dist, z_dist] = tools.rotate_points(x_dist, y_dist, z_dist, h.tilt(1), h.tilt(2));
             zx_dist = z_dist;
