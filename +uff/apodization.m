@@ -334,24 +334,32 @@ classdef apodization < uff
         %% Incidence aperture
         function [tan_theta, tan_phi, distance] = incidence_aperture(h)
 
-            if isempty(h.origin)
-                x0 = h.probe.x.';
-                y0 = h.probe.y.';
-                z0 = h.probe.z.';
+            if isa(h.focus, 'uff.sector_scan') && isa(h.probe, 'uff.linear_array')   
+                % Need to differentiate between phased array apodization 
+                % type and linear/curvilinear apodization type. Here we 
+                % assume that a phase array acquisition is done using a 
+                % combination of linear array and sector scan
+
+                x0 = [h.focus.origin.x].' .* ones([1, h.focus.N_pixels/h.focus.N_origins]);
+                y0 = [h.focus.origin.y].' .* ones([1, h.focus.N_pixels/h.focus.N_origins]);
+                z0 = [h.focus.origin.z].' .* ones([1, h.focus.N_pixels/h.focus.N_origins]);
+
+                x_dist = h.probe.x.' - x0(:);
+                y_dist = h.probe.y.' - y0(:);
+
+                z_dist = sqrt((h.focus.x-x0(:)).^2+(h.focus.y-y0(:)).^2+(h.focus.z-z0(:)).^2) .* ones([1, h.probe.N]) ;
+
             else
-                x0 = h.origin.x;
-                y0 = h.origin.y;
-                z0 = h.origin.z;
+
+                azimuth = atan2(h.focus.x-h.probe.x.', h.focus.z-h.probe.z.');
+                elevation = atan2(h.focus.y-h.probe.y.', h.focus.z-h.probe.z.');
+
+                z_dist = sqrt((h.focus.x-h.probe.x.').^2+(h.focus.y-h.probe.y.').^2+(h.focus.z-h.probe.z.').^2);
+
+                x_dist = z_dist .* tan(azimuth-h.probe.theta.')/h.f_number(1);
+                y_dist = z_dist .* tan(elevation-h.probe.phi.')/h.f_number(2);
+
             end
-
-
-            azimuth = atan2(h.focus.x-x0, h.focus.z-z0);
-            elevation = atan2(h.focus.y-y0, h.focus.z-z0);
-
-            z_dist = sqrt((h.focus.x-x0).^2+(h.focus.y-y0).^2+(h.focus.z-z0).^2);
-
-            x_dist = z_dist .* (azimuth-h.probe.theta.');
-            y_dist = z_dist .* (elevation-h.probe.phi.');
 
             % Apply tilt
             [x_dist, y_dist, z_dist] = tools.rotate_points(x_dist, y_dist, z_dist, h.tilt(1), h.tilt(2));
@@ -371,8 +379,8 @@ classdef apodization < uff
                 sign(zy_dist(abs(z_dist)>=h.maximum_aperture(2)*h.f_number(2)))*h.maximum_aperture(2)*h.f_number(2);
 
             % Calculate tangents & distance
-            tan_theta = x_dist./zx_dist/h.f_number(1);
-            tan_phi = y_dist./zy_dist/h.f_number(2);
+            tan_theta = x_dist./zx_dist;
+            tan_phi = y_dist./zy_dist;
             distance = z_dist;
         end
 

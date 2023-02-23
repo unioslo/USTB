@@ -30,8 +30,8 @@ close all;
 
 pha=uff.phantom();
 pha.sound_speed=1540;                                               % speed of sound [m/s]
-[X Z] = meshgrid(0,linspace(20e-3,100e-3,3));
-pha.points=[X(:),  zeros(numel(X),1), Z(:), ones(numel(X),1)];      % point scatterer position [m]
+[X, Z] = meshgrid(0,linspace(20e-3,100e-3,8));
+pha.points=[X(:), zeros([numel(X),1]), Z(:), ones(numel(X),1)];      % point scatterer position [m]
 radius=60e-3;
 angles=linspace(-25,25,3)*pi/180;
 for n=1:length(angles) 
@@ -123,7 +123,7 @@ channel_data=sim.go();
 % interest. For our example here, we use the *sector_scan* structure to 
 % generate a sector scan. *scan* too has a useful *plot* method it can call.
 
-scan=uff.sector_scan('azimuth_axis',linspace(-35*pi/180,35*pi/180,256).','depth_axis',linspace(5e-3,110e-3,512).');
+scan=uff.sector_scan('azimuth_axis',linspace(-35*pi/180,35*pi/180,512).','depth_axis',linspace(0,110e-3,768).');
  
 %% Beamformer
 %
@@ -137,12 +137,15 @@ mid.dimension = dimension.both;
 mid.channel_data=channel_data;
 mid.scan=scan;
 
-mid.transmit_apodization.window = uff.window.hamming;
-mid.transmit_apodization.f_number=1.2;
+mid.transmit_apodization.window = uff.window.tukey50;
+mid.transmit_apodization.f_number=2.5;
 mid.transmit_apodization.minimum_aperture = 5e-3;
+mid.transmit_apodization.maximum_aperture = 15e-3;
 
-mid.receive_apodization.window=uff.window.hamming;
-mid.receive_apodization.f_number=1.7;
+mid.receive_apodization.window=uff.window.tukey50;
+mid.receive_apodization.f_number=2.5;
+mid.receive_apodization.minimum_aperture = 1e-3;
+mid.receive_apodization.maximum_aperture = prb.N*prb.pitch;
 
 b_data=mid.go();
 
