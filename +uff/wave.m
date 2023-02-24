@@ -67,7 +67,7 @@ classdef wave < uff
         N_elements         % number of elements
         delay_values       % delay [s]
         apodization_values % apodization [unitless]
-        t0_origin          % delay compensation needed in case the t0 instant starts from origin.xyz rather than [0, 0, 0]
+        t0_origin          % delay [s] needed in case the t0 should be calculated from origin.xyz rather than [0, 0, 0]
     end
     
     %% constructor -> uff constructor
