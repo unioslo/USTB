@@ -181,5 +181,18 @@ classdef wave < uff
             end
         end
     end
+
+    methods
+        function set_t0_origin(h)
+            % This function modifies h.delay so that t=0 is calculated
+            % from origin.xyz rather than [0, 0, 0]
+            if(h.source.z<0)
+                h.delay = h.delay - (sqrt(sum(h.source.xyz.^2)) - sqrt(sum((h.source.xyz-h.origin.xyz).^2)))/h.sound_speed;
+            else
+                h.delay = h.delay + (sqrt(sum(h.source.xyz.^2)) - sqrt(sum((h.source.xyz-h.origin.xyz).^2)))/h.sound_speed;
+            end
+        end
+
+    end
     
 end
