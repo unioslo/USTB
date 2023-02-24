@@ -338,7 +338,10 @@ classdef apodization < uff
                 % Need to differentiate between phased array apodization 
                 % type and linear/curvilinear apodization type. Here we 
                 % assume that a phase array acquisition is done using a 
-                % combination of linear array and sector scan
+                % combination of linear array and sector scan. Probably a
+                % more elegant solution could be to use a dedicated
+                % window.phase_array variable to specify that phased array
+                % apodization should be used
 
                 x0 = [h.focus.origin.x].' .* ones([1, h.focus.N_pixels/h.focus.N_origins]);
                 y0 = [h.focus.origin.y].' .* ones([1, h.focus.N_pixels/h.focus.N_origins]);
@@ -356,13 +359,12 @@ classdef apodization < uff
 
                 z_dist = sqrt((h.focus.x-h.probe.x.').^2+(h.focus.y-h.probe.y.').^2+(h.focus.z-h.probe.z.').^2);
 
-                x_dist = z_dist .* tan(azimuth-h.probe.theta.')/h.f_number(1);
-                y_dist = z_dist .* tan(elevation-h.probe.phi.')/h.f_number(2);
+                x_dist = z_dist .* sin(azimuth-h.probe.theta.'-h.tilt(1));
+                y_dist = z_dist .* sin(elevation-h.probe.phi.'-h.tilt(2));
 
             end
 
             % Apply tilt
-            [x_dist, y_dist, z_dist] = tools.rotate_points(x_dist, y_dist, z_dist, h.tilt(1), h.tilt(2));
             zx_dist = z_dist;
             zy_dist = z_dist;
 
@@ -406,16 +408,19 @@ classdef apodization < uff
                 else
 
                     % Calculate distances
-                    x_dist=h.focus.x-h.sequence(n).source.x;
-                    y_dist=h.focus.y-h.sequence(n).source.y;
-                    z_dist=h.focus.z-h.sequence(n).source.z;
+                    azimuth = atan2(h.focus.x-h.sequence(n).source.x, h.focus.z-h.sequence(n).source.z);
+                    elevation = atan2(h.focus.y-h.sequence(n).source.y, h.focus.z-h.sequence(n).source.z);
+
+                    z_dist = sqrt((h.focus.x-h.sequence(n).source.x).^2+(h.focus.y-h.sequence(n).source.y).^2+(h.focus.z-h.sequence(n).source.z).^2);
 
                     % Calculate source angle with respect to the aperture origin
-                    s0theta=atan2(h.sequence(n).source.x-h.sequence(n).origin.x, h.sequence(n).source.z-h.sequence(n).origin.z);
-                    s0phi=atan2(h.sequence(n).source.y-h.sequence(n).origin.y, h.sequence(n).source.z-h.sequence(n).origin.z);
+                    theta=atan2(h.sequence(n).source.x-h.sequence(n).origin.x, h.sequence(n).source.z-h.sequence(n).origin.z);
+                    phi=atan2(h.sequence(n).source.y-h.sequence(n).origin.y, h.sequence(n).source.z-h.sequence(n).origin.z);
 
                     % Apply beam & tilt
-                    [x_dist, y_dist, z_dist] = tools.rotate_points(x_dist, y_dist, z_dist, h.tilt(1)+s0theta, h.tilt(2)+s0phi);
+                    x_dist = z_dist .* sin(azimuth-theta-h.tilt(1));
+                    y_dist = z_dist .* sin(elevation-phi-h.tilt(2));
+
                     zx_dist = z_dist;
                     zy_dist = z_dist;
 

@@ -88,7 +88,7 @@ for n=1:N
     seq(n).source.distance=depth;
     
     seq(n).apodization=uff.apodization();
-    seq(n).apodization.window=uff.window.rectangular;
+    seq(n).apodization.window=uff.window.none;
     seq(n).apodization.f_number=1.7;
     seq(n).apodization.focus=uff.sector_scan('xyz',seq(n).source.xyz);
     
@@ -134,16 +134,18 @@ scan=uff.sector_scan('azimuth_axis',linspace(-35*pi/180,35*pi/180,512).','depth_
 
 mid=midprocess.das();
 mid.dimension = dimension.both;
+mid.spherical_transmit_delay_model = spherical_transmit_delay_model.hybrid;
+mid.pw_margin = 2e-3;
 mid.channel_data=channel_data;
 mid.scan=scan;
 
-mid.transmit_apodization.window = uff.window.tukey50;
-mid.transmit_apodization.f_number=2.5;
-mid.transmit_apodization.minimum_aperture = 5e-3;
-mid.transmit_apodization.maximum_aperture = 15e-3;
+mid.transmit_apodization.window = uff.window.hamming;
+mid.transmit_apodization.f_number=3.25;
+mid.transmit_apodization.minimum_aperture = 2e-3;
+% mid.transmit_apodization.maximum_aperture = 15e-3;
 
 mid.receive_apodization.window=uff.window.tukey50;
-mid.receive_apodization.f_number=2.5;
+mid.receive_apodization.f_number=2;
 mid.receive_apodization.minimum_aperture = 1e-3;
 mid.receive_apodization.maximum_aperture = prb.N*prb.pitch;
 

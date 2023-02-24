@@ -270,7 +270,7 @@ classdef fast_demodulation < preprocess
         function val = get.b(h)
             % Filter specification
             A = [1, 0];                                                      	% band type: 0='stop', 1='pass'
-            dev = [1e-2, 1e-3];                                                	% max ripple in pass-band and stop-band
+            dev = [1e-3, 1e-3];                                                	% max ripple in pass-band and stop-band
             [N, Wn, beta, ftype] = kaiserord(h.lowpass_frequency_vector * ...
                 h.modulation_frequency, A, dev, h.input.sampling_frequency);   	% window parameters
             val = fir1(N, Wn, ftype, kaiser(N+1,beta), 'noscale');             	% filter design
