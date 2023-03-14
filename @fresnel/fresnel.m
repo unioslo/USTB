@@ -83,7 +83,7 @@ classdef fresnel < handle
             % computing geometry relations to the point
             distance  = sqrt((h.phantom.x.'-h.probe.x).^2+(h.phantom.y.'-h.probe.y).^2+(h.phantom.z.'-h.probe.z).^2);
             theta = atan2(h.phantom.x.'-h.probe.x, h.phantom.z.'-h.probe.z)-h.probe.theta;
-            phi = asin((h.phantom.y.'-h.probe.y)./distance)-h.probe.phi;
+            phi = atan2(h.phantom.y.'-h.probe.y, h.phantom.z.'-h.probe.z)-h.probe.phi;
             
             % directivity between probe and the point
             directivity = sinc(k0*h.probe.width/2/pi.*tan(theta)).*sinc(k0*h.probe.height/2/pi.*tan(phi)./cos(theta));
@@ -94,13 +94,13 @@ classdef fresnel < handle
             % attenuation (absorption & geometrical dispersion)
             attenuation = permute(10.^(-h.phantom.alpha*(distance*1e2)*(f0*1e-6)).*directivity.*delta0./(4*pi*distance), [3,1,2]);
             
-            min_range = min(distance(:));
-            max_range = max(distance(:));
+            min_range = min(distance, [], 'all');
+            max_range = max(distance, [], 'all');
             min_delay = min([h.sequence(:).delay_values], [], 'all');
             max_delay = max([h.sequence(:).delay_values], [], 'all');
             
             time_1w = ((min_range/c0 - 8/f0/bw + min_delay):1/fs:(max_range/c0 + 8/f0/bw + max_delay)).';                                                  % time vector [s]
-            time_2w = ((2*min_range/c0 - 8/f0/bw + min_delay):1/fs:(2*max_range/c0 + 8/f0/bw + max_delay)).';                                               % time vector [s]
+            time_2w = (2*(min_range/c0 - 8/f0/bw + min_delay):1/fs:2*(max_range/c0 + 8/f0/bw + max_delay)).';                                               % time vector [s]
             N_samples = length(time_2w);  % number of time samples
             
 
@@ -119,10 +119,10 @@ classdef fresnel < handle
                 waitbar(n_wave/h.N_waves, w)
                 
                 % Computing the transmit signal
-                transmit_delay = time_1w - (propagation_delay + h.sequence(n_wave).delay_values.');
+                transmit_delay = time_1w - propagation_delay - h.sequence(n_wave).delay_values.';
                 transmit_signal = sum(h.pulse.signal(transmit_delay).*h.sequence(n_wave).apodization_values.*attenuation, 2);
                 
-                receive_delay = time_2w - propagation_delay + h.sequence(n_wave).delay - time_2w(1);
+                receive_delay = time_2w - propagation_delay + h.sequence(n_wave).delay;
 
                 % Computing the receive signal
                 for n_point = 1:h.phantom.N_points
@@ -135,7 +135,7 @@ classdef fresnel < handle
             end
             close(w)
             
-            out_dataset.initial_time = 0;
+            out_dataset.initial_time = time_2w(1);
             out_dataset.data = channel_data;
         end
     end

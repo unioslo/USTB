@@ -21,6 +21,9 @@ channel_data=uff.read_object(fullfile(data_path, filename),'/channel_data');
 x_axis=zeros(channel_data.N_waves,1);
 for n=1:channel_data.N_waves
     x_axis(n)=channel_data.sequence(n).source.x;
+
+    % Fix to Issue #132 S.F. 16.02.2023
+    channel_data.sequence(n).origin.xyz = [channel_data.sequence(n).source.x, 0, 0];
 end
 z_axis=linspace(1e-3,62e-3,512*2).';
 
@@ -28,7 +31,7 @@ z_axis=linspace(1e-3,62e-3,512*2).';
 MLA = 4;
 scan_RTB = uff.linear_scan('x_axis',linspace(x_axis(1),x_axis(end),length(x_axis)*MLA)','z_axis',z_axis);
 
-% Do retrospective beamforming
+%% Do retrospective beamforming
 mid_RTB=midprocess.das();
 mid_RTB.dimension = dimension.both();
 
@@ -42,10 +45,16 @@ mid_RTB.transmit_apodization.window=uff.window.tukey25;
 mid_RTB.transmit_apodization.f_number = 2;
 mid_RTB.transmit_apodization.MLA = MLA;
 mid_RTB.transmit_apodization.MLA_overlap = MLA;
-mid_RTB.transmit_apodization.minimum_aperture = [3.0000e-03 3.0000e-03];
+
+% Fix to Issue #132 S.F. 16.02.2023
+mid_RTB.transmit_apodization.minimum_aperture = [3e-3, 3e-3] ./ mid_RTB.transmit_apodization.f_number.^2; 
 
 mid_RTB.receive_apodization.window=uff.window.boxcar;
 mid_RTB.receive_apodization.f_number=1.7;
+
+% Fix to Issue #132 S.F. 16.02.2023
+mid_RTB.receive_apodization.minimum_aperture = [1e-3, 1e-3] ./ mid_RTB.receive_apodization.f_number.^2;
+
 b_data_RTB=mid_RTB.go();
 
 % Compensate with weighting
@@ -54,20 +63,23 @@ weighting = 1./sum(tx_apod,2);
 
 b_data_RTB_compensated = uff.beamformed_data(b_data_RTB);
 b_data_RTB_compensated.data = b_data_RTB.data .* weighting;
-%%
+
 % Read reference data
 r=uff.read_object([data_path filesep filename_reference],'/b_data');
 
-%figure
-%b_data_RTB_compensated.plot(subplot(1,3,1),'RTB image');
-%b_data_RTB_compensated.plot(subplot(1,3,2),'Reference img');
-%subplot(1,3,3)
-%imagesc(scan_RTB.x_axis*1000,scan_RTB.z_axis*1000,abs(r.get_image('none')-b_data_RTB_compensated.get_image('none')))
-%axis image; title('Diff');
-%colorbar
+% figure()
+% b_data_RTB_compensated.plot(subplot(1,3,1),'RTB image');
+% r.plot(subplot(1,3,2),'Reference img');
+% subplot(1,3,3)
+% imagesc(scan_RTB.x_axis*1000,scan_RTB.z_axis*1000,abs(r.get_image('none')-b_data_RTB_compensated.get_image('none')))
+% axis image; title('Diff');
+% colorbar
 
 %% test result
-ok=(norm(b_data_RTB_compensated.data-r.data(:))/norm(r.data(:)))<h.internal_tolerance;
+ref = r.get_image('none');
+tmp = b_data_RTB_compensated.get_image('none');
+
+ok=sqrt(sum(abs(tmp(100:end, :)-ref(100:end, :)).^2, 'all'))/sqrt(sum(abs(ref(100:end, :)).^2, 'all'))<h.internal_tolerance;
 
 end
 

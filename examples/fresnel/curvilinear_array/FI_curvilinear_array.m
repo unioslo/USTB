@@ -1,16 +1,13 @@
 %% DW simulation with a curvilinear array using the USTB built-in Fresnel simulator
 %
 % In this example, we show how to use the built-in Fresnel simulator in
-% USTB to generate a Diverging Wave (DW) dataset on a curvilinear array,
+% USTB to generate a Focused (FI) dataset on a curvilinear array,
 % and then beamform it with USTB.
 % 
-% This tutorial assumes familiarity with the contents of the 
-% <../../linear_array/html/CPWC_linear_array.html 'CPWC simulation with the USTB built-in Fresnel 
-% simulator'> tutorial. Please feel free to refer back to that for more 
-% details.
 % 
-% _by Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no> and Arun Asokan 
-% Nair <anair8@jhu.edu> 23.02.2017_
+% Stefano Fiorentini <stefano.fiorentini@ntu.no>
+%
+% 20.02.2023
 
 %%
 clear all;
@@ -60,19 +57,26 @@ pul.plot([],'2-way pulse');
 % takes the same sequence definition as the USTB beamformer. In UFF and
 % USTB a sequence is defined as a collection of *wave* structures. 
 % 
-% For our example here, we define a sequence of 15 diverging waves. The 
+% For our example here, we define a sequence of 95 focused beams. The 
 % *wave* structure has a *plot* method which plots the direction of 
 % the transmitted waves.
 
-N=15;                             % number of diverging waves
-x0=linspace(-30e-3,30e-3,N);
-z0=-prb.radius;
+N=135;                             % number of focused beams
+angle = linspace(-prb.maximum_angle*0.9, prb.maximum_angle*0.9, N);
+focus = 0.08; % focal depth [m]
+
 seq=uff.wave();
 for n=1:N 
     seq(n)=uff.wave();
     seq(n).probe=prb;
-    seq(n).source.xyz=[x0(n) 0 z0];
+    seq(n).source.xyz=[sin(angle(n))*(prb.radius+focus), 0, cos(angle(n))*(prb.radius+focus)-prb.radius];
+    seq(n).origin.xyz=[sin(angle(n))*prb.radius, 0, (cos(angle(n))-1)*prb.radius];
     seq(n).sound_speed=pha.sound_speed;
+
+    seq(n).apodization=uff.apodization();
+    seq(n).apodization.window=uff.window.rectangular;
+    seq(n).apodization.f_number=5;
+    seq(n).apodization.focus=uff.sector_scan('xyz',seq(n).source.xyz);
     
     % show source
     fig_handle=seq(n).source.plot(fig_handle);
@@ -92,7 +96,7 @@ sim.phantom=pha;                % phantom
 sim.pulse=pul;                  % transmitted pulse
 sim.probe=prb;                  % probe
 sim.sequence=seq;               % beam sequence
-sim.sampling_frequency=41.6e6;  % sampling frequency [Hz]
+sim.sampling_frequency=40e6;  % sampling frequency [Hz]
 
 % we launch the simulation
 channel_data=sim.go();
@@ -107,8 +111,8 @@ channel_data=sim.go();
 
 scan=uff.sector_scan();
 scan.azimuth_axis=linspace(-prb.maximum_angle,prb.maximum_angle,512).';
-scan.depth_axis=linspace(prb.radius,prb.radius+180e-3,768).';
-scan.origin = uff.point('xyz', [0, 0 -prb.radius]);
+scan.depth_axis=linspace(prb.radius,prb.radius+18e-2,768).';
+scan.origin=uff.point('xyz',[0 0 -prb.radius]);
 scan.plot(fig_handle,'Scenario');    % show mesh
 
 %% Midprocessor
@@ -120,15 +124,21 @@ scan.plot(fig_handle,'Scenario');    % show mesh
 
 mid=midprocess.das();
 mid.dimension = dimension.both;
+mid.spherical_transmit_delay_model = spherical_transmit_delay_model.unified;
+mid.code = code.mex;
 mid.channel_data=channel_data;
 mid.scan=scan;
 
-mid.receive_apodization.window=uff.window.tukey50;
-mid.receive_apodization.f_number=2.5;
+mid.receive_apodization.window=uff.window.hamming;
+mid.receive_apodization.f_number=1.5;
+mid.receive_apodization.minimum_aperture = 1e-4; 
+% mid.receive_apodization.maximum_aperture = 8e-2; 
 
-mid.transmit_apodization.window=uff.window.tukey50;
-mid.transmit_apodization.f_number=1.5;
+mid.transmit_apodization.window=uff.window.hamming;
+mid.transmit_apodization.f_number=3.5;
+mid.transmit_apodization.minimum_aperture = 4e-3; 
+% mid.transmit_apodization.maximum_aperture = 2e-2; 
 
 % beamforming
 b_data=mid.go();
-h_fig=b_data.plot()
+b_data.plot();

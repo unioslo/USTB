@@ -20,9 +20,7 @@
 *.exp
 *.lib
 development/
-data/
-logs/
-examples/huff/recording.h5
+log_*.txt
 !multi_frame_gui.fig
 !window.png
 !*.keep_this_folder_in_git

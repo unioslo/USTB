@@ -53,9 +53,13 @@ classdef scan < uff
             
             plot3(h.x*1e3,h.y*1e3,h.z*1e3,'k.');
             xlabel('x[mm]'); ylabel('y[mm]'); zlabel('z[mm]');
-            set(gca,'ZDir','Reverse');
+            set(gca,'ZDir','Reverse', 'Layer', 'top');
             set(gca,'fontsize',14);
             
+            axis equal tight
+            grid on
+            box on
+
             if nargin>2
                 title(title_in);
             end

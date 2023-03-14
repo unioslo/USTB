@@ -19,13 +19,13 @@ end
 
         % copy the second's source
         p = uff.point();
-        p.copy(r.apex); % r.source == p
+        p.copy(r.origin); % r.source == p
         
-        % modify the first
-        s.apex.xyz = rand([1,3]);
+        % modify the firstS
+        s.origin.xyz = rand([1,3]);
         
         % the second should remain unmodified
-        pass = (all(r.apex.xyz == p.xyz));
+        pass = (all(r.origin.xyz == p.xyz));
     end
 
     function pass = test_wave_mod()
