@@ -1,12 +1,12 @@
 function ok = TE_ps_sta_iq_mex(h)
 %PS_STA_IQ Point Spread function Synthetic Transmit Aperture IQ test
-%   Downloads data from 'http://hirse.medisin.ntnu.no/ustb/data/ps/'
+%   Downloads data from 'https://www.ustb.no/datasets/ps'
 %   beamforms it and compares it with previously beamformed data (USTB v1.9)
 
     import uff.*;
     
     % data location
-    url='http://hirse.medisin.ntnu.no/ustb/data/ps/';   % if not found data will be downloaded from here
+    url='https://www.ustb.no/datasets/ps';   % if not found data will be downloaded from here
     local_path=[ustb_path() '/data/ps/'];                              % location of example data in this computer                      
     raw_data_filename='ps_sta_iq.mat';
     beamformed_data_filename='beamformed_ps_sta_iq.mat';
@@ -23,15 +23,17 @@ function ok = TE_ps_sta_iq_mex(h)
     prb=probe();
     prb.geometry = s.geom;
     
-    % SEQUENCE 
-    for n=1:prb.N_elements 
+    % SEQUENCE
+    for n=1:prb.N_elements
         seq(n)=wave();
         seq(n).probe=prb;
         seq(n).sound_speed=s.c0;
-        seq(n).source.xyz=[prb.x(n) prb.y(n) prb.z(n)];
+        % === Fix S.F. 16.02.2023 ===
+        seq(n).origin=uff.point('xyz', [prb.x(n), prb.y(n), prb.z(n)]);
+        seq(n).source=uff.point('xyz', [prb.x(n), prb.y(n), prb.z(n)]);
         seq(n).delay=seq(n).source.distance/s.c0;
     end
-    
+
     % RAW DATA
     r_data=channel_data();
     r_data.probe=prb;

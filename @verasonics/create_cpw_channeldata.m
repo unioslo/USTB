@@ -56,18 +56,11 @@ for n_frame = h.frame_order
             plot(mean(h.TX(n_tx).Delay)*ones(1,128),'b')
         end
         
-        if isfield(h.Trans,'HVMux') % If Transducer has MUX, for example the L12-4v, we need to re arrange channels
-            validChannels = h.Trans.HVMux.Aperture(:,h.Receive(n_tx).aperture)';
-            validChannels = validChannels(validChannels>0);
-        else
-            validChannels = [1:128];
-        end
-        
         % time interval between t0 and acquistion start and compensate for
         % center of puse + lens correction
         channel_data.sequence(n_tx).delay = -(offset_distance+t0_comp_in_m)/channel_data.sound_speed;
         % read data
-        data(:,:,n_tx,frame_idx)=h.RcvData{1}(h.Receive(n).startSample:h.Receive(n).endSample,validChannels,n_frame);
+        data(:,:,n_tx,frame_idx)=h.RcvData{1}(h.Receive(n).startSample:h.Receive(n).endSample,h.Trans.Connector,n_frame);
 
         %%
         % to check delay calculation

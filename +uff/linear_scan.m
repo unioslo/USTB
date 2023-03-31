@@ -25,7 +25,9 @@ classdef linear_scan < uff.scan
     properties  (Dependent)
         N_x_axis              % number of pixels in the x_axis
         N_z_axis              % number of pixels in the z_axis
+        x_step                % the step size in m of the x samples
         z_step                % the step size in m of the z samples
+        reference_distance    % distance used for the calculation of the phase term
     end
     
     %% constructor -> uff constructor
@@ -73,9 +75,15 @@ classdef linear_scan < uff.scan
         end
         function value=get.N_z_axis(h)
             value=numel(h.z_axis);
-        end  
+        end
+        function value=get.x_step(h)
+            value = mean(diff(h.x_axis(1:end)));
+        end
         function value=get.z_step(h)
             value = mean(diff(h.z_axis(1:end)));
+        end
+        function value=get.reference_distance(h)
+            value = h.z;
         end
     end
     

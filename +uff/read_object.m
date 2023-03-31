@@ -17,6 +17,7 @@ function object = read_object(filename, location, verbose)
 %   See also UFF.READ, UFF.WRITE, UFF.INFO
 
 flag_v10X=false;
+flag_v11X=false;
 
 if nargin<2||isempty(location); location='/'; end
 if nargin<3; verbose=true; end
@@ -38,10 +39,12 @@ file_version=file_version{1};                       % from cell to string
 file_version=file_version(int32(file_version)>0);   % removing 0's from 0-terminated strings
 if ~strcmp(file_version, uff.version)
     % Flags to enable backcompatibility. 
-    if strcmp(file_version, 'v1.0.0')||strcmp(file_version, 'v1.0.1')
+    if strcmp(file_version, 'v1.0.0') || strcmp(file_version, 'v1.0.1')
         flag_v10X=true;
-    elseif strcmp(file_version, 'v1.1.0')
-        % nothing to do really
+    elseif strcmp(file_version, 'v1.1.0') || strcmp(file_version, 'v1.1.1')
+        flag_v11X=true;
+    elseif strcmp(file_version, 'v1.2.0') 
+        % current version
     else
         error('UFF: Unsupported file version (%s). Current UFF version (%s). Please choose a new file instead.',file_version,uff.version);
     end
@@ -130,9 +133,13 @@ else
                     for m=1:length(prop)
                         % exceptions from backcompatibility
                         if flag_v10X&&strcmp(class_name,'uff.apodization')&&strcmp(prop{m}.name,'apex')
-                            object.('origo')=uff.read_object(filename,prop{m}.location,verbose);                        
+                            object.('origin')=uff.read_object(filename,prop{m}.location,verbose);                        
                         elseif flag_v10X&&strcmp(class_name,'uff.apodization')&&strcmp(prop{m}.name,'scan')
                             object.('focus')=uff.read_object(filename,prop{m}.location,verbose);                        
+                        elseif flag_v11X&&strcmp(class_name,'uff.apodization')&&strcmp(prop{m}.name,'origo')
+                            object.('origin')=uff.read_object(filename,prop{m}.location,verbose);  
+                        elseif strcmp(class_name,'uff.sector_scan')&&strcmp(prop{m}.name,'apex')
+                            object.('origin')=uff.read_object(filename,prop{m}.location,verbose);   
                         else
                             object.(prop{m}.name)=uff.read_object(filename,prop{m}.location,verbose);
                         end

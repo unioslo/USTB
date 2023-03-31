@@ -4,7 +4,7 @@
 % UFF (Ultrasound File Format) file. The handling couldn't be simpler so
 % this is going to be brief.
 %
-% _by Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no> 07.08.2017_
+% _by Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no> 29.10.2018_
 
 
 %% Getting channel data
@@ -66,7 +66,7 @@ channel_data=sim.go();
 
 % setting dataset name & author information
 channel_data.name = 'Test for UFF example';
-channel_data.author = {'Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no>','Arun Nair <anair8@jhu.edu>'}; 
+channel_data.author = {'Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no>'}; 
 channel_data.reference = {'www.ustb.no'};
 
 %% Getting beamformed data
@@ -101,7 +101,7 @@ b_data.plot();
 % *write* of the *uff* class. To do we just have to pass the path to the
 % *uff* file to the *write* method of any uff class.
 
-filename = [data_path() filesep 'test02.uff']; 
+filename = [data_path() filesep 'test03.uff']; 
 b_data.write(filename);
 
 %%

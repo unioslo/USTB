@@ -67,7 +67,6 @@ mid.receive_apodization.window=uff.window.none;
 % This will result in a beamformed_data object with the delayed and not
 % summed channel data.
 b_data = mid.go();
-b_data.plot()
 
 %% Create the Delay-And-Sum image
 % If we want the DAS image, we can simply sum them.
@@ -122,7 +121,7 @@ z_speckle = 327
 x_speckle = 100
 
 figure(2);clf;hold all;
-plot(squeeze(slsc.slsc_values(372,99,:)),'r','LineWidth',2,'DisplayName',...
+plot(squeeze(slsc.slsc_values(372,50,:)),'r','LineWidth',2,'DisplayName',...
     sprintf('Point target at x = %.2f, z = %.2f ',slsc_data.scan.x_axis(99)*1000,...
     slsc_data.scan.z_axis(372)*1000))
 plot(ones(1,64),'r*','DisplayName','Theoretical point target')
@@ -146,16 +145,17 @@ title('Reproducing Fig. 1 in SLSC article');
 % & Biology, 39(10), 1861-1874. https://doi.org/10.1016/j.ultrasmedbio.2013.03.029
 
 clear all;close all;
-url='http://ustb.no/datasets/';      % if not found downloaded from here
-local_path = [ustb_path(),'/data/']; % location of example data
-addpath(local_path);
+url = ['https://drive.google.com/uc?export=download' ...
+    '&id=19OyvPCP4qUiTECFpUe8r3r_Ys2281j0N'];  % if not found download from here
 % Choose dataset
-filename='Verasonics_P2-4_parasternal_long.uff';
+name = 'Verasonics_P2-4_parasternal_long_subject_1.uff';
+% Create full filepath
+file = fullfile(data_path(), name);
 % check if the file is available in the local path or downloads otherwise
-tools.download(filename, url, local_path);
-channel_data = uff.read_object([local_path, filename],'/channel_data');
-scan = uff.read_object([local_path, filename],'/scan');
-
+tools.download(file, url)
+% read the data
+channel_data = uff.read_object(file,'/channel_data');
+scan = uff.read_object(file,'/scan');
 %%
 % Print info about the dataset. Remeber that if you want to use this dataset
 % you have to reference this article!

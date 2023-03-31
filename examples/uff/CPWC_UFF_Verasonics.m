@@ -30,7 +30,7 @@ tools.download(filename, url, data_path);
 %
 % Now that the file is in the machine we can start loading data. The first 
 % would be to check what is in there with the *uff.index* function 
-uff.index([data_path filesep filename],'/',display);
+uff.index([data_path filesep filename],'/',true);
 
 %%
 % Let's read the channel data,

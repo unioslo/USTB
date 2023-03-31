@@ -125,11 +125,11 @@ pipe.scan=sca;
 
 pipe.receive_apodization.window=uff.window.tukey50;
 pipe.receive_apodization.f_number=1.0;
-pipe.receive_apodization.origo=uff.point('xyz',[0 0 -Inf]);
+pipe.receive_apodization.origin=uff.point('xyz',[0 0 -Inf]);
 
 pipe.transmit_apodization.window=uff.window.tukey50;
 pipe.transmit_apodization.f_number=1.0;
-pipe.transmit_apodization.origo=uff.point('xyz',[0 0 -Inf]);
+pipe.transmit_apodization.origin=uff.point('xyz',[0 0 -Inf]);
 
 %% 
 %

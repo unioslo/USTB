@@ -139,12 +139,12 @@ b_data=mid.go();
 figure('Position',[100 100 1000 300])
 h1 = subplot(1,3,1);
 angle_1 = rad2deg(channel_data.sequence(1,1).source.azimuth);
-b_data.plot(h1,sprintf('PW at angle = %0.1f',angle_1),[],[],[1 1]);
+b_data.plot(h1,sprintf('PW at angle = %0.1f',angle_1),[],[],[1,1,1]);
 
 h2 = subplot(1,3,2);
 angle_2 = rad2deg(channel_data.sequence(1,2).source.azimuth);
-b_data.plot(h2,sprintf('PW at angle = %0.1f',angle_2),[],[],[1 2]);
+b_data.plot(h2,sprintf('PW at angle = %0.1f',angle_2),[],[],[1,2,1]);
 
 h3 = subplot(1,3,3);
 angle_3 = rad2deg(channel_data.sequence(1,3).source.azimuth);
-b_data.plot(h3,sprintf('PW at angle = %0.1f',angle_3),[],[],[1 3]);
+b_data.plot(h3,sprintf('PW at angle = %0.1f',angle_3),[],[],[1,3,1]);

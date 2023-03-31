@@ -28,10 +28,10 @@ classdef phase_coherence_factor < postprocess
 
     %% Additional properties
     properties
+        center_frequency                              % center frequency of RF signals [Hz]
+        sound_speed=1540;                             % reference sound speed [m/s]
         gamma=1;                                      % mixing ratio
         sigma_0=pi/sqrt(3);                           % reference phase value
-        receive_apodization                           % APODIZATION class
-        transmit_apodization                          % APODIZATION class
         FCA                                           % BEAMFORMED_DATA class with the computed absolute phase coherence factor
         FCC                                           % BEAMFORMED_DATA class with the computed complex phase coherence factor
     end
@@ -90,17 +90,23 @@ classdef phase_coherence_factor < postprocess
             end
             
             % compute signal phase 
-            signal_phase = angle(h.input.data);
+            if isempty(h.center_frequency)
+                aux_data=h.input.data;
+            else
+                [dummy dummy rx_propagation_distance]=h.receive_apodization.incidence_aperture();
+                aux_data=bsxfun(@times,h.input.data,exp(-1i*2*pi*h.center_frequency*2*rx_propagation_distance/h.sound_speed));
+            end
+            signal_phase = angle(aux_data);
             
             % auxiliary phase
             mask=(signal_phase<=0);
             auxiliary_phase=signal_phase-pi;
             auxiliary_phase(mask)=signal_phase(mask)+pi;
-            
+
             % declare output structure
-            h.output=uff.beamformed_data(h.input); % ToDo: instead we should copy everything but the data
-            h.FCA=uff.beamformed_data(h.input); % ToDo: instead we should copy everything but the data
-            h.FCC=uff.beamformed_data(h.input); % ToDo: instead we should copy everything but the data
+            h.output=uff.beamformed_data(h.input);  % ToDo: instead we should copy everything but the data
+            h.FCA=uff.beamformed_data(h.input);     % ToDo: instead we should copy everything but the data
+            h.FCC=uff.beamformed_data(h.input);     % ToDo: instead we should copy everything but the data
 
             switch h.dimension
                 case dimension.both
@@ -148,20 +154,6 @@ classdef phase_coherence_factor < postprocess
             h.save_hash();
         end   
     end
-    
-   %% set methods
-    methods
-        function h=set.receive_apodization(h,in_apodization)
-            assert(isa(in_apodization,'uff.apodization'), 'The input is not a UFF.APODIZATION class. Check HELP UFF.APODIZATION.');
-            h.receive_apodization=in_apodization;
-        end
-        
-        function h=set.transmit_apodization(h,in_apodization)
-            assert(isa(in_apodization,'uff.apodization'), 'The input is not a UFF.APODIZATION class. Check HELP UFF.APODIZATION.');
-            h.transmit_apodization=in_apodization;
-        end
-    end
-
 end
 
 

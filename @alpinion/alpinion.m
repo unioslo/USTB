@@ -60,31 +60,38 @@ classdef alpinion < handle
             end
         end
         
-        function data = bandpass_filter_data(h,data,channel_data,do_plot)
+        function filt_data = bandpass_filter_data(~,data,channel_data,do_plot)
             
             % power spectrum
-            [fx pw] = tools.power_spectrum(data,channel_data.sampling_frequency);
+            [fx, pw] = tools.power_spectrum(data,channel_data.sampling_frequency);
             assert(sum(pw)>0,'Dataset is zero, error in bandpass_filter');
             
             % computing central frequency and bandwidth
             fpw=filter(ones(1,26)./26,1,pw);fpw=[fpw(13:end); zeros(12,1)];
-            [dc ic]=max(fpw.*(fx>0).'); fc=fx(ic);
+            [dc, ic]=max(fpw.*(fx>0).'); fc=fx(ic);
             bw_up=min(fx((fx>fc)&(fpw<dc/2).')); % -6dB upper limit
             bw_do=max(fx((fx<fc)&(fpw<dc/2).')); % -6dB down limit
             fc=(bw_up+bw_do)/2;                  % center frequency
             bw=2*(bw_up-fc);
             
+            % band pass filtering
+%             transition=bw/10;
+            bandpass_frequency_vector = [0.25, 0.5, 1.5, 1.75];
+%             low_freq=max([0, fc-2*bw]);
+%             high_freq=min([channel_data.sampling_frequency/2*0.99, fc+2*bw]);
+%             bandpass_frequency_vector=[low_freq, low_freq+transition high_freq-transition high_freq];
+            
+            filt_data = zeros([size(tools.band_pass(data(:,:,:,1),channel_data.sampling_frequency,fc*bandpass_frequency_vector)), size(data, 4)], ...
+                'like', data);
+            
+            w = waitbar(0, 'Bandpass filter...');
             for frame = 1:size(data,4)
-                tools.workbar((frame-1)/size(data,4),'Bandpass filtering, might take some time...','Bandpass filtering')
+                waitbar((frame-1)/size(data,4), w)
                 
-                % band pass filtering
-                transition=bw/10;
-                low_freq=max([0 fc-2*bw]);
-                high_freq=min([channel_data.sampling_frequency/2*0.99 fc+2*bw]);
-                bandpass_frequency_vector=[low_freq low_freq+transition high_freq-transition high_freq];
-                [data(:,:,:,frame)]= tools.band_pass(data(:,:,:,frame),channel_data.sampling_frequency,bandpass_frequency_vector);
+               
+                filt_data(:,:,:,frame)= tools.band_pass(data(:,:,:,frame),channel_data.sampling_frequency,fc*bandpass_frequency_vector);
             end
-            tools.workbar(1,'Bandpass filtering, might take some time...','Bandpass filtering')
+            close(w)
             
             if do_plot
                 figure();
@@ -95,7 +102,7 @@ classdef alpinion < handle
                 title('Before bandpass filter');
                 subplot(1,2,2)
                 % power spectrum
-                [fx pw_after] = tools.power_spectrum(data,channel_data.sampling_frequency);
+                [fx, pw_after] = tools.power_spectrum(data,channel_data.sampling_frequency);
                 plot(fx*1e-6,db(pw_after),'k'); hold on; axis manual; grid on;
                 xlabel('f [MHz]');
                 ylabel('Relative amplitude');

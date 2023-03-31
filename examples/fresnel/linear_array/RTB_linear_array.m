@@ -18,6 +18,10 @@
 % Our phantom here is simply a single point scatterer. USTB's implementation 
 % of *phantom* comes with a *plot* method to visualize the phantom for free!
 
+clear all
+close all
+clc
+
 pha=uff.phantom();
 pha.sound_speed=1540;            % speed of sound [m/s]
 pha.points=[0,  0,  5e-3, 1;...
@@ -63,15 +67,21 @@ pul.plot([],'2-way pulse');
 % For our example here, we define a sequence of 31 diverging
 % waves. The *wave* structure too has a useful *plot* method.
 
-N=31;                      % number of diverging waves
-x0=linspace(-19.2e-3,19.2e-3,N);
+N=31;                               % number of waves
+x0=linspace(-15e-3,15e-3,N);
 z0=20e-3;
 seq=uff.wave();
 for n=1:N 
     seq(n)=uff.wave();
     seq(n).probe=prb;
-    seq(n).source.xyz=[x0(n) 0 z0];
+    seq(n).source.xyz=[x0(n), 0, z0];
+    seq(n).origin.xyz=[x0(n), 0, 0];
     seq(n).sound_speed=pha.sound_speed;
+
+    seq(n).apodization=uff.apodization();
+    seq(n).apodization.window=uff.window.hamming;
+    seq(n).apodization.f_number=2;
+    seq(n).apodization.focus=uff.linear_scan('xyz',seq(n).source.xyz);
 
     % show source
     fig_handle=seq(n).source.plot(fig_handle);
@@ -91,7 +101,7 @@ sim.phantom=pha;                % phantom
 sim.pulse=pul;                  % transmitted pulse
 sim.probe=prb;                  % probe
 sim.sequence=seq;               % beam sequence
-sim.sampling_frequency=41.6e6;  % sampling frequency [Hz]
+sim.sampling_frequency=50e6;  % sampling frequency [Hz]
 
 % we launch the simulation
 channel_data=sim.go();
@@ -103,7 +113,7 @@ channel_data=sim.go();
 % which is defined with two components: the lateral range and the 
 % depth range. *scan* too has a useful *plot* method it can call.
 
-scan=uff.linear_scan('x_axis', linspace(-19.2e-3,19.2e-3,200).', 'z_axis', linspace(0e-3,45e-3,100).');
+scan=uff.linear_scan('x_axis', linspace(-19.2e-3,19.2e-3,512).', 'z_axis', linspace(0e-3,45e-3,512).');
 scan.plot(fig_handle,'Scenario');    % show mesh
  
 %% Midprocessor
@@ -118,18 +128,13 @@ mid.dimension = dimension.both;
 mid.channel_data=channel_data;
 mid.scan=scan;
 
-F_number=1.7;
-mid.receive_apodization.window=uff.window.hanning;
-mid.receive_apodization.f_number=F_number;
+mid.receive_apodization.window=uff.window.hamming;
+mid.receive_apodization.f_number=2.5;
 mid.receive_apodization.minimum_aperture = [3e-3 3e-3];
 
-mid.transmit_apodization.window=uff.window.hanning;
-mid.transmit_apodization.f_number=F_number;
+mid.transmit_apodization.window=uff.window.hamming;
+mid.transmit_apodization.f_number=1.5;
 mid.transmit_apodization.minimum_aperture = [3e-3 3e-3];
 
 b_data=mid.go();
 b_data.plot();
-
-% check out the transmit and receive apodization maps
-mid.receive_apodization.plot([],64); title('Receive apodization')
-mid.transmit_apodization.plot([],15); title('Transmit apodization')

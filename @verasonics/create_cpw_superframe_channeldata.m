@@ -49,19 +49,13 @@ for n_frame = 1:h.number_of_superframes
             else % Received data of interest start after First buffer data
                 RcvIdx=h.Resource.RcvBuffer(1).numFrames+(n_tx-1)*length(seq)+s;
             end
-            if isfield(h.Trans,'HVMux') % If Transducer has MUX, for example the L12-4v, we need to re arrange channels
-                validChannels = h.Trans.HVMux.Aperture(:,h.Receive(RcvIdx).aperture)';
-                validChannels = validChannels(validChannels>0);
-            else
-                validChannels = [1:128];
-            end
             
             % time interval between t0 and acquistion start and compensate for
             % center of puse + lens correction
             channel_data.sequence(s).delay = -(offset_distance+t0_1)/channel_data.sound_speed;
             
             %% read data
-            data(:,:,s,frame_number)=h.RcvData(h.Receive(RcvIdx).startSample:h.Receive(RcvIdx).endSample,validChannels,n_frame);
+            data(:,:,s,frame_number)=h.RcvData(h.Receive(RcvIdx).startSample:h.Receive(RcvIdx).endSample,h.Trans.Connector,n_frame);
          
             %%
             % to check delay calculation

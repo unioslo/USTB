@@ -15,11 +15,9 @@ close all
 
 % Set up filepath to files with parameters and data from the Alpinion scanner
 
-local_path = [ustb_path(),'/data/']; % location of example data in this computer
+local_path = fullfile(ustb_path(), 'data'); % location of example data in this computer
 
-tag = 'CPWC_hyperechoic_scatterers';    % Dataset 1
-tag = 'CPWC_hypoechoic'                 % Dataset 2
-data_folder  = [local_path,'/Alpinion/CPWC/',tag];
+data_folder  = fullfile(local_path, 'Alpinion', 'CPWC', 'CPWC_hypoechoic');
 
 %% initiate Alpinion object pointing to files with data
 alp = alpinion();

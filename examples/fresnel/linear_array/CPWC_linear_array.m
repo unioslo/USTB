@@ -127,7 +127,7 @@ channel_data=sim.go();
 % particular we here use the *linear_scan* structure, which is defined with
 % just two axes. The *plot* method shows the position of the pixels in a 3D
 % scenario.
-scan=uff.linear_scan('x_axis', linspace(-19.2e-3,19.2e-3,200).', 'z_axis', linspace(0e-3,45e-3,100).');
+scan=uff.linear_scan('x_axis', linspace(-19.2e-3,19.2e-3,256).', 'z_axis', linspace(0e-3,45e-3,256).');
 scan.plot(fig_handle,'Scenario');    % show mesh
  
 %% Pipeline
@@ -136,17 +136,20 @@ scan.plot(fig_handle,'Scenario');    % show mesh
 % ultrasound image. We now use a USTB structure *pipeline*, that takes an
 % *apodization* structure in addition to the *channel_data* and *scan*.
 
-pipe=pipeline();
-pipe.channel_data=channel_data;
-pipe.scan=scan;
+mid=midprocess.das();
+mid.channel_data=channel_data;
+mid.scan=scan;
 
-pipe.receive_apodization.window=uff.window.hanning;
-pipe.receive_apodization.f_number=F_number;
-pipe.receive_apodization.minimum_aperture = [3e-3 3e-3];
+mid.code = code.mexFast;
+mid.dimension = dimension.both;
 
-pipe.transmit_apodization.window=uff.window.hanning;
-pipe.transmit_apodization.f_number=F_number;
-pipe.transmit_apodization.minimum_aperture = [3e-3 3e-3];
+mid.receive_apodization.window=uff.window.hanning;
+mid.receive_apodization.f_number=F_number;
+mid.receive_apodization.minimum_aperture = [3e-3 3e-3];
+
+mid.transmit_apodization.window=uff.window.hanning;
+mid.transmit_apodization.f_number=F_number;
+mid.transmit_apodization.minimum_aperture = [3e-3 3e-3];
 
 %% 
 %
@@ -173,11 +176,7 @@ pipe.transmit_apodization.minimum_aperture = [3e-3 3e-3];
 % which we can just display by using the method *plot*
 
 % beamforming
-b_data=pipe.go({midprocess.das() postprocess.coherent_compounding()});
+b_data=mid.go();
 
 % show
 b_data.plot();
-
-% check out the transmit and receive apodization maps
-pipe.receive_apodization.plot([],64); title('Receive apodization')
-pipe.transmit_apodization.plot([],15); title('Transmit apodization')

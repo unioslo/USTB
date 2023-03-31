@@ -5,6 +5,9 @@ classdef scan < uff
     %   or UFF.SECTOR_SCAN
     %
     %   Compulsory properties:
+    %         xyz                % Vector containing the [x, y, z] coordinates of each pixel in [m]
+    %
+    %   Read-only properties
     %         x                  % Vector containing the x coordinates of each pixel in [m]
     %         y                  % Vector containing the y coordinates of each pixel in [m]
     %         z                  % Vector containing the z coordinates of each pixel in [m]
@@ -13,10 +16,8 @@ classdef scan < uff
     %         sca = uff.scan();
     %         x_axis=linspace(-20e-3,20e-3,256);
     %         z_axis=linspace(0e-3,40e-3,256);
-    %         [X Z]=meshgrid(x_axis,z_axis);
-    %         sca.x=X(:);
-    %         sca.y=zeros(size(X(:)));
-    %         sca.z=Z(:);
+    %         [X, Z]=meshgrid(x_axis,z_axis);
+    %         sca.xyz = [X(:), zeros([numel(X), 1]), Z(:)];
     %
     %   See also UFF.LINEAR_SCAN, UFF.SECTOR_SCAN
 
@@ -52,9 +53,13 @@ classdef scan < uff
             
             plot3(h.x*1e3,h.y*1e3,h.z*1e3,'k.');
             xlabel('x[mm]'); ylabel('y[mm]'); zlabel('z[mm]');
-            set(gca,'ZDir','Reverse');
+            set(gca,'ZDir','Reverse', 'Layer', 'top');
             set(gca,'fontsize',14);
             
+            axis equal tight
+            grid on
+            box on
+
             if nargin>2
                 title(title_in);
             end
@@ -63,33 +68,33 @@ classdef scan < uff
     
     %% Set methods
     methods
-        function h=set.x(h,in_x)
-            assert(size(in_x,2)==1, 'The x vector must be a column vector.')
-            h.x=in_x;
+        function set.x(h,val)
+            validateattributes(val, {'single', 'double'}, {'vector'})
+            h.x=val(:);
         end
-        function h=set.y(h,in_y)
-            assert(size(in_y,2)==1, 'The y vector must be a column vector.')
-            h.y=in_y;
+        function set.y(h,val)
+            validateattributes(val, {'single', 'double'}, {'vector'})
+            h.y=val(:);
         end
-        function h=set.z(h,in_z)
-            assert(size(in_z,2)==1, 'The z vector must be a column vector.')
-            h.z=in_z;
+        function set.z(h,val)
+            validateattributes(val, {'single', 'double'}, {'vector'})
+            h.z=val(:);
         end
-        function h=set.xyz(h,in_xyz)
-             assert(size(in_xyz,2)==3, 'The xyz must be an array [x y z] - [m m m]');
-             h.x=in_xyz(:,1);
-             h.y=in_xyz(:,2);
-             h.z=in_xyz(:,3);
+        function set.xyz(h,val)
+            validateattributes(val, {'single', 'double'}, {'2d', 'ncols', 3})
+            h.x=val(:,1);
+            h.y=val(:,2);
+            h.z=val(:,3);
         end
     end
     
     %% Get methods
     methods
-        function value=get.N_pixels(h)
-            value=min([numel(h.x) numel(h.y) numel(h.z)]);
+        function val=get.N_pixels(h)
+            val=numel(h.x);
         end
-        function value=get.xyz(h)
-             value=[h.x h.y h.z];
+        function val=get.xyz(h)
+             val=[h.x, h.y, h.z];
         end
     end
 end

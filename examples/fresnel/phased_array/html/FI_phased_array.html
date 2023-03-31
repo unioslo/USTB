@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>FI simulation on a phased array with the USTB built-in Fresnel simulator</title><meta name="generator" content="MATLAB 8.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-10-04"><meta name="DC.source" content="FI_phased_array.m"><style type="text/css">
+      --><title>FI simulation on a phased array with the USTB built-in Fresnel simulator</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-08-02"><meta name="DC.source" content="FI_phased_array.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -68,21 +69,21 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
   </style></head><body><div class="content"><h1>FI simulation on a phased array with the USTB built-in Fresnel simulator</h1><!--introduction--><p>In this example we show how to use the built-in fresnel simulator in USTB to generate a Conventional Focused Imaging (single focal depth) dataset for a phased array and a sector scan and show how it can be beamformed with USTB.</p><p>This tutorial assumes familiarity with the contents of the <a href="../../linear_array/html/CPWC_linear_array.html">'CPWC simulation with the USTB built-in Fresnel simulator'</a> tutorial. Please feel free to refer back to that for more details.</p><p><i>by Alfonso Rodriguez-Molares <a href="alfonso.r.molares@ntnu.no">alfonso.r.molares@ntnu.no</a> and Arun Asokan Nair <a href="anair8@jhu.edu">anair8@jhu.edu</a> 11.03.2017</i></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">Phantom</a></li><li><a href="#3">Probe</a></li><li><a href="#4">Pulse</a></li><li><a href="#5">Sequence generation</a></li><li><a href="#6">The Fresnel simulator</a></li><li><a href="#7">Scan</a></li><li><a href="#8">Beamformer</a></li></ul></div><p>Clear the memory of any lingering settings and data, and close all previously opened plots.</p><pre class="codeinput">clear <span class="string">all</span>;
 close <span class="string">all</span>;
-</pre><h2>Phantom<a name="2"></a></h2><p>We start off defining an appropriate <b>phantom</b> structure to image. Our phantom here is simply a single point scatterer. USTB's implementation of <b>phantom</b> comes with a <b>plot</b> method to visualize the phantom for free!</p><pre class="codeinput">pha=uff.phantom();
+</pre><h2 id="2">Phantom</h2><p>We start off defining an appropriate <b>phantom</b> structure to image. Our phantom here is simply a single point scatterer. USTB's implementation of <b>phantom</b> comes with a <b>plot</b> method to visualize the phantom for free!</p><pre class="codeinput">pha=uff.phantom();
 pha.sound_speed=1540;            <span class="comment">% speed of sound [m/s]</span>
 pha.points=[0,  0, 40e-3, 1];    <span class="comment">% point scatterer position [m]</span>
 fig_handle=pha.plot();
-</pre><img vspace="5" hspace="5" src="FI_phased_array_01.png" alt=""> <h2>Probe<a name="3"></a></h2><p>The next UFF structure we look at is <b>probe</b>. It contains information about the probe's geometry. USTB's implementation of <b>probe</b> comes with a <b>plot</b> method too. When combined with the previous figure we can see the position of the probe respect to the phantom.</p><pre class="codeinput">prb=uff.linear_array();
+</pre><img vspace="5" hspace="5" src="FI_phased_array_01.png" alt=""> <h2 id="3">Probe</h2><p>The next UFF structure we look at is <b>probe</b>. It contains information about the probe's geometry. USTB's implementation of <b>probe</b> comes with a <b>plot</b> method too. When combined with the previous figure we can see the position of the probe respect to the phantom.</p><pre class="codeinput">prb=uff.linear_array();
 prb.N=64;                   <span class="comment">% number of elements</span>
 prb.pitch=300e-6;           <span class="comment">% probe pitch in azimuth [m]</span>
 prb.element_width=270e-6;   <span class="comment">% element width [m]</span>
 prb.element_height=7000e-6; <span class="comment">% element height [m]</span>
 prb.plot(fig_handle);
-</pre><img vspace="5" hspace="5" src="FI_phased_array_02.png" alt=""> <h2>Pulse<a name="4"></a></h2><p>We then define the pulse-echo signal which is done here using the <b>fresnel</b> simulator's <b>pulse</b> structure. We could also use <a href="http://field-ii.dk/">'Field II'</a> for a more accurate model.</p><pre class="codeinput">pul=uff.pulse();
+</pre><img vspace="5" hspace="5" src="FI_phased_array_02.png" alt=""> <h2 id="4">Pulse</h2><p>We then define the pulse-echo signal which is done here using the <b>fresnel</b> simulator's <b>pulse</b> structure. We could also use <a href="http://field-ii.dk/">'Field II'</a> for a more accurate model.</p><pre class="codeinput">pul=uff.pulse();
 pul.center_frequency=3e6;       <span class="comment">% transducer frequency [MHz]</span>
 pul.fractional_bandwidth=0.6;   <span class="comment">% fractional bandwidth [unitless]</span>
 pul.plot([],<span class="string">'2-way pulse'</span>);
-</pre><img vspace="5" hspace="5" src="FI_phased_array_03.png" alt=""> <h2>Sequence generation<a name="5"></a></h2><p>Now, we shall generate our sequence! Keep in mind that the <b>fresnel</b> simulator takes the same sequence definition as the USTB beamformer. In UFF and USTB a sequence is defined as a collection of <b>wave</b> structures.</p><p>For our example here, we define a sequence of 200 focused beams spanning an angular range of <img src="FI_phased_array_eq04151733193808446396.png" alt="$[-\frac{\pi}{18}, \frac{\pi}{18}]$">  radians. The focal depth is set as 40 mm. The <b>wave</b> structure too has a <b>plot</b> method.</p><pre class="codeinput">N=200;                                           <span class="comment">% number of focused beams</span>
+</pre><img vspace="5" hspace="5" src="FI_phased_array_03.png" alt=""> <h2 id="5">Sequence generation</h2><p>Now, we shall generate our sequence! Keep in mind that the <b>fresnel</b> simulator takes the same sequence definition as the USTB beamformer. In UFF and USTB a sequence is defined as a collection of <b>wave</b> structures.</p><p>For our example here, we define a sequence of 200 focused beams spanning an angular range of <img src="FI_phased_array_eq04151733193808446396.png" alt="$[-\frac{\pi}{18}, \frac{\pi}{18}]$">  radians. The focal depth is set as 40 mm. The <b>wave</b> structure too has a <b>plot</b> method.</p><pre class="codeinput">N=200;                                           <span class="comment">% number of focused beams</span>
 azimuth_axis=linspace(-10*pi/180,10*pi/180,N).'; <span class="comment">% beam angle vector [rad]</span>
 depth=40e-3;                                     <span class="comment">% fixed focal depth [m]</span>
 seq=uff.wave();
@@ -97,14 +98,14 @@ seq=uff.wave();
     seq(n).apodization=uff.apodization();
     seq(n).apodization.window=uff.window.tukey50;
     seq(n).apodization.f_number=1.7;
-    seq(n).apodization.focus=uff.scan(<span class="string">'xyz'</span>,seq(n).source.xyz);
+    seq(n).apodization.focus=uff.sector_scan(<span class="string">'xyz'</span>,seq(n).source.xyz);
 
     seq(n).sound_speed=pha.sound_speed;
 
     <span class="comment">% show source</span>
     fig_handle=seq(n).source.plot(fig_handle);
 <span class="keyword">end</span>
-</pre><img vspace="5" hspace="5" src="FI_phased_array_04.png" alt=""> <h2>The Fresnel simulator<a name="6"></a></h2><p>Finally, we launch the built-in simulator. The simulator takes in a <b>phantom</b>, <b>pulse</b>, <b>probe</b> and a sequence of <b>wave</b> structures along with the desired sampling frequency, and returns a <b>channel_data</b> UFF structure.</p><pre class="codeinput">sim=fresnel();
+</pre><img vspace="5" hspace="5" src="FI_phased_array_04.png" alt=""> <h2 id="6">The Fresnel simulator</h2><p>Finally, we launch the built-in simulator. The simulator takes in a <b>phantom</b>, <b>pulse</b>, <b>probe</b> and a sequence of <b>wave</b> structures along with the desired sampling frequency, and returns a <b>channel_data</b> UFF structure.</p><pre class="codeinput">sim=fresnel();
 
 <span class="comment">% setting input data</span>
 sim.phantom=pha;                <span class="comment">% phantom</span>
@@ -117,24 +118,24 @@ sim.sampling_frequency=41.6e6;  <span class="comment">% sampling frequency [Hz]<
 channel_data=sim.go();
 </pre><pre class="codeoutput">USTB's Fresnel impulse response simulator (v1.0.7)
 ---------------------------------------------------------------
-</pre><h2>Scan<a name="7"></a></h2><p>The scan area is defines as a collection of pixels spanning our region of interest. For our example here, we use the <b>sector_scan</b> structure to generate a sector scan. <b>scan</b> too has a useful <b>plot</b> method it can call.</p><pre class="codeinput">depth_axis=linspace(35e-3,45e-3,100).';
-sca=uff.sector_scan();
-<span class="keyword">for</span> n=1:N
-    sca(n)=uff.sector_scan(<span class="string">'azimuth_axis'</span>,azimuth_axis(n),<span class="string">'depth_axis'</span>,depth_axis);
-    sca(n).plot(fig_handle,<span class="string">'Scenario'</span>);
-<span class="keyword">end</span>
-</pre><img vspace="5" hspace="5" src="FI_phased_array_05.png" alt=""> <h2>Beamformer<a name="8"></a></h2><p>With <b>channel_data</b> and a <b>scan</b> we have all we need to produce an ultrasound image. We now use a USTB structure <b>beamformer</b>, that takes an <b>apodization</b> structure in addition to the <b>channel_data</b> and <b>scan</b>.</p><pre class="codeinput">pipe=pipeline();
-pipe.channel_data=channel_data;
-pipe.scan=sca;
+</pre><h2 id="7">Scan</h2><p>The scan area is defines as a collection of pixels spanning our region of interest. For our example here, we use the <b>sector_scan</b> structure to generate a sector scan. <b>scan</b> too has a useful <b>plot</b> method it can call.</p><pre class="codeinput">depth_axis=linspace(35e-3,45e-3,100).';
+scan=uff.sector_scan(<span class="string">'azimuth_axis'</span>,azimuth_axis,<span class="string">'depth_axis'</span>,depth_axis);
+</pre><h2 id="8">Beamformer</h2><p>With <b>channel_data</b> and a <b>scan</b> we have all we need to produce an ultrasound image. We now use a USTB structure <b>midprocess</b>, that takes an <b>apodization</b> structure in addition to the <b>channel_data</b> and <b>scan</b>, and returns a <b>beamformed_data</b>.</p><pre class="codeinput">mid=midprocess.das();
+mid.dimension = dimension.both;
+mid.channel_data=channel_data;
+mid.scan=scan;
 
-pipe.receive_apodization.window=uff.window.tukey50;
-pipe.receive_apodization.f_number=1.7;
-</pre><p>The <b>beamformer</b> structure allows you to implement different beamformers by combination of multiple built-in <b>processes</b>. By changing the <b>process</b> chain other beamforming sequences can be implemented. It returns yet another <b>UFF</b> structure: <b>beamformed_data</b>.</p><p>To achieve the goal of this example, we use delay-and-sum (implemented in the <b>das_matlab()</b> process) and then stack each line into a single image.</p><pre class="codeinput">b_data=pipe.go({midprocess.das_matlab() postprocess.stack()});
+mid.transmit_apodization.window = uff.window.scanline;
+
+mid.receive_apodization.window=uff.window.tukey50;
+mid.receive_apodization.f_number=1.7;
+
+b_data=mid.go();
 
 <span class="comment">% show</span>
 b_data.plot();
-</pre><pre class="codeoutput">Warning: Inputs and outputs are unchanged. Skipping process... 
-</pre><img vspace="5" hspace="5" src="FI_phased_array_06.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014b</a><br></p></div><!--
+</pre><pre class="codeoutput">USTB General beamformer MEX v1.1.2 .............done!
+</pre><img vspace="5" hspace="5" src="FI_phased_array_05.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% FI simulation on a phased array with the USTB built-in Fresnel simulator
 %
@@ -220,7 +221,7 @@ for n=1:N
     seq(n).apodization=uff.apodization();
     seq(n).apodization.window=uff.window.tukey50;
     seq(n).apodization.f_number=1.7;
-    seq(n).apodization.focus=uff.scan('xyz',seq(n).source.xyz);
+    seq(n).apodization.focus=uff.sector_scan('xyz',seq(n).source.xyz);
     
     seq(n).sound_speed=pha.sound_speed;
     
@@ -254,36 +255,26 @@ channel_data=sim.go();
 % generate a sector scan. *scan* too has a useful *plot* method it can call.
 
 depth_axis=linspace(35e-3,45e-3,100).';
-sca=uff.sector_scan();
-for n=1:N
-    sca(n)=uff.sector_scan('azimuth_axis',azimuth_axis(n),'depth_axis',depth_axis);
-    sca(n).plot(fig_handle,'Scenario');    
-end
+scan=uff.sector_scan('azimuth_axis',azimuth_axis,'depth_axis',depth_axis);
  
 %% Beamformer
 %
 % With *channel_data* and a *scan* we have all we need to produce an
-% ultrasound image. We now use a USTB structure *beamformer*, that takes an
-% *apodization* structure in addition to the *channel_data* and *scan*.
+% ultrasound image. We now use a USTB structure *midprocess*, that takes an
+% *apodization* structure in addition to the *channel_data* and *scan*, and 
+% returns a *beamformed_data*.
 
-pipe=pipeline();
-pipe.channel_data=channel_data;
-pipe.scan=sca;
+mid=midprocess.das();
+mid.dimension = dimension.both;
+mid.channel_data=channel_data;
+mid.scan=scan;
 
-pipe.receive_apodization.window=uff.window.tukey50;
-pipe.receive_apodization.f_number=1.7;
+mid.transmit_apodization.window = uff.window.scanline;
 
-%% 
-%
-% The *beamformer* structure allows you to implement different beamformers 
-% by combination of multiple built-in *processes*. By changing the *process*
-% chain other beamforming sequences can be implemented. It returns yet 
-% another *UFF* structure: *beamformed_data*.
-% 
-% To achieve the goal of this example, we use delay-and-sum (implemented in 
-% the *das_matlab()* process) and then stack each line into a single image.
+mid.receive_apodization.window=uff.window.tukey50;
+mid.receive_apodization.f_number=1.7;
 
-b_data=pipe.go({midprocess.das_matlab() postprocess.stack()});
+b_data=mid.go();
 
 % show
 b_data.plot();

@@ -107,6 +107,8 @@ classdef pipeline < process
                elseif isa(process_list{n},'postprocess')
                     if ~isa(process_list{n-1},'preprocess')
                         process_list{n}.input=output;
+                        process_list{n}.receive_apodization=h.receive_apodization;
+                        process_list{n}.transmit_apodization=h.transmit_apodization;
                     else
                         error(sprintf('Found postprocess after preprocess: %s -> %s',class(process_list{n-1}),class(process_list{n})));
                     end

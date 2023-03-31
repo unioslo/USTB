@@ -22,7 +22,7 @@ out={}; nn=1;
 try
     info=h5info(filename,location);
 catch me
-    if isempty(findstr(me.message,'name doesn''t exist'))
+    if isempty(findstr(me.message,'name doesn''t exist')) && isempty(findstr(me.message,'Unable to find object'))
         me.rethrow;
     else
         % the location doesn't exist

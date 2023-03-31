@@ -50,7 +50,6 @@ for n=1:scan.N_x_axis
     seq(n).apodization=uff.apodization();
     seq(n).apodization.window=uwindow;
     seq(n).apodization.f_number=F_number;
-    seq(n).apodization.origo.distance=Inf;
     seq(n).apodization.focus=uff.scan('xyz',seq(n).source.xyz);
     
     seq(n).sound_speed=pha.sound_speed;
@@ -99,8 +98,7 @@ for n=1:N
     seq(n)=uff.wave();
     seq(n).probe=prb;
     seq(n).source.xyz=[prb.x(n) prb.y(n) prb.z(n)];
-    
-    seq(n).apodization=uff.apodization('window',uff.window.sta,'origo',seq(n).source);
+    seq(n).apodization=uff.apodization('window',uff.window.sta,'origin',seq(n).source);
     
     seq(n).sound_speed=pha.sound_speed;
 end

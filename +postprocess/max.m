@@ -10,7 +10,7 @@ classdef max < postprocess
     %% constructor
     methods (Access = public)
         function h=max()
-            h.name='Maximum value MATLAB'   
+            h.name='Maximum value MATLAB';   
             h.reference= 'www.ustb.no';                
             h.implemented_by={'Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no>','Ole Marius Hoel Rindal <olemarius@olemarius.net>'};    
             h.version='v1.0.4';

@@ -19,7 +19,7 @@ clear all; close all;
 
 % data location
 url='http://ustb.no/datasets/';      % if not found downloaded from here
-filename='L7_FI_Verasonics.uff';
+filename='L7_FI_IUS2018.uff';
 
 % checks if the data is in your data path, and downloads it otherwise.
 % The defaults data path is under USTB's folder, but you can change this
@@ -60,7 +60,6 @@ mid.channel_data=channel_data;
 mid.scan=scan;
 
 mid.transmit_apodization.window=uff.window.scanline;
-
 mid.receive_apodization.window=uff.window.tukey25;
 mid.receive_apodization.f_number=1.7;
 
@@ -83,16 +82,17 @@ mid_MLA.channel_data=channel_data;
 mid_MLA.scan=scan_MLA;
 
 mid_MLA.transmit_apodization.window=uff.window.scanline;
+% We are using the hybrid transmit delay model. See the reference below:
+% Rindal, O. M. H., Rodriguez-Molares, A., & Austeng, A. (2018). A simple , artifact-free , virtual source model. 
+% IEEE International Ultrasonics Symposium, IUS, 1–4.  
+mid_MLA.spherical_transmit_delay_model = spherical_transmit_delay_model.hybrid;
 mid_MLA.transmit_apodization.MLA = MLA;
-mid_MLA.transmit_apodization.MLA_overlap = 2;
+mid_MLA.transmit_apodization.MLA_overlap = 1;
 
 mid_MLA.receive_apodization.window=uff.window.tukey25;
 mid_MLA.receive_apodization.f_number=1.7;
 
 b_data_MLA=mid_MLA.go();
 b_data_MLA.plot([],'Beamformed image MLA');
-
-b_data_MLA.plot([],'Beamformed image MLA');
-ylim(gca,[25 35])
 
 

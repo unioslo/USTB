@@ -153,7 +153,7 @@ for n=1:probe.N
     seq(n).delay = probe.r(n)/c0 - lag*dt + t; % t0 and center of pulse compensation
     seq(n).apodization = uff.apodization();
     seq(n).apodization.window=uff.window.sta;
-    seq(n).apodization.origo=seq(n).source;
+    seq(n).apodization.origin=seq(n).source;
 end
 close(wb);
 

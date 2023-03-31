@@ -6,7 +6,7 @@ function plot_circle(x,y,r,style)
 ang=0:0.01:2*pi; 
 xp=r*cos(ang);
 yp=r*sin(ang);
-plot(x+xp,y+yp,style,'linewidth',2);
+plot(x+xp,y+yp,style,'linewidth',3);
 
 end
 

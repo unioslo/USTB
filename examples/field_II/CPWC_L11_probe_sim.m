@@ -207,7 +207,7 @@ pipe.receive_apodization.f_number=F_number;
 b_data=pipe.go({midprocess.das() postprocess.coherent_compounding()});
 
 % Display images
-b_data.plot()
+b_data.plot();
 
 %% Save UFF dataset
 % 

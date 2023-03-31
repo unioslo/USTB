@@ -11,6 +11,7 @@ classdef pulse < uff
         center_frequency           % center frequency [Hz]
         fractional_bandwidth       % probe fractional bandwidth [unitless]
         phase                      % initial phase [rad]
+        waveform                   % transmitted waveform (for example used for match filtering)
     end
     
     
@@ -23,7 +24,7 @@ classdef pulse < uff
     
     %% plot methods
     methods
-        function figure_handle=plot(h,figure_handle_in,title_in,style)
+        function figure_handle=plot(h,figure_handle_in,title_in,LineStyle)
             t0=linspace(-2/h.center_frequency/h.fractional_bandwidth,2/h.center_frequency/h.fractional_bandwidth,512);
             
             % plotting pulse
@@ -40,13 +41,13 @@ classdef pulse < uff
                 axis_handle = gca(figure_handle);
                 title('Pulse'); hold on;
             end
-            
-            if ~exist('style')||~isempty(style)
-                style ='-';
+            if nargin < 4
+                LineStyle = '-';
             end
             
-            plot(axis_handle,t0*1e6,h.signal(t0),style); grid on; axis tight;
-            xlabel('time [mus]');
+
+            plot(axis_handle,t0*1e6,h.signal(t0), 'LineStyle', LineStyle); grid on; axis tight;
+            xlabel('time [\mu{}s]','Interpreter','tex');
             set(gca,'ZDir','Reverse');
             set(gca,'fontsize',14);
             
@@ -58,9 +59,9 @@ classdef pulse < uff
     
     %% get the signal for a given time
     methods
-        function s=signal(h,time)
+        function s=signal(h, time)
             % gaussian-pulsed pulse
-            s=cos(2*pi*h.center_frequency*time).*exp(-2.77*(1.1364*time*h.fractional_bandwidth/sqrt(2)*h.center_frequency).^2);
+            s=cos(2*pi*h.center_frequency*time).*exp(-1.7886*(time*h.fractional_bandwidth*h.center_frequency).^2);
         end
     end
 end

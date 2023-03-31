@@ -14,31 +14,17 @@ classdef preprocess < process
         input                % CHANNEL_DATA class
         output               % CHANNEL_DATA class
     end
-
-    %% Dependant properties
-    properties  (Dependent)
-        sampling_frequency   % sampling frequency [Hz]
-    end
-
     
     %% set methods
     methods
-        function h=set.input(h,in_channel_data)
-            assert(isa(in_channel_data,'uff.channel_data'), 'The input is not a UFF.CHANNEL_DATA class. Check HELP UFF.CHANNEL_DATA.');
-            h.input=in_channel_data;
+        function set.input(h, val)
+            validateattributes(val, {'uff.channel_data'}, {'scalar'})
+            h.input = val;
+        end
+        function set.output(h, val)
+            validateattributes(val, {'uff.channel_data'}, {'scalar'})
+            h.output = val;
         end
     end
-    
-    %% get methods
-    methods
-        function value=get.sampling_frequency(h)
-            if isempty(h.input)
-                error('The input channel data has not been asigned.');
-            else
-                value=h.input.sampling_frequency;
-            end
-        end
-    end
-
 end
 

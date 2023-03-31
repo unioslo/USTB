@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>FI simulation on a linear array with the USTB built-in Fresnel simulator and using Receive Processes</title><meta name="generator" content="MATLAB 8.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-10-04"><meta name="DC.source" content="FI_linear_array_receive_processes.m"><style type="text/css">
+      --><title>FI simulation on a linear array with the USTB built-in Fresnel simulator and using Receive Processes</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-08-02"><meta name="DC.source" content="FI_linear_array_receive_processes.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -68,21 +69,21 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
   </style></head><body><div class="content"><h1>FI simulation on a linear array with the USTB built-in Fresnel simulator and using Receive Processes</h1><!--introduction--><p>In this example we show how to use the built-in fresnel simulator in USTB to generate a Conventional Focused Imaging (single focal depth) dataset for a linear array and a linear scan and show how it can be beamformed with USTB using several different receive processes that USTB has to offer.</p><p>This tutorial assumes familiarity with the contents of the <a href="../../linear_array/html/CPWC_linear_array.html">'CPWC simulation with the USTB built-in Fresnel simulator'</a> tutorial. Please feel free to refer back to that for more details.</p><p><i>by Alfonso Rodriguez-Molares <a href="alfonso.r.molares@ntnu.no">alfonso.r.molares@ntnu.no</a> and Arun Asokan Nair <a href="anair8@jhu.edu">anair8@jhu.edu</a> 14.03.2017</i></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">Phantom</a></li><li><a href="#3">Probe</a></li><li><a href="#4">Pulse</a></li><li><a href="#5">Sequence generation</a></li><li><a href="#6">The Fresnel simulator</a></li><li><a href="#7">Scan</a></li><li><a href="#8">Pipeline</a></li><li><a href="#10">Test out some of the many receive beamforming processes USTB has to offer</a></li></ul></div><p>Clear the memory of any lingering settings and data, and close all previously opened plots.</p><pre class="codeinput">clear <span class="string">all</span>;
 close <span class="string">all</span>;
-</pre><h2>Phantom<a name="2"></a></h2><p>We start off defining an appropriate <b>phantom</b> structure to image. Our phantom here is simply a single point scatterer. USTB's implementation of <b>phantom</b> comes with a <b>plot</b> method to visualize the phantom for free!</p><pre class="codeinput">pha=uff.phantom();
+</pre><h2 id="2">Phantom</h2><p>We start off defining an appropriate <b>phantom</b> structure to image. Our phantom here is simply a single point scatterer. USTB's implementation of <b>phantom</b> comes with a <b>plot</b> method to visualize the phantom for free!</p><pre class="codeinput">pha=uff.phantom();
 pha.sound_speed=1540;            <span class="comment">% speed of sound [m/s]</span>
 pha.points=[0,  0, 40e-3, 1];    <span class="comment">% point scatterer position [m]</span>
 fig_handle=pha.plot();
-</pre><img vspace="5" hspace="5" src="FI_linear_array_receive_processes_01.png" alt=""> <h2>Probe<a name="3"></a></h2><p>The next UFF structure we look at is <b>probe</b>. It contains information about the probe's geometry. USTB's implementation of <b>probe</b> comes with a <b>plot</b> method too. When combined with the previous figure we can see the position of the probe respect to the phantom.</p><pre class="codeinput">prb=uff.linear_array();
+</pre><img vspace="5" hspace="5" src="FI_linear_array_receive_processes_01.png" alt=""> <h2 id="3">Probe</h2><p>The next UFF structure we look at is <b>probe</b>. It contains information about the probe's geometry. USTB's implementation of <b>probe</b> comes with a <b>plot</b> method too. When combined with the previous figure we can see the position of the probe respect to the phantom.</p><pre class="codeinput">prb=uff.linear_array();
 prb.N=128;                  <span class="comment">% number of elements</span>
 prb.pitch=300e-6;           <span class="comment">% probe pitch in azimuth [m]</span>
 prb.element_width=270e-6;   <span class="comment">% element width [m]</span>
 prb.element_height=5000e-6; <span class="comment">% element height [m]</span>
 prb.plot(fig_handle);
-</pre><img vspace="5" hspace="5" src="FI_linear_array_receive_processes_02.png" alt=""> <h2>Pulse<a name="4"></a></h2><p>We then define the pulse-echo signal which is done here using the <b>fresnel</b> simulator's <b>pulse</b> structure. We could also use <a href="http://field-ii.dk/">'Field II'</a> for a more accurate model.</p><pre class="codeinput">pul=uff.pulse();
+</pre><img vspace="5" hspace="5" src="FI_linear_array_receive_processes_02.png" alt=""> <h2 id="4">Pulse</h2><p>We then define the pulse-echo signal which is done here using the <b>fresnel</b> simulator's <b>pulse</b> structure. We could also use <a href="http://field-ii.dk/">'Field II'</a> for a more accurate model.</p><pre class="codeinput">pul=uff.pulse();
 pul.center_frequency=5.2e6;       <span class="comment">% transducer frequency [MHz]</span>
 pul.fractional_bandwidth=0.6;     <span class="comment">% fractional bandwidth [unitless]</span>
 pul.plot([],<span class="string">'2-way pulse'</span>);
-</pre><img vspace="5" hspace="5" src="FI_linear_array_receive_processes_03.png" alt=""> <h2>Sequence generation<a name="5"></a></h2><p>Now, we shall generate our sequence! Keep in mind that the <b>fresnel</b> simulator takes the same sequence definition as the USTB beamformer. In UFF and USTB a sequence is defined as a collection of <b>wave</b> structures.</p><p>For our example here, we define a sequence of 200 focused beams spanning a lateral range of <img src="FI_linear_array_receive_processes_eq17845419450663549259.png" alt="$[-2, 2]$"> mm. The focal depth is set as 40 mm. The <b>wave</b> structure too has a <b>plot</b> method.</p><pre class="codeinput">N=200;                      <span class="comment">% number of focused beams</span>
+</pre><img vspace="5" hspace="5" src="FI_linear_array_receive_processes_03.png" alt=""> <h2 id="5">Sequence generation</h2><p>Now, we shall generate our sequence! Keep in mind that the <b>fresnel</b> simulator takes the same sequence definition as the USTB beamformer. In UFF and USTB a sequence is defined as a collection of <b>wave</b> structures.</p><p>For our example here, we define a sequence of 200 focused beams spanning a lateral range of <img src="FI_linear_array_receive_processes_eq17845419450663549259.png" alt="$[-2, 2]$"> mm. The focal depth is set as 40 mm. The <b>wave</b> structure too has a <b>plot</b> method.</p><pre class="codeinput">N=200;                      <span class="comment">% number of focused beams</span>
 x_axis=linspace(-2e-3,2e-3,N).';
 z0=40e-3;
 seq=uff.wave();
@@ -95,7 +96,6 @@ seq=uff.wave();
     seq(n).apodization=uff.apodization();
     seq(n).apodization.window=uff.window.tukey50;
     seq(n).apodization.f_number=1.7;
-    seq(n).apodization.origo=uff.point(<span class="string">'xyz'</span>,[0 0 -Inf]);
     seq(n).apodization.focus=uff.scan(<span class="string">'xyz'</span>,seq(n).source.xyz);
 
     seq(n).sound_speed=pha.sound_speed;
@@ -103,7 +103,7 @@ seq=uff.wave();
     <span class="comment">% show source</span>
     fig_handle=seq(n).source.plot(fig_handle);
 <span class="keyword">end</span>
-</pre><img vspace="5" hspace="5" src="FI_linear_array_receive_processes_04.png" alt=""> <h2>The Fresnel simulator<a name="6"></a></h2><p>Finally, we launch the built-in simulator. The simulator takes in a <b>phantom</b>, <b>pulse</b>, <b>probe</b> and a sequence of <b>wave</b> structures along with the desired sampling frequency, and returns a <b>channel_data</b> UFF structure.</p><pre class="codeinput">sim=fresnel();
+</pre><img vspace="5" hspace="5" src="FI_linear_array_receive_processes_04.png" alt=""> <h2 id="6">The Fresnel simulator</h2><p>Finally, we launch the built-in simulator. The simulator takes in a <b>phantom</b>, <b>pulse</b>, <b>probe</b> and a sequence of <b>wave</b> structures along with the desired sampling frequency, and returns a <b>channel_data</b> UFF structure.</p><pre class="codeinput">sim=fresnel();
 
 <span class="comment">% setting input data</span>
 sim.phantom=pha;                <span class="comment">% phantom</span>
@@ -116,55 +116,48 @@ sim.sampling_frequency=41.6e6;  <span class="comment">% sampling frequency [Hz]<
 channel_data=sim.go();
 </pre><pre class="codeoutput">USTB's Fresnel impulse response simulator (v1.0.7)
 ---------------------------------------------------------------
-</pre><h2>Scan<a name="7"></a></h2><p>The scan area is defines as a collection of pixels spanning our region of interest. For our example here, we use the <b>sector_scan</b> structure to generate a sector scan. <b>scan</b> too has a useful <b>plot</b> method it can call.</p><pre class="codeinput">z_axis=linspace(39e-3,41e-3,100).';
-scan=uff.linear_scan();
-<span class="keyword">for</span> n=1:length(x_axis)
-    scan(n)=uff.linear_scan(<span class="string">'x_axis'</span>,x_axis(n),<span class="string">'z_axis'</span>,z_axis);
-    scan(n).plot(fig_handle,<span class="string">'Scenario'</span>);
-<span class="keyword">end</span>
-</pre><img vspace="5" hspace="5" src="FI_linear_array_receive_processes_05.png" alt=""> <h2>Pipeline<a name="8"></a></h2><p>With <b>channel_data</b> and a <b>scan</b> we have all we need to produce an ultrasound image. We now use a USTB structure <b>pipeline</b>, that takes an <b>apodization</b> structure in addition to the <b>channel_data</b> and <b>scan</b>.</p><pre class="codeinput">pipe=pipeline();
+</pre><h2 id="7">Scan</h2><p>The scan area is defines as a collection of pixels spanning our region of interest. For our example here, we use the <b>sector_scan</b> structure to generate a sector scan. <b>scan</b> too has a useful <b>plot</b> method it can call.</p><pre class="codeinput">z_axis=linspace(39e-3,41e-3,100).';
+scan=uff.linear_scan(<span class="string">'x_axis'</span>,x_axis,<span class="string">'z_axis'</span>,z_axis);
+</pre><h2 id="8">Pipeline</h2><p>With <b>channel_data</b> and a <b>scan</b> we have all we need to produce an ultrasound image. We now use a USTB structure <b>pipeline</b>, that takes an <b>apodization</b> structure in addition to the <b>channel_data</b> and <b>scan</b>.</p><pre class="codeinput">pipe=pipeline();
 pipe.channel_data=channel_data;
 pipe.scan=scan;
 
+pipe.transmit_apodization.window=uff.window.scanline;
+
 pipe.receive_apodization.window=uff.window.tukey50;
 pipe.receive_apodization.f_number=1.7;
-</pre><p>The <b>beamformer</b> structure allows you to implement different beamformers by combination of multiple built-in <b>processes</b>. By changing the <b>process</b> chain other beamforming sequences can be implemented. It returns a <b>uff.beamformed_data</b> structure.</p><p>To achieve the goal of this example, we use first a demodulation preprocess, a delay mex implementation, and then we stack each line into a single image.</p><pre class="codeinput">b_data=pipe.go({preprocess.demodulation midprocess.delay_mex postprocess.stack});
+</pre><p>The <b>beamformer</b> structure allows you to implement different beamformers by combination of multiple built-in <b>processes</b>. By changing the <b>process</b> chain other beamforming sequences can be implemented. It returns a <b>uff.beamformed_data</b> structure.</p><p>To achieve the goal of this example, we use first a demodulation preprocess, a delay mex implementation.</p><pre class="codeinput">pre = preprocess.demodulation();
+
+mid = midprocess.das();
+mid.dimension = dimension.transmit();
+
+b_data=pipe.go({pre mid});
 b_data.plot();
 </pre><pre class="codeoutput">Warning: The modulation frequency is not specified. The estimated central
-frequency will be used. 
+frequency will be used.  
 Estimating power spectrum
-Warning: The downsampling frequency is not specified. Using
-4*modulation_frequency. 
-Estimating power spectrum
-Band Pass filtering
-Base Band filtering
-Warning: Inputs and outputs are unchanged. Skipping process... 
-</pre><img vspace="5" hspace="5" src="FI_linear_array_receive_processes_06.png" alt=""> <h2>Test out some of the many receive beamforming processes USTB has to offer<a name="10"></a></h2><p>First, we can use the <b>coherent_compounding</b> process to coherently compound the data and then display it.</p><pre class="codeinput">cc=postprocess.coherent_compounding();
+Warning: The downsampling frequency is not specified. Using 2 *
+modulation_frequency. 
+Warning: The input sample frequency is not a multiple of the specified
+downsample frequency. Rounding up the downsample frequency to the next higher
+downsample frequency. 
+Band-pass filtering
+Low-pass filtering
+USTB General beamformer MEX v1.1.2 .............done!
+</pre><img vspace="5" hspace="5" src="FI_linear_array_receive_processes_05.png" alt=""> <h2 id="10">Test out some of the many receive beamforming processes USTB has to offer</h2><p>First, we can use the <b>coherent_compounding</b> process to coherently compound the data and then display it.</p><pre class="codeinput">cc=postprocess.coherent_compounding();
 cc.input=b_data;
 cc_data=cc.go();
 cc_data.plot([],cc.name);
-</pre><img vspace="5" hspace="5" src="FI_linear_array_receive_processes_07.png" alt=""> <p>Or, we could use the <b>incoherent_compounding</b> process to incoherently compound the data and then display it.</p><pre class="codeinput">ic=postprocess.incoherent_compounding();
+</pre><img vspace="5" hspace="5" src="FI_linear_array_receive_processes_06.png" alt=""> <p>Or, we could use the <b>incoherent_compounding</b> process to incoherently compound the data and then display it.</p><pre class="codeinput">ic=postprocess.incoherent_compounding();
 ic.input=b_data;
 ic_data=ic.go();
 ic_data.plot([],ic.name);
-</pre><img vspace="5" hspace="5" src="FI_linear_array_receive_processes_08.png" alt=""> <p>Or, we could take the <b>max</b> process to take the max across the received data and then display it.</p><pre class="codeinput">mv=postprocess.max();
+</pre><img vspace="5" hspace="5" src="FI_linear_array_receive_processes_07.png" alt=""> <p>Or, we could take the <b>max</b> process to take the max across the received data and then display it.</p><pre class="codeinput">mv=postprocess.max();
 mv.input=b_data;
 mv_data=mv.go();
 mv_data.plot([],mv.name);
-</pre><pre class="codeoutput">
-h = 
-
-  max with properties:
-
-         dimension: [1x1 dimension]
-             input: []
-            output: []
-              name: 'Maximum value MATLAB'
-         reference: ''
-    implemented_by: ''
-           version: ''
-
-</pre><img vspace="5" hspace="5" src="FI_linear_array_receive_processes_09.png" alt=""> <p>We could also use the <b>coherence_factor</b> process which implements the Mallart-Fink coherence factor beamforming to beamform the data.</p><pre class="codeinput">cf=postprocess.coherence_factor();
+</pre><img vspace="5" hspace="5" src="FI_linear_array_receive_processes_08.png" alt=""> <p>We could also use the <b>coherence_factor</b> process which implements the Mallart-Fink coherence factor beamforming to beamform the data.</p><pre class="codeinput">cf=postprocess.coherence_factor();
+cf.dimension = dimension.receive;
 cf.transmit_apodization=pipe.transmit_apodization;
 cf.receive_apodization=pipe.receive_apodization;
 cf.input=b_data;
@@ -173,41 +166,11 @@ cf_data=cf.go();
 figure;
 ax1=subplot(1,2,1);
 ax2=subplot(1,2,2);
-cf_data.plot(ax1,<span class="string">'CF image'</span>)
-cf.CF.plot(ax2,<span class="string">'CF factor'</span>,60,<span class="string">'none'</span>)
-</pre><pre class="codeoutput">Warning: Not enough waves to compute factor. Changing dimension to
-dimension.receive 
-
-ans = 
-
-  Axes (CF image) with properties:
-
-             XLim: [-2 2]
-             YLim: [39 41]
-           XScale: 'linear'
-           YScale: 'linear'
-    GridLineStyle: '-'
-         Position: [0.1300 0.1100 0.2062 0.8150]
-            Units: 'normalized'
-
-  Use GET to show all properties
-
-
-ans = 
-
-  Axes (CF factor) with properties:
-
-             XLim: [-2 2]
-             YLim: [39 41]
-           XScale: 'linear'
-           YScale: 'linear'
-    GridLineStyle: '-'
-         Position: [0.5840 0.1100 0.1926 0.8150]
-            Units: 'normalized'
-
-  Use GET to show all properties
-
-</pre><img vspace="5" hspace="5" src="FI_linear_array_receive_processes_10.png" alt=""> <p>Alternatively, we could use the <b>phase_coherence_factor</b> process which implements the Camacho-Fritsch phase coherence factor beamforming method. We are truly spoilt for choice!</p><pre class="codeinput">pcf=postprocess.phase_coherence_factor();
+cf_data.plot(ax1,<span class="string">'CF image'</span>);
+cf.CF.plot(ax2,<span class="string">'CF factor'</span>,60,<span class="string">'none'</span>);
+</pre><pre class="codeoutput">uff.apodization: Inputs and outputs are unchanged. Skipping process.
+</pre><img vspace="5" hspace="5" src="FI_linear_array_receive_processes_09.png" alt=""> <p>Alternatively, we could use the <b>phase_coherence_factor</b> process which implements the Camacho-Fritsch phase coherence factor beamforming method. We are truly spoilt for choice!</p><pre class="codeinput">pcf=postprocess.phase_coherence_factor();
+pcf.dimension = dimension.receive;
 pcf.transmit_apodization=pipe.transmit_apodization;
 pcf.receive_apodization=pipe.receive_apodization;
 pcf.input=b_data;
@@ -216,42 +179,10 @@ pcf_data=pcf.go();
 figure;
 ax1=subplot(1,2,1);
 ax2=subplot(1,2,2);
-pcf_data.plot(ax1,<span class="string">'FCC image'</span>)
-pcf.FCC.plot(ax2,<span class="string">'FCC factor'</span>,60,<span class="string">'none'</span>)
-</pre><pre class="codeoutput">Warning: Not enough waves to compute factor. Changing dimension to
-dimension.receive 
-Warning: Inputs and outputs are unchanged. Skipping process... 
-
-ans = 
-
-  Axes (FCC image) with properties:
-
-             XLim: [-2 2]
-             YLim: [39 41]
-           XScale: 'linear'
-           YScale: 'linear'
-    GridLineStyle: '-'
-         Position: [0.1300 0.1100 0.2062 0.8150]
-            Units: 'normalized'
-
-  Use GET to show all properties
-
-
-ans = 
-
-  Axes (FCC factor) with properties:
-
-             XLim: [-2 2]
-             YLim: [39 41]
-           XScale: 'linear'
-           YScale: 'linear'
-    GridLineStyle: '-'
-         Position: [0.5840 0.1100 0.1926 0.8150]
-            Units: 'normalized'
-
-  Use GET to show all properties
-
-</pre><img vspace="5" hspace="5" src="FI_linear_array_receive_processes_11.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014b</a><br></p></div><!--
+pcf_data.plot(ax1,<span class="string">'FCC image'</span>);
+pcf.FCC.plot(ax2,<span class="string">'FCC factor'</span>,60,<span class="string">'none'</span>);
+</pre><pre class="codeoutput">uff.apodization: Inputs and outputs are unchanged. Skipping process.
+</pre><img vspace="5" hspace="5" src="FI_linear_array_receive_processes_10.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% FI simulation on a linear array with the USTB built-in Fresnel simulator and using Receive Processes
 % 
@@ -335,7 +266,6 @@ for n=1:N
     seq(n).apodization=uff.apodization();
     seq(n).apodization.window=uff.window.tukey50;
     seq(n).apodization.f_number=1.7;
-    seq(n).apodization.origo=uff.point('xyz',[0 0 -Inf]);
     seq(n).apodization.focus=uff.scan('xyz',seq(n).source.xyz);
     
     seq(n).sound_speed=pha.sound_speed;
@@ -370,11 +300,7 @@ channel_data=sim.go();
 % generate a sector scan. *scan* too has a useful *plot* method it can call.
 
 z_axis=linspace(39e-3,41e-3,100).';
-scan=uff.linear_scan();
-for n=1:length(x_axis)
-    scan(n)=uff.linear_scan('x_axis',x_axis(n),'z_axis',z_axis);
-    scan(n).plot(fig_handle,'Scenario');    
-end
+scan=uff.linear_scan('x_axis',x_axis,'z_axis',z_axis);
 
 %% Pipeline
 %
@@ -385,6 +311,8 @@ end
 pipe=pipeline();
 pipe.channel_data=channel_data;
 pipe.scan=scan;
+
+pipe.transmit_apodization.window=uff.window.scanline;
 
 pipe.receive_apodization.window=uff.window.tukey50;
 pipe.receive_apodization.f_number=1.7;
@@ -397,9 +325,13 @@ pipe.receive_apodization.f_number=1.7;
 % *uff.beamformed_data* structure.
 % 
 % To achieve the goal of this example, we use first a demodulation preprocess, 
-% a delay mex implementation, and then we stack each line into a single image.
+% a delay mex implementation.
+pre = preprocess.demodulation();
 
-b_data=pipe.go({preprocess.demodulation midprocess.delay_mex postprocess.stack});
+mid = midprocess.das();
+mid.dimension = dimension.transmit();
+
+b_data=pipe.go({pre mid});
 b_data.plot();
 
 %% Test out some of the many receive beamforming processes USTB has to offer
@@ -436,6 +368,7 @@ mv_data.plot([],mv.name);
 % We could also use the *coherence_factor* process which implements the 
 % Mallart-Fink coherence factor beamforming to beamform the data.
 cf=postprocess.coherence_factor();
+cf.dimension = dimension.receive;
 cf.transmit_apodization=pipe.transmit_apodization;
 cf.receive_apodization=pipe.receive_apodization;
 cf.input=b_data;
@@ -444,8 +377,8 @@ cf_data=cf.go();
 figure;
 ax1=subplot(1,2,1);
 ax2=subplot(1,2,2);
-cf_data.plot(ax1,'CF image')
-cf.CF.plot(ax2,'CF factor',60,'none')
+cf_data.plot(ax1,'CF image');
+cf.CF.plot(ax2,'CF factor',60,'none');
 
 %% 
 %
@@ -453,6 +386,7 @@ cf.CF.plot(ax2,'CF factor',60,'none')
 % implements the Camacho-Fritsch phase coherence factor beamforming method.
 % We are truly spoilt for choice!
 pcf=postprocess.phase_coherence_factor();
+pcf.dimension = dimension.receive;
 pcf.transmit_apodization=pipe.transmit_apodization;
 pcf.receive_apodization=pipe.receive_apodization;
 pcf.input=b_data;
@@ -461,8 +395,8 @@ pcf_data=pcf.go();
 figure;
 ax1=subplot(1,2,1);
 ax2=subplot(1,2,2);
-pcf_data.plot(ax1,'FCC image')
-pcf.FCC.plot(ax2,'FCC factor',60,'none')
+pcf_data.plot(ax1,'FCC image');
+pcf.FCC.plot(ax2,'FCC factor',60,'none');
 
 ##### SOURCE END #####
 --></body></html>

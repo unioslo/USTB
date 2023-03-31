@@ -37,8 +37,6 @@ classdef short_lag_spatial_coherence < postprocess
     
     %% Additional properties
     properties
-        receive_apodization                           % APODIZATION class
-        transmit_apodization                          % APODIZATION class
         active_element_criterium=0.16;                % value to decide whether an element is used or not
         K_in_lambda;
         dimension                                     % dimension class that specifies whether the process will run only on transmit, receive, or both.
@@ -138,13 +136,13 @@ classdef short_lag_spatial_coherence < postprocess
         function [SLSC_img,slsc_values] = short_lag_spatial_coherence_implementation(h,data_cube)
             %% Calculate the Normalized Spatial Coherence across the receive aperture
             temp_find_idx = squeeze(sum(real(data_cube),1));
-            slsc_values = zeros(size(data_cube,1),h.maxM,size(data_cube,3));
+            slsc_values = zeros(size(data_cube,1),h.maxM,size(data_cube,2));
             
             for xs = 1:size(data_cube,2)
                 idx = abs(temp_find_idx(xs,:))>0;  
                 f_i = sum(idx);
                 lag = h.makelagmat(1,f_i,h.maxM);
-                cc2 =  mex.slsc_mex(squeeze(real(data_cube(:,xs,idx))),lag,h.K_samples,1);
+                [~, cc2] =  evalc('mex.slsc_mex(squeeze(real(data_cube(:,xs,idx))),lag,h.K_samples,1);');
                 cc2(isnan(cc2)) = 0;
                 slsc_values(:,1:size(cc2,2),xs)=cc2;
             end

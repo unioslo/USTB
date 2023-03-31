@@ -106,9 +106,9 @@ channel_data=sim.go();
 % method it can call.
 
 scan=uff.sector_scan();
-scan.azimuth_axis=linspace(-prb.maximum_angle,prb.maximum_angle,256).';
-scan.depth_axis=linspace(prb.radius,prb.radius+180e-3,256).';
-scan.apex=uff.point('xyz',[0 0 -prb.radius]);
+scan.azimuth_axis=linspace(-prb.maximum_angle,prb.maximum_angle,512).';
+scan.depth_axis=linspace(prb.radius,prb.radius+180e-3,768).';
+scan.origin = uff.point('xyz', [0, 0 -prb.radius]);
 scan.plot(fig_handle,'Scenario');    % show mesh
 
 %% Midprocessor
@@ -124,9 +124,11 @@ mid.channel_data=channel_data;
 mid.scan=scan;
 
 mid.receive_apodization.window=uff.window.tukey50;
-mid.receive_apodization.f_number=1.7;
-mid.receive_apodization.origo=scan.apex;
+mid.receive_apodization.f_number=2.5;
+
+mid.transmit_apodization.window=uff.window.tukey50;
+mid.transmit_apodization.f_number=1.5;
 
 % beamforming
 b_data=mid.go();
-h_fig=b_data.plot();hold on;
+h_fig=b_data.plot()

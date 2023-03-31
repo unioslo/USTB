@@ -1,0 +1,813 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Proceedings_FI_UFF_Verasonics_RTB_delay_models</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-08-02"><meta name="DC.source" content="Proceedings_FI_UFF_Verasonics_RTB_delay_models.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Focused Linear scan with L7-4 probe in Verasonics demonstrating RTB</a></li><li><a href="#2">Read channel data</a></li><li><a href="#3">Define Scan</a></li><li><a href="#4">Conventional Scanline Beamforming</a></li><li><a href="#5">Display the Conventional Scanline Image</a></li><li><a href="#6">Create scan with MLA's</a></li><li><a href="#7">Retrospective beamforming (RTB) with conventional spherical model</a></li><li><a href="#8">Show and save the individual transmit image from the convetional spherical model</a></li><li><a href="#9">Adjust the beamforming to apply the tukey window on the individual transmit images</a></li><li><a href="#10">Adjust the beamforming to create the full RTB image from the spherical model</a></li><li><a href="#13">RTB using Nguyen &amp; Prager's unified transmit model</a></li><li><a href="#14">Show and save the individual transmit image from the unfied model</a></li><li><a href="#15">Adjust the beamforming to apply the tukey window on the individual transmit images</a></li><li><a href="#16">Adjust the beamforming to create the full RTB image from the unified model</a></li><li><a href="#18">RTB using our introduced model, the hybrid transmit delay model.</a></li><li><a href="#19">Show and save the individual transmit image from the unfied model</a></li><li><a href="#20">Adjust the beamforming to apply the tukey window on the individual transmit images</a></li><li><a href="#21">Adjust the beamforming to create the full RTB image from our hybrid model</a></li><li><a href="#23">Create Fig. 5. comparing resolution of the scatterer at z = 58.5</a></li><li><a href="#24">Create plot that was used in the abstract showing the images and the TX delays</a></li><li><a href="#25">Plot the calculated delays for the 64/128 transmitted wave in Fig. 6.</a></li></ul></div><h2 id="1">Focused Linear scan with L7-4 probe in Verasonics demonstrating RTB</h2><p>This script is available in the USTB repository as /USTB/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/</p><p>This example demonstrates the RTB implementation and demonstrates different fixes to the artifact occuring near the focus.</p><p>One solution is the transmit delay model introduced in  Nguyen, N. Q., &amp; Prager, R. W. (2016). High-Resolution Ultrasound Imaging With Unified Pixel-Based Beamforming. IEEE Trans. Med. Imaging, 35(1), 98-108.</p><p>Another solution is a simpler model assuming PW around focus.</p><p>This scripts creates the figure used in the proceedings paper</p><pre class="codeinput"><span class="comment">%&#65279;Rindal, O. M. H., Rodriguez-Molares, A., Austeng, A. (2018). A simple, artifact-free,</span>
+<span class="comment">% virtual source model. 2018 IEEE International Ultrasonics Symposium (IUS), 1&#8211;4.</span>
+<span class="comment">%</span>
+<span class="comment">% _by Ole Marius Hoel Rindal &lt;olemarius@olemarius.net&gt; Last updated: 2018/10/05</span>
+</pre><h2 id="2">Read channel data</h2><pre class="codeinput">clear <span class="string">all</span>; close <span class="string">all</span>;
+
+<span class="comment">% data location</span>
+url=<span class="string">'http://ustb.no/datasets/'</span>;      <span class="comment">% if not found downloaded from here</span>
+
+filename=<span class="string">'L7_FI_IUS2018.uff'</span>;
+tools.download(filename, url, data_path);
+channel_data =uff.read_object([data_path filesep filename],<span class="string">'/channel_data'</span>);
+</pre><pre class="codeoutput">UFF: reading channel_data [uff.channel_data]
+UFF: reading sequence [uff.wave] [====================] 100%
+</pre><h2 id="3">Define Scan</h2><pre class="codeinput">x_axis=zeros(channel_data.N_waves,1);
+<span class="keyword">for</span> n=1:channel_data.N_waves
+    x_axis(n)=channel_data.sequence(n).source.x;
+<span class="keyword">end</span>
+z_axis=linspace(1e-3,62e-3,512*2).';
+scan=uff.linear_scan(<span class="string">'x_axis'</span>,x_axis,<span class="string">'z_axis'</span>,z_axis);
+</pre><h2 id="4">Conventional Scanline Beamforming</h2><pre class="codeinput">mid = midprocess.das();
+mid.dimension = dimension.both();
+
+mid.channel_data = channel_data;
+mid.scan=scan;
+
+mid.transmit_apodization.window=uff.window.scanline;
+
+mid.receive_apodization.window=uff.window.none;
+mid.receive_apodization.f_number=1.7;
+
+b_data=mid.go();
+</pre><pre class="codeoutput">USTB General beamformer MEX v1.1.2 .............done!
+</pre><h2 id="5">Display the Conventional Scanline Image</h2><p>This creates the image for Fig. 3a and 4a.</p><pre class="codeinput">b_data.plot([],<span class="string">'Conventional one scanline per transmit'</span>);
+
+f456 = figure(456);clf;
+imagesc(scan.x_axis*1000,z_axis*1000,b_data.get_image);
+colormap <span class="string">gray</span>; caxis([-60 0]); axis <span class="string">image</span>;
+xlabel(<span class="string">'x[mm]'</span>);ylabel(<span class="string">'z[mm]'</span>);
+set(gca,<span class="string">'Fontsize'</span>,15)
+saveas(f456,[ustb_path,<span class="string">'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/full_image_conventional.eps'</span>],<span class="string">'eps2c'</span>)
+axis([5 12 26 36])
+saveas(f456,[ustb_path,<span class="string">'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/full_image_conventional_zoomed.eps'</span>],<span class="string">'eps2c'</span>)
+</pre><img vspace="5" hspace="5" src="Proceedings_FI_UFF_Verasonics_RTB_delay_models_01.png" alt=""> <img vspace="5" hspace="5" src="Proceedings_FI_UFF_Verasonics_RTB_delay_models_02.png" alt=""> <h2 id="6">Create scan with MLA's</h2><pre class="codeinput">MLA = 4;
+scan_RTB=uff.linear_scan(<span class="string">'x_axis'</span>,linspace(x_axis(1),x_axis(end),<span class="keyword">...</span>
+                                    length(x_axis)*MLA)',<span class="string">'z_axis'</span>,z_axis);
+</pre><h2 id="7">Retrospective beamforming (RTB) with conventional spherical model</h2><p>We firs set up the beamforming to create all the images created from each transmit.</p><pre class="codeinput">mid_RTB_spherical_model=midprocess.das();
+mid_RTB_spherical_model.dimension = dimension.receive();
+
+mid_RTB_spherical_model.channel_data=channel_data;
+mid_RTB_spherical_model.scan=scan_RTB;
+mid_RTB_spherical_model.spherical_transmit_delay_model = spherical_transmit_delay_model.spherical;
+
+mid_RTB_spherical_model.transmit_apodization.window=uff.window.none;
+mid_RTB_spherical_model.transmit_apodization.f_number = 2;
+mid_RTB_spherical_model.transmit_apodization.MLA = MLA;
+mid_RTB_spherical_model.transmit_apodization.MLA_overlap = 1;
+mid_RTB_spherical_model.transmit_apodization.minimum_aperture = [3.000e-03 3.000e-03];
+
+mid_RTB_spherical_model.receive_apodization.window=uff.window.boxcar;
+mid_RTB_spherical_model.receive_apodization.f_number=1.7;
+b_data_RTB=mid_RTB_spherical_model.go();
+
+b_data_RTB.plot(767,<span class="string">'Single transmit images from spherical model'</span>)
+</pre><pre class="codeoutput">USTB General beamformer MEX v1.1.2 .............done!
+
+ans = 
+
+  Figure (767) with properties:
+
+      Number: 767
+        Name: ''
+       Color: [1 1 1]
+    Position: [100 100 600 700]
+       Units: 'pixels'
+
+  Use GET to show all properties
+
+</pre><img vspace="5" hspace="5" src="Proceedings_FI_UFF_Verasonics_RTB_delay_models_03.png" alt=""> <h2 id="8">Show and save the individual transmit image from the convetional spherical model</h2><p>This creates the image in Fig. 7a.</p><pre class="codeinput">tx = 61;
+f556 = figure(556);clf;
+img = reshape(b_data_RTB.data,scan_RTB.N_z_axis,scan_RTB.N_x_axis,channel_data.N_waves);
+
+imagesc(scan_RTB.x_axis*1000,z_axis*1000,db(abs(img(:,:,tx)./max(max(img(:,:,tx))))));
+colormap <span class="string">gray</span>; caxis([-60 0]); axis <span class="string">image</span>;
+xlabel(<span class="string">'x[mm]'</span>);ylabel(<span class="string">'z[mm]'</span>);
+set(gca,<span class="string">'Fontsize'</span>,15)
+saveas(f556,[ustb_path,<span class="string">'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/full_image_vs_single_tx.eps'</span>],<span class="string">'eps2c'</span>)
+</pre><img vspace="5" hspace="5" src="Proceedings_FI_UFF_Verasonics_RTB_delay_models_04.png" alt=""> <h2 id="9">Adjust the beamforming to apply the tukey window on the individual transmit images</h2><p>This creates the images in Fig. 8a.</p><pre class="codeinput">mid_RTB_spherical_model.transmit_apodization.window=uff.window.tukey25;
+b_data_RTB_weighted=mid_RTB_spherical_model.go();
+
+f556 = figure(556);
+img = reshape(b_data_RTB_weighted.data,scan_RTB.N_z_axis,scan_RTB.N_x_axis,channel_data.N_waves);
+imagesc(scan_RTB.x_axis*1000,z_axis*1000,db(abs(img(:,:,tx)./max(max(img(:,:,tx))))));
+colormap <span class="string">gray</span>; caxis([-60 0]); axis <span class="string">image</span>;
+xlabel(<span class="string">'x[mm]'</span>);ylabel(<span class="string">'z[mm]'</span>);
+set(gca,<span class="string">'Fontsize'</span>,15)
+axis([-2 -0.1 26 33])
+saveas(f556,[ustb_path,<span class="string">'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/vs_zoomed_single_tx.eps'</span>],<span class="string">'eps2c'</span>)
+</pre><pre class="codeoutput">uff.apodization: Inputs and outputs are unchanged. Skipping process.
+USTB General beamformer MEX v1.1.2 .............done!
+</pre><img vspace="5" hspace="5" src="Proceedings_FI_UFF_Verasonics_RTB_delay_models_05.png" alt=""> <h2 id="10">Adjust the beamforming to create the full RTB image from the spherical model</h2><pre class="codeinput">mid_RTB_spherical_model.dimension = dimension.both();
+mid_RTB_spherical_model.transmit_apodization.window=uff.window.tukey25;
+b_data_RTB=mid_RTB_spherical_model.go();
+
+b_data_RTB.plot(768,<span class="string">'RTB image using virtual source model'</span>);
+
+<span class="comment">% We need to compensate with the TX transmit apodization as weighting to</span>
+<span class="comment">% get a more uniform image</span>
+<span class="comment">% Calculate the transmit apodzation used to compensate image</span>
+tx_apod = mid_RTB_spherical_model.transmit_apodization.data;
+
+b_data_RTB_weighted = uff.beamformed_data(b_data_RTB);
+b_data_RTB_weighted.data = b_data_RTB_weighted.data.*(1./sum(tx_apod,2));
+b_data_RTB_weighted.plot(10,<span class="string">'RTB image using virtual source model, TX weighted'</span>);
+</pre><pre class="codeoutput">uff.apodization: Inputs and outputs are unchanged. Skipping process.
+uff.apodization: Inputs and outputs are unchanged. Skipping process.
+USTB General beamformer MEX v1.1.2 .............done!
+uff.apodization: Inputs and outputs are unchanged. Skipping process.
+</pre><img vspace="5" hspace="5" src="Proceedings_FI_UFF_Verasonics_RTB_delay_models_06.png" alt=""> <img vspace="5" hspace="5" src="Proceedings_FI_UFF_Verasonics_RTB_delay_models_07.png" alt=""> <p>After compensating with TX transmit apodization as weighting we get the final image shown in Fig. 3b and 4b.</p><pre class="codeinput">f456 = figure(456)
+imagesc(scan_RTB.x_axis*1000,z_axis*1000,b_data_RTB_weighted.get_image);
+colormap <span class="string">gray</span>; caxis([-60 0]); axis <span class="string">image</span>;
+xlabel(<span class="string">'x[mm]'</span>);ylabel(<span class="string">'z[mm]'</span>);
+set(gca,<span class="string">'Fontsize'</span>,15)
+saveas(f456,[ustb_path,<span class="string">'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/full_image_vs.eps'</span>],<span class="string">'eps2c'</span>)
+axis([5 12 26 36])
+saveas(f456,[ustb_path,<span class="string">'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/full_image_vs_zoomed.eps'</span>],<span class="string">'eps2c'</span>)
+</pre><pre class="codeoutput">
+f456 = 
+
+  Figure (456) with properties:
+
+      Number: 456
+        Name: ''
+       Color: [0.9400 0.9400 0.9400]
+    Position: [680 558 560 420]
+       Units: 'pixels'
+
+  Use GET to show all properties
+
+</pre><img vspace="5" hspace="5" src="Proceedings_FI_UFF_Verasonics_RTB_delay_models_08.png" alt=""> <p>Notice the line/articat along 29.6 mm, the transmit focus, which is the artifact we aim at getting rid of :)</p><h2 id="13">RTB using Nguyen &amp; Prager's unified transmit model</h2><p>beamforming using the "unified pixelbased beamforming" model from Nguyen, N. Q., &amp; Prager, R. W. (2016). High-Resolution Ultrasound Imaging With Unified Pixel-Based Beamforming. IEEE Trans. Med. Imaging, 35(1), 98-108. We firs set up the beamforming to create all the images created from each transmit.</p><pre class="codeinput">mid_RTB_unified_model =midprocess.das();
+mid_RTB_unified_model.dimension = dimension.receive();
+
+mid_RTB_unified_model.channel_data=channel_data;
+mid_RTB_unified_model.scan=scan_RTB;
+mid_RTB_unified_model.spherical_transmit_delay_model = spherical_transmit_delay_model.unified;
+
+mid_RTB_unified_model.transmit_apodization.window=uff.window.none;
+mid_RTB_unified_model.transmit_apodization.f_number = 2;
+mid_RTB_unified_model.transmit_apodization.MLA = MLA;
+mid_RTB_unified_model.transmit_apodization.MLA_overlap = 1;
+mid_RTB_unified_model.transmit_apodization.minimum_aperture = [3.000e-03 3.000e-03];
+
+mid_RTB_unified_model.receive_apodization.window=uff.window.boxcar;
+mid_RTB_unified_model.receive_apodization.f_number=1.7;
+b_data_RTB_unified=mid_RTB_unified_model.go();
+</pre><pre class="codeoutput">USTB General beamformer MEX v1.1.2 .............done!
+</pre><h2 id="14">Show and save the individual transmit image from the unfied model</h2><p>This creates the image in Fig. 7b.</p><pre class="codeinput">f556 = figure(556);clf;
+img = reshape(b_data_RTB_unified.data,scan_RTB.N_z_axis,scan_RTB.N_x_axis,channel_data.N_waves);
+imagesc(scan_RTB.x_axis*1000,z_axis*1000,db(abs(img(:,:,tx)./max(max(img(:,:,tx))))));
+colormap <span class="string">gray</span>; caxis([-60 0]); axis <span class="string">image</span>;
+xlabel(<span class="string">'x[mm]'</span>);ylabel(<span class="string">'z[mm]'</span>);
+set(gca,<span class="string">'Fontsize'</span>,15)
+saveas(f556,[ustb_path,<span class="string">'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/full_image_unified_single_tx.eps'</span>],<span class="string">'eps2c'</span>)
+</pre><img vspace="5" hspace="5" src="Proceedings_FI_UFF_Verasonics_RTB_delay_models_09.png" alt=""> <h2 id="15">Adjust the beamforming to apply the tukey window on the individual transmit images</h2><p>This creates the images in Fig. 8b.</p><pre class="codeinput">mid_RTB_unified_model.transmit_apodization.window=uff.window.tukey25;
+b_data_RTB_unified=mid_RTB_unified_model.go();
+
+f556 = figure(556);clf;
+img = reshape(b_data_RTB_unified.data,scan_RTB.N_z_axis,scan_RTB.N_x_axis,channel_data.N_waves);
+imagesc(scan_RTB.x_axis*1000,z_axis*1000,db(abs(img(:,:,tx)./max(max(img(:,:,tx))))));
+colormap <span class="string">gray</span>; caxis([-60 0]); axis <span class="string">image</span>;
+xlabel(<span class="string">'x[mm]'</span>);ylabel(<span class="string">'z[mm]'</span>);
+set(gca,<span class="string">'Fontsize'</span>,15)
+axis([-2 -0.1 26 33])
+saveas(f556,[ustb_path,<span class="string">'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/unified_zoomed_single_tx.eps'</span>],<span class="string">'eps2c'</span>)
+</pre><pre class="codeoutput">uff.apodization: Inputs and outputs are unchanged. Skipping process.
+USTB General beamformer MEX v1.1.2 .............done!
+</pre><img vspace="5" hspace="5" src="Proceedings_FI_UFF_Verasonics_RTB_delay_models_10.png" alt=""> <h2 id="16">Adjust the beamforming to create the full RTB image from the unified model</h2><pre class="codeinput">mid_RTB_unified_model.dimension = dimension.both();
+mid_RTB_unified_model.transmit_apodization.window=uff.window.tukey25;
+b_data_RTB_unified=mid_RTB_unified_model.go();
+<span class="comment">% Calculate the transmit apodzation used to compensate image</span>
+tx_apod = mid_RTB_unified_model.transmit_apodization.data;
+
+<span class="comment">% Also compensating with TX transmit apodization as weighting we get the</span>
+<span class="comment">% final image shown in Fig. 3c and 4c.</span>
+b_data_RTB_unified_fix_weighted = uff.beamformed_data(b_data_RTB_unified);
+b_data_RTB_unified_fix_weighted.data = b_data_RTB_unified_fix_weighted.data<span class="keyword">...</span>
+                                                        .*(1./sum(tx_apod,2));
+b_data_RTB_unified_fix_weighted.plot(11,<span class="string">'RTB image Nguyen &amp; Prager mode'</span>);
+
+f456 = figure(456);clf
+imagesc(scan_RTB.x_axis*1000,z_axis*1000,b_data_RTB_unified_fix_weighted.get_image);
+colormap <span class="string">gray</span>; caxis([-60 0]); axis <span class="string">image</span>;
+xlabel(<span class="string">'x[mm]'</span>);ylabel(<span class="string">'z[mm]'</span>);
+set(gca,<span class="string">'Fontsize'</span>,15)
+saveas(f456,[ustb_path,<span class="string">'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/full_image_unified.eps'</span>],<span class="string">'eps2c'</span>)
+axis([5 12 26 36])
+saveas(f456,[ustb_path,<span class="string">'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/full_image_unified_zoomed.eps'</span>],<span class="string">'eps2c'</span>)
+</pre><pre class="codeoutput">uff.apodization: Inputs and outputs are unchanged. Skipping process.
+uff.apodization: Inputs and outputs are unchanged. Skipping process.
+USTB General beamformer MEX v1.1.2 .............done!
+uff.apodization: Inputs and outputs are unchanged. Skipping process.
+</pre><img vspace="5" hspace="5" src="Proceedings_FI_UFF_Verasonics_RTB_delay_models_11.png" alt=""> <img vspace="5" hspace="5" src="Proceedings_FI_UFF_Verasonics_RTB_delay_models_12.png" alt=""> <p>Their model sucessfully removes the artifact at focus (29.6 mm)!</p><h2 id="18">RTB using our introduced model, the hybrid transmit delay model.</h2><p>This is a simple model using conventional spherical transmit delay, but we assuming PW ware propagation around focus We firs set up the beamforming to create all the images created from each transmit.</p><pre class="codeinput">mid_RTB_with_plane_model=midprocess.das();
+mid_RTB_with_plane_model.dimension = dimension.receive();
+mid_RTB_with_plane_model.spherical_transmit_delay_model = spherical_transmit_delay_model.hybrid;
+
+<span class="comment">%Optionally set the margin of the region around focus to use PW tx delay</span>
+mid_RTB_with_plane_model.pw_margin = 1/1000;
+
+mid_RTB_with_plane_model.channel_data=channel_data;
+mid_RTB_with_plane_model.scan=scan_RTB;
+
+mid_RTB_with_plane_model.transmit_apodization.window=uff.window.none;
+mid_RTB_with_plane_model.transmit_apodization.f_number = 2;
+mid_RTB_with_plane_model.transmit_apodization.MLA = MLA;
+mid_RTB_with_plane_model.transmit_apodization.MLA_overlap = 1;
+mid_RTB_with_plane_model.transmit_apodization.minimum_aperture = [3.000e-03 3.000e-03];
+
+mid_RTB_with_plane_model.receive_apodization.window=uff.window.boxcar;
+mid_RTB_with_plane_model.receive_apodization.f_number=1.7;
+b_data_RTB_with_plane=mid_RTB_with_plane_model.go();
+</pre><pre class="codeoutput">USTB General beamformer MEX v1.1.2 .............done!
+</pre><h2 id="19">Show and save the individual transmit image from the unfied model</h2><p>This creates the image in Fig. 7c.</p><pre class="codeinput">f556 = figure(556);clf;
+img = reshape(b_data_RTB_with_plane.data,scan_RTB.N_z_axis,scan_RTB.N_x_axis,channel_data.N_waves);
+imagesc(scan_RTB.x_axis*1000,z_axis*1000,db(abs(img(:,:,tx)./max(max(img(:,:,tx))))));
+colormap <span class="string">gray</span>; caxis([-60 0]); axis <span class="string">image</span>;
+xlabel(<span class="string">'x[mm]'</span>);ylabel(<span class="string">'z[mm]'</span>);
+set(gca,<span class="string">'Fontsize'</span>,15)
+saveas(f556,[ustb_path,<span class="string">'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/full_image_hybrid_single_tx.eps'</span>],<span class="string">'eps2c'</span>)
+</pre><img vspace="5" hspace="5" src="Proceedings_FI_UFF_Verasonics_RTB_delay_models_13.png" alt=""> <h2 id="20">Adjust the beamforming to apply the tukey window on the individual transmit images</h2><p>This creates the images in Fig. 8c.</p><pre class="codeinput">mid_RTB_with_plane_model.transmit_apodization.window=uff.window.tukey25;
+b_data_RTB_with_plane=mid_RTB_with_plane_model.go();
+
+f556 = figure(556);clf;
+img = reshape(b_data_RTB_with_plane.data,scan_RTB.N_z_axis,scan_RTB.N_x_axis,channel_data.N_waves);
+imagesc(scan_RTB.x_axis*1000,z_axis*1000,db(abs(img(:,:,tx)./max(max(img(:,:,tx))))));
+colormap <span class="string">gray</span>; caxis([-60 0]); axis <span class="string">image</span>;
+xlabel(<span class="string">'x[mm]'</span>);ylabel(<span class="string">'z[mm]'</span>);
+set(gca,<span class="string">'Fontsize'</span>,15)
+axis([-2 -0.1 26 33])
+saveas(f556,[ustb_path,<span class="string">'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/hybrid_zoomed_single_tx.eps'</span>],<span class="string">'eps2c'</span>)
+</pre><pre class="codeoutput">uff.apodization: Inputs and outputs are unchanged. Skipping process.
+USTB General beamformer MEX v1.1.2 .............done!
+</pre><img vspace="5" hspace="5" src="Proceedings_FI_UFF_Verasonics_RTB_delay_models_14.png" alt=""> <h2 id="21">Adjust the beamforming to create the full RTB image from our hybrid model</h2><pre class="codeinput">mid_RTB_with_plane_model.dimension = dimension.both();
+mid_RTB_with_plane_model.transmit_apodization.window=uff.window.tukey25;
+b_data_RTB_with_plane=mid_RTB_with_plane_model.go();
+
+<span class="comment">% Calculate the transmit apodzation used to compensate image</span>
+tx_apod = mid_RTB_with_plane_model.transmit_apodization.data;
+
+<span class="comment">% Also compensating with TX transmit apodization as weighting we get the</span>
+<span class="comment">% final image shown in Fig. 3d and 4d.</span>
+b_data_RTB_plane_fix_weighted = uff.beamformed_data(b_data_RTB_with_plane);
+b_data_RTB_plane_fix_weighted.data = b_data_RTB_plane_fix_weighted.data<span class="keyword">...</span>
+                                                        .*(1./sum(tx_apod,2));
+b_data_RTB_plane_fix_weighted.plot(10,<span class="string">'RTB image with PW hybrid virtual source model'</span>);
+
+f459 = figure(459);clf;
+imagesc(scan_RTB.x_axis*1000,z_axis*1000,b_data_RTB_plane_fix_weighted.get_image);
+colormap <span class="string">gray</span>; caxis([-60 0]); axis <span class="string">image</span>;
+xlabel(<span class="string">'x[mm]'</span>);ylabel(<span class="string">'z[mm]'</span>);
+set(gca,<span class="string">'Fontsize'</span>,15)
+saveas(f459,[ustb_path,<span class="string">'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/full_image_hybrid.eps'</span>],<span class="string">'eps2c'</span>)
+axis([5 12 26 36])
+saveas(f459,[ustb_path,<span class="string">'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/full_image_hybrid_zoomed.eps'</span>],<span class="string">'eps2c'</span>)
+</pre><pre class="codeoutput">uff.apodization: Inputs and outputs are unchanged. Skipping process.
+uff.apodization: Inputs and outputs are unchanged. Skipping process.
+USTB General beamformer MEX v1.1.2 .............done!
+uff.apodization: Inputs and outputs are unchanged. Skipping process.
+</pre><img vspace="5" hspace="5" src="Proceedings_FI_UFF_Verasonics_RTB_delay_models_15.png" alt=""> <img vspace="5" hspace="5" src="Proceedings_FI_UFF_Verasonics_RTB_delay_models_16.png" alt=""> <p>Our simple  model also removes the artifact</p><h2 id="23">Create Fig. 5. comparing resolution of the scatterer at z = 58.5</h2><pre class="codeinput">f456 = figure(456);clf;
+subplot(211);
+img_conventional = b_data.get_image;
+img_vs = b_data_RTB_weighted.get_image;
+img_unified = b_data_RTB_unified_fix_weighted.get_image;
+img_hybrid = b_data_RTB_plane_fix_weighted.get_image;
+hold <span class="string">all</span>;
+plot(scan.x_axis*1000,img_conventional(962,:)-max(img_conventional(962,:)),<span class="string">'LineWidth'</span>,2,<span class="string">'DisplayName'</span>,<span class="string">'Scanline beamforming'</span>);
+plot(scan_RTB.x_axis*1000,img_vs(962,:)-max(img_vs(962,:)),<span class="string">'LineWidth'</span>,2,<span class="string">'DisplayName'</span>,<span class="string">'RTB spherical'</span>);
+scatter(scan_RTB.x_axis(:)*1000,img_unified(962,:)-max(img_unified(962,:)),<span class="string">'LineWidth'</span>,2,<span class="string">'DisplayName'</span>,<span class="string">'RTB unified'</span>,<span class="string">'Marker'</span>,<span class="string">'&lt;'</span>);
+scatter(scan_RTB.x_axis*1000,img_hybrid(962,:)-max(img_hybrid(962,:)),<span class="string">'LineWidth'</span>,2,<span class="string">'DisplayName'</span>,<span class="string">'RTB hybrid'</span>,<span class="string">'Marker'</span>,<span class="string">'o'</span>);
+xlim([-5 4]);legend <span class="string">show</span>;
+ylabel(<span class="string">'Amplitude [dB]'</span>);xlabel(<span class="string">'x[mm]'</span>)
+
+set(gca,<span class="string">'Fontsize'</span>,15)
+saveas(f456,[ustb_path,<span class="string">'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/resolution.eps'</span>],<span class="string">'eps2c'</span>)
+</pre><img vspace="5" hspace="5" src="Proceedings_FI_UFF_Verasonics_RTB_delay_models_17.png" alt=""> <h2 id="24">Create plot that was used in the abstract showing the images and the TX delays</h2><p>The images can be zoomed in on the artifact as we did in the abstract, and we can see that both the Nguyen &amp; Prager model, and our simple PW model sucessfully removes the artifact at focus.</p><pre class="codeinput"><span class="comment">% We are plotting the TX delay used for the center transmit beam</span>
+tx_delay_spherical_model = reshape(mid_RTB_spherical_model.transmit_delay,scan_RTB.N_z_axis,<span class="keyword">...</span>
+                                    scan_RTB.N_x_axis,channel_data.N_waves);
+tx_delay_unified_model = reshape(mid_RTB_unified_model.transmit_delay,scan_RTB.N_z_axis,<span class="keyword">...</span>
+                                    scan_RTB.N_x_axis,channel_data.N_waves);
+tx_delay_hybrid_model = reshape(mid_RTB_with_plane_model.transmit_delay,scan_RTB.N_z_axis,<span class="keyword">...</span>
+                                    scan_RTB.N_x_axis,channel_data.N_waves);
+
+h = figure(100);clf;
+b_data_RTB_weighted.plot(subplot(2,3,1),<span class="string">'1a : Virtual source model'</span>);
+ax(1) = gca;
+b_data_RTB_unified_fix_weighted.plot(subplot(2,3,2),<span class="string">'1b : Model from [1]'</span>);
+ax(2) = gca;
+b_data_RTB_plane_fix_weighted.plot(subplot(2,3,3),<span class="string">'1c : Virt. source+PW model'</span>);
+ax(3) = gca;
+linkaxes(ax);
+axis([5 12 26 36])
+
+subplot(2,3,4); imagesc(scan_RTB.x_axis*1000, scan_RTB.z_axis*1000, <span class="keyword">...</span>
+                    tx_delay_spherical_model(:,:,channel_data.N_waves/2));
+title(<span class="string">'1d: Tx delay virtual source model'</span>);xlabel(<span class="string">'x [mm]'</span>);ylabel(<span class="string">'z [mm]'</span>);
+colorbar; set(gca,<span class="string">'fontsize'</span>,14);
+subplot(2,3,5); imagesc(scan_RTB.x_axis*1000, scan_RTB.z_axis*1000, <span class="keyword">...</span>
+                            tx_delay_unified_model(:,:,channel_data.N_waves/2));
+title(<span class="string">'1e: Tx delay model from [1]'</span>);xlabel(<span class="string">'x [mm]'</span>);ylabel(<span class="string">'z [mm]'</span>);
+colorbar; set(gca,<span class="string">'fontsize'</span>,14);
+subplot(2,3,6); imagesc(scan_RTB.x_axis*1000, scan_RTB.z_axis*1000, <span class="keyword">...</span><span class="comment">.</span>
+                            tx_delay_hybrid_model(:,:,channel_data.N_waves/2));
+title(<span class="string">'1f: Tx delay virt. source+PW model'</span>);xlabel(<span class="string">'x [mm]'</span>);ylabel(<span class="string">'z [mm]'</span>);
+colorbar; set(gca,<span class="string">'fontsize'</span>,14);<span class="comment">%colormap jet;</span>
+
+set(h,<span class="string">'Position'</span>,[271    38   843   621]);
+
+<span class="comment">% A few trics to get the colormap in the submitted abstract:</span>
+<span class="comment">% 1. Run the three bottom subplots with colormap jet</span>
+<span class="comment">% 2. Rerun the three first subplots to get colormap gray</span>
+</pre><img vspace="5" hspace="5" src="Proceedings_FI_UFF_Verasonics_RTB_delay_models_18.png" alt=""> <h2 id="25">Plot the calculated delays for the 64/128 transmitted wave in Fig. 6.</h2><p>First plot the delay calculated for the spherical model</p><pre class="codeinput">f66 = figure(66);
+imagesc(scan_RTB.x_axis*1000, scan_RTB.z_axis*1000, <span class="keyword">...</span>
+                    tx_delay_spherical_model(:,:,channel_data.N_waves/2));
+colorbar; set(gca,<span class="string">'fontsize'</span>,14); xlabel(<span class="string">'x [mm]'</span>);ylabel(<span class="string">'z [mm]'</span>);
+set(gca,<span class="string">'Fontsize'</span>,15)
+axis <span class="string">image</span>;
+c = caxis;
+caxis(c); colormap <span class="string">jet</span>
+saveas(f66,[ustb_path,<span class="string">'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/delay_vs.eps'</span>],<span class="string">'eps2c'</span>)
+</pre><img vspace="5" hspace="5" src="Proceedings_FI_UFF_Verasonics_RTB_delay_models_19.png" alt=""> <p>Plot the delay calculated for the unified model</p><pre class="codeinput">f67 = figure(67);
+imagesc(scan_RTB.x_axis*1000, scan_RTB.z_axis*1000, <span class="keyword">...</span>
+                            tx_delay_unified_model(:,:,channel_data.N_waves/2));
+colorbar; set(gca,<span class="string">'fontsize'</span>,14); xlabel(<span class="string">'x [mm]'</span>);ylabel(<span class="string">'z [mm]'</span>);
+set(gca,<span class="string">'Fontsize'</span>,15)
+axis <span class="string">image</span>;
+caxis(c); colormap <span class="string">jet</span>
+saveas(f67,[ustb_path,<span class="string">'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/delay_unified.eps'</span>],<span class="string">'eps2c'</span>)
+</pre><img vspace="5" hspace="5" src="Proceedings_FI_UFF_Verasonics_RTB_delay_models_20.png" alt=""> <p>Plot the delay calculated for the hybrid model</p><pre class="codeinput">f68 = figure(68);
+imagesc(scan_RTB.x_axis*1000, scan_RTB.z_axis*1000, <span class="keyword">...</span><span class="comment">.</span>
+                            tx_delay_hybrid_model(:,:,channel_data.N_waves/2));
+colorbar; set(gca,<span class="string">'fontsize'</span>,14); xlabel(<span class="string">'x [mm]'</span>);ylabel(<span class="string">'z [mm]'</span>);
+set(gca,<span class="string">'Fontsize'</span>,15)
+axis <span class="string">image</span>;
+caxis(c); colormap <span class="string">jet</span>
+saveas(f68,[ustb_path,<span class="string">'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/delay_hybrid.eps'</span>],<span class="string">'eps2c'</span>)
+</pre><img vspace="5" hspace="5" src="Proceedings_FI_UFF_Verasonics_RTB_delay_models_21.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Focused Linear scan with L7-4 probe in Verasonics demonstrating RTB
+%
+% This script is available in the USTB repository as
+% /USTB/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/
+%
+% This example demonstrates the RTB implementation and demonstrates
+% different fixes to the artifact occuring near the focus.
+%
+% One solution is the transmit delay model introduced in  Nguyen, N. Q., &
+% Prager, R. W. (2016). High-Resolution Ultrasound Imaging With Unified Pixel-Based 
+% Beamforming. IEEE Trans. Med. Imaging, 35(1), 98-108.
+%
+% Another solution is a simpler model assuming PW around focus.
+%
+% This scripts creates the figure used in the proceedings paper 
+%﻿Rindal, O. M. H., Rodriguez-Molares, A., Austeng, A. (2018). A simple, artifact-free, 
+% virtual source model. 2018 IEEE International Ultrasonics Symposium (IUS), 1–4. 
+%
+% _by Ole Marius Hoel Rindal <olemarius@olemarius.net> Last updated: 2018/10/05
+
+%% Read channel data
+
+clear all; close all;
+
+% data location
+url='http://ustb.no/datasets/';      % if not found downloaded from here
+
+filename='L7_FI_IUS2018.uff';
+tools.download(filename, url, data_path);   
+channel_data =uff.read_object([data_path filesep filename],'/channel_data');
+
+%% Define Scan
+x_axis=zeros(channel_data.N_waves,1);
+for n=1:channel_data.N_waves
+    x_axis(n)=channel_data.sequence(n).source.x;
+end
+z_axis=linspace(1e-3,62e-3,512*2).';
+scan=uff.linear_scan('x_axis',x_axis,'z_axis',z_axis);
+
+%% Conventional Scanline Beamforming
+mid = midprocess.das();
+mid.dimension = dimension.both();
+
+mid.channel_data = channel_data;
+mid.scan=scan;
+
+mid.transmit_apodization.window=uff.window.scanline;
+
+mid.receive_apodization.window=uff.window.none;
+mid.receive_apodization.f_number=1.7;
+
+b_data=mid.go();
+
+%% Display the Conventional Scanline Image
+% This creates the image for Fig. 3a and 4a.
+b_data.plot([],'Conventional one scanline per transmit');
+
+f456 = figure(456);clf;
+imagesc(scan.x_axis*1000,z_axis*1000,b_data.get_image);
+colormap gray; caxis([-60 0]); axis image;
+xlabel('x[mm]');ylabel('z[mm]');
+set(gca,'Fontsize',15)
+saveas(f456,[ustb_path,'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/full_image_conventional.eps'],'eps2c')
+axis([5 12 26 36])
+saveas(f456,[ustb_path,'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/full_image_conventional_zoomed.eps'],'eps2c')
+
+
+%% Create scan with MLA's
+MLA = 4;
+scan_RTB=uff.linear_scan('x_axis',linspace(x_axis(1),x_axis(end),...
+                                    length(x_axis)*MLA)','z_axis',z_axis);
+                                
+%% Retrospective beamforming (RTB) with conventional spherical model
+% We firs set up the beamforming to create all the images created from each
+% transmit.
+mid_RTB_spherical_model=midprocess.das();
+mid_RTB_spherical_model.dimension = dimension.receive();
+
+mid_RTB_spherical_model.channel_data=channel_data;
+mid_RTB_spherical_model.scan=scan_RTB;
+mid_RTB_spherical_model.spherical_transmit_delay_model = spherical_transmit_delay_model.spherical;
+
+mid_RTB_spherical_model.transmit_apodization.window=uff.window.none;
+mid_RTB_spherical_model.transmit_apodization.f_number = 2;
+mid_RTB_spherical_model.transmit_apodization.MLA = MLA;
+mid_RTB_spherical_model.transmit_apodization.MLA_overlap = 1;
+mid_RTB_spherical_model.transmit_apodization.minimum_aperture = [3.000e-03 3.000e-03];
+
+mid_RTB_spherical_model.receive_apodization.window=uff.window.boxcar;
+mid_RTB_spherical_model.receive_apodization.f_number=1.7;
+b_data_RTB=mid_RTB_spherical_model.go();
+
+b_data_RTB.plot(767,'Single transmit images from spherical model')
+
+%% Show and save the individual transmit image from the convetional spherical model
+% This creates the image in Fig. 7a.
+tx = 61;
+f556 = figure(556);clf;
+img = reshape(b_data_RTB.data,scan_RTB.N_z_axis,scan_RTB.N_x_axis,channel_data.N_waves);
+
+imagesc(scan_RTB.x_axis*1000,z_axis*1000,db(abs(img(:,:,tx)./max(max(img(:,:,tx))))));
+colormap gray; caxis([-60 0]); axis image;
+xlabel('x[mm]');ylabel('z[mm]');
+set(gca,'Fontsize',15)
+saveas(f556,[ustb_path,'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/full_image_vs_single_tx.eps'],'eps2c')
+
+%% Adjust the beamforming to apply the tukey window on the individual transmit images
+% This creates the images in Fig. 8a.
+mid_RTB_spherical_model.transmit_apodization.window=uff.window.tukey25;
+b_data_RTB_weighted=mid_RTB_spherical_model.go();
+
+f556 = figure(556);
+img = reshape(b_data_RTB_weighted.data,scan_RTB.N_z_axis,scan_RTB.N_x_axis,channel_data.N_waves);
+imagesc(scan_RTB.x_axis*1000,z_axis*1000,db(abs(img(:,:,tx)./max(max(img(:,:,tx))))));
+colormap gray; caxis([-60 0]); axis image;
+xlabel('x[mm]');ylabel('z[mm]');
+set(gca,'Fontsize',15)
+axis([-2 -0.1 26 33])
+saveas(f556,[ustb_path,'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/vs_zoomed_single_tx.eps'],'eps2c')
+
+%% Adjust the beamforming to create the full RTB image from the spherical model
+mid_RTB_spherical_model.dimension = dimension.both();
+mid_RTB_spherical_model.transmit_apodization.window=uff.window.tukey25;
+b_data_RTB=mid_RTB_spherical_model.go();
+
+b_data_RTB.plot(768,'RTB image using virtual source model');
+
+% We need to compensate with the TX transmit apodization as weighting to
+% get a more uniform image
+% Calculate the transmit apodzation used to compensate image
+tx_apod = mid_RTB_spherical_model.transmit_apodization.data;
+
+b_data_RTB_weighted = uff.beamformed_data(b_data_RTB);
+b_data_RTB_weighted.data = b_data_RTB_weighted.data.*(1./sum(tx_apod,2));
+b_data_RTB_weighted.plot(10,'RTB image using virtual source model, TX weighted');
+
+%%
+% After compensating with TX transmit apodization as weighting we get the
+% final image shown in Fig. 3b and 4b.
+f456 = figure(456)
+imagesc(scan_RTB.x_axis*1000,z_axis*1000,b_data_RTB_weighted.get_image);
+colormap gray; caxis([-60 0]); axis image;
+xlabel('x[mm]');ylabel('z[mm]');
+set(gca,'Fontsize',15)
+saveas(f456,[ustb_path,'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/full_image_vs.eps'],'eps2c')
+axis([5 12 26 36])
+saveas(f456,[ustb_path,'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/full_image_vs_zoomed.eps'],'eps2c')
+
+%%
+% Notice the line/articat along 29.6 mm, the transmit focus, which is 
+% the artifact we aim at getting rid of :)
+
+%% RTB using Nguyen & Prager's unified transmit model
+% beamforming using the "unified pixelbased beamforming" model from 
+% Nguyen, N. Q., & Prager, R. W. (2016). High-Resolution Ultrasound Imaging 
+% With Unified Pixel-Based Beamforming. IEEE Trans. Med. Imaging, 35(1), 98-108.
+% We firs set up the beamforming to create all the images created from each
+% transmit.
+
+mid_RTB_unified_model =midprocess.das();
+mid_RTB_unified_model.dimension = dimension.receive();
+
+mid_RTB_unified_model.channel_data=channel_data;
+mid_RTB_unified_model.scan=scan_RTB;
+mid_RTB_unified_model.spherical_transmit_delay_model = spherical_transmit_delay_model.unified;
+
+mid_RTB_unified_model.transmit_apodization.window=uff.window.none;
+mid_RTB_unified_model.transmit_apodization.f_number = 2;
+mid_RTB_unified_model.transmit_apodization.MLA = MLA;
+mid_RTB_unified_model.transmit_apodization.MLA_overlap = 1;
+mid_RTB_unified_model.transmit_apodization.minimum_aperture = [3.000e-03 3.000e-03];
+
+mid_RTB_unified_model.receive_apodization.window=uff.window.boxcar;
+mid_RTB_unified_model.receive_apodization.f_number=1.7;
+b_data_RTB_unified=mid_RTB_unified_model.go();
+
+%% Show and save the individual transmit image from the unfied model
+% This creates the image in Fig. 7b.
+f556 = figure(556);clf;
+img = reshape(b_data_RTB_unified.data,scan_RTB.N_z_axis,scan_RTB.N_x_axis,channel_data.N_waves);
+imagesc(scan_RTB.x_axis*1000,z_axis*1000,db(abs(img(:,:,tx)./max(max(img(:,:,tx))))));
+colormap gray; caxis([-60 0]); axis image;
+xlabel('x[mm]');ylabel('z[mm]');
+set(gca,'Fontsize',15)
+saveas(f556,[ustb_path,'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/full_image_unified_single_tx.eps'],'eps2c')
+
+%% Adjust the beamforming to apply the tukey window on the individual transmit images
+% This creates the images in Fig. 8b.
+mid_RTB_unified_model.transmit_apodization.window=uff.window.tukey25;
+b_data_RTB_unified=mid_RTB_unified_model.go();
+
+f556 = figure(556);clf;
+img = reshape(b_data_RTB_unified.data,scan_RTB.N_z_axis,scan_RTB.N_x_axis,channel_data.N_waves);
+imagesc(scan_RTB.x_axis*1000,z_axis*1000,db(abs(img(:,:,tx)./max(max(img(:,:,tx))))));
+colormap gray; caxis([-60 0]); axis image;
+xlabel('x[mm]');ylabel('z[mm]');
+set(gca,'Fontsize',15)
+axis([-2 -0.1 26 33])
+saveas(f556,[ustb_path,'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/unified_zoomed_single_tx.eps'],'eps2c')
+
+%% Adjust the beamforming to create the full RTB image from the unified model
+mid_RTB_unified_model.dimension = dimension.both();
+mid_RTB_unified_model.transmit_apodization.window=uff.window.tukey25;
+b_data_RTB_unified=mid_RTB_unified_model.go();
+% Calculate the transmit apodzation used to compensate image
+tx_apod = mid_RTB_unified_model.transmit_apodization.data;
+
+% Also compensating with TX transmit apodization as weighting we get the
+% final image shown in Fig. 3c and 4c.
+b_data_RTB_unified_fix_weighted = uff.beamformed_data(b_data_RTB_unified);
+b_data_RTB_unified_fix_weighted.data = b_data_RTB_unified_fix_weighted.data...
+                                                        .*(1./sum(tx_apod,2));
+b_data_RTB_unified_fix_weighted.plot(11,'RTB image Nguyen & Prager mode');
+
+f456 = figure(456);clf
+imagesc(scan_RTB.x_axis*1000,z_axis*1000,b_data_RTB_unified_fix_weighted.get_image);
+colormap gray; caxis([-60 0]); axis image;
+xlabel('x[mm]');ylabel('z[mm]');
+set(gca,'Fontsize',15)
+saveas(f456,[ustb_path,'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/full_image_unified.eps'],'eps2c')
+axis([5 12 26 36])
+saveas(f456,[ustb_path,'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/full_image_unified_zoomed.eps'],'eps2c')
+
+%%
+% Their model sucessfully removes the artifact at focus (29.6 mm)!
+
+%% RTB using our introduced model, the hybrid transmit delay model.
+% This is a simple model using conventional spherical transmit delay, but we
+% assuming PW ware propagation around focus
+% We firs set up the beamforming to create all the images created from each
+% transmit.
+
+mid_RTB_with_plane_model=midprocess.das();
+mid_RTB_with_plane_model.dimension = dimension.receive();
+mid_RTB_with_plane_model.spherical_transmit_delay_model = spherical_transmit_delay_model.hybrid;
+
+%Optionally set the margin of the region around focus to use PW tx delay
+mid_RTB_with_plane_model.pw_margin = 1/1000; 
+
+mid_RTB_with_plane_model.channel_data=channel_data;
+mid_RTB_with_plane_model.scan=scan_RTB;
+
+mid_RTB_with_plane_model.transmit_apodization.window=uff.window.none;
+mid_RTB_with_plane_model.transmit_apodization.f_number = 2;
+mid_RTB_with_plane_model.transmit_apodization.MLA = MLA;
+mid_RTB_with_plane_model.transmit_apodization.MLA_overlap = 1;
+mid_RTB_with_plane_model.transmit_apodization.minimum_aperture = [3.000e-03 3.000e-03];
+
+mid_RTB_with_plane_model.receive_apodization.window=uff.window.boxcar;
+mid_RTB_with_plane_model.receive_apodization.f_number=1.7;
+b_data_RTB_with_plane=mid_RTB_with_plane_model.go();
+
+%% Show and save the individual transmit image from the unfied model
+% This creates the image in Fig. 7c.
+f556 = figure(556);clf;
+img = reshape(b_data_RTB_with_plane.data,scan_RTB.N_z_axis,scan_RTB.N_x_axis,channel_data.N_waves);
+imagesc(scan_RTB.x_axis*1000,z_axis*1000,db(abs(img(:,:,tx)./max(max(img(:,:,tx))))));
+colormap gray; caxis([-60 0]); axis image;
+xlabel('x[mm]');ylabel('z[mm]');
+set(gca,'Fontsize',15)
+saveas(f556,[ustb_path,'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/full_image_hybrid_single_tx.eps'],'eps2c')
+
+%% Adjust the beamforming to apply the tukey window on the individual transmit images
+% This creates the images in Fig. 8c.
+mid_RTB_with_plane_model.transmit_apodization.window=uff.window.tukey25;
+b_data_RTB_with_plane=mid_RTB_with_plane_model.go();
+
+f556 = figure(556);clf;
+img = reshape(b_data_RTB_with_plane.data,scan_RTB.N_z_axis,scan_RTB.N_x_axis,channel_data.N_waves);
+imagesc(scan_RTB.x_axis*1000,z_axis*1000,db(abs(img(:,:,tx)./max(max(img(:,:,tx))))));
+colormap gray; caxis([-60 0]); axis image;
+xlabel('x[mm]');ylabel('z[mm]');
+set(gca,'Fontsize',15)
+axis([-2 -0.1 26 33])
+saveas(f556,[ustb_path,'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/hybrid_zoomed_single_tx.eps'],'eps2c')
+
+%% Adjust the beamforming to create the full RTB image from our hybrid model
+mid_RTB_with_plane_model.dimension = dimension.both();
+mid_RTB_with_plane_model.transmit_apodization.window=uff.window.tukey25;
+b_data_RTB_with_plane=mid_RTB_with_plane_model.go();
+
+% Calculate the transmit apodzation used to compensate image
+tx_apod = mid_RTB_with_plane_model.transmit_apodization.data;
+
+% Also compensating with TX transmit apodization as weighting we get the
+% final image shown in Fig. 3d and 4d.
+b_data_RTB_plane_fix_weighted = uff.beamformed_data(b_data_RTB_with_plane);
+b_data_RTB_plane_fix_weighted.data = b_data_RTB_plane_fix_weighted.data...
+                                                        .*(1./sum(tx_apod,2));
+b_data_RTB_plane_fix_weighted.plot(10,'RTB image with PW hybrid virtual source model');
+
+f459 = figure(459);clf;
+imagesc(scan_RTB.x_axis*1000,z_axis*1000,b_data_RTB_plane_fix_weighted.get_image);
+colormap gray; caxis([-60 0]); axis image;
+xlabel('x[mm]');ylabel('z[mm]');
+set(gca,'Fontsize',15)
+saveas(f459,[ustb_path,'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/full_image_hybrid.eps'],'eps2c')
+axis([5 12 26 36])
+saveas(f459,[ustb_path,'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/full_image_hybrid_zoomed.eps'],'eps2c')
+
+%%
+% Our simple  model also removes the artifact
+
+%% Create Fig. 5. comparing resolution of the scatterer at z = 58.5
+f456 = figure(456);clf;
+subplot(211);
+img_conventional = b_data.get_image;
+img_vs = b_data_RTB_weighted.get_image;
+img_unified = b_data_RTB_unified_fix_weighted.get_image;
+img_hybrid = b_data_RTB_plane_fix_weighted.get_image;
+hold all;
+plot(scan.x_axis*1000,img_conventional(962,:)-max(img_conventional(962,:)),'LineWidth',2,'DisplayName','Scanline beamforming');
+plot(scan_RTB.x_axis*1000,img_vs(962,:)-max(img_vs(962,:)),'LineWidth',2,'DisplayName','RTB spherical');
+scatter(scan_RTB.x_axis(:)*1000,img_unified(962,:)-max(img_unified(962,:)),'LineWidth',2,'DisplayName','RTB unified','Marker','<');
+scatter(scan_RTB.x_axis*1000,img_hybrid(962,:)-max(img_hybrid(962,:)),'LineWidth',2,'DisplayName','RTB hybrid','Marker','o');
+xlim([-5 4]);legend show;
+ylabel('Amplitude [dB]');xlabel('x[mm]')
+
+set(gca,'Fontsize',15)
+saveas(f456,[ustb_path,'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/resolution.eps'],'eps2c')
+
+%% Create plot that was used in the abstract showing the images and the TX delays
+% The images can be zoomed in on the artifact as we did in the abstract,
+% and we can see that both the Nguyen & Prager model, and our simple PW
+% model sucessfully removes the artifact at focus.
+
+% We are plotting the TX delay used for the center transmit beam
+tx_delay_spherical_model = reshape(mid_RTB_spherical_model.transmit_delay,scan_RTB.N_z_axis,...
+                                    scan_RTB.N_x_axis,channel_data.N_waves);
+tx_delay_unified_model = reshape(mid_RTB_unified_model.transmit_delay,scan_RTB.N_z_axis,...
+                                    scan_RTB.N_x_axis,channel_data.N_waves);
+tx_delay_hybrid_model = reshape(mid_RTB_with_plane_model.transmit_delay,scan_RTB.N_z_axis,...
+                                    scan_RTB.N_x_axis,channel_data.N_waves);
+
+h = figure(100);clf;
+b_data_RTB_weighted.plot(subplot(2,3,1),'1a : Virtual source model');
+ax(1) = gca;
+b_data_RTB_unified_fix_weighted.plot(subplot(2,3,2),'1b : Model from [1]');
+ax(2) = gca;
+b_data_RTB_plane_fix_weighted.plot(subplot(2,3,3),'1c : Virt. source+PW model');
+ax(3) = gca;
+linkaxes(ax);
+axis([5 12 26 36])
+
+subplot(2,3,4); imagesc(scan_RTB.x_axis*1000, scan_RTB.z_axis*1000, ...
+                    tx_delay_spherical_model(:,:,channel_data.N_waves/2));
+title('1d: Tx delay virtual source model');xlabel('x [mm]');ylabel('z [mm]');
+colorbar; set(gca,'fontsize',14); 
+subplot(2,3,5); imagesc(scan_RTB.x_axis*1000, scan_RTB.z_axis*1000, ...
+                            tx_delay_unified_model(:,:,channel_data.N_waves/2)); 
+title('1e: Tx delay model from [1]');xlabel('x [mm]');ylabel('z [mm]');
+colorbar; set(gca,'fontsize',14);
+subplot(2,3,6); imagesc(scan_RTB.x_axis*1000, scan_RTB.z_axis*1000, ....
+                            tx_delay_hybrid_model(:,:,channel_data.N_waves/2));
+title('1f: Tx delay virt. source+PW model');xlabel('x [mm]');ylabel('z [mm]');
+colorbar; set(gca,'fontsize',14);%colormap jet;
+
+set(h,'Position',[271    38   843   621]);
+
+% A few trics to get the colormap in the submitted abstract:
+% 1. Run the three bottom subplots with colormap jet
+% 2. Rerun the three first subplots to get colormap gray
+
+%% Plot the calculated delays for the 64/128 transmitted wave in Fig. 6.
+% First plot the delay calculated for the spherical model
+f66 = figure(66);
+imagesc(scan_RTB.x_axis*1000, scan_RTB.z_axis*1000, ...
+                    tx_delay_spherical_model(:,:,channel_data.N_waves/2));
+colorbar; set(gca,'fontsize',14); xlabel('x [mm]');ylabel('z [mm]');
+set(gca,'Fontsize',15)
+axis image;
+c = caxis;
+caxis(c); colormap jet
+saveas(f66,[ustb_path,'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/delay_vs.eps'],'eps2c')
+
+%%
+% Plot the delay calculated for the unified model
+f67 = figure(67);
+imagesc(scan_RTB.x_axis*1000, scan_RTB.z_axis*1000, ...
+                            tx_delay_unified_model(:,:,channel_data.N_waves/2)); 
+colorbar; set(gca,'fontsize',14); xlabel('x [mm]');ylabel('z [mm]');
+set(gca,'Fontsize',15)
+axis image;
+caxis(c); colormap jet
+saveas(f67,[ustb_path,'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/delay_unified.eps'],'eps2c')
+
+%%
+% Plot the delay calculated for the hybrid model
+f68 = figure(68);
+imagesc(scan_RTB.x_axis*1000, scan_RTB.z_axis*1000, ....
+                            tx_delay_hybrid_model(:,:,channel_data.N_waves/2));
+colorbar; set(gca,'fontsize',14); xlabel('x [mm]');ylabel('z [mm]');
+set(gca,'Fontsize',15)
+axis image;
+caxis(c); colormap jet
+saveas(f68,[ustb_path,'/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel/Figures/delay_hybrid.eps'],'eps2c')
+##### SOURCE END #####
+--></body></html>

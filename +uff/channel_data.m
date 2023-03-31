@@ -1,6 +1,6 @@
 classdef channel_data < uff
     %CHANNEL_DATA   UFF class to hold channel data
-    %   CHANNEL_DATA contains raw ultrasound data as acquired from an 
+    %   CHANNEL_DATA contains raw ultrasound data as acquired from an
     %   ultrasound scanner. Data is stored in the property _data_ with
     %   dimensions:
     %
@@ -46,7 +46,7 @@ classdef channel_data < uff
         phantom                         % UFF.PHANTOM object
         N_active_elements               % number of active transducers on receive
     end
-        
+    
     %% dependent properties
     properties  (Dependent)
         N_samples                       % number of samples in the data
@@ -56,7 +56,7 @@ classdef channel_data < uff
         N_frames                        % number of frames
         lambda                          % wavelength [m]
     end
-        
+    
     %% constructor -> uff constructor
     methods (Access = public)
         function h=channel_data(varargin)
@@ -64,11 +64,11 @@ classdef channel_data < uff
         end
     end
     
-    %% display methods 
+    %% display methods
     methods
-        function figure_handle=plot(h,figure_handle_in,n_wave)
+        function figure_handle=plot(h,figure_handle_in,n_wave,plot_abs)
             % PLOT Plots channel data
-
+            
             if nargin>1 && not(isempty(figure_handle_in))
                 figure_handle=figure(figure_handle_in);
             else
@@ -76,36 +76,60 @@ classdef channel_data < uff
             end
             
             if nargin <3
-                n_wave=round(mean(size(h.data,3)));
+                n_wave=ceil(h.N_waves/2);
+            end
+            
+            if nargin <4
+                plot_abs='abs';
             end
             
             colorMap = tools.inferno;
             
             if abs(h.modulation_frequency)>eps
-                subplot(1,2,1);
-                pcolor(1:h.N_elements,h.time(n_wave)*1e6,real(h.data(:,:,n_wave))); grid on; axis tight; colormap(colorMap); shading interp;
-                caxis(max(max(abs(real(h.data(:,:,n_wave))))) .* [-1 1]);
-                xlabel('Channel');
-                ylabel('time [\mus]');
-                set(gca,'Ydir','reverse');
-                set(gca,'fontsize',14);
-                title(sprintf('Real Part - Beam %d',n_wave));
-                subplot(1,2,2);                
-                pcolor(1:h.N_elements,h.time(n_wave)*1e6,imag(h.data(:,:,n_wave))); grid on; axis tight; colormap(colorMap); shading interp;
-                caxis(max(max(abs(imag(h.data(:,:,n_wave))))) * [-1 1]);
-                xlabel('Channel');
-                ylabel('time [\mus]');
-                set(gca,'Ydir','reverse');
-                set(gca,'fontsize',14);
-                title(sprintf('Imaginary Part - Beam %d',n_wave));
+                if strcmp(plot_abs,'abs')
+                    pcolor(1:h.N_elements,h.time(n_wave)*1e6,abs(h.data(:,:,n_wave))); grid on; axis tight; colormap(colorMap); shading interp;
+                    caxis(max(max(abs(h.data(:,:,n_wave)))) .* [-1 1]);
+                    xlabel('Channel');
+                    ylabel('time [\mus]');
+                    set(gca,'Ydir','reverse');
+                    set(gca,'fontsize',14);
+                    title(sprintf('Beam %d',n_wave));
+                else
+                    subplot(1,2,1);
+                    pcolor(1:h.N_elements,h.time(n_wave)*1e6,real(h.data(:,:,n_wave))); grid on; axis tight; colormap(colorMap); shading interp;
+                    caxis(max(max(abs(real(h.data(:,:,n_wave))))) .* [-1 1]);
+                    xlabel('Channel');
+                    ylabel('time [\mus]');
+                    set(gca,'Ydir','reverse');
+                    set(gca,'fontsize',14);
+                    title(sprintf('Real Part - Beam %d',n_wave));
+                    subplot(1,2,2);
+                    pcolor(1:h.N_elements,h.time(n_wave)*1e6,imag(h.data(:,:,n_wave))); grid on; axis tight; colormap(colorMap); shading interp;
+                    caxis(max(max(abs(imag(h.data(:,:,n_wave))))) * [-1 1]);
+                    xlabel('Channel');
+                    ylabel('time [\mus]');
+                    set(gca,'Ydir','reverse');
+                    set(gca,'fontsize',14);
+                    title(sprintf('Imaginary Part - Beam %d',n_wave));
+                end
             else
-                pcolor(1:h.N_elements,h.time(n_wave)*1e6,h.data(:,:,n_wave)); grid on; axis tight; colormap(colorMap); shading interp;
-                caxis(max(max(abs(h.data(:,:,n_wave)))) .* [-1 1]);
-                xlabel('Channel');
-                ylabel('time [\mus]');
-                set(gca,'Ydir','reverse');
-                set(gca,'fontsize',14);
-                title(sprintf('Beam %d',n_wave));
+                if strcmp(plot_abs,'abs')
+                    pcolor(1:h.N_elements,h.time(n_wave)*1e6,abs(hilbert(h.data(:,:,n_wave)))); grid on; axis tight; colormap(colorMap); shading interp;
+                    caxis(max(max(abs(h.data(:,:,n_wave)))) .* [-1 1]);
+                    xlabel('Channel');
+                    ylabel('time [\mus]');
+                    set(gca,'Ydir','reverse');
+                    set(gca,'fontsize',14);
+                    title(sprintf('Beam %d',n_wave));
+                else
+                    pcolor(1:h.N_elements,h.time(n_wave)*1e6,h.data(:,:,n_wave)); grid on; axis tight; colormap(colorMap); shading interp;
+                    caxis(max(max(abs(h.data(:,:,n_wave)))) .* [-1 1]);
+                    xlabel('Channel');
+                    ylabel('time [\mus]');
+                    set(gca,'Ydir','reverse');
+                    set(gca,'fontsize',14);
+                    title(sprintf('Beam %d',n_wave));
+                end
             end
         end
     end
@@ -115,7 +139,7 @@ classdef channel_data < uff
         function h=set.phantom(h,in_phantom)
             if ~isempty(in_phantom)
                 assert(isa(in_phantom,'uff.phantom'), 'The _phantom_ is not a PHANTOM class. Check HELP PHANTOM.');
-            end    
+            end
             h.phantom=in_phantom;
         end
         function h=set.pulse(h,in_pulse)
@@ -155,7 +179,7 @@ classdef channel_data < uff
             h.sound_speed=in_sound_speed;
         end
         function h=set.initial_time(h,in_initial_time)
-            if ~isempty(in_initial_time)            
+            if ~isempty(in_initial_time)
                 assert(numel(in_initial_time)==1, 'The initial time must be a scalar in [s]');
             end
             h.initial_time=in_initial_time;
@@ -163,12 +187,12 @@ classdef channel_data < uff
         function h=set.data(h,in_data)
             % checking needed inputs -> We cannot set an order in which
             % users will define data
-%            assert(~isempty(h.probe), 'The probe structure must be set before inserting the data.');
-%            assert(~isempty(h.sequence), 'The sequence structure must be set before inserting the data.');
-%            assert(~isempty(h.sampling_frequency), 'The sampling_frequency must be set before inserting the data.');
-%            assert(~isempty(h.initial_time), 'The initial_time must be set before inserting the data.');
-%            assert(size(in_data,2)==h.N_elements, 'The number of elements in the probe does not match the channels in the inserted data (2nd dimension).');
-%            assert(size(in_data,3)==h.N_waves, 'The number of waves in the sequence does not match the waves in the inserted data (3th dimension).');
+            %            assert(~isempty(h.probe), 'The probe structure must be set before inserting the data.');
+            %            assert(~isempty(h.sequence), 'The sequence structure must be set before inserting the data.');
+            %            assert(~isempty(h.sampling_frequency), 'The sampling_frequency must be set before inserting the data.');
+            %            assert(~isempty(h.initial_time), 'The initial_time must be set before inserting the data.');
+            %            assert(size(in_data,2)==h.N_elements, 'The number of elements in the probe does not match the channels in the inserted data (2nd dimension).');
+            %            assert(size(in_data,3)==h.N_waves, 'The number of waves in the sequence does not match the waves in the inserted data (3th dimension).');
             
             h.data=in_data;
         end
@@ -194,12 +218,12 @@ classdef channel_data < uff
     end
     
     methods
-         function value=time(h,n_wave)
-             value=(h.initial_time+(0:h.N_samples-1)/h.sampling_frequency).';
-             if nargin>1
+        function value=time(h,n_wave)
+            value=(h.initial_time+(0:h.N_samples-1)/h.sampling_frequency).';
+            if nargin>1
                 value = value + h.sequence(n_wave).delay;
-             end
-         end
+            end
+        end
     end
     
     %% get methods

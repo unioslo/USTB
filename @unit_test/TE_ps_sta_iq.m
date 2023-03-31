@@ -1,12 +1,12 @@
 function ok = TE_ps_sta_iq(h)
 %PS_STA_IQ Point Spread function Synthetic Transmit Aperture IQ test
-%   Downloads data from 'http://hirse.medisin.ntnu.no/ustb/data/ps/'
+%   Downloads data from 'https://www.ustb.no/datasets/ps'
 %   beamforms it and compares it with previously beamformed data (USTB v1.9)
 
     import uff.*;
     
     % data location
-    url='http://hirse.medisin.ntnu.no/ustb/data/ps/';   % if not found data will be downloaded from here
+    url='https://www.ustb.no/datasets/ps';   % if not found data will be downloaded from here
     local_path=[ustb_path() '/data/ps/'];                              % location of example data in this computer                      
     raw_data_filename='ps_sta_iq.mat';
     beamformed_data_filename='beamformed_ps_sta_iq.mat';
@@ -28,8 +28,10 @@ function ok = TE_ps_sta_iq(h)
         seq(n)=wave();
         seq(n).probe=prb;
         seq(n).sound_speed=s.c0;
-        seq(n).source.xyz=[prb.x(n) prb.y(n) prb.z(n)];
-        seq(n).delay=seq(n).source.distance/s.c0
+        % === Fix S.F. 16.02.2023 ===
+        seq(n).origin=uff.point('xyz', [prb.x(n), prb.y(n), prb.z(n)]);
+        seq(n).source=uff.point('xyz', [prb.x(n), prb.y(n), prb.z(n)]);
+        seq(n).delay=seq(n).source.distance/s.c0;
     end
     
     % RAW DATA
@@ -56,7 +58,7 @@ function ok = TE_ps_sta_iq(h)
     das.code = code.matlab;
     
     % beamforming
-    b_data=pipe.go({das postprocess.coherent_compounding});
+    b_data=pipe.go({das});
     
     % test result
     ok=(norm(b_data.data-r.data(:))/norm(r.data(:)))<h.external_tolerance;

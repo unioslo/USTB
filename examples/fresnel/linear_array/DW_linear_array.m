@@ -130,7 +130,3 @@ mid.transmit_apodization.minimum_aperture = [3e-3 3e-3];
 
 b_data=mid.go();
 b_data.plot();
-
-% check out the transmit and receive apodization maps
-mid.receive_apodization.plot([],64); title('Receive apodization')
-mid.transmit_apodization.plot([],15); title('Transmit apodization')

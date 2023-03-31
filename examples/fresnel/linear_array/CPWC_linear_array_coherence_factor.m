@@ -188,17 +188,17 @@ bmf_data_rx_pcf=rx_pcf.go();
 
 figure();
 ax = subplot(2,3,1);
-bmf_data_rx_cf.plot(ax,['CF on PW 1'],[],[],[1 1]);
+bmf_data_rx_cf.plot(ax,'CF on PW 1',[],[],[1,1,1]);
 ax = subplot(2,3,2);
-bmf_data_rx_cf.plot(ax,['CF on PW 3'],[],[],[1 3]);
+bmf_data_rx_cf.plot(ax,'CF on PW 3',[],[],[1,3,1]);
 ax = subplot(2,3,3);
-bmf_data_rx_cf.plot(ax,['CF on PW 5'],[],[],[1 5]);
+bmf_data_rx_cf.plot(ax,'CF on PW 5',[],[],[1,5,1]);
 ax = subplot(2,3,4);
-bmf_data_rx_pcf.plot(ax,['PCF on PW 1'],[],[],[1 1]);
+bmf_data_rx_pcf.plot(ax,'PCF on PW 1',[],[],[1,1,1]);
 ax = subplot(2,3,5);
-bmf_data_rx_pcf.plot(ax,['PCF on PW 3'],[],[],[1 3]);
+bmf_data_rx_pcf.plot(ax,'PCF on PW 3',[],[],[1,3,1]);
 ax = subplot(2,3,6);
-bmf_data_rx_pcf.plot(ax,['PCF on PW 5'],[],[],[1 4]);
+bmf_data_rx_pcf.plot(ax,'PCF on PW 5',[],[],[1,4,1]);
 set(gcf,'Position',[ 50 50 1232 592]);
 
 %% "transmit" dimension CF
@@ -211,11 +211,11 @@ cf_data_tx=proc_cf.go();
 
 figure();
 ax = subplot(1,3,1);
-cf_data_tx.plot(ax,['CF on EL 43'],[],[],[43 1]);
+cf_data_tx.plot(ax,'CF on EL 43',[],[],[43,1,1]);
 ax = subplot(1,3,2);
-cf_data_tx.plot(ax,['CF on EL 64'],[],[],[64 1]);
+cf_data_tx.plot(ax,'CF on EL 64',[],[],[64,1,1]);
 ax = subplot(1,3,3);
-cf_data_tx.plot(ax,['CF on EL 85'],[],[],[85 1]);
+cf_data_tx.plot(ax,'CF on EL 85',[],[],[85,1,1]);
 set(gcf,'Position',[ 50 150 1232 300]);
 
 %% "transmit" dimension PCF
@@ -228,9 +228,9 @@ pcf_data_tx=proc_pcf.go();
 
 figure();
 ax = subplot(1,3,1);
-pcf_data_tx.plot(ax,['PCF on EL 43'],[],[],[43 1]);
+pcf_data_tx.plot(ax,'PCF on EL 43',[],[],[43,1,1]);
 ax = subplot(1,3,2);
-pcf_data_tx.plot(ax,['PCF on EL 64'],[],[],[64 1]);
+pcf_data_tx.plot(ax,'PCF on EL 64',[],[],[64,1,1]);
 ax = subplot(1,3,3);
-pcf_data_tx.plot(ax,['PCF on EL 85'],[],[],[85 1]);
+pcf_data_tx.plot(ax,'PCF on EL 85',[],[],[85,1,1]);
 set(gcf,'Position',[ 50 150 1232 300]);

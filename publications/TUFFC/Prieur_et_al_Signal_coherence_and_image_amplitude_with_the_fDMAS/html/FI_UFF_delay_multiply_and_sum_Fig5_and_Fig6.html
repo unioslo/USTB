@@ -1,0 +1,348 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Delay Multiply And Sum on FI data from an UFF file</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-08-02"><meta name="DC.source" content="FI_UFF_delay_multiply_and_sum_Fig5_and_Fig6.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Delay Multiply And Sum on FI data from an UFF file</h1><!--introduction--><p>This script is also available as /publications/TUFFC/Prieur_et_al_Signal_coherence_and_image_amplitude_with_the_fDMAS /FI_UFF_delay_multiply_and_sum_Fig5_and_Fig6.m in the USTB repository.</p><p>Create the images with the recorded channel data in the paper:</p><p>F. Prieur, O. M. H. Rindal and A. Austeng, "Signal coherence and image amplitude with the Filtered-Delay-Multiply-And-Sum beamformer," in IEEE Transactions on Ultrasonics, Ferroelectrics, and Frequency Control. doi: 10.1109/TUFFC.2018.2831789</p><p>This script re-create Figs. 5 and 6 of the article.</p><p>This code uses the UltraSound ToolBox (USTB) and you'll need to download it first to successfully rund this code. To know more about the USTB visit <a href="http://www.ustb.no/">http://www.ustb.no/</a></p><p><i>by Ole Marius Hoel Rindal <a href="olemarius@olemarius.net">olemarius@olemarius.net</a> 10.10.2017</i></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Setting up file path</a></li><li><a href="#2">Reading channel data from UFF file</a></li><li><a href="#4">Define Scan</a></li><li><a href="#5">Delay the channel data</a></li><li><a href="#6">Define the DAS beamformer using coherent compounding of delayed data</a></li><li><a href="#7">Create the DMAS image using the delay_multiply_and_sum postprocess</a></li><li><a href="#8">Calculate the coherence factor (CF) image</a></li><li><a href="#9">Plot all three images in same plot - Fig. 5</a></li></ul></div><h2 id="1">Setting up file path</h2><p>To read data from a UFF file the first we need is, you guessed it, a UFF file. We check if it is on the current path and download it from the USTB websever.</p><pre class="codeinput">clear <span class="string">all</span>; close <span class="string">all</span>;
+
+<span class="comment">% data location</span>
+url=<span class="string">'http://ustb.no/datasets/'</span>;      <span class="comment">% if not found downloaded from here</span>
+local_path = [ustb_path(),<span class="string">'/data/'</span>]; <span class="comment">% location of example data</span>
+
+
+<span class="comment">% Choose dataset</span>
+filename=<span class="string">'L7_FI_Verasonics_CIRS_points.uff'</span>;
+
+<span class="comment">% check if the file is available in the local path or downloads otherwise</span>
+tools.download(filename, url, local_path);
+</pre><h2 id="2">Reading channel data from UFF file</h2><pre class="codeinput">channel_data=uff.read_object([local_path filename],<span class="string">'/channel_data'</span>);
+</pre><pre class="codeoutput error">Error using hdf5lib2
+The filename specified was either not found on the MATLAB path or it contains unsupported characters.
+
+Error in H5F.open (line 60)
+file_id = H5ML.hdf5lib2('H5Fopen', filename, flags, fapl);            
+
+Error in h5readatt&gt;open_file_split (line 183)
+    fid = H5F.open(filename,'H5F_ACC_RDONLY',fapl);
+
+Error in h5readatt&gt;open_file_multi (line 167)
+        fid = open_file_split(filename);
+
+Error in h5readatt&gt;open_file_family (line 147)
+        fid = open_file_multi(filename);
+
+Error in h5readatt&gt;open_file (line 126)
+        fid = open_file_family(filename);
+
+Error in h5readatt (line 47)
+file_id = open_file(options.Filename);
+
+Error in uff/read_object (line 37)
+file_version=h5readatt(filename, '/', 'version');    % read file version
+
+Error in FI_UFF_delay_multiply_and_sum_Fig5_and_Fig6 (line 42)
+channel_data=uff.read_object([local_path filename],'/channel_data');
+</pre><pre class="codeinput"><span class="comment">%Print info about the dataset</span>
+channel_data.print_authorship
+</pre><h2 id="4">Define Scan</h2><p>Define the image coordinates we want to beamform in the scan object. Notice that we need to use quite a lot of samples in the z-direction. This is because the DMAS creates an "artificial" second harmonic signal, so we need high enough sampling frequency in the image to get a second harmonic signal.</p><pre class="codeinput">z_axis=linspace(5e-3,45e-3,1700).';
+x_axis=zeros(channel_data.N_waves,1);
+<span class="keyword">for</span> n=1:channel_data.N_waves
+    x_axis(n) = channel_data.sequence(n).source.x;
+<span class="keyword">end</span>
+
+scan=uff.linear_scan(<span class="string">'x_axis'</span>,x_axis,<span class="string">'z_axis'</span>,z_axis);
+</pre><h2 id="5">Delay the channel data</h2><pre class="codeinput">delay = midprocess.das();
+delay.channel_data=channel_data;
+delay.scan=scan;
+delay.dimension = dimension.transmit();
+
+delay.transmit_apodization.window=uff.window.scanline;
+
+delay.receive_apodization.window=uff.window.none;
+delay.receive_apodization.f_number=1.7;
+
+delayed_b_data = delay.go();
+</pre><h2 id="6">Define the DAS beamformer using coherent compounding of delayed data</h2><pre class="codeinput">das = postprocess.coherent_compounding();
+das.input = delayed_b_data;
+b_data_das = das.go();
+
+b_data_das.plot([],<span class="string">'DAS'</span>);
+</pre><h2 id="7">Create the DMAS image using the delay_multiply_and_sum postprocess</h2><pre class="codeinput">dmas = postprocess.delay_multiply_and_sum();
+dmas.dimension = dimension.receive;
+dmas.channel_data = channel_data;
+dmas.input = delayed_b_data;
+dmas.receive_apodization = delay.receive_apodization;
+
+b_data_dmas=dmas.go();
+
+<span class="comment">% beamforming</span>
+b_data_dmas.plot(100,<span class="string">'F-DMAS'</span>);
+</pre><h2 id="8">Calculate the coherence factor (CF) image</h2><pre class="codeinput">cf = postprocess.coherence_factor();
+cf.dimension = dimension.receive();
+cf.input = delayed_b_data;
+b_data_CF_multiplied_DAS = cf.go();
+
+b_data_CF_multiplied_DAS.plot(101,<span class="string">'CF multiplied DAS'</span>);
+
+<span class="comment">% Get just the CF "factor"</span>
+cfImg = cf.CF.get_image(<span class="string">'none'</span>);
+</pre><h2 id="9">Plot all three images in same plot - Fig. 5</h2><pre class="codeinput">f3 = figure(3);clf
+b_data_das.plot(subplot(1,3,1),<span class="string">'DAS'</span>); <span class="comment">% Display image</span>
+ax(1) = gca;
+b_data_dmas.plot(subplot(1,3,2),<span class="string">'F DMAS'</span>); <span class="comment">% Display image</span>
+ax(2) = gca;
+subplot(1,3,3)
+imagesc(scan.x_axis*1e3,scan.z_axis*1e3,cfImg);colormap <span class="string">gray</span>;title(<span class="string">'CF factor'</span>);
+xlabel(<span class="string">'x [mm]'</span>);ylabel(<span class="string">'z [mm]'</span>);
+colorbar;axis(<span class="string">'image'</span>)
+set(gca,<span class="string">'FontSize'</span>,15);
+ax(3) = gca;
+linkaxes(ax);
+set(gcf,<span class="string">'Position'</span>,[195   446   793   253]);
+</pre><pre class="codeinput">dmas_img = b_data_dmas.get_image();
+das_img = b_data_das.get_image();
+line_idx = find(b_data_dmas.scan.z_axis&gt;=29.52e-3,1,<span class="string">'first'</span>);
+x_axis=b_data_dmas.scan.x_axis;
+pdmas=dmas_img(line_idx,:);
+pdas=das_img(line_idx,:);
+cfl=cfImg(line_idx,:);
+
+<span class="comment">% Plotting Fig. 6</span>
+figure(<span class="string">'color'</span>,<span class="string">'w'</span>,<span class="string">'position'</span>,[244   164   650   276]);
+subplot(<span class="string">'position'</span>,[0.05 0.12 0.885 0.82])
+[hAx,hLine1,hLine2] = plotyy([x_axis*1000, x_axis*1000],[pdas.', pdmas.'],x_axis*1000,cfl);
+hLine1(1).LineWidth=2;hLine1(1).Color=<span class="string">'b'</span>;
+hLine1(2).LineWidth=2;hLine1(2).Color=<span class="string">'r'</span>;
+hLine2.Color=<span class="string">'k'</span>;<span class="comment">%hLine2.LineStyle='--';</span>
+hAx(1).YLim=[-70 0];hAx(1).XLim=[-8 max(x_axis*1000)];
+hAx(2).YLim=[0 max(cfl)];hAx(2).XLim=[-8 max(x_axis*1000)];
+hAx(1).YLabel.String=<span class="string">'dB'</span>;hAx(1).YLabel.FontWeight=<span class="string">'bold'</span>;
+hAx(2).YLabel.String=<span class="string">'Coherence Factor'</span>;hAx(2).YLabel.FontWeight=<span class="string">'bold'</span>;
+hAx(1).YLabel.FontSize=13;hAx(2).YLabel.FontSize=13;
+hAx(1).XLabel.String=<span class="string">'x [mm]'</span>;hAx(1).XLabel.FontWeight=<span class="string">'bold'</span>;
+hAx(1).XLabel.FontSize=13;
+hAx(2).YColor=hAx(1).YColor;grid
+
+title(sprintf(<span class="string">'Lateral line through %.2f mm'</span>,<span class="keyword">...</span>
+                                  b_data_dmas.scan.z_axis(line_idx)*10^3));
+h=legend(<span class="string">'DAS'</span>,<span class="string">'F-DMAS'</span>,<span class="string">'Coherence Factor'</span>,<span class="string">'location'</span>,<span class="string">'northwest'</span>);grid
+set(h,<span class="string">'fontsize'</span>,13,<span class="string">'fontweight'</span>,<span class="string">'bold'</span>)
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Delay Multiply And Sum on FI data from an UFF file
+%
+% This script is also available as 
+% /publications/TUFFC/Prieur_et_al_Signal_coherence_and_image_amplitude_with_the_fDMAS
+% /FI_UFF_delay_multiply_and_sum_Fig5_and_Fig6.m in the USTB repository.
+%
+% Create the images with the recorded channel data in the paper: 
+%
+% F. Prieur, O. M. H. Rindal and A. Austeng, "Signal coherence and image 
+% amplitude with the Filtered-Delay-Multiply-And-Sum beamformer," in IEEE 
+% Transactions on Ultrasonics, Ferroelectrics, and Frequency Control.
+% doi: 10.1109/TUFFC.2018.2831789
+% 
+% This script re-create Figs. 5 and 6 of the article.
+%
+% This code uses the UltraSound ToolBox (USTB) and you'll need to download it
+% first to successfully rund this code. To know more about the USTB visit 
+% http://www.ustb.no/
+%
+% _by Ole Marius Hoel Rindal <olemarius@olemarius.net> 10.10.2017_
+
+%% Setting up file path
+%
+% To read data from a UFF file the first we need is, you guessed it, a UFF
+% file. We check if it is on the current path and download it from the USTB
+% websever.
+
+clear all; close all;
+
+% data location
+url='http://ustb.no/datasets/';      % if not found downloaded from here
+local_path = [ustb_path(),'/data/']; % location of example data
+
+
+% Choose dataset
+filename='L7_FI_Verasonics_CIRS_points.uff';
+
+% check if the file is available in the local path or downloads otherwise
+tools.download(filename, url, local_path);
+
+%% Reading channel data from UFF file
+channel_data=uff.read_object([local_path filename],'/channel_data');
+
+%%
+%Print info about the dataset
+channel_data.print_authorship
+
+%% Define Scan
+% Define the image coordinates we want to beamform in the scan object.
+% Notice that we need to use quite a lot of samples in the z-direction. 
+% This is because the DMAS creates an "artificial" second harmonic signal,
+% so we need high enough sampling frequency in the image to get a second
+% harmonic signal.
+
+z_axis=linspace(5e-3,45e-3,1700).';
+x_axis=zeros(channel_data.N_waves,1);
+for n=1:channel_data.N_waves
+    x_axis(n) = channel_data.sequence(n).source.x;
+end
+
+scan=uff.linear_scan('x_axis',x_axis,'z_axis',z_axis);
+
+%% Delay the channel data
+delay = midprocess.das();
+delay.channel_data=channel_data;
+delay.scan=scan;
+delay.dimension = dimension.transmit();
+
+delay.transmit_apodization.window=uff.window.scanline;
+
+delay.receive_apodization.window=uff.window.none;
+delay.receive_apodization.f_number=1.7;
+
+delayed_b_data = delay.go();
+
+%% Define the DAS beamformer using coherent compounding of delayed data
+das = postprocess.coherent_compounding();
+das.input = delayed_b_data;
+b_data_das = das.go();
+
+b_data_das.plot([],'DAS');
+
+%% Create the DMAS image using the delay_multiply_and_sum postprocess
+dmas = postprocess.delay_multiply_and_sum();
+dmas.dimension = dimension.receive;
+dmas.channel_data = channel_data;
+dmas.input = delayed_b_data;
+dmas.receive_apodization = delay.receive_apodization;
+
+b_data_dmas=dmas.go();
+
+% beamforming
+b_data_dmas.plot(100,'F-DMAS');
+
+%% Calculate the coherence factor (CF) image
+cf = postprocess.coherence_factor();
+cf.dimension = dimension.receive();
+cf.input = delayed_b_data;
+b_data_CF_multiplied_DAS = cf.go();
+
+b_data_CF_multiplied_DAS.plot(101,'CF multiplied DAS');
+
+% Get just the CF "factor"
+cfImg = cf.CF.get_image('none');
+
+%% Plot all three images in same plot - Fig. 5
+f3 = figure(3);clf
+b_data_das.plot(subplot(1,3,1),'DAS'); % Display image
+ax(1) = gca;
+b_data_dmas.plot(subplot(1,3,2),'F DMAS'); % Display image
+ax(2) = gca;
+subplot(1,3,3)
+imagesc(scan.x_axis*1e3,scan.z_axis*1e3,cfImg);colormap gray;title('CF factor');
+xlabel('x [mm]');ylabel('z [mm]');
+colorbar;axis('image')
+set(gca,'FontSize',15);
+ax(3) = gca;
+linkaxes(ax);
+set(gcf,'Position',[195   446   793   253]);
+
+%%   
+dmas_img = b_data_dmas.get_image();
+das_img = b_data_das.get_image();
+line_idx = find(b_data_dmas.scan.z_axis>=29.52e-3,1,'first');
+x_axis=b_data_dmas.scan.x_axis;
+pdmas=dmas_img(line_idx,:);
+pdas=das_img(line_idx,:);
+cfl=cfImg(line_idx,:);
+
+% Plotting Fig. 6
+figure('color','w','position',[244   164   650   276]);
+subplot('position',[0.05 0.12 0.885 0.82])
+[hAx,hLine1,hLine2] = plotyy([x_axis*1000, x_axis*1000],[pdas.', pdmas.'],x_axis*1000,cfl);
+hLine1(1).LineWidth=2;hLine1(1).Color='b';
+hLine1(2).LineWidth=2;hLine1(2).Color='r';
+hLine2.Color='k';%hLine2.LineStyle='REPLACE_WITH_DASH_DASH';
+hAx(1).YLim=[-70 0];hAx(1).XLim=[-8 max(x_axis*1000)];
+hAx(2).YLim=[0 max(cfl)];hAx(2).XLim=[-8 max(x_axis*1000)];
+hAx(1).YLabel.String='dB';hAx(1).YLabel.FontWeight='bold';
+hAx(2).YLabel.String='Coherence Factor';hAx(2).YLabel.FontWeight='bold';
+hAx(1).YLabel.FontSize=13;hAx(2).YLabel.FontSize=13;
+hAx(1).XLabel.String='x [mm]';hAx(1).XLabel.FontWeight='bold';
+hAx(1).XLabel.FontSize=13;
+hAx(2).YColor=hAx(1).YColor;grid
+
+title(sprintf('Lateral line through %.2f mm',...
+                                  b_data_dmas.scan.z_axis(line_idx)*10^3));
+h=legend('DAS','F-DMAS','Coherence Factor','location','northwest');grid
+set(h,'fontsize',13,'fontweight','bold')
+
+
+##### SOURCE END #####
+--></body></html>

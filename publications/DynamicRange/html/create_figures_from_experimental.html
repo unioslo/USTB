@@ -1,0 +1,776 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>create_figures_from_experimental</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-08-02"><meta name="DC.source" content="create_figures_from_experimental.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Create the figures from the experimental dynamic range phantom</a></li><li><a href="#2">Load the data</a></li><li><a href="#3">Print authorship and citation details for the dataset</a></li><li><a href="#4">Display and save the images from all beamformers under study</a></li><li><a href="#5">DAS</a></li><li><a href="#6">CF</a></li><li><a href="#7">PCF</a></li><li><a href="#8">GCF</a></li><li><a href="#9">MV</a></li><li><a href="#10">F-DMAS</a></li><li><a href="#11">EBMV</a></li><li><a href="#12">GLT</a></li><li><a href="#13">Put the images in a cell array.</a></li><li><a href="#14">Add the path to the functions used in the evaluation</a></li><li><a href="#15">Plot lateral graident in db vs. db plot.</a></li><li><a href="#16">Measure contrast</a></li><li><a href="#17">Run the Dynamic Range Test (DRT)</a></li><li><a href="#19">Plotting correlation plot between CR improvement and DRT with all 8 beamforming (including GLT)</a></li><li><a href="#20">Plotting correlation plot between CR improvement and DRT with all 7 methods (excluding GLT)</a></li><li><a href="#21">Save the data to a file to read parts of the results to be plotted with the simulated data</a></li></ul></div><h2 id="1">Create the figures from the experimental dynamic range phantom</h2><p>For the publication Rindal, O. M. H., Austeng, A., Fatemi, A., &amp; Rodriguez-Molares, A. (2018). The effect of dynamic range alterations in the estimation of contrast. Submitted to IEEE Transactions on Ultrasonics, Ferroelectrics, and Frequency Control.</p><p>Author: Ole Marius Hoel Rindal <a href="olemarius@olemarius.net">olemarius@olemarius.net</a> 05.06.18 updated for revised version of manuscript 12.03.19</p><pre class="codeinput">clear <span class="string">all</span>;
+close <span class="string">all</span>;
+addpath([ustb_path,filesep,<span class="string">'publications'</span>,filesep,<span class="string">'DynamicRange'</span>,filesep,<span class="string">'functions'</span>,filesep])
+</pre><h2 id="2">Load the data</h2><pre class="codeinput">filename = <span class="string">'experimental_STAI_dynamic_range.uff'</span>;
+url=<span class="string">'http://ustb.no/datasets/'</span>;      <span class="comment">% if not found downloaded from here</span>
+
+<span class="comment">% checks if the data is in your data path, and downloads it otherwise.</span>
+<span class="comment">% The defaults data path is under USTB's folder, but you can change this</span>
+<span class="comment">% by setting an environment variable with setenv(DATA_PATH,'the_path_you_want_to_use');</span>
+tools.download(filename, url, data_path);
+
+channel_data = uff.channel_data();
+channel_data.read([data_path,filesep,filename],<span class="string">'/channel_data'</span>)
+
+b_data_das = uff.beamformed_data();
+b_data_cf = uff.beamformed_data();
+b_data_pcf = uff.beamformed_data();
+b_data_gcf = uff.beamformed_data();
+b_data_mv = uff.beamformed_data();
+b_data_ebmv = uff.beamformed_data();
+b_data_dmas = uff.beamformed_data();
+
+b_data_das.read([data_path,filesep,filename],<span class="string">'/b_data_das'</span>);
+b_data_cf.read([data_path,filesep,filename],<span class="string">'/b_data_cf'</span>);
+b_data_pcf.read([data_path,filesep,filename],<span class="string">'/b_data_pcf'</span>);
+b_data_gcf.read([data_path,filesep,filename],<span class="string">'/b_data_gcf'</span>);
+b_data_mv.read([data_path,filesep,filename],<span class="string">'/b_data_mv'</span>);
+b_data_ebmv.read([data_path,filesep,filename],<span class="string">'/b_data_ebmv'</span>);
+b_data_dmas.read([data_path,filesep,filename],<span class="string">'/b_data_dmas'</span>);
+</pre><pre class="codeoutput">UFF: reading channel_data [uff.channel_data]
+UFF: reading sequence [uff.wave] [====================] 100%
+UFF: reading /b_data_das [uff.beamformed_data]
+UFF: reading /b_data_cf [uff.beamformed_data]
+UFF: reading /b_data_pcf [uff.beamformed_data]
+UFF: reading /b_data_gcf [uff.beamformed_data]
+UFF: reading /b_data_mv [uff.beamformed_data]
+UFF: reading /b_data_ebmv [uff.beamformed_data]
+UFF: reading /b_data_dmas [uff.beamformed_data]
+</pre><h2 id="3">Print authorship and citation details for the dataset</h2><pre class="codeinput">channel_data.print_authorship
+</pre><pre class="codeoutput">Name: 		 v2 Experimental dynamic range phantom. Recorded  
+		 on a Verasonics Vantage 256 with a L11 probe. See  
+		 the reference for details 
+Reference: 	 Rindal, O. M. H., Austeng, A., Fatemi, A., &amp;  
+		 Rodriguez-Molares, A. (2018). The effect of  
+		 dynamic range transformations in the estimation  
+		 of contrast. Submitted to IEEE Transactions on  
+		 Ultrasonics, Ferroelectrics, and Frequency  
+		 Control. 
+Author(s): 	 Alfonso Rodriguez-Molares &lt;alfonso.r.molares@ntnu.no&gt; 
+		 Ali Fatemi &lt;ali.fatemi@ntnu.no&gt; 
+		 Ole Marius Hoel Rindal &lt;omrindal@ifi.uio.no 
+Version: 	 1.0.1 
+</pre><h2 id="4">Display and save the images from all beamformers under study</h2><pre class="codeinput">mkdir([ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/experimental/'</span>])
+</pre><pre class="codeoutput">Warning: Directory already exists. 
+</pre><h2 id="5">DAS</h2><pre class="codeinput">das_img = b_data_das.get_image(<span class="string">'none'</span>);
+das_img = db(abs(das_img./max(das_img(:)))); <span class="comment">% Normalize on max</span>
+f1 = figure(1);clf;
+imagesc(b_data_das.scan.x_axis*1000,b_data_das.scan.z_axis*1000,das_img);
+colormap <span class="string">gray</span>;caxis([-60 0]);axis <span class="string">image</span>;xlabel(<span class="string">'x [mm]'</span>);ylabel(<span class="string">'z [mm]'</span>);
+set(gca,<span class="string">'FontSize'</span>,14);
+saveas(f1,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/experimental/DAS'</span>],<span class="string">'eps2c'</span>)
+saveas(f1,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/experimental/DAS'</span>],<span class="string">'png'</span>)
+</pre><img vspace="5" hspace="5" src="create_figures_from_experimental_01.png" alt=""> <h2 id="6">CF</h2><pre class="codeinput">cf_img = b_data_cf.get_image(<span class="string">'none'</span>);
+cf_img = db(abs(cf_img./max(cf_img(:)))); <span class="comment">% Normalize on max</span>
+f2 = figure(2);
+imagesc(b_data_das.scan.x_axis*1000,b_data_das.scan.z_axis*1000,cf_img);
+colormap <span class="string">gray</span>;caxis([-60 0]);axis <span class="string">image</span>;xlabel(<span class="string">'x [mm]'</span>);ylabel(<span class="string">'z [mm]'</span>);
+set(gca,<span class="string">'FontSize'</span>,14);
+saveas(f2,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/experimental/CF'</span>],<span class="string">'eps2c'</span>)
+</pre><img vspace="5" hspace="5" src="create_figures_from_experimental_02.png" alt=""> <h2 id="7">PCF</h2><pre class="codeinput">pcf_img = b_data_pcf.get_image(<span class="string">'none'</span>);
+pcf_img = db(abs(pcf_img./max(pcf_img(:)))); <span class="comment">% Normalize on max</span>
+f3 = figure(3);clf;
+imagesc(b_data_das.scan.x_axis*1000,b_data_das.scan.z_axis*1000,pcf_img);
+colormap <span class="string">gray</span>;caxis([-60 0]);axis <span class="string">image</span>;xlabel(<span class="string">'x [mm]'</span>);ylabel(<span class="string">'z [mm]'</span>);
+set(gca,<span class="string">'FontSize'</span>,14);
+saveas(f3,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/experimental/PCF'</span>],<span class="string">'eps2c'</span>)
+</pre><img vspace="5" hspace="5" src="create_figures_from_experimental_03.png" alt=""> <h2 id="8">GCF</h2><pre class="codeinput">gcf_img = b_data_gcf.get_image(<span class="string">'none'</span>);
+gcf_img = db(abs(gcf_img./max(gcf_img(:)))); <span class="comment">% Normalize on max</span>
+f4 = figure(4);
+imagesc(b_data_das.scan.x_axis*1000,b_data_das.scan.z_axis*1000,gcf_img);
+colormap <span class="string">gray</span>;caxis([-60 0]);axis <span class="string">image</span>;xlabel(<span class="string">'x [mm]'</span>);ylabel(<span class="string">'z [mm]'</span>);
+set(gca,<span class="string">'FontSize'</span>,14);
+saveas(f4,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/experimental/GCF'</span>],<span class="string">'eps2c'</span>)
+</pre><img vspace="5" hspace="5" src="create_figures_from_experimental_04.png" alt=""> <h2 id="9">MV</h2><pre class="codeinput">mv_img = b_data_mv.get_image(<span class="string">'none'</span>);
+mv_img = db(abs(mv_img./max(mv_img(:)))); <span class="comment">% Normalize on max</span>
+f5 = figure(6);clf;
+imagesc(b_data_das.scan.x_axis*1000,b_data_das.scan.z_axis*1000,mv_img);
+colormap <span class="string">gray</span>;caxis([-60 0]);axis <span class="string">image</span>;xlabel(<span class="string">'x [mm]'</span>);ylabel(<span class="string">'z [mm]'</span>);
+set(gca,<span class="string">'FontSize'</span>,14);
+saveas(f5,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/experimental/MV'</span>],<span class="string">'eps2c'</span>)
+</pre><img vspace="5" hspace="5" src="create_figures_from_experimental_05.png" alt=""> <h2 id="10">F-DMAS</h2><pre class="codeinput">dmas_img = b_data_dmas.get_image(<span class="string">'none'</span>);
+dmas_img = db(abs(dmas_img./max(dmas_img(:)))); <span class="comment">% Normalize on max</span>
+f7 = figure(7);clf;
+imagesc(b_data_das.scan.x_axis*1000,b_data_das.scan.z_axis*1000,dmas_img);
+colormap <span class="string">gray</span>;caxis([-60 0]);axis <span class="string">image</span>;xlabel(<span class="string">'x [mm]'</span>);ylabel(<span class="string">'z [mm]'</span>);
+set(gca,<span class="string">'FontSize'</span>,14);
+saveas(f7,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/experimental/DMAS'</span>],<span class="string">'eps2c'</span>)
+</pre><img vspace="5" hspace="5" src="create_figures_from_experimental_06.png" alt=""> <h2 id="11">EBMV</h2><pre class="codeinput">ebmv_img = b_data_ebmv.get_image(<span class="string">'none'</span>);
+ebmv_img = db(abs(ebmv_img./max(ebmv_img(:)))); <span class="comment">% Normalize on max</span>
+f6 = figure(8);clf;
+imagesc(b_data_das.scan.x_axis*1000,b_data_das.scan.z_axis*1000,ebmv_img);
+colormap <span class="string">gray</span>;caxis([-60 0]);axis <span class="string">image</span>;xlabel(<span class="string">'x [mm]'</span>);ylabel(<span class="string">'z [mm]'</span>);
+set(gca,<span class="string">'FontSize'</span>,14);
+saveas(f6,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/experimental/EBMV'</span>],<span class="string">'eps2c'</span>)
+</pre><img vspace="5" hspace="5" src="create_figures_from_experimental_07.png" alt=""> <h2 id="12">GLT</h2><pre class="codeinput">glt_s = postprocess.scurve_gray_level_transform();
+glt_s.a = 0.12;
+glt_s.b = -40;
+glt_s.c = 0.008;
+
+glt_s.plot_functions = 1;
+glt_s.input = b_data_das;
+glt_s.scan = b_data_das.scan;
+b_data_glt = glt_s.go();
+
+glt_img = b_data_glt.get_image(<span class="string">'none'</span>);
+glt_img = db(abs(glt_img./max(glt_img(:))));
+f9 = figure(9);clf;
+imagesc(b_data_das.scan.x_axis*1000,b_data_das.scan.z_axis*1000,glt_img);
+colormap <span class="string">gray</span>;caxis([-60 0]);axis <span class="string">image</span>;xlabel(<span class="string">'x [mm]'</span>);ylabel(<span class="string">'z [mm]'</span>);
+set(gca,<span class="string">'FontSize'</span>,14);
+saveas(f9,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/experimental/GLT'</span>],<span class="string">'eps2c'</span>)
+</pre><pre class="codeoutput error">Undefined function 'fit' for input arguments of type 'double'.
+
+Error in postprocess/scurve_gray_level_transform/go (line 61)
+            gamma = fit(x.',x_compressed.','cubicspline');
+
+Error in create_figures_from_experimental (line 121)
+b_data_glt = glt_s.go();
+</pre><h2 id="13">Put the images in a cell array.</h2><p>Put both the dB image and the signal before envelope detection</p><pre class="codeinput">image.all{1} = das_img;
+image.all_signal{1} = double(b_data_das.get_image(<span class="string">'none'</span>));
+image.all_signal{1} = (image.all_signal{1}./max(image.all_signal{1}(:)));
+image.tags{1} = <span class="string">'DAS'</span>;
+image.all{2} = mv_img;
+image.all_signal{2} = double(b_data_mv.get_image(<span class="string">'none'</span>));
+image.all_signal{2} = (image.all_signal{2}./max(image.all_signal{2}(:)));
+image.tags{2} = <span class="string">'MV'</span>;
+image.all{3} = ebmv_img;
+image.all_signal{3} = double(b_data_ebmv.get_image(<span class="string">'none'</span>));
+image.all_signal{3} = (image.all_signal{3}./max(image.all_signal{3}(:)));
+image.tags{3} = <span class="string">'EBMV'</span>;
+image.all{4} = dmas_img;
+image.all_signal{4} = double(b_data_dmas.get_image(<span class="string">'none'</span>));
+image.all_signal{4} = (image.all_signal{4}./max(image.all_signal{4}(:)));
+image.tags{4} = <span class="string">'F-DMAS'</span>;
+image.all{5} = cf_img;
+image.all_signal{5} = double(b_data_cf.get_image(<span class="string">'none'</span>));
+image.all_signal{5} = (image.all_signal{5}./max(image.all_signal{5}(:)));
+image.tags{5} = <span class="string">'CF'</span>;
+image.all{6} = gcf_img;
+image.all_signal{6} = double(b_data_gcf.get_image(<span class="string">'none'</span>));
+image.all_signal{6} = (image.all_signal{6}./max(image.all_signal{6}(:)));
+image.tags{6} = <span class="string">'GCF'</span>;
+image.all{7} = pcf_img;
+image.all_signal{7} = double(b_data_pcf.get_image(<span class="string">'none'</span>));
+image.all_signal{7} = (image.all_signal{7}./max(image.all_signal{7}(:)));
+image.tags{7} = <span class="string">'PCF'</span>;
+image.all{8} = glt_img;
+image.all_signal{8} = double(b_data_glt.get_image(<span class="string">'none'</span>));
+image.all_signal{8} = (image.all_signal{8}./max(image.all_signal{8}(:)));
+image.tags{8} = <span class="string">'GLT'</span>;
+</pre><h2 id="14">Add the path to the functions used in the evaluation</h2><pre class="codeinput">addpath <span class="string">functions</span>
+
+<span class="comment">% Add the colors to be used using "linspecer" colors</span>
+colors=    [0.9047    0.1918    0.1988; <span class="keyword">...</span>
+            0.2941    0.5447    0.7494; <span class="keyword">...</span>
+            0.3718    0.7176    0.3612; <span class="keyword">...</span>
+            1.0000    0.5482    0.1000; <span class="keyword">...</span>
+            0.8650    0.8110    0.4330; <span class="keyword">...</span>
+            0.6859    0.4035    0.2412; <span class="keyword">...</span>
+            0.9718    0.5553    0.7741; <span class="keyword">...</span>
+            0.6400    0.6400    0.6400];
+</pre><h2 id="15">Plot lateral graident in db vs. db plot.</h2><p>NB! The final figure is plotted together with the simulated data in the  create_figures_from_simulation.m script. We are just saving these values  for now.</p><pre class="codeinput">[meanLinesLateral,x_axis] = getMeanLateralLines(b_data_das,image,39,48.5,-14,14);
+mask_lateral=abs(b_data_das.scan.x_axis)&lt;14e-3;
+
+theory_lateral = (-1.8*(b_data_das.scan.x_axis(mask_lateral)+14*10^-3))*10^3;
+
+mkdir([ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/experimental/gradient/'</span>])
+
+<span class="keyword">for</span> i = 1:length(image.all)
+    f88 = figure(8888+i);clf;hold <span class="string">all</span>;
+    plot(theory_lateral,meanLinesLateral.all{i}-max(meanLinesLateral.all{i}),<span class="keyword">...</span>
+            <span class="string">'LineStyle'</span>,<span class="string">'-.'</span>,<span class="string">'Linewidth'</span>,2,<span class="string">'Color'</span>,<span class="string">'b'</span>,<span class="string">'DisplayName'</span>,<span class="string">'Lateral'</span>);
+    plot(theory_lateral,theory_lateral,<span class="string">'LineStyle'</span>,<span class="string">'-'</span>,<span class="string">'Linewidth'</span>,2,<span class="string">'Color'</span>,<span class="keyword">...</span>
+                                                    <span class="string">'k'</span>,<span class="string">'DisplayName'</span>,<span class="string">'Theory'</span>);
+    set(gca, <span class="string">'XDir'</span>,<span class="string">'reverse'</span>);title(image.tags{i});
+    axis <span class="string">image</span>
+    legend <span class="string">show</span>
+    ylim([-100 0])
+    xlim([-50 0])
+    grid <span class="string">on</span>
+    xlabel(<span class="string">'Theoretical [dB]'</span>);
+    ylabel(<span class="string">'Output [dB]'</span>);
+    saveas(f88,[ustb_path,filesep,<span class="keyword">...</span>
+    <span class="string">'publications/DynamicRange/figures/experimental/gradient/'</span>,image.tags{i}],<span class="string">'eps2c'</span>)
+<span class="keyword">end</span>
+</pre><h2 id="16">Measure contrast</h2><p>Once again we are just saving the values to make the final plot combined with the simulated data in the create_figures_from_simulation.m</p><pre class="codeinput">[CR_signal_exp, CR_signal_dagger, CR_image_exp, CNR_signal_exp, CNR_image_exp] <span class="keyword">...</span>
+    = measureContrast(b_data_das,image,-5.5,17.5,3.5,5,8,[ustb_path,filesep,<span class="keyword">...</span>
+    <span class="string">'publications/DynamicRange/figures/experimental/DAS_cyst_indicated'</span>]);
+
+f9 = figure;
+subplot(211);
+bar([10*log10(CR_signal_exp)])
+set(gca,<span class="string">'XTick'</span>,linspace(1,length(image.tags),length(image.tags)))
+set(gca,<span class="string">'XTickLabel'</span>,image.tags)
+ylabel(<span class="string">'CR_{signal} [dB]'</span>);
+x_pos = [1 2 3 4 5 6 7 8];
+text(x_pos,double(10*log10(CR_signal_exp(:))),num2str(round(10*log10(CR_signal_exp(:))),<span class="string">'%d'</span>),<span class="keyword">...</span>
+    <span class="string">'HorizontalAlignment'</span>,<span class="string">'center'</span>,<span class="keyword">...</span>
+    <span class="string">'VerticalAlignment'</span>,<span class="string">'bottom'</span>,<span class="keyword">...</span>
+    <span class="string">'FontSize'</span>,12)
+set(gca,<span class="string">'Ydir'</span>,<span class="string">'reverse'</span>)
+
+subplot(212);
+bar([CR_image_exp])
+set(gca,<span class="string">'XTick'</span>,linspace(1,length(image.tags),length(image.tags)))
+set(gca,<span class="string">'XTickLabel'</span>,image.tags)
+ylabel(<span class="string">'CR_{image} [dB]'</span>);
+x_pos = [1 2 3 4 5 6 7 8];
+text(x_pos,double(CR_image_exp(:)),num2str(round(CR_image_exp(:)),<span class="string">'%d'</span>),<span class="keyword">...</span>
+    <span class="string">'HorizontalAlignment'</span>,<span class="string">'center'</span>,<span class="keyword">...</span>
+    <span class="string">'VerticalAlignment'</span>,<span class="string">'bottom'</span>,<span class="keyword">...</span>
+    <span class="string">'FontSize'</span>,12)
+
+saveas(f9,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/experimental/CR'</span>],<span class="string">'eps2c'</span>)
+
+f77 = figure(77);
+subplot(211);
+bar([CNR_signal_exp])
+set(gca,<span class="string">'XTick'</span>,linspace(1,length(image.tags),length(image.tags)))
+set(gca,<span class="string">'XTickLabel'</span>,image.tags)
+ylabel(<span class="string">'CNR_{signal}'</span>);
+x_pos = [1 2 3 4 5 6 7 8];
+text(x_pos,double(CNR_signal_exp(:)),num2str((CNR_signal_exp(:)),<span class="string">'%.2f'</span>),<span class="keyword">...</span>
+    <span class="string">'HorizontalAlignment'</span>,<span class="string">'center'</span>,<span class="keyword">...</span>
+    <span class="string">'VerticalAlignment'</span>,<span class="string">'bottom'</span>,<span class="keyword">...</span>
+    <span class="string">'FontSize'</span>,12)
+ylim([0 1.1])
+
+subplot(212);
+bar([CNR_image_exp])
+set(gca,<span class="string">'XTick'</span>,linspace(1,length(image.tags),length(image.tags)))
+set(gca,<span class="string">'XTickLabel'</span>,image.tags)
+ylabel(<span class="string">'CNR_{image}'</span>);
+x_pos = [1 2 3 4 5 6 7 8];
+text(x_pos,double(CNR_image_exp(:)),num2str((CNR_image_exp(:)),<span class="string">'%.2f'</span>),<span class="keyword">...</span>
+    <span class="string">'HorizontalAlignment'</span>,<span class="string">'center'</span>,<span class="keyword">...</span>
+    <span class="string">'VerticalAlignment'</span>,<span class="string">'bottom'</span>,<span class="keyword">...</span>
+    <span class="string">'FontSize'</span>,12)
+
+saveas(f77,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/experimental/CNR'</span>],<span class="string">'eps2c'</span>)
+</pre><h2 id="17">Run the Dynamic Range Test (DRT)</h2><pre class="codeinput">mkdir([ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/experimental/dynamic_range_test/'</span>]);
+drt{1} = tools.dynamic_range_test(channel_data,b_data_das,<span class="string">'DAS'</span>);
+set(gcf,<span class="string">'Position'</span>,[360 354 680 344])
+saveas(gcf,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/experimental/dynamic_range_test/'</span>,<span class="string">'DAS_exp'</span>],<span class="string">'eps2c'</span>);
+drt{2} = tools.dynamic_range_test(channel_data,b_data_mv,<span class="string">'MV'</span>);
+set(gcf,<span class="string">'Position'</span>,[360 354 680 344])
+saveas(gcf,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/experimental/dynamic_range_test/'</span>,<span class="string">'MV'</span>],<span class="string">'eps2c'</span>);
+drt{3} = tools.dynamic_range_test(channel_data,b_data_ebmv,<span class="string">'EBMV'</span>);
+set(gcf,<span class="string">'Position'</span>,[360 354 680 344])
+saveas(gcf,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/experimental/dynamic_range_test/'</span>,<span class="string">'EBMV'</span>],<span class="string">'eps2c'</span>);
+drt{4} = tools.dynamic_range_test(channel_data,b_data_dmas,<span class="string">'F-DMAS'</span>);
+set(gcf,<span class="string">'Position'</span>,[360 354 680 344])
+saveas(gcf,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/experimental/dynamic_range_test/'</span>,<span class="string">'F-DMAS'</span>],<span class="string">'eps2c'</span>);
+drt{5} = tools.dynamic_range_test(channel_data,b_data_cf,<span class="string">'CF'</span>);
+set(gcf,<span class="string">'Position'</span>,[360 354 680 344])
+saveas(gcf,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/experimental/dynamic_range_test/'</span>,<span class="string">'CF'</span>],<span class="string">'eps2c'</span>);
+drt{6} = tools.dynamic_range_test(channel_data,b_data_gcf,<span class="string">'GCF'</span>);
+set(gcf,<span class="string">'Position'</span>,[360 354 680 344])
+saveas(gcf,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/experimental/dynamic_range_test/'</span>,<span class="string">'GCF'</span>],<span class="string">'eps2c'</span>);
+drt{7} = tools.dynamic_range_test(channel_data,b_data_pcf,<span class="string">'PCF'</span>);
+set(gcf,<span class="string">'Position'</span>,[360 354 680 344])
+saveas(gcf,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/experimental/dynamic_range_test/'</span>,<span class="string">'PCF'</span>],<span class="string">'eps2c'</span>);
+drt{8} = tools.dynamic_range_test(channel_data,b_data_glt,<span class="string">'GLT'</span>);
+set(gcf,<span class="string">'Position'</span>,[360 354 680 344])
+saveas(gcf,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/experimental/dynamic_range_test/'</span>,<span class="string">'GLT'</span>],<span class="string">'eps2c'</span>)
+</pre><pre class="codeinput">DRT_value_exp = [drt{1:end}];
+cr_improvement = (CR_image_exp - CR_image_exp(1));
+</pre><h2 id="19">Plotting correlation plot between CR improvement and DRT with all 8 beamforming (including GLT)</h2><pre class="codeinput">lmd_sim_slope = fitlm(cr_improvement(1:8),DRT_value_exp(1:8))
+
+lmd_sim_slope.Rsquared.Ordinary
+lmd_sim_slope.Rsquared.Adjusted
+
+f113 = figure(114);clf;hold <span class="string">all</span>;
+linespes = <span class="string">'+ox*sd&lt;&gt;'</span>;
+<span class="keyword">for</span> i = 1:length(image.all)
+    plot(cr_improvement(i),DRT_value_exp(i),linespes(i),<span class="string">'Color'</span>,colors(i,:),<span class="string">'MarkerSize'</span>,10);
+<span class="keyword">end</span>
+lmd_sim_slope.plot
+hline = findobj(gcf, <span class="string">'type'</span>, <span class="string">'line'</span>);
+set(hline,<span class="string">'LineWidth'</span>,3);
+set(hline(3),<span class="string">'Color'</span>,[0 0 0]);
+set(hline(3),<span class="string">'DisplayName'</span>,<span class="string">'Fitted line'</span>);
+title(<span class="string">''</span>)
+xlabel(<span class="string">'CR_{LC} improve cmp. DAS [%]'</span>);<span class="comment">%xlim([-5 75]);</span>
+ylabel(<span class="string">'Slope diff [in %]'</span>);<span class="comment">%ylim([-50 5]);</span>
+text(80,10,sprintf(<span class="string">'R-Squared: %.2f'</span>,lmd_sim_slope.Rsquared.Ordinary),<span class="string">'FontSize'</span>,18);
+text(80,0,sprintf(<span class="string">'R-Squared adj: %.2f'</span>,lmd_sim_slope.Rsquared.Adjusted),<span class="string">'FontSize'</span>,18);
+set(gca,<span class="string">'FontSize'</span>,14);
+delete(hline(4));
+legend();
+hLegend = findobj(gcf, <span class="string">'Type'</span>, <span class="string">'Legend'</span>);
+legend <span class="string">show</span>
+legend([{image.tags{1:8}} hLegend.String],<span class="string">'Location'</span>,<span class="string">'nw'</span>);
+
+saveas(f113,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/experimental/correlation_experimental'</span>],<span class="string">'eps2c'</span>)
+</pre><h2 id="20">Plotting correlation plot between CR improvement and DRT with all 7 methods (excluding GLT)</h2><pre class="codeinput">lmd_sim_slope = fitlm(cr_improvement(1:7),DRT_value_exp(1:7))
+
+lmd_sim_slope.Rsquared.Ordinary
+lmd_sim_slope.Rsquared.Adjusted
+
+f113 = figure(114);clf;hold <span class="string">all</span>;
+linespes = <span class="string">'+ox*sd&lt;&gt;'</span>;
+<span class="keyword">for</span> i = 1:length(image.all)-1
+    plot(cr_improvement(i),DRT_value_exp(i),linespes(i),<span class="string">'Color'</span>,colors(i,:),<span class="string">'MarkerSize'</span>,10);
+<span class="keyword">end</span>
+lmd_sim_slope.plot
+hline = findobj(gcf, <span class="string">'type'</span>, <span class="string">'line'</span>);
+set(hline,<span class="string">'LineWidth'</span>,3);
+set(hline(3),<span class="string">'Color'</span>,[0 0 0]);
+set(hline(3),<span class="string">'DisplayName'</span>,<span class="string">'Fitted line'</span>);
+title(<span class="string">''</span>)
+xlabel(<span class="string">'CR_{LC} improvement compared to DAS [dB]'</span>,<span class="string">'Interpreter'</span>, <span class="string">'tex'</span>);
+ylabel(<span class="string">'DRT value'</span>);<span class="comment">%ylim([-50 5]);</span>
+text(20,1.1,sprintf(<span class="string">'R-Squared: %.2f'</span>,lmd_sim_slope.Rsquared.Ordinary),<span class="string">'FontSize'</span>,18);
+text(20,1,sprintf(<span class="string">'R-Squared adj: %.2f'</span>,lmd_sim_slope.Rsquared.Adjusted),<span class="string">'FontSize'</span>,18);
+set(gca,<span class="string">'FontSize'</span>,14);
+delete(hline(4));
+legend();
+hLegend = findobj(gcf, <span class="string">'Type'</span>, <span class="string">'Legend'</span>);
+legend <span class="string">show</span>
+legend([{image.tags{1:7}} hLegend.String],<span class="string">'Location'</span>,<span class="string">'nw'</span>);
+
+
+saveas(f113,[ustb_path,filesep,<span class="string">'publications/DynamicRange/figures/experimental/correlation_experimental_withouth_GLT'</span>],<span class="string">'eps2c'</span>)
+</pre><h2 id="21">Save the data to a file to read parts of the results to be plotted with the simulated data</h2><pre class="codeinput">save([ustb_path,filesep,<span class="string">'publications/DynamicRange/'</span>,<span class="string">'Experimental.mat'</span>],<span class="string">'b_data_das'</span>,<span class="string">'image'</span>,<span class="string">'CR_signal_exp'</span>, <span class="keyword">...</span>
+                        <span class="string">'CR_image_exp'</span>, <span class="string">'CNR_signal_exp'</span>, <span class="string">'CNR_image_exp'</span>,<span class="string">'DRT_value_exp'</span>);
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Create the figures from the experimental dynamic range phantom
+% For the publication Rindal, O. M. H., Austeng, A., Fatemi, A., 
+% & Rodriguez-Molares, A. (2018). The effect of dynamic range alterations
+% in the estimation of contrast. Submitted to IEEE Transactions on Ultrasonics,
+% Ferroelectrics, and Frequency Control.
+%
+% Author: Ole Marius Hoel Rindal <olemarius@olemarius.net> 05.06.18
+% updated for revised version of manuscript 12.03.19
+
+clear all;
+close all;
+addpath([ustb_path,filesep,'publications',filesep,'DynamicRange',filesep,'functions',filesep])
+%% Load the data
+filename = 'experimental_STAI_dynamic_range.uff';
+url='http://ustb.no/datasets/';      % if not found downloaded from here
+
+% checks if the data is in your data path, and downloads it otherwise.
+% The defaults data path is under USTB's folder, but you can change this
+% by setting an environment variable with setenv(DATA_PATH,'the_path_you_want_to_use');
+tools.download(filename, url, data_path);   
+
+channel_data = uff.channel_data();
+channel_data.read([data_path,filesep,filename],'/channel_data')
+
+b_data_das = uff.beamformed_data();
+b_data_cf = uff.beamformed_data();
+b_data_pcf = uff.beamformed_data();
+b_data_gcf = uff.beamformed_data();
+b_data_mv = uff.beamformed_data();
+b_data_ebmv = uff.beamformed_data();
+b_data_dmas = uff.beamformed_data();
+
+b_data_das.read([data_path,filesep,filename],'/b_data_das');
+b_data_cf.read([data_path,filesep,filename],'/b_data_cf');
+b_data_pcf.read([data_path,filesep,filename],'/b_data_pcf');
+b_data_gcf.read([data_path,filesep,filename],'/b_data_gcf');
+b_data_mv.read([data_path,filesep,filename],'/b_data_mv');
+b_data_ebmv.read([data_path,filesep,filename],'/b_data_ebmv');
+b_data_dmas.read([data_path,filesep,filename],'/b_data_dmas');
+
+
+%% Print authorship and citation details for the dataset
+channel_data.print_authorship
+
+%% Display and save the images from all beamformers under study
+mkdir([ustb_path,filesep,'publications/DynamicRange/figures/experimental/'])
+
+%% DAS
+das_img = b_data_das.get_image('none'); 
+das_img = db(abs(das_img./max(das_img(:)))); % Normalize on max
+f1 = figure(1);clf;
+imagesc(b_data_das.scan.x_axis*1000,b_data_das.scan.z_axis*1000,das_img);
+colormap gray;caxis([-60 0]);axis image;xlabel('x [mm]');ylabel('z [mm]');
+set(gca,'FontSize',14);
+saveas(f1,[ustb_path,filesep,'publications/DynamicRange/figures/experimental/DAS'],'eps2c')
+saveas(f1,[ustb_path,filesep,'publications/DynamicRange/figures/experimental/DAS'],'png')
+
+%% CF
+cf_img = b_data_cf.get_image('none');
+cf_img = db(abs(cf_img./max(cf_img(:)))); % Normalize on max
+f2 = figure(2);
+imagesc(b_data_das.scan.x_axis*1000,b_data_das.scan.z_axis*1000,cf_img);
+colormap gray;caxis([-60 0]);axis image;xlabel('x [mm]');ylabel('z [mm]');
+set(gca,'FontSize',14);
+saveas(f2,[ustb_path,filesep,'publications/DynamicRange/figures/experimental/CF'],'eps2c')
+
+%% PCF
+pcf_img = b_data_pcf.get_image('none');
+pcf_img = db(abs(pcf_img./max(pcf_img(:)))); % Normalize on max
+f3 = figure(3);clf;
+imagesc(b_data_das.scan.x_axis*1000,b_data_das.scan.z_axis*1000,pcf_img);
+colormap gray;caxis([-60 0]);axis image;xlabel('x [mm]');ylabel('z [mm]');
+set(gca,'FontSize',14);
+saveas(f3,[ustb_path,filesep,'publications/DynamicRange/figures/experimental/PCF'],'eps2c')
+
+%% GCF
+gcf_img = b_data_gcf.get_image('none');
+gcf_img = db(abs(gcf_img./max(gcf_img(:)))); % Normalize on max
+f4 = figure(4);
+imagesc(b_data_das.scan.x_axis*1000,b_data_das.scan.z_axis*1000,gcf_img);
+colormap gray;caxis([-60 0]);axis image;xlabel('x [mm]');ylabel('z [mm]');
+set(gca,'FontSize',14);
+saveas(f4,[ustb_path,filesep,'publications/DynamicRange/figures/experimental/GCF'],'eps2c')
+
+%% MV
+mv_img = b_data_mv.get_image('none');
+mv_img = db(abs(mv_img./max(mv_img(:)))); % Normalize on max
+f5 = figure(6);clf;
+imagesc(b_data_das.scan.x_axis*1000,b_data_das.scan.z_axis*1000,mv_img);
+colormap gray;caxis([-60 0]);axis image;xlabel('x [mm]');ylabel('z [mm]');
+set(gca,'FontSize',14);
+saveas(f5,[ustb_path,filesep,'publications/DynamicRange/figures/experimental/MV'],'eps2c')
+
+%% F-DMAS
+dmas_img = b_data_dmas.get_image('none');
+dmas_img = db(abs(dmas_img./max(dmas_img(:)))); % Normalize on max
+f7 = figure(7);clf;
+imagesc(b_data_das.scan.x_axis*1000,b_data_das.scan.z_axis*1000,dmas_img);
+colormap gray;caxis([-60 0]);axis image;xlabel('x [mm]');ylabel('z [mm]');
+set(gca,'FontSize',14);
+saveas(f7,[ustb_path,filesep,'publications/DynamicRange/figures/experimental/DMAS'],'eps2c')
+
+%% EBMV
+ebmv_img = b_data_ebmv.get_image('none');
+ebmv_img = db(abs(ebmv_img./max(ebmv_img(:)))); % Normalize on max
+f6 = figure(8);clf;
+imagesc(b_data_das.scan.x_axis*1000,b_data_das.scan.z_axis*1000,ebmv_img);
+colormap gray;caxis([-60 0]);axis image;xlabel('x [mm]');ylabel('z [mm]');
+set(gca,'FontSize',14);
+saveas(f6,[ustb_path,filesep,'publications/DynamicRange/figures/experimental/EBMV'],'eps2c')
+
+%% GLT
+glt_s = postprocess.scurve_gray_level_transform();
+glt_s.a = 0.12;
+glt_s.b = -40;
+glt_s.c = 0.008;
+
+glt_s.plot_functions = 1;
+glt_s.input = b_data_das;
+glt_s.scan = b_data_das.scan;
+b_data_glt = glt_s.go();
+
+glt_img = b_data_glt.get_image('none');
+glt_img = db(abs(glt_img./max(glt_img(:))));
+f9 = figure(9);clf;
+imagesc(b_data_das.scan.x_axis*1000,b_data_das.scan.z_axis*1000,glt_img);
+colormap gray;caxis([-60 0]);axis image;xlabel('x [mm]');ylabel('z [mm]');
+set(gca,'FontSize',14);
+saveas(f9,[ustb_path,filesep,'publications/DynamicRange/figures/experimental/GLT'],'eps2c')
+
+%% Put the images in a cell array.
+% Put both the dB image and the signal before envelope detection
+image.all{1} = das_img;
+image.all_signal{1} = double(b_data_das.get_image('none'));
+image.all_signal{1} = (image.all_signal{1}./max(image.all_signal{1}(:)));
+image.tags{1} = 'DAS';
+image.all{2} = mv_img;
+image.all_signal{2} = double(b_data_mv.get_image('none'));
+image.all_signal{2} = (image.all_signal{2}./max(image.all_signal{2}(:)));
+image.tags{2} = 'MV';
+image.all{3} = ebmv_img;
+image.all_signal{3} = double(b_data_ebmv.get_image('none'));
+image.all_signal{3} = (image.all_signal{3}./max(image.all_signal{3}(:)));
+image.tags{3} = 'EBMV';
+image.all{4} = dmas_img;
+image.all_signal{4} = double(b_data_dmas.get_image('none'));
+image.all_signal{4} = (image.all_signal{4}./max(image.all_signal{4}(:)));
+image.tags{4} = 'F-DMAS';
+image.all{5} = cf_img;
+image.all_signal{5} = double(b_data_cf.get_image('none'));
+image.all_signal{5} = (image.all_signal{5}./max(image.all_signal{5}(:)));
+image.tags{5} = 'CF';
+image.all{6} = gcf_img;
+image.all_signal{6} = double(b_data_gcf.get_image('none'));
+image.all_signal{6} = (image.all_signal{6}./max(image.all_signal{6}(:)));
+image.tags{6} = 'GCF';
+image.all{7} = pcf_img;
+image.all_signal{7} = double(b_data_pcf.get_image('none'));
+image.all_signal{7} = (image.all_signal{7}./max(image.all_signal{7}(:)));
+image.tags{7} = 'PCF';
+image.all{8} = glt_img;
+image.all_signal{8} = double(b_data_glt.get_image('none'));
+image.all_signal{8} = (image.all_signal{8}./max(image.all_signal{8}(:)));
+image.tags{8} = 'GLT';
+
+%% Add the path to the functions used in the evaluation
+addpath functions
+
+% Add the colors to be used using "linspecer" colors
+colors=    [0.9047    0.1918    0.1988; ...
+            0.2941    0.5447    0.7494; ...
+            0.3718    0.7176    0.3612; ...
+            1.0000    0.5482    0.1000; ...
+            0.8650    0.8110    0.4330; ...
+            0.6859    0.4035    0.2412; ...
+            0.9718    0.5553    0.7741; ...
+            0.6400    0.6400    0.6400];
+
+
+
+%% Plot lateral graident in db vs. db plot. 
+% NB! The final figure is plotted together with the simulated data in the
+%  create_figures_from_simulation.m script. We are just saving these values
+%  for now.
+
+[meanLinesLateral,x_axis] = getMeanLateralLines(b_data_das,image,39,48.5,-14,14);
+mask_lateral=abs(b_data_das.scan.x_axis)<14e-3;
+
+theory_lateral = (-1.8*(b_data_das.scan.x_axis(mask_lateral)+14*10^-3))*10^3;
+
+mkdir([ustb_path,filesep,'publications/DynamicRange/figures/experimental/gradient/'])
+
+for i = 1:length(image.all)
+    f88 = figure(8888+i);clf;hold all;
+    plot(theory_lateral,meanLinesLateral.all{i}-max(meanLinesLateral.all{i}),...
+            'LineStyle','-.','Linewidth',2,'Color','b','DisplayName','Lateral');
+    plot(theory_lateral,theory_lateral,'LineStyle','-','Linewidth',2,'Color',...
+                                                    'k','DisplayName','Theory');
+    set(gca, 'XDir','reverse');title(image.tags{i});
+    axis image
+    legend show
+    ylim([-100 0])
+    xlim([-50 0])
+    grid on
+    xlabel('Theoretical [dB]');
+    ylabel('Output [dB]');
+    saveas(f88,[ustb_path,filesep,...
+    'publications/DynamicRange/figures/experimental/gradient/',image.tags{i}],'eps2c')
+end
+
+%% Measure contrast
+% Once again we are just saving the values to make the final plot combined
+% with the simulated data in the create_figures_from_simulation.m
+[CR_signal_exp, CR_signal_dagger, CR_image_exp, CNR_signal_exp, CNR_image_exp] ...
+    = measureContrast(b_data_das,image,-5.5,17.5,3.5,5,8,[ustb_path,filesep,...
+    'publications/DynamicRange/figures/experimental/DAS_cyst_indicated']);
+
+f9 = figure;
+subplot(211);
+bar([10*log10(CR_signal_exp)])
+set(gca,'XTick',linspace(1,length(image.tags),length(image.tags)))
+set(gca,'XTickLabel',image.tags)
+ylabel('CR_{signal} [dB]');
+x_pos = [1 2 3 4 5 6 7 8];
+text(x_pos,double(10*log10(CR_signal_exp(:))),num2str(round(10*log10(CR_signal_exp(:))),'%d'),...
+    'HorizontalAlignment','center',...
+    'VerticalAlignment','bottom',...
+    'FontSize',12)
+set(gca,'Ydir','reverse')
+
+subplot(212);
+bar([CR_image_exp])
+set(gca,'XTick',linspace(1,length(image.tags),length(image.tags)))
+set(gca,'XTickLabel',image.tags)
+ylabel('CR_{image} [dB]');
+x_pos = [1 2 3 4 5 6 7 8];
+text(x_pos,double(CR_image_exp(:)),num2str(round(CR_image_exp(:)),'%d'),...
+    'HorizontalAlignment','center',...
+    'VerticalAlignment','bottom',...
+    'FontSize',12)
+
+saveas(f9,[ustb_path,filesep,'publications/DynamicRange/figures/experimental/CR'],'eps2c')
+
+f77 = figure(77);
+subplot(211);
+bar([CNR_signal_exp])
+set(gca,'XTick',linspace(1,length(image.tags),length(image.tags)))
+set(gca,'XTickLabel',image.tags)
+ylabel('CNR_{signal}');
+x_pos = [1 2 3 4 5 6 7 8];
+text(x_pos,double(CNR_signal_exp(:)),num2str((CNR_signal_exp(:)),'%.2f'),...
+    'HorizontalAlignment','center',...
+    'VerticalAlignment','bottom',...
+    'FontSize',12)
+ylim([0 1.1])
+
+subplot(212);
+bar([CNR_image_exp])
+set(gca,'XTick',linspace(1,length(image.tags),length(image.tags)))
+set(gca,'XTickLabel',image.tags)
+ylabel('CNR_{image}');
+x_pos = [1 2 3 4 5 6 7 8];
+text(x_pos,double(CNR_image_exp(:)),num2str((CNR_image_exp(:)),'%.2f'),...
+    'HorizontalAlignment','center',...
+    'VerticalAlignment','bottom',...
+    'FontSize',12)
+
+saveas(f77,[ustb_path,filesep,'publications/DynamicRange/figures/experimental/CNR'],'eps2c')
+
+                    
+                    
+%% Run the Dynamic Range Test (DRT)                    
+mkdir([ustb_path,filesep,'publications/DynamicRange/figures/experimental/dynamic_range_test/']);
+drt{1} = tools.dynamic_range_test(channel_data,b_data_das,'DAS');
+set(gcf,'Position',[360 354 680 344])
+saveas(gcf,[ustb_path,filesep,'publications/DynamicRange/figures/experimental/dynamic_range_test/','DAS_exp'],'eps2c');
+drt{2} = tools.dynamic_range_test(channel_data,b_data_mv,'MV');
+set(gcf,'Position',[360 354 680 344])
+saveas(gcf,[ustb_path,filesep,'publications/DynamicRange/figures/experimental/dynamic_range_test/','MV'],'eps2c');
+drt{3} = tools.dynamic_range_test(channel_data,b_data_ebmv,'EBMV');
+set(gcf,'Position',[360 354 680 344])
+saveas(gcf,[ustb_path,filesep,'publications/DynamicRange/figures/experimental/dynamic_range_test/','EBMV'],'eps2c');
+drt{4} = tools.dynamic_range_test(channel_data,b_data_dmas,'F-DMAS');
+set(gcf,'Position',[360 354 680 344])
+saveas(gcf,[ustb_path,filesep,'publications/DynamicRange/figures/experimental/dynamic_range_test/','F-DMAS'],'eps2c');
+drt{5} = tools.dynamic_range_test(channel_data,b_data_cf,'CF');
+set(gcf,'Position',[360 354 680 344])
+saveas(gcf,[ustb_path,filesep,'publications/DynamicRange/figures/experimental/dynamic_range_test/','CF'],'eps2c');
+drt{6} = tools.dynamic_range_test(channel_data,b_data_gcf,'GCF');
+set(gcf,'Position',[360 354 680 344])
+saveas(gcf,[ustb_path,filesep,'publications/DynamicRange/figures/experimental/dynamic_range_test/','GCF'],'eps2c');
+drt{7} = tools.dynamic_range_test(channel_data,b_data_pcf,'PCF');
+set(gcf,'Position',[360 354 680 344])
+saveas(gcf,[ustb_path,filesep,'publications/DynamicRange/figures/experimental/dynamic_range_test/','PCF'],'eps2c');
+drt{8} = tools.dynamic_range_test(channel_data,b_data_glt,'GLT');
+set(gcf,'Position',[360 354 680 344])
+saveas(gcf,[ustb_path,filesep,'publications/DynamicRange/figures/experimental/dynamic_range_test/','GLT'],'eps2c')
+
+%%
+DRT_value_exp = [drt{1:end}];
+cr_improvement = (CR_image_exp - CR_image_exp(1));
+
+%% Plotting correlation plot between CR improvement and DRT with all 8 beamforming (including GLT)
+lmd_sim_slope = fitlm(cr_improvement(1:8),DRT_value_exp(1:8))
+
+lmd_sim_slope.Rsquared.Ordinary
+lmd_sim_slope.Rsquared.Adjusted
+
+f113 = figure(114);clf;hold all;
+linespes = '+ox*sd<>';
+for i = 1:length(image.all)
+    plot(cr_improvement(i),DRT_value_exp(i),linespes(i),'Color',colors(i,:),'MarkerSize',10);
+end
+lmd_sim_slope.plot
+hline = findobj(gcf, 'type', 'line');
+set(hline,'LineWidth',3);
+set(hline(3),'Color',[0 0 0]);
+set(hline(3),'DisplayName','Fitted line');
+title('')
+xlabel('CR_{LC} improve cmp. DAS [%]');%xlim([-5 75]);
+ylabel('Slope diff [in %]');%ylim([-50 5]);
+text(80,10,sprintf('R-Squared: %.2f',lmd_sim_slope.Rsquared.Ordinary),'FontSize',18);
+text(80,0,sprintf('R-Squared adj: %.2f',lmd_sim_slope.Rsquared.Adjusted),'FontSize',18);
+set(gca,'FontSize',14);
+delete(hline(4));
+legend();
+hLegend = findobj(gcf, 'Type', 'Legend');
+legend show
+legend([{image.tags{1:8}} hLegend.String],'Location','nw');
+
+saveas(f113,[ustb_path,filesep,'publications/DynamicRange/figures/experimental/correlation_experimental'],'eps2c')
+
+%% Plotting correlation plot between CR improvement and DRT with all 7 methods (excluding GLT)
+lmd_sim_slope = fitlm(cr_improvement(1:7),DRT_value_exp(1:7))
+
+lmd_sim_slope.Rsquared.Ordinary
+lmd_sim_slope.Rsquared.Adjusted
+
+f113 = figure(114);clf;hold all;
+linespes = '+ox*sd<>';
+for i = 1:length(image.all)-1
+    plot(cr_improvement(i),DRT_value_exp(i),linespes(i),'Color',colors(i,:),'MarkerSize',10);
+end
+lmd_sim_slope.plot
+hline = findobj(gcf, 'type', 'line');
+set(hline,'LineWidth',3);
+set(hline(3),'Color',[0 0 0]);
+set(hline(3),'DisplayName','Fitted line');
+title('')
+xlabel('CR_{LC} improvement compared to DAS [dB]','Interpreter', 'tex');
+ylabel('DRT value');%ylim([-50 5]);
+text(20,1.1,sprintf('R-Squared: %.2f',lmd_sim_slope.Rsquared.Ordinary),'FontSize',18);
+text(20,1,sprintf('R-Squared adj: %.2f',lmd_sim_slope.Rsquared.Adjusted),'FontSize',18);
+set(gca,'FontSize',14);
+delete(hline(4));
+legend();
+hLegend = findobj(gcf, 'Type', 'Legend');
+legend show
+legend([{image.tags{1:7}} hLegend.String],'Location','nw');
+
+
+saveas(f113,[ustb_path,filesep,'publications/DynamicRange/figures/experimental/correlation_experimental_withouth_GLT'],'eps2c')
+
+%% Save the data to a file to read parts of the results to be plotted with the simulated data
+
+save([ustb_path,filesep,'publications/DynamicRange/','Experimental.mat'],'b_data_das','image','CR_signal_exp', ...
+                        'CR_image_exp', 'CNR_signal_exp', 'CNR_image_exp','DRT_value_exp');
+##### SOURCE END #####
+--></body></html>

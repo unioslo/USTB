@@ -45,7 +45,7 @@ for n_frame = h.frame_order
         channel_data.sequence(n_tx).delay = -(offset_distance-channel_data.probe.r(n_tx))/channel_data.sound_speed;
         
         % read data
-        data(:,:,n_tx,frame_idx) = h.RcvData{1}(h.Receive(n).startSample:h.Receive(n).endSample,:,n_frame);
+        data(:,:,n_tx,frame_idx) = h.RcvData{1}(h.Receive(n).startSample:h.Receive(n).endSample,h.Trans.Connector,n_frame);
         
         % to check delay calculation
         if plot_delayed_signal
