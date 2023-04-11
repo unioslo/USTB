@@ -84,7 +84,7 @@ MLA = 4;
 scan_RTB = uff.linear_scan('x_axis',linspace(x_axis(1),x_axis(end),length(x_axis)*MLA)','z_axis',z_axis);
 
 mid_RTB=midprocess.das();
-mid_RTB.dimension = dimension.transmit();
+mid_RTB.dimension = dimension.receive();
 
 mid_RTB.channel_data=channel_data;
 mid_RTB.scan=scan_RTB;
@@ -100,18 +100,11 @@ mid_RTB.transmit_apodization.minimum_aperture = [3.0000e-03 3.0000e-03];
 
 mid_RTB.receive_apodization.window=uff.window.boxcar;
 mid_RTB.receive_apodization.f_number=1.7;
-b_data_RTB_tx=mid_RTB.go();
+b_data_RTB=mid_RTB.go();
 
 %%
-cf = postprocess.coherence_factor()
-cf.input = b_data_RTB_tx;
-cf.go();
-cf.CF.plot([],[],[],'none');
-colormap default;
-%caxis([0 2/3])
-%%
-b_data_RTB.plot(767,'RTB image using virtual source model',[],[],[],[]);
 
+b_data_RTB.plot([])
 
 %%
 tx_apod = mid_RTB.transmit_apodization.data;
