@@ -105,97 +105,99 @@ b_data_RTB=mid_RTB.go();
 %%
 
 b_data_RTB.plot([])
-
+b_data_RTB.frame_rate = 20;
 %%
-tx_apod = mid_RTB.transmit_apodization.data;
 
-%%
-weighting = 1./sum(tx_apod,2);
-
-b_data_RTB_compensated = uff.beamformed_data(b_data_RTB);
-b_data_RTB_compensated.data = b_data_RTB.data .* weighting;
-b_data_RTB_compensated.plot([],'RTB image using virtual source model TX weighted');
-
-%%
-mid_RTB.dimension = dimension.receive();
-b_data_RTB_transmit = mid_RTB.go();
-
-%% Illustrate t0 compensation
-selected_tx = 20;
-single_tx_images = b_data_RTB_transmit.get_image();
-transmit_delays = channel_data.sequence(selected_tx).delay_values;
-transmit_delays(50:end) = transmit_delays(49);
-
-figure(8);clf;
-subplot(5,1,1)
-plot(transmit_delays*10^6,'HandleVisibility','off','LineWidth',2);hold on;
-plot(channel_data.sequence(selected_tx).delay_values*10^6,'HandleVisibility','off','LineWidth',2)
-plot(49,transmit_delays(49)*10^6,'o','DisplayName','Conventional t_0','LineWidth',2);hold on;
-plot(64,channel_data.sequence(selected_tx).delay_values(end/2)*10^6,'o','DisplayName','Generalized t_0','LineWidth',2)
-xlim([1 128]);xlabel('Elements');
-xlabel('Elements');ylabel(["Delay [ms]"]);title('Tx Wavefront');
-legend
-ylim([-7 3])
-set(gca,'FontSize',13)
-subplot(5,1,[2:5])
-imagesc(scan.x_axis*1000,scan.z_axis*1000,single_tx_images(:,:,selected_tx))
-axis image;colormap gray;caxis([-70 0])
-xlabel(['x [mm]']);ylabel(['z [mm]']);%colorbar
-title('Single Focused Transmission');
-set(gcf,'Position',[605 197 484 781])
-set(gca,'FontSize',15)
-%%
-%%
-f = gcf;
-saveas(f,'Figures/FI_RTB.png');
-%% Run the REFOCUS preprocess
-addpath C:/Repositories/USTB_addons/
-
-refocus = preprocess.refocus()
-refocus.input = channel_data;
-channel_data_STAI = refocus.go()
-
-%%
-demod = preprocess.fast_demodulation()
-demod.input = channel_data_STAI
-demod.plot_on = true;  
-channel_data_STAI_demod = demod.go();
-
-%%
-das = midprocess.das();
-das.scan = scan;
-das.channel_data=channel_data_STAI_demod;
-das.transmit_apodization.window=uff.window.tukey50;
-das.transmit_apodization.f_number = 4;
-das.receive_apodization.window=uff.window.tukey50;
-das.receive_apodization.f_number = 1;
-das.dimension = dimension.both;
-b_data_REFOCUS = das.go()
-%%
-b_data_REFOCUS.plot([],['REFOCUS from '],[],[],[],[],[],'dark')
-
-%%
-channel_data_single_tx = uff.channel_data(channel_data);
-channel_data_single_tx.data = channel_data.data(:,:,selected_tx);
-channel_data_single_tx.sequence = channel_data.sequence(selected_tx);
-%channel_data_single_tx.sequence.apodization_values(32:128) = 0;
-
-refocus = preprocess.refocus()
-refocus.input = channel_data_single_tx;
-channel_data_STAI_single_tx = refocus.go()
-
-%%
-demod = preprocess.fast_demodulation()
-demod.input = channel_data_STAI_single_tx
-channel_data_STAI_demod_single_tx = demod.go();
-%%
-das.dimension = dimension.receive;
-das.transmit_apodization.window=uff.window.tukey50;
-das.transmit_apodization.f_number = 4;
-das.channel_data = channel_data_STAI_demod_single_tx
-das.receive_apodization.window=uff.window.tukey50;
-das.receive_apodization.f_number = 1;
-b_data_REFOCUS = das.go()
-%%
-b_data_REFOCUS.plot([],['REFOCUS from '],[],[],[],[],[],'dark')
-
+% %%
+% tx_apod = mid_RTB.transmit_apodization.data;
+% 
+% %%
+% weighting = 1./sum(tx_apod,2);
+% 
+% b_data_RTB_compensated = uff.beamformed_data(b_data_RTB);
+% b_data_RTB_compensated.data = b_data_RTB.data .* weighting;
+% b_data_RTB_compensated.plot([],'RTB image using virtual source model TX weighted');
+% 
+% %%
+% mid_RTB.dimension = dimension.receive();
+% b_data_RTB_transmit = mid_RTB.go();
+% 
+% %% Illustrate t0 compensation
+% selected_tx = 20;
+% single_tx_images = b_data_RTB_transmit.get_image();
+% transmit_delays = channel_data.sequence(selected_tx).delay_values;
+% transmit_delays(50:end) = transmit_delays(49);
+% 
+% figure(8);clf;
+% subplot(5,1,1)
+% plot(transmit_delays*10^6,'HandleVisibility','off','LineWidth',2);hold on;
+% plot(channel_data.sequence(selected_tx).delay_values*10^6,'HandleVisibility','off','LineWidth',2)
+% plot(49,transmit_delays(49)*10^6,'o','DisplayName','Conventional t_0','LineWidth',2);hold on;
+% plot(64,channel_data.sequence(selected_tx).delay_values(end/2)*10^6,'o','DisplayName','Generalized t_0','LineWidth',2)
+% xlim([1 128]);xlabel('Elements');
+% xlabel('Elements');ylabel(["Delay [ms]"]);title('Tx Wavefront');
+% legend
+% ylim([-7 3])
+% set(gca,'FontSize',13)
+% subplot(5,1,[2:5])
+% imagesc(scan.x_axis*1000,scan.z_axis*1000,single_tx_images(:,:,selected_tx))
+% axis image;colormap gray;caxis([-70 0])
+% xlabel(['x [mm]']);ylabel(['z [mm]']);%colorbar
+% title('Single Focused Transmission');
+% set(gcf,'Position',[605 197 484 781])
+% set(gca,'FontSize',15)
+% %%
+% %%
+% f = gcf;
+% saveas(f,'Figures/FI_RTB.png');
+% %% Run the REFOCUS preprocess
+% addpath C:/Repositories/USTB_addons/
+% 
+% refocus = preprocess.refocus()
+% refocus.input = channel_data;
+% channel_data_STAI = refocus.go()
+% 
+% %%
+% demod = preprocess.fast_demodulation()
+% demod.input = channel_data_STAI
+% demod.plot_on = true;  
+% channel_data_STAI_demod = demod.go();
+% 
+% %%
+% das = midprocess.das();
+% das.scan = scan;
+% das.channel_data=channel_data_STAI_demod;
+% das.transmit_apodization.window=uff.window.tukey50;
+% das.transmit_apodization.f_number = 4;
+% das.receive_apodization.window=uff.window.tukey50;
+% das.receive_apodization.f_number = 1;
+% das.dimension = dimension.both;
+% b_data_REFOCUS = das.go()
+% %%
+% b_data_REFOCUS.plot([],['REFOCUS from '],[],[],[],[],[],'dark')
+% 
+% %%
+% channel_data_single_tx = uff.channel_data(channel_data);
+% channel_data_single_tx.data = channel_data.data(:,:,selected_tx);
+% channel_data_single_tx.sequence = channel_data.sequence(selected_tx);
+% %channel_data_single_tx.sequence.apodization_values(32:128) = 0;
+% 
+% refocus = preprocess.refocus()
+% refocus.input = channel_data_single_tx;
+% channel_data_STAI_single_tx = refocus.go()
+% 
+% %%
+% demod = preprocess.fast_demodulation()
+% demod.input = channel_data_STAI_single_tx
+% channel_data_STAI_demod_single_tx = demod.go();
+% %%
+% das.dimension = dimension.receive;
+% das.transmit_apodization.window=uff.window.tukey50;
+% das.transmit_apodization.f_number = 4;
+% das.channel_data = channel_data_STAI_demod_single_tx
+% das.receive_apodization.window=uff.window.tukey50;
+% das.receive_apodization.f_number = 1;
+% b_data_REFOCUS = das.go()
+% %%
+% b_data_REFOCUS.plot([],['REFOCUS from '],[],[],[],[],[],'dark')
+% 
