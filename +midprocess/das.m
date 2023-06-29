@@ -36,12 +36,6 @@ classdef das < midprocess
     methods
         function beamformed_data=go(h)
             
-            % check if we can skip calculation
-            if h.check_hash()
-                beamformed_data= h.beamformed_data;
-                return;
-            end
-            
             % short names
             N_pixels = h.scan.N_pixels;
             N_channels = h.channel_data.N_channels;
@@ -160,7 +154,6 @@ classdef das < midprocess
             h.transmit_delay = transmit_delay;
             
             ch_data=single(h.channel_data.data);
-
             if (abs(w0)<eps)
                 ch_data = hilbert(ch_data);
             end
@@ -266,8 +259,6 @@ classdef das < midprocess
             % pass a reference
             beamformed_data = h.beamformed_data;
             
-            % update hash
-            h.save_hash();
         end % end go()
     end
 end

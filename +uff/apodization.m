@@ -126,13 +126,8 @@ classdef apodization < uff
     methods
         %% get data
         function value=get.data(h)
-            % check if we can skip calculation
-            if h.check_hash()&&~isempty(h.data_backup)
-                value = h.data_backup;
-            else
-                h.compute();
-                value = h.data_backup;
-            end
+            h.compute();
+            value = h.data_backup;
         end
               
         %% get N_elements
@@ -278,9 +273,6 @@ classdef apodization < uff
             
             % normalize
             %h.data_backup=h.data_backup./sum(sum(h.data_backup,3),2);
-            
-            % update hash
-            h.save_hash();
         end
         
         %% Aperture apodization
@@ -328,8 +320,6 @@ classdef apodization < uff
             % normalize
             %h.data_backup=h.data_backup./sum(sum(h.data_backup,3),2);
             
-            % update hash
-            h.save_hash();
         end
         
         %% Incidence aperture
