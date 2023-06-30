@@ -2,7 +2,7 @@
 
 WORK_DIR=$(mktemp -d)
 
-git -C $WORK_DIR clone https://github.com/unioslo/USTB
+git -C $WORK_DIR clone https://bitbucket.org/ustb/ustb/
 git -C $WORK_DIR/ustb checkout develop
 
 export USTB_REPO=$WORK_DIR/ustb
