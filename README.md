@@ -69,6 +69,8 @@ The project administrators are:
 
 Collaborators:
 
+* Anders Emil Vrålstad
+* Håvard Kjellmo Arnestad
 * Olivier Bernard
 * Andreas Austeng 
 * Arun Nair
