@@ -3,10 +3,11 @@ run-name: ${{ github.actor }} is learning GitHub Actions
 on: [push]
 jobs:
   check-bats-version:
-    runs-on: self_hosted
+    runs-on: self_hosted 
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: '14'
-      - run: echo 'hello!'
+      - run: npm install -g bats
+      - run: bats -v
