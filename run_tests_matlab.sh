@@ -9,6 +9,8 @@ export USTB_REPO=$WORK_DIR/ustb
 MATLAB_ROOT=$PWD/../
 export MATLABPATH=$MATLAB_ROOT
 
+eval cd "${USTB_REPO}"
+
 matlab -batch run_tests_matlab
 
 rm -rf $WORK_DIR
