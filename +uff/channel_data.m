@@ -76,7 +76,7 @@ classdef channel_data < uff
             end
             
             if nargin <3
-                n_wave=round(mean(size(h.data,3)));
+                n_wave=ceil(h.N_waves/2);
             end
             
             if nargin <4

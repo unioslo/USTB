@@ -93,12 +93,12 @@ classdef fast_demodulation < preprocess
                 obj = plot(fx*1e-6, 10*log10(pw), 'k', 'LineWidth', 1, ...
                     'DisplayName', 'RF channel data');
                 plot([h.modulation_frequency, h.modulation_frequency]*1e-6, ...
-                    [-120, 0]+10*log10(pv), 'r--', 'LineWidth', 1)
+                    [-60, 0]+10*log10(pv), 'r--', 'LineWidth', 1)
                 plot(-[h.modulation_frequency, h.modulation_frequency]*1e-6, ...
-                    [-120, 0]+10*log10(pv), 'r--', 'LineWidth', 1)
+                    [-60, 0]+10*log10(pv), 'r--', 'LineWidth', 1)
                 hold off
-                xlim([-2*h.modulation_frequency, 2*h.modulation_frequency]*1e-6)
-                ylim([-120, 0])
+                xlim([-h.input.sampling_frequency/2, h.input.sampling_frequency/2]*1e-6)
+                ylim([-60, 0])
                 grid on
                 box on
                 xlabel('f [MHz]')
@@ -126,10 +126,10 @@ classdef fast_demodulation < preprocess
                     hold on
                     obj = plot(fx*1e-6, 10*log10(pw), 'k', 'LineWidth', 1, ...
                         'DisplayName', 'Down-mixed channel data');
-                    plot([0, 0]*1e-6, [-120, 0]+10*log10(pv), 'r--', 'LineWidth', 1)
+                    plot([0, 0]*1e-6, [-60, 0]+10*log10(pv), 'r--', 'LineWidth', 1)
                     hold off
-                    xlim([-h.downsample_frequency, h.downsample_frequency]*1e-6)
-                    ylim([-120, 0])
+                    xlim([-h.downsample_frequency/2, h.downsample_frequency/2]*1e-6)
+                    ylim([-60, 0])
                     grid on
                     box on
                     xlabel('f [MHz]')
@@ -186,10 +186,10 @@ classdef fast_demodulation < preprocess
                     hold on
                     obj = plot(fx*1e-6, 10*log10(pw), 'k', 'LineWidth', 1, ...
                         'DisplayName', 'Down-mixed channel data');
-                    plot([0, 0]*1e-6, [-120, 0]+10*log10(pv), 'r--', 'LineWidth', 1)
+                    plot([0, 0]*1e-6, [-60, 0]+10*log10(pv), 'r--', 'LineWidth', 1)
                     hold off
                     xlim([-h.downsample_frequency, h.downsample_frequency]*1e-6)
-                    ylim([-120, 0])
+                    ylim([-60, 0])
                     grid on
                     box on
                     xlabel('f [MHz]')
@@ -270,7 +270,7 @@ classdef fast_demodulation < preprocess
         function val = get.b(h)
             % Filter specification
             A = [1, 0];                                                      	% band type: 0='stop', 1='pass'
-            dev = [1e-2, 1e-3];                                                	% max ripple in pass-band and stop-band
+            dev = [1e-3, 1e-3];                                                	% max ripple in pass-band and stop-band
             [N, Wn, beta, ftype] = kaiserord(h.lowpass_frequency_vector * ...
                 h.modulation_frequency, A, dev, h.input.sampling_frequency);   	% window parameters
             val = fir1(N, Wn, ftype, kaiser(N+1,beta), 'noscale');             	% filter design

@@ -72,7 +72,7 @@ classdef beamformed_data < uff
     
     %% display methods
     methods (Access = public)
-        function figure_handle=plot(h,figure_handle_in,in_title,dynamic_range,compression,indeces,frame_idex,spatial_units,mode)
+        function figure_handle=plot(h,parent_handle_in,in_title,dynamic_range,compression,indeces,frame_idex,spatial_units,mode)
             %PLOT Plots beamformed data
             %
             % Usage: figure_handle=plot(figure_handle,title,dynamic_range)
@@ -84,16 +84,17 @@ classdef beamformed_data < uff
             %   indeces         Pair of integers [nrx ntx] indicating receive and transmit events (default: [])
             %   indeces         Tripler of integers [nrx ntx frame] indicating which receive and transmit and frame must be plotted (default: [])
             
-            if (nargin>1 && ~isempty(figure_handle_in) && isa(figure_handle_in,'matlab.ui.Figure')) || ...
-                    (nargin>1 && ~isempty(figure_handle_in) && isa(figure_handle_in,'double'))
-                h.figure_handle=figure(figure_handle_in);
+            if (nargin>1 && ~isempty(parent_handle_in) && isa(parent_handle_in,'matlab.ui.Figure')) || ...
+                    (nargin>1 && ~isempty(parent_handle_in) && isa(parent_handle_in,'double'))
+                h.figure_handle=figure(parent_handle_in);
                 axis_handle = gca(h.figure_handle);
                 hold on;
-            elseif nargin>1 && ~isempty(figure_handle_in) && isa(figure_handle_in,'matlab.graphics.axis.Axes')
-                h.figure_handle = figure_handle_in;
-                axis_handle = figure_handle_in;
+            elseif nargin>1 && ~isempty(parent_handle_in) && isa(parent_handle_in,'matlab.graphics.axis.Axes')
+                axis_handle = parent_handle_in;
+                h.figure_handle = parent_handle_in.Parent;
             else
                 h.figure_handle=figure();
+                parent_handle_in = h.figure_handle;
                 axis_handle = gca(h.figure_handle);
             end
             
@@ -109,14 +110,14 @@ classdef beamformed_data < uff
                 compression='log';
             end
             if nargin<6||isempty(indeces)
-                data=h.data;
+                data=h.data; %#ok<*PROPLC> 
             else
                 data=h.data(:,indeces(1),indeces(2),indeces(3));
             end
             if nargin<7||isempty(frame_idex)
-                data=h.data;
+                data=data;
             else
-                data=h.data(:,:,:,frame_idex);
+                data=data(:,:,:,frame_idex);
             end
             if nargin<8||isempty(spatial_units)
                 spatial_units='mm';
@@ -136,12 +137,10 @@ classdef beamformed_data < uff
             h.draw_image(axis_handle,h.in_title,dynamic_range,compression,data,spatial_units,font_color,background_color);
             
             % If more than one frame, add the GUI buttons
-            [Npixels Nrx Ntx Nframes]=size(data);
-            if Nrx*Ntx*Nframes > 1
-                set(h.figure_handle, 'Position', [100, 100, 600, 700]);
+            if prod(size(h.data, [2, 3, 4])) > 1 && (isa(parent_handle_in, 'matlab.ui.Figure') || isempty(parent_handle_in)) 
                 h.current_frame = 1;
-                h.add_buttons(h.figure_handle);
-                h.play_loop = 0;
+                h.add_buttons(h.figure_handle);      
+                h.play_loop = false;
                 title([h.in_title,', Frame = ',num2str(h.current_frame),'/',num2str(size(h.all_images,3))],'Color',font_color);
             end
             
@@ -154,7 +153,7 @@ classdef beamformed_data < uff
         
         function draw_image(h,axis_handle,in_title,dynamic_range,compression,data,spatial_units,font_color,background_color)
             
-            [Npixels Nrx Ntx Nframes]=size(data);
+            [~, Nrx, Ntx, Nframes] = size(data);
             
             % compress values
             switch compression
@@ -195,7 +194,6 @@ classdef beamformed_data < uff
                     h.all_images = reshape(envelope,[h.scan.N_z_axis h.scan.N_x_axis Nrx*Ntx*Nframes]);
                     h.image_handle = pcolor(axis_handle,x_matrix*scale_factor,z_matrix*scale_factor,h.all_images(:,:,1));
                     shading(axis_handle,'flat');
-                    set(axis_handle,'fontsize',14);
                     set(axis_handle,'color',font_color);
                     set(axis_handle,'YDir','reverse');
                     axis(axis_handle,'tight','equal');
@@ -217,7 +215,6 @@ classdef beamformed_data < uff
                         % plot in 2D
                         h.image_handle = pcolor(axis_handle,radial_matrix*scale_factor,axial_matrix*scale_factor,h.all_images(:,:,1));
                         shading(axis_handle,'flat');
-                        set(axis_handle,'fontsize',14);
                         set(axis_handle,'YDir','reverse');
                         axis(axis_handle,'tight','equal');
                         colorbar(axis_handle);
@@ -233,7 +230,6 @@ classdef beamformed_data < uff
                         surface(axis_handle);
                         surface(x_matrix*scale_factor,y_matrix*scale_factor,z_matrix*scale_factor,h.all_images(:,:,1));
                         shading(axis_handle,'flat');
-                        set(axis_handle,'fontsize',14);
                         %set(axis_handle,'YDir','reverse');
                         axis(axis_handle,'tight','equal');
                         colorbar(axis_handle);
@@ -251,10 +247,12 @@ classdef beamformed_data < uff
                     h.all_images = reshape(envelope,[h.scan.N_depth_axis h.scan.N_azimuth_axis Nrx*Ntx*Nframes]);
                     h.image_handle = pcolor(axis_handle,x_matrix*scale_factor,z_matrix*scale_factor,h.all_images(:,:,1));
                     shading(axis_handle,'flat');
-                    set(axis_handle,'fontsize',14);
                     set(axis_handle,'YDir','reverse');
                     axis(axis_handle,'tight','equal');
                     cbar = colorbar(axis_handle);
+                    if strcmp(compression, 'log')
+                        ylabel(cbar, 'dB');
+                    end
                     set(cbar,'color',font_color);
                     colormap(axis_handle,'gray');
                     xlabel(axis_handle,['x[' spatial_units ']']); 
@@ -264,31 +262,8 @@ classdef beamformed_data < uff
                     set(gca,'YColor',font_color); 
                     set(gca,'XColor',font_color); 
                     set(gca,'Color',background_color);
-                    set(gca,'GridColor',background_color);
-                    set(gca,'GridLineStyle','none');
-                    box off
-                    drawnow;
-                case 'uff.sector_scan_na'
-                    x_matrix=reshape(h.scan.x,[h.scan(1).N_depth_axis h.scan(1).N_azimuth_axis]);
-                    z_matrix=reshape(h.scan.z,[h.scan(1).N_depth_axis h.scan(1).N_azimuth_axis ]);
-                    h.all_images = reshape(envelope,[h.scan.N_depth_axis h.scan.N_azimuth_axis Nrx*Ntx*Nframes]);
-                    h.image_handle = pcolor(axis_handle,x_matrix*scale_factor,z_matrix*scale_factor,h.all_images(:,:,1));
-                    shading(axis_handle,'flat');
-                    set(axis_handle,'fontsize',14);
-                    set(axis_handle,'YDir','reverse');
-                    axis(axis_handle,'tight','equal');
-                    cbar = colorbar(axis_handle);
-                    set(cbar,'color',font_color);
-                    colormap(axis_handle,'gray');
-                    xlabel(axis_handle,['x[' spatial_units ']']); 
-                    ylabel(axis_handle,['z[' spatial_units ']']);
-                    caxis(axis_handle,[min_value max_value]);
-                    title(axis_handle,in_title,'color',font_color);
-                    set(gca,'YColor',font_color); 
-                    set(gca,'XColor',font_color); 
-                    set(gca,'Color',background_color);
-                    set(gca,'GridColor',background_color);
-                    set(gca,'GridLineStyle','none');
+                    set(gca,'GridColor',font_color);
+                    set(gca,'layer', 'top');
                     box off
                     drawnow;
                 case 'uff.scan'
@@ -319,8 +294,6 @@ classdef beamformed_data < uff
                 case 'uff.linear_scan'
                     img = reshape(envelope,[h.scan.N_z_axis h.scan.N_x_axis size(h.data,3) size(h.data,4)]);
                 case 'uff.sector_scan'
-                    img = reshape(envelope,[h.scan.N_depth_axis h.scan.N_azimuth_axis size(h.data,3) size(h.data,4)]);
-                case 'uff.sector_scan_na'
                     img = reshape(envelope,[h.scan.N_depth_axis h.scan.N_azimuth_axis size(h.data,3) size(h.data,4)]);
                 otherwise
                     error(sprintf('Dont know how to plot on a %s yet. Sorry!',class(b_data.scan)));
@@ -395,11 +368,11 @@ classdef beamformed_data < uff
     
     %% GUI functions
     methods (Access = private)
-        function add_buttons(h,figure_handle)
-            uicontrol('Parent',figure_handle,'Style','pushbutton','String','Previous frame','Units','normalized','Position',[0.12 0.95 0.2 0.05],'Visible','on','Callback',{@h.plot_previous_frame,h});
-            uicontrol('Parent',figure_handle,'Style','pushbutton','String','Play movie loop','Units','normalized','Position',[0.32 0.95 0.2 0.05],'Visible','on','Callback',{@h.play_movie_loop,h});
-            uicontrol('Parent',figure_handle,'Style','pushbutton','String','Next frame','Units','normalized','Position',[0.52 0.95 0.2 0.05],'Visible','on','Callback',{@h.plot_next_frame,h});
-            uicontrol('Parent',figure_handle,'Style','pushbutton','String','Save','Units','normalized','Position',[0.72 0.95 0.2 0.05],'Visible','on','Callback',{@h.save_movie_loop,h});
+        function add_buttons(h,parent_handle)            
+            uicontrol('Parent',parent_handle,'Style','pushbutton','String','Previous frame','Units','normalized','Position',[0.12 0.95 0.2 0.05],'Visible','on','Callback',{@h.plot_previous_frame,h});
+            uicontrol('Parent',parent_handle,'Style','pushbutton','String','Play movie loop','Units','normalized','Position',[0.32 0.95 0.2 0.05],'Visible','on','Callback',{@h.play_movie_loop,h});
+            uicontrol('Parent',parent_handle,'Style','pushbutton','String','Next frame','Units','normalized','Position',[0.52 0.95 0.2 0.05],'Visible','on','Callback',{@h.plot_next_frame,h});
+            uicontrol('Parent',parent_handle,'Style','pushbutton','String','Save','Units','normalized','Position',[0.72 0.95 0.2 0.05],'Visible','on','Callback',{@h.save_movie_loop,h});
         end
         
         function plot_previous_frame(h,var1,var2,var3)
@@ -442,17 +415,23 @@ classdef beamformed_data < uff
             end
         end
         
-         function save_movie_loop(h,var1,var2,var3)
-             [FileName,path] = uiputfile('movie.mp4','Save movie loop as');
-             vidObj = VideoWriter([path,filesep,FileName],'MPEG-4');
+         function save_movie_loop(h,~,~,~)
+             [filename,path,filterindex] = uiputfile({'*.mp4','MPEG-4 (*.mp4)';'*.avi','Motion JPEG AVI (*.avi)'}, 'Save movie as');
+             switch filterindex
+                 case 0
+                     return;
+                 case 1
+                     vidObj = VideoWriter([path,filesep,filename],'MPEG-4');
+                 case 2
+                     vidObj = VideoWriter([path,filesep,filename],'Motion JPEG AVI');
+             end
              vidObj.Quality = 100;
              vidObj.FrameRate = h.frame_rate;
              open(vidObj);
              for i = 1:size(h.all_images,3)
                  
-                 set(h.image_handle,'CData',h.all_images(:,:,i));
+                 h.image_handle.CData=h.all_images(:,:,i);
                  title([h.in_title,', Frame = ',num2str(i),'/',num2str(size(h.all_images,3))]);
-                 drawnow();
                  writeVideo(vidObj, getframe(h.figure_handle));
                  
              end

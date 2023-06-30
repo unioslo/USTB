@@ -5,7 +5,7 @@ function [fx, pw] = power_spectrum(data, fs, normalised, N)
         normalised = true;
     end
     if nargin < 4    
-        N = min(5, size(data, 4));     % number of temporal frames to average
+        N = min(100, size(data, 4));     % number of temporal frames to average
     end
     
     pw = fftshift(fft(data(:,:,:,1:N), [], 1));

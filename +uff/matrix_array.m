@@ -67,8 +67,8 @@ classdef matrix_array < uff.probe
                 x0=x0-mean(x0);
                 y0=y0-mean(y0);
                 
-                % meshgrid
-                [X Y]=meshgrid(x0,y0);
+                % ndgrid
+                [X, Y]=ndgrid(x0,y0);
 
                 % assign geometry
                 h.geometry=[X(:) Y(:) zeros(h.N_x*h.N_y,3) h.element_width*ones(h.N_x*h.N_y,1) h.element_height*ones(h.N_x*h.N_y,1)]; % probe geometry

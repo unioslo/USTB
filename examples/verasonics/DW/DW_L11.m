@@ -19,7 +19,16 @@
 % Last update:
 % 11/10/2015 - modified for SW 3.0
 
-clear all
+clear all;
+close all;
+
+% Set of filename handling
+folderdata=['data/' datestr(now,'yyyymmdd')];
+mkdir(folderdata);            
+filedata=['L11_DW' datestr(now,'HHMMSS') '.uff'];
+uff_filename=[folderdata '/' filedata];
+
+
 P.startDepth = 5;   % Acquisition depth in wavelengths
 P.endDepth = 192;   % This should preferrably be a multiple of 128 samples.
 
@@ -102,7 +111,8 @@ else
     P.startAngle = -fix(na/2)*dtheta;
 end
 for n = 1:na   % na transmit events
-    TX(n).Steer = [(P.startAngle+(n-1)*dtheta),0.0];
+    angles(n) = (P.startAngle+(n-1)*dtheta);
+    TX(n).Steer = [angles(n),0.0];
     TX(n).Delay = computeTXDelays(TX(n));
 end
 
@@ -136,7 +146,7 @@ end
 
 % Specify Recon structure arrays.
 % - We need one Recon structures which will be used for each frame. 
-Recon = struct('senscutoff', 0.6, ...
+Recon = struct('senscutoff', 0, ...
                'pdatanum', 1, ...
                'rcvBufFrame',-1, ...
                'IntBufDest', [1,1], ...
@@ -259,152 +269,66 @@ save(filename);
 % call VSX
 VSX;
 
-%% converting to UFF
-disp('Storing data into UFF format');
-
-%% Reading data
-data=zeros(Receive(1).endSample, Resource.Parameters.numRcvChannels, na, Resource.RcvBuffer(1).numFrames);
-probe_geometry=Trans.ElementPos(1:Resource.Parameters.numRcvChannels,1:3)*1e-3; % in      
-
-%% calculate offset 
-offset_distance=(TW.peak)*lambda;   % in [m]
-if strcmp(Trans.units,'mm')
-    offset_distance=offset_distance+2*Trans.lensCorrection*1e-3;
-elseif strcmp(Trans.units,'wavelengths')
-    offset_distance=offset_distance+2*Trans.lensCorrection*lambda;
-end
-offset_time=offset_distance/Resource.Parameters.speedOfSound;   % in [s]
-
-%% wave delay
-figure;
-angles = P.startAngle:dtheta:-P.startAngle;
-c0 = Resource.Parameters.speedOfSound;
-t0_1=zeros(1,na);
-for n_angle=1:na
-    source = [TX(n_angle).focus*lambda*sin(angles(n_angle)) 0 TX(n_angle).focus*lambda*cos(angles(n_angle))]; 
-    dst = sqrt(sum(bsxfun(@plus,source,-probe_geometry).^2,2));
-    dst0 = sqrt(sum(bsxfun(@plus,source,[0 0 0]).^2,2));
-    
-    if TX(n_angle).focus>0
-        delay=max(dst)/c0-dst/c0;
-        t0_1(n_angle)=-(dst0-max(dst))/c0;
-    else
-        delay=dst/c0-min(dst)/c0;
-        t0_1(n_angle)=(dst0-min(dst))/c0;
-    end
-    plot(probe_geometry(:,1),TX(n_angle).Delay*lambda/Resource.Parameters.speedOfSound-t0_1(n_angle),'b-'); grid on; hold on;
-    plot(probe_geometry(:,1),delay-t0_1(n_angle),'r--'); grid on; hold on;
-    plot(0,0,'bo');
-    %pause();
-end
-
-%% convert data
-n=1;
-Fs=4*Trans.frequency*1e6;
-
-t_out=0:(1/Fs):((Receive(1).endSample-1)/Fs);
-for n_frame = 1:Resource.RcvBuffer(1).numFrames
-    for n_angle = 1:na
-        % compute time vector for this line
-        t_ini=2*Receive(n).startDepth*lambda/c0;
-        t_end=2*Receive(n).endDepth*lambda/c0;
-        no_t=(Receive(n).endSample-Receive(n).startSample+1);
-        t_in=linspace(t_ini,t_end,no_t)-offset_time-t0_1(n_angle);
-        
-        % read data
-        data(:,:,n_angle,n_frame)=interp1(t_in,double(RcvData{1}(Receive(n).startSample:Receive(n).endSample,:,n_frame)),t_out,'linear',0);
-        n=n+1;
-        
-        % check delays
-        check=1;
-        if check
-            t00=-(20/Fs):(0.5/Fs):(20/Fs);
-            z0=20e-3;
-            x0=0;
-            source = [TX(n_angle).focus*lambda*sin(angles(n_angle)) 0 TX(n_angle).focus*lambda*cos(angles(n_angle))]; 
-            delay=  sqrt(z0^2+(probe_geometry(:,1)-x0).^2)/c0 + sign(TX(n_angle).focus).*( sqrt(sum((source - [0 0 0]).^2))/c0 - sqrt(sum((source - [x0 0 z0]).^2))/c0);
-            delayeddata=zeros(128,length(t00));
-            for nch=1:128
-                delayeddata(nch,:)=interp1(t_out-delay(nch),data(:,nch,n_angle,n_frame),t00);
-            end
-            
-            figure(102); hold off;
-            pcolor(1:128,t00,delayeddata.'); shading flat; colormap gray; colorbar; hold on;
-            plot(1:128,zeros(1,128),'r--');
-            title(n_angle);
-            drawnow;
-            %pause();
-        end
-    end
-end
-
-% probe
-probe = uff.linear_array();
-probe.pitch = Trans.spacingMm*1e-3;
-probe.N = Trans.numelements;
-probe.element_width = Trans.elementWidth*1e-3;
-probe.element_height = 5e-3;
-h_fig = probe.plot(); hold on;
-
-% sequence
-sequence = repmat(uff.wave(),[1 na]);
-for n_angle = 1:na
-    sequence(n_angle).source.distance = TX(n_angle).focus*lambda;
-    sequence(n_angle).source.azimuth = angles(n_angle);
-    sequence(n_angle).source.plot(h_fig);
-end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% converting the format to USTB 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+disp('Converting data format to USTB');
+%% create USTB data class structure with Verasonics class
+ver = verasonics();
+% The Verasonics class needs these structs to create a USTB dataset
+% NB! The Trans struct should be given first.
+ver.Trans = Trans;
+ver.RcvData = RcvData;          
+ver.Receive = Receive;
+ver.Resource = Resource;
+ver.TW = TW;
+ver.TX = TX;
+ver.angles = angles;
 
 % Create channel_data object
-channel_data = uff.channel_data();
-channel_data.data=data;
-channel_data.sampling_frequency = Fs;
-channel_data.initial_time = t_out(1);
-channel_data.sound_speed = Resource.Parameters.speedOfSound;
-channel_data.sequence = sequence;
-channel_data.probe = probe;
-
-channel_data.name = 'DW dataset recorded on Verasonics Vantage 256 and L11 probe';
-channel_data.version = 'v1.0';
-channel_data.PRF = PRF;
+channel_data = ver.create_dw_channeldata();
 
 %% SCAN
 sca=uff.linear_scan();
 sca.x_axis=lambda*(PData(1).Origin(1)+(0:PData(1).Size(2)-1)*PData(1).PDelta(1)).';
 sca.z_axis=lambda*(PData(1).Origin(3)+(0:PData(1).Size(1)-1)*PData(1).PDelta(3)).';
  
-%% BEAMFORMER
-bmf=beamformer();
-bmf.channel_data=channel_data;
-bmf.scan=sca;
 
-bmf.receive_apodization.window=uff.window.flat;
-bmf.receive_apodization.f_number=2*tan(Recon.senscutoff);
-bmf.receive_apodization.apex.distance=Inf;
+%% Define processing pipeline and beamform
+pipe=pipeline();
+pipe.channel_data=channel_data;
+pipe.scan=sca;
 
-bmf.transmit_apodization.window=uff.window.flat;
-bmf.transmit_apodization.f_number=2*tan(Recon.senscutoff);
-bmf.transmit_apodization.apex.distance=Inf;
+pipe.receive_apodization.window=uff.window.boxcar;
+pipe.receive_apodization.f_number=2*tan(Recon.senscutoff);
 
-% beamforming
-b_data=bmf.go({process.das process.coherent_compounding});
+pipe.transmit_apodization.window=uff.window.boxcar;
+pipe.transmit_apodization.f_number=2*tan(Recon.senscutoff);
 
-%% show
+
+% Start the processing pipeline
+b_data=pipe.go({midprocess.das postprocess.coherent_compounding});
+
+% show
 b_data.plot();
-
-%% write channel_data to path
-% uff_filename = 'DW_simulation_L11';
-% uff_file=uff([ustb_path '/data/' uff_filename],'write');
-% uff_file.write(channel_data,'channel_data');
-% uff_file.write(b_data,'beamformed_data');
 
 %% Verasonics vs USTB beamforming
 vb=abs(ImgData{1}(:,:,1,1));
-ub=abs(reshape(b_data.data(:,1,1,1),[sca.N_z_axis sca.N_x_axis 1 1]));
+ub=abs(b_data.get_image('none'));
 figure;
 subplot(1,2,1)
 imagesc(20*log10(vb/max(vb(:)))); caxis([-60 0]); colormap gray; colorbar; title('Verasonics')
+ax(1) = gca;
 subplot(1,2,2)
 imagesc(20*log10(ub/max(ub(:)))); caxis([-60 0]); colormap gray; colorbar; title('USTB')
+ax(2) = gca;
+linkaxes(ax);
+
+%% write channel_data to file the filname that was created in the beginning of this script
+answer = questdlg('Do you want to save this dataset?');
+if strcmp(answer,'Yes')
+    channel_data.write(uff_filename,'channel_data');
+end
 
 return
 

@@ -58,7 +58,7 @@ prb.plot(fig_handle);
 
 pul=uff.pulse();
 pul.center_frequency=3e6;       % transducer frequency [MHz]
-pul.fractional_bandwidth=0.6;   % fractional bandwidth [unitless]
+pul.fractional_bandwidth=0.8;   % fractional bandwidth [unitless]
 pul.plot([],'2-way pulse');
 
 %% Sequence generation
@@ -85,9 +85,9 @@ for n=1:N
     
     seq(n).apodization=uff.apodization();
     seq(n).apodization.window=uff.window.tukey50;
-    seq(n).apodization.f_number=1.7;
+    seq(n).apodization.f_number=1.5;
     seq(n).apodization.focus=uff.sector_scan('xyz',seq(n).source.xyz);
-        
+    
     seq(n).sound_speed=pha.sound_speed;
     
     % show source
@@ -108,7 +108,7 @@ sim.phantom=pha;                % phantom
 sim.pulse=pul;                  % transmitted pulse
 sim.probe=prb;                  % probe
 sim.sequence=seq;               % beam sequence
-sim.sampling_frequency=41.6e6;  % sampling frequency [Hz]
+sim.sampling_frequency=50e6;    % sampling frequency [Hz]
 
 % we launch the simulation
 channel_data=sim.go();
@@ -119,8 +119,8 @@ channel_data=sim.go();
 % interest. For our example here, we use the *sector_scan* structure to 
 % generate a sector scan. *scan* too has a useful *plot* method it can call.
 
-depth_axis=linspace(0e-3,70e-3,400).';
-scan=uff.sector_scan('azimuth_axis',azimuth_axis,'depth_axis',depth_axis);
+scan=uff.sector_scan('azimuth_axis',azimuth_axis, ...
+    'depth_axis',linspace(35e-3,45e-3,128).');
  
 %% Beamformer
 %
@@ -130,14 +130,19 @@ scan=uff.sector_scan('azimuth_axis',azimuth_axis,'depth_axis',depth_axis);
 % returns a *beamformed_data*.
 
 mid=midprocess.das();
+mid.spherical_transmit_delay_model = spherical_transmit_delay_model.hybrid;
+mid.pw_margin = 2e-3; 
+
 mid.dimension = dimension.both;
 mid.channel_data=channel_data;
 mid.scan=scan;
 
 mid.transmit_apodization.window = uff.window.scanline;
+mid.transmit_apodization.MLA = 1;
+mid.transmit_apodization.MLA_overlap = 1;
 
 mid.receive_apodization.window=uff.window.tukey50;
-mid.receive_apodization.f_number=1.7;
+mid.receive_apodization.f_number=2.5;
 
 b_data=mid.go();
 

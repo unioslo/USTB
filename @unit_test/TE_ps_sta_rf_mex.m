@@ -23,13 +23,14 @@ function ok = TE_ps_sta_rf_mex(h)
     prb=probe();
     prb.geometry = s.geom;
 
-    
     % SEQUENCE 
     for n=1:prb.N_elements 
         seq(n)=wave();
         seq(n).probe=prb;
         seq(n).sound_speed=s.c0;
-        seq(n).source.xyz=[prb.x(n) prb.y(n) prb.z(n)];
+        % === Fix S.F. 16.02.2023 ===
+        seq(n).origin=uff.point('xyz', [prb.x(n), prb.y(n), prb.z(n)]);
+        seq(n).source=uff.point('xyz', [prb.x(n), prb.y(n), prb.z(n)]);
         seq(n).delay=seq(n).source.distance/s.c0;
     end
     

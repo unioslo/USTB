@@ -28,7 +28,9 @@ function ok = TE_ps_sta_iq(h)
         seq(n)=wave();
         seq(n).probe=prb;
         seq(n).sound_speed=s.c0;
-        seq(n).source.xyz=[prb.x(n) prb.y(n) prb.z(n)];
+        % === Fix S.F. 16.02.2023 ===
+        seq(n).origin=uff.point('xyz', [prb.x(n), prb.y(n), prb.z(n)]);
+        seq(n).source=uff.point('xyz', [prb.x(n), prb.y(n), prb.z(n)]);
         seq(n).delay=seq(n).source.distance/s.c0;
     end
     
@@ -56,7 +58,7 @@ function ok = TE_ps_sta_iq(h)
     das.code = code.matlab;
     
     % beamforming
-    b_data=pipe.go({das postprocess.coherent_compounding});
+    b_data=pipe.go({das});
     
     % test result
     ok=(norm(b_data.data-r.data(:))/norm(r.data(:)))<h.external_tolerance;

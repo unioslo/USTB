@@ -34,7 +34,7 @@ P.startDepth = 0;
 P.endDepth = 192;
 P.txFocus = 100;     % Initial transmit focus.
 P.numTx = 32;        % number of transmit elements in TX aperture (where possible).
-number_of_frames = 2 % The number of frames
+number_of_frames = 1 % The number of frames
 
 % Define system parameters.
 Resource.Parameters.numTransmit = 128;      % number of transmit channels.

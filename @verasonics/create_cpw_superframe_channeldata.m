@@ -14,6 +14,8 @@ for n=1:length(h.TX)
     seq(n).source.azimuth=h.angles(n);
     seq(n).source.distance=Inf;
     seq(n).sound_speed=channel_data.sound_speed;
+    seq(n).apodization.apodization_vector = h.TX(n).Apod;
+    seq(n).origin.xyz = mean(channel_data.probe.geometry(h.TX(n).Apod,1:3),1);
 end
 channel_data.sequence = seq;
 
