@@ -28,6 +28,9 @@ compared to the previous version
 
 the main changes are:
 
+* A new implementation of the sector scan allowing to compensate for blocked arrays
+* Improve the speed of the beamformer
+* A CUDA implementation of the generalized beamformer
 * corrected implementation of Unified Delay Model for RTB/MLA processing
 * major update of the FLUST simulator
 * corrected issue with divering wave delay calculation
