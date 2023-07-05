@@ -157,6 +157,7 @@ parfor n=1:no_lines
     seq(n)=uff.wave();
     seq(n).probe=probe;
     seq(n).source.xyz=[x 0 z_focus];
+    seq(n).origin.x = seq(n).source.x;
     seq(n).sound_speed=c0;
     seq(n).delay = -lag*dt+t;
 end
@@ -192,9 +193,9 @@ sim.sampling_frequency=41.6e6;  % sampling frequency [Hz]
 
 % we launch the simulation
 channel_data_fresnel=sim.go();
-
-channel_data_fresnel.plot([],127);title('Fresnel')
-channel_data.plot([],127); title('Field II')
+%%
+channel_data_fresnel.plot();title('Fresnel')
+channel_data.plot(); title('Field II')
 
 %% Create Scan
 z_axis = linspace(35e-3,45e-3,200).';
