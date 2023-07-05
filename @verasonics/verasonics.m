@@ -121,6 +121,16 @@ classdef verasonics < handle
                 prb.N=h.Trans.numelements;                  % number of elements
                 prb.pitch=h.Trans.spacingMm/1000;           % probe pitch in azimuth [m]
                 prb.element_width=h.Trans.elementWidth/1000;   % element width [m]
+            elseif strcmp(h.Trans.name,'C5-2v')
+                prb=uff.curvilinear_array();
+%                 geo=zeros(h.Trans.numelements,7);
+%                 geo(:,1:4)=h.Trans.ElementPos;
+%                 geo(:,1:3)=geo(:,1:3)/1e3;
+%                 prb.geometry=geo;
+                prb.N=h.Trans.numelements;                 % number of elements
+                prb.pitch=h.Trans.spacingMm/1000;
+                prb.element_width=h.Trans.elementWidth/1000; 
+                prb.radius=h.Trans.radiusMm/1000;
             else
                 error('Sorry, that probe is not supported in USTB yet.');
             end

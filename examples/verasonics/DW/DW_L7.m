@@ -25,7 +25,7 @@ close all;
 % Set of filename handling
 folderdata=['data/' datestr(now,'yyyymmdd')];
 mkdir(folderdata);            
-filedata=['L11_DW' datestr(now,'HHMMSS') '.uff'];
+filedata=['L7_DW' datestr(now,'HHMMSS') '.uff'];
 uff_filename=[folderdata '/' filedata];
 
 
@@ -37,7 +37,7 @@ frames = 1;
 PRF=6250;
 alpha_max= 45;
 radius = 20e-3;
-na = 15;      % Set na = number of angles.
+na = 25;      % Set na = number of angles.
 if (na > 1), 
     dtheta = (alpha_max*pi/180)/(na-1); 
     P.startAngle = -alpha_max*pi/180/2; 
@@ -52,12 +52,12 @@ Resource.Parameters.numRcvChannels = 128;    % number of receive channels.
 Resource.Parameters.speedOfSound = 1540;    % set speed of sound in m/sec before calling computeTrans
 Resource.Parameters.verbose = 2;
 Resource.Parameters.initializeOnly = 0;
-Resource.Parameters.simulateMode = 1;
+Resource.Parameters.simulateMode = 0;
 %  Resource.Parameters.simulateMode = 1 forces simulate mode, even if hardware is present.
 %  Resource.Parameters.simulateMode = 2 stops sequence and processes RcvData continuously.
 
 % Specify Trans structure array.
-Trans.name = 'L11-4v';
+Trans.name = 'L7-4';
 Trans.units = 'mm'; % Explicit declaration avoids warning message when selected by default
 Trans = computeTrans(Trans);  % L11-4v transducer is 'known' transducer so we can use computeTrans.
 Trans.maxHighVoltage = 50;  % set maximum high voltage limit for pulser supply.
@@ -81,7 +81,7 @@ Resource.RcvBuffer(1).colsPerFrame = Resource.Parameters.numRcvChannels;
 Resource.RcvBuffer(1).numFrames = frames;    % 30 frames stored in RcvBuffer.
 Resource.InterBuffer(1).numFrames = 1;   % one intermediate buffer needed.
 Resource.ImageBuffer(1).numFrames = 10;
-Resource.DisplayWindow(1).Title = 'L11-4vFlashAngles';
+Resource.DisplayWindow(1).Title = 'L7-4vFlashAnglesDW';
 Resource.DisplayWindow(1).pdelta = 0.35;
 ScrnSize = get(0,'ScreenSize');
 DwWidth = ceil(PData(1).Size(2)*PData(1).PDelta(1)/Resource.DisplayWindow(1).pdelta);
@@ -299,11 +299,11 @@ pipe=pipeline();
 pipe.channel_data=channel_data;
 pipe.scan=sca;
 
-pipe.receive_apodization.window=uff.window.boxcar;
-pipe.receive_apodization.f_number=2*tan(Recon.senscutoff);
+pipe.receive_apodization.window=uff.window.none;
+%pipe.receive_apodization.f_number=2*tan(Recon.senscutoff);
 
-pipe.transmit_apodization.window=uff.window.boxcar;
-pipe.transmit_apodization.f_number=2*tan(Recon.senscutoff);
+pipe.transmit_apodization.window=uff.window.none;
+%pipe.transmit_apodization.f_number=2*tan(Recon.senscutoff);
 
 
 % Start the processing pipeline

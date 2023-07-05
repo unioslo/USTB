@@ -22,6 +22,8 @@ for n=1:N
     seq(n).probe=channel_data.probe;
     seq(n).source.xyz=[h.TX(n).Origin(1)*h.lambda 0 h.TX(n).focus*h.lambda];
     seq(n).sound_speed=channel_data.sound_speed;
+    seq(n).apodization.apodization_vector = h.TX(n).Apod;
+    seq(n).origin.x = seq(n).source.x;%mean(channel_data.probe.geometry(1:3,h.TX(n).Apod),1);
 end
 channel_data.sequence = seq;
 
@@ -55,7 +57,10 @@ for n_frame = h.frame_order
         channel_data.sequence(n_tx).delay = -(offset_distance+t0_comp_in_m)/channel_data.sound_speed;
         % read data
         data(:,:,n_tx,frame_idx) = h.RcvData{1}(h.Receive(n).startSample:h.Receive(n).endSample,h.Trans.Connector,n_frame);
-        
+        %save transmit apodization used
+        channel_data.sequence(n_tx).apodization.apodization_vector = h.TX(n_tx).Apod;
+
+
         if plot_delayed_signal
             if n_tx == length(channel_data.sequence)/2 %if this is the center scan line
                 x = channel_data.sequence(n_tx).source.x;

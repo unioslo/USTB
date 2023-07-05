@@ -22,12 +22,12 @@ seq=uff.wave();
 for n=1:N
     seq(n)=uff.wave();
     seq(n).probe=channel_data.probe;
-    
     seq(n).source=uff.point();
     seq(n).source.azimuth=azimuth_axis(n);
     seq(n).source.distance=h.TX(n).focus*h.lambda;
-    
     seq(n).sound_speed=channel_data.sound_speed;
+    seq(n).apodization.apodization_vector = h.TX(n).Apod;
+    seq(n).origin.xyz = mean(channel_data.probe.geometry(h.TX(n).Apod,1:3),1);
 end
 channel_data.sequence = seq;
 

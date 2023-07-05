@@ -36,12 +36,6 @@ classdef das < midprocess
     methods
         function beamformed_data=go(h)
             
-            % check if we can skip calculation
-            if h.check_hash()
-                beamformed_data= h.beamformed_data;
-                return;
-            end
-            
             % short names
             N_pixels = h.scan.N_pixels;
             N_channels = h.channel_data.N_channels;
@@ -84,8 +78,8 @@ classdef das < midprocess
                             % distance between source and elements
                             transmit_delay(:,n_wave)=(-1).^(h.scan.z<h.channel_data.sequence(n_wave).source.z).*sqrt((h.channel_data.sequence(n_wave).source.x-h.scan.x).^2+(h.channel_data.sequence(n_wave).source.y-h.scan.y).^2+(h.channel_data.sequence(n_wave).source.z-h.scan.z).^2);
                             
-                            % add distance from source to coordinate system origin
-                            if (h.channel_data.sequence(n_wave).source.z<-1e-3) %Diverging Wave (DW) transmit
+                            % add distance from source to origin
+                            if (h.channel_data.sequence(n_wave).source.z<0) %Diverging Wave (DW) transmit
                                 transmit_delay(:,n_wave)=transmit_delay(:,n_wave)-abs(h.channel_data.sequence(n_wave).source.distance);
                             else % if virtual source in front of transducer
                                 switch h.spherical_transmit_delay_model
@@ -160,7 +154,6 @@ classdef das < midprocess
             h.transmit_delay = transmit_delay;
             
             ch_data=single(h.channel_data.data);
-
             if (abs(w0)<eps)
                 ch_data = hilbert(ch_data);
             end
@@ -266,8 +259,6 @@ classdef das < midprocess
             % pass a reference
             beamformed_data = h.beamformed_data;
             
-            % update hash
-            h.save_hash();
         end % end go()
     end
 end

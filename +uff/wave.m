@@ -67,6 +67,7 @@ classdef wave < uff
         N_elements         % number of elements
         delay_values       % delay [s]
         apodization_values % apodization [unitless]
+        t0_origin          % delay [s] needed in case the t0 should be calculated from origin.xyz rather than [0, 0, 0]
     end
     
     %% constructor -> uff constructor
@@ -159,13 +160,28 @@ classdef wave < uff
             h.wavefront=in_wavefront;
         end
     end
-    
+
     %% get methods
     methods
+        function value = get.t0_origin(h)
+            % The sign is automatically calculated whether the source is 
+            % located in front or behind the transducer, so that this 
+            % quantity can be simply added to wave.delay
+
+            if(h.source.z<0)
+                value = -sqrt(sum(h.source.xyz.^2)) + sqrt(sum((h.source.xyz-h.origin.xyz).^2));
+            else
+                value = sqrt(sum(h.source.xyz.^2)) - sqrt(sum((h.source.xyz-h.origin.xyz).^2));
+            end
+
+            value = value/h.sound_speed;
+        end
+
+
         function value=get.N_elements(h)
             value=h.probe.N_elements;
         end
-        
+
         function value=get.delay_values(h)
             assert(~isempty(h.probe),'The PROBE must be inserted for delay calculation');
             assert(~isempty(h.sound_speed),'The sound speed must be inserted for delay calculation');
@@ -192,6 +208,5 @@ classdef wave < uff
                 value=h.apodization.data();
             end
         end
-    end
-    
+    end    
 end

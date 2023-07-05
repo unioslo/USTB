@@ -1,4 +1,4 @@
-function channel_data = create_cpw_superframe_channeldata(h)
+function channel_data = create_dw_superframe_channeldata(h)
 %% Create channel_data object and set some parameters
 channel_data = uff.channel_data();
 channel_data.sampling_frequency = h.Fs;
@@ -8,11 +8,12 @@ channel_data.probe=create_probe_object(h);
 
 %% SEQUENCE GENERATION
 
-for n=1:length(h.TX)
+N=size(h.TX,2);             % number of diverging waves
+for n=1:N
     seq(n)=uff.wave();
     seq(n).probe=channel_data.probe;
-    seq(n).source.azimuth=h.angles(n);
-    seq(n).source.distance=Inf;
+    source = [h.TX(n).focus*h.lambda*sin(h.angles(n)) 0 h.TX(n).focus*h.lambda*cos(h.angles(n))]; 
+    seq(n).source.xyz = source;
     seq(n).sound_speed=channel_data.sound_speed;
     seq(n).apodization.apodization_vector = h.TX(n).Apod;
     seq(n).origin.xyz = mean(channel_data.probe.geometry(h.TX(n).Apod,1:3),1);
@@ -41,11 +42,6 @@ for n_frame = 1:h.number_of_superframes
         % Find t_0, when the plane wave "crosses" the center of
         % the probe
         for s=1:length(channel_data.sequence)% loop on sequence of angles
-            D = abs(h.Trans.ElementPos(1,1)-h.Trans.ElementPos(end,1))*1e-3;
-            q = abs((D/2)*sin(channel_data.sequence(s).source.azimuth));
-            t0_1 = q;
-        
-            %t_in=linspace(t_ini,t_end,no_t)-offset_time-t0_1;
             if length(h.Resource.RcvBuffer) == 1
                 RcvIdx=(n_tx-1)*length(seq)+s;
             else % Received data of interest start after First buffer data
@@ -54,7 +50,8 @@ for n_frame = 1:h.number_of_superframes
             
             % time interval between t0 and acquistion start and compensate for
             % center of puse + lens correction
-            channel_data.sequence(s).delay = -(offset_distance+t0_1)/channel_data.sound_speed;
+            t0_comp_in_m = mean(h.TX(s).Delay(ceil(channel_data.probe.N_elements/2):ceil((channel_data.probe.N_elements+1)/2)))*h.lambda;
+            channel_data.sequence(s).delay = -(offset_distance + t0_comp_in_m)/channel_data.sound_speed;
             
             %% read data
             data(:,:,s,frame_number)=h.RcvData(h.Receive(RcvIdx).startSample:h.Receive(RcvIdx).endSample,h.Trans.Connector,n_frame);
@@ -66,9 +63,13 @@ for n_frame = 1:h.number_of_superframes
                 z = 20e-3;
                 x = 0;
                 y = 0;
-                TF = z*cos(channel_data.sequence(n_tx).source.azimuth)*cos(channel_data.sequence(n_tx).source.elevation)+x*sin(channel_data.sequence(n_tx).source.azimuth)*cos(channel_data.sequence(n_tx).source.elevation)
+                
+                % distance between source and elements
+                TF=(-1).^(z<channel_data.sequence(n_tx).source.z).*sqrt((channel_data.sequence(n_tx).source.x-x).^2+(channel_data.sequence(n_tx).source.y-y).^2+(channel_data.sequence(n_tx).source.z-z).^2);
+                % add distance from source to origin
+                TF=TF-channel_data.sequence(n_tx).source.distance;
                 %compensate for t0
-                TF = TF + channel_data.sequence(n_tx).t0_compensation;
+                TF = TF - channel_data.sequence(n_tx).delay*channel_data.sound_speed;
                 % receive delay
                 RF=sqrt((channel_data.probe.x-x).^2+(channel_data.probe.y-y).^2+(channel_data.probe.z-z).^2);
                 % total delay

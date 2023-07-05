@@ -49,7 +49,7 @@ ex_cycles = 2.5;        % number of cycles of the excitation signal (NOT half-cy
 ex_power = 0.67;        % signal duty cycle [0, 1] that relates to the amount of power delivered to the element  
 ex_polarity = 1;        % easy way of changing the polarity
 
-no_frames = 2;          % number of frames to be acquired
+no_frames = 1;          % number of frames to be acquired
 no_packets = 1;         % number of apertures per plane wave
 no_planes = 15;         % number of acquisitions (ergo plane waves)
 buffer_size = 4096;     % number of samples in the buffer
@@ -74,7 +74,7 @@ end
 Resource.Parameters.numTransmit = 128;    % number of transmit channels.
 Resource.Parameters.numRcvChannels = 128; % number of receive channels.
 Resource.Parameters.speedOfSound = c0;    % set speed of sound in m/sec before calling computeTrans
-Resource.Parameters.simulateMode = 1;     % 0 means no simulation, if hardware is present.
+Resource.Parameters.simulateMode = 0;     % 0 means no simulation, if hardware is present.
 
 %% Specify Trans structure array.
 Trans.name = probe;
