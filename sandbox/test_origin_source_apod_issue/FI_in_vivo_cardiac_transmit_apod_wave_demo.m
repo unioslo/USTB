@@ -36,10 +36,6 @@ b_data_MLA = mid.go()
 b_data_MLA.plot([],['Cardiac Scanline Tx Wave apod'],[],[],[],[],[],'dark');    % Display 
 
 %% RTB
-for tx = 1:channel_data.N_waves
-    channel_data.sequence(tx).origin.x = 0;
-end
-
 mid.dimension = dimension.receive();
 mid.transmit_apodization.window = uff.window.tukey25;
 mid.transmit_apodization.f_number = 4;
