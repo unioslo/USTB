@@ -37,8 +37,10 @@ mid.transmit_apodization.window=uff.window.none;
 mid.transmit_apodization.f_number=3;
 
 % Delay the data
+f = figure()
 b_data_3D_RTB = mid.go();
-b_data_3D_RTB.plot()
+b_data_3D_RTB.plot(f);
+saveas(f,'test_image.png')
 
 %% Visualize apodization
 b_data_tx_apod = uff.beamformed_data(b_data_3D_RTB)
