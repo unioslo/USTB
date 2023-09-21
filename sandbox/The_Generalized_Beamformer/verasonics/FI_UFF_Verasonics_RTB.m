@@ -19,7 +19,7 @@ clear all; close all;
 
 % data location
 url='http://ustb.no/datasets/';      % if not found downloaded from here
-filename='L7_FI_points.uff';
+filename='L7_FI_IUS2023.uff';
 
 % checks if the data is in your data path, and downloads it otherwise.
 % The defaults data path is under USTB's folder, but you can change this
@@ -39,14 +39,14 @@ content = uff.index([data_path filesep filename],'/',display);
 % channel_data. So let's read that.
 
 channel_data=uff.read_object([data_path filesep filename],'/channel_data');
-% % %%
-% D = abs(min(channel_data.probe.x)-max(channel_data.probe.x));
-% step = D/channel_data.N_waves;
-% first_origin = -channel_data.N_waves/2 * step
-% for w = 1:channel_data.N_waves
-%     first_origin + step.*w 
-%     channel_data.sequence(w).origin.x = channel_data.sequence(w).source.x;%first_origin + step.*w;
-% end
+% %%
+D = abs(min(channel_data.probe.x)-max(channel_data.probe.x));
+step = D/channel_data.N_waves;
+first_origin = -channel_data.N_waves/2 * step
+for w = 1:channel_data.N_waves
+    first_origin + step.*w 
+    channel_data.sequence(w).origin.x = channel_data.sequence(w).source.x;%first_origin + step.*w;
+end
 
 %%  
 %
