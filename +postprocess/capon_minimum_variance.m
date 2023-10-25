@@ -81,6 +81,8 @@ classdef capon_minimum_variance < postprocess
                 end
             else
                 warning('Missing probe and apodization data; full aperture is assumed.');
+
+                
             end  
 
             % declare output structure
