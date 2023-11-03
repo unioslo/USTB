@@ -572,6 +572,11 @@ classdef apodization < uff
                 ylabel('Apodization weight')
 
                 title(axH(2), sprintf(axH(2).UserData.title,X(1),Y(1),Z(1)))
+            else
+
+
+
+
             end
 
         end
@@ -584,7 +589,7 @@ xyz = eventObj.IntersectionPoint;
 
 plotHandle = findobj('Tag', 'plot2');
 
-[~, I] = min(sqrt(sum(xyz.^2-[obj.XData(:), obj.YData(:), obj.ZData(:)].^2, 2)), [], 1);
+[~, I] = min(sqrt(sum((xyz-[obj.XData(:), obj.YData(:), obj.ZData(:)]).^2, 2)), [], 1);
 [i, j, k] = ind2sub(fig.UserData.dim,I);
 
 plotHandle.YData = squeeze(fig.UserData.CData(i,j,k,:));
