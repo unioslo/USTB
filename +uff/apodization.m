@@ -512,6 +512,7 @@ classdef apodization < uff
 
             figure_handle.UserData.CData = reshape(h.data, [dim, size(h.data, 2)]);
             figure_handle.UserData.dim = dim;
+            figure_handle.UserData.n = n;
 
 
             if dim(2) == 1 || dim(3) == 1
@@ -521,12 +522,17 @@ classdef apodization < uff
                 pb.enterFcn = @(fig,currentPoint) set(fig, 'Pointer','crosshair');
                 pb.traverseFcn = [];
 
+                % Plot 1
                 axH(1) = subplot(1,2,1);
-                tb = axtoolbar('default');
-                btn(1) = axtoolbarbtn(tb, 'push', 'Icon', fullfile(ustb_path(), 'next.png'), 'Tooltip', 'Next','ButtonPushedFcn',@nextItem);
-                btn(2) = axtoolbarbtn(tb, 'push', 'Icon', fullfile(ustb_path(), 'previous.png'), 'Tooltip', 'Previous','ButtonPushedFcn',@previousItem);
 
-                imH(1) = surface(squeeze(X)*1e3,squeeze(Y)*1e3,squeeze(Z)*1e3, squeeze(figure_handle.UserData.CData(:,:,:,n)), 'LineStyle', 'none');
+                % Add navigation buttons
+                tb = axtoolbar('default');
+                axtoolbarbtn(tb, 'push', 'Icon', fullfile(ustb_path(), 'next.png'), 'Tooltip', 'Next','ButtonPushedFcn', @nextItem);
+                axtoolbarbtn(tb, 'push', 'Icon', fullfile(ustb_path(), 'previous.png'), 'Tooltip', 'Previous','ButtonPushedFcn', @previousItem);
+            
+                imH(1) = surface(squeeze(X)*1e3,squeeze(Y)*1e3,squeeze(Z)*1e3, ...
+                    squeeze(figure_handle.UserData.CData(:,:,:,figure_handle.UserData.n)), ...
+                    'LineStyle', 'none', 'Tag', 'plot1', 'ButtonDownFcn', @updateFcn);
                 iptSetPointerBehavior(imH(1),pb);
                 
                 xlabel('x [mm]')
@@ -535,50 +541,78 @@ classdef apodization < uff
                 grid on
                 box on
                 axis equal tight
-                ylabel(colorbar(), 'Apodization value')
+                ylabel(colorbar(), 'Apodization weight')
                 set(gca, 'ZDir', 'reverse')
                 clim([0, 1])
                 view(3)
                 if isreceive
-                    title(sprintf('Apodization values for element %d',n));
+                    axH(1).UserData.title = 'Apodization values for element %d';
                 else
-                    title(sprintf('Apodization values for wave %d',n));
+                    axH(1).UserData.title = 'Apodization values for wave %d';
                 end
+                title(axH(1), sprintf(axH(1).UserData.title, n))
 
+
+                % Plot 2
                 axH(2) = subplot(1,2,2);
                 imH(2) = plot(squeeze(figure_handle.UserData.CData(...
-                    round(figure_handle.UserData.dim(1)/2),round(figure_handle.UserData.dim(2)/2),round(dim(3)/2),:)));
-                imH(1).ButtonDownFcn = {@updateFcn, imH(2)};
+                    ijk(1),ijk(2),ijk(3),:)), 'Tag', 'plot2');
                 grid on
                 axis tight
                 ylim([0, 1])
                 if isreceive
-                    title(sprintf('Receive apodization at pixel [%0.2f,%0.2f,%0.2f] mm.',X(end/2),Y(end/2),Z(end/2)))
+                    axH(2).UserData.title = 'Receive apodization at pixel [%0.2f,%0.2f,%0.2f] mm';
                     xlabel('Element')
                 else
-                    title(sprintf('Transmit apodization at pixel [%0.2f,%0.2f,%0.2f] mm.',X(end/2),Y(end/2),Z(end/2)))
+                    axH(2).UserData.title = 'Transmit apodization at pixel [%0.2f,%0.2f,%0.2f] mm';
                     xlabel('wave')
                 end
+
+                title(axH(2), sprintf(axH(2).UserData.title,X(end/2),Y(end/2),Z(end/2)))
             end
 
         end
     end
 end
 
-function updateFcn(obj, eventObj, plotHandle)
-
+function updateFcn(obj, eventObj)
+fig = ancestor(obj, 'figure');
 xyz = eventObj.IntersectionPoint;
 
+plotHandle = findobj('Tag', 'plot2');
+
 [~, I] = min(sqrt(sum(xyz.^2-[obj.XData(:), obj.YData(:), obj.ZData(:)].^2, 2)), [], 1);
-[i, j, k] = ind2sub(gcf().UserData.dim,I);
+[i, j, k] = ind2sub(fig.UserData.dim,I);
 
-plotHandle.YData = squeeze(gcf().UserData.CData(i,j,k,:));
+plotHandle.YData = squeeze(fig.UserData.CData(i,j,k,:));
+title(plotHandle.Parent, sprintf(plotHandle.Parent.UserData.title, xyz(1), xyz(2), xyz(3)))
 end
 
-function previousItem(obj, eventObj)
-fprintf('ok\n')
+function previousItem(obj, ~)
+fig = ancestor(obj, 'figure');
+
+if fig.UserData.n == 1
+    return
+else
+    fig.UserData.n = fig.UserData.n - 1;
+    plotHandle = findobj('Tag', 'plot1'); 
+
+    plotHandle.CData = squeeze(fig.UserData.CData(:,:,:, fig.UserData.n));
+    title(plotHandle.Parent, sprintf(plotHandle.Parent.UserData.title, fig.UserData.n))
 end
 
-function nextItem(obj, eventObj)
-fprintf('ok\n')
+end
+
+function nextItem(obj, ~)
+fig = ancestor(obj, 'figure');
+
+if fig.UserData.n == size(fig.UserData.CData, 4)
+    return
+else
+    fig.UserData.n = fig.UserData.n + 1;
+    plotHandle = findobj('Tag', 'plot1'); 
+
+    plotHandle.CData = squeeze(fig.UserData.CData(:,:,:,fig.UserData.n));
+    title(plotHandle.Parent, sprintf(plotHandle.Parent.UserData.title, fig.UserData.n))
+end
 end
