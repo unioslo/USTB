@@ -25,10 +25,7 @@ tools.download(filename, url, local_path);
 channel_data=uff.read_object([local_path filename],'/channel_data');
 % Check that the user have the correct version of the dataset
 
-if(strcmp(channel_data.version{1},'1.0.2')~=1)
-    error(['Wrong version of the dataset. Please delete ',local_path,...
-                                        filename,' and rerun script.']);
-end
+channel_data.N_frames = 1; %Only process one frame, they are quite similar anyway
 %%
 %Print info about the dataset
 channel_data.print_authorship
