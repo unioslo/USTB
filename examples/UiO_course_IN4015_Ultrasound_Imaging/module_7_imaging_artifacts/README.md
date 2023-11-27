@@ -53,6 +53,7 @@ pixel". How can you set the z_axis of the reconstructed scan so that it
 scales with the sound speed? 
 Hint: Perhaps you can use the wavelength as a unit? It is found at
 channel_data.lambda or you can calculate it on your own.
+Explain why this works.
        
 ### Part III
 Based on the two previous exercises - which sound speed was correct when

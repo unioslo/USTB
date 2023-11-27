@@ -41,6 +41,7 @@ end
 % scales with the sound speed? 
 % Hint: Perhaps you can use the wavelength as a unit? It is found at
 % channel_data.lambda or you can calculate it on your own.
+% Explain why this works.
 
 scan=uff.linear_scan();
 scan.x_axis = linspace(channel_data.probe.x(1),channel_data.probe.x(end),512).';
@@ -61,7 +62,7 @@ figure();
 imagesc(img)
 title('Use this image to find the correct depth index to investigate the lowest point scatter');
 
-depth_idx_of_point_scatter = 359; % is correct for sound_speed = 1460
+depth_idx_of_point_scatter = 359; % 359 is correct for sound_speed = 1460 in Part I
 figure;hold all;
 plot(scan.x_axis*1000,img(depth_idx_of_point_scatter,:)-max(img(depth_idx_of_point_scatter,:)))
 plot([-15.5 -15.5],[-50 0],'r')
@@ -71,7 +72,7 @@ xlabel('x [mm]');ylabel('Amplitude [dB]');
 
 % Create beamformed image with cyst indicated for exercise 1 and 2
 b_data_das.plot([],['PW beamformed with sound speed = ',num2str(channel_data.sound_speed)])
-viscircles(gca,[-11,scan.z_axis(depth_idx_of_point_scatter)*1000],4.5,'EdgeColor','b')
+viscircles(gca,[-11,scan.z_axis(depth_idx_of_point_scatter)*1000],4,'EdgeColor','b')
 
 %% Exercise 3: 
 % Based on the two previous exercises - which sound speed was correct when
