@@ -395,9 +395,21 @@ classdef apodization < uff
                     y_dist = h.focus.y - y;
                     z_dist = h.focus.z - z;
                 else
-                    x_dist = h.origin.x - x;
-                    y_dist = h.origin.y - y;
-                    z_dist = h.origin.z - z;                    
+                    if(isscalar(h.origin))
+                        x0 = h.origin.x;
+                        y0 = h.origin.y;
+                        z0 = h.origin.z;
+                    else
+                        x0 = ones([h.focus.N_depth_axis,1]) .* [h.origin.x];
+                        y0 = ones([h.focus.N_depth_axis,1]) .* [h.origin.y];
+                        z0 = ones([h.focus.N_depth_axis,1]) .* [h.origin.z];
+                    end
+
+                    pixel_distance = sqrt((h.focus.x-x0(:)).^2+(h.focus.y-y0(:)).^2+(h.focus.z-z0(:)).^2);
+
+                    x_dist = x - x0(:);
+                    y_dist = y - y0(:);
+                    z_dist = pixel_distance .* ones([1, h.probe.N_elements]);
                 end
             end
 
