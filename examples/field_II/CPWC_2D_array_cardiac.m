@@ -185,7 +185,6 @@ channel_data.data = ch;
 demod = preprocess.fast_demodulation();      
 demod.input = channel_data;
 demod.plot_on = true;
-demod.modulation_frequency = 2.5e6;
 demod.downsample_frequency = 5e6;
 demod.lowpass_frequency_vector = [0.3, 0.85];
 
@@ -210,7 +209,7 @@ mid.scan = azScan;
 mid.spherical_transmit_delay_model = spherical_transmit_delay_model.spherical;
 mid.receive_apodization.window = uff.window.hamming;
 mid.receive_apodization.f_number = 2.5;
-mid.transmit_apodization.window = uff.window.hamming;
+mid.transmit_apodization.window = uff.window.tukey50;
 mid.transmit_apodization.maximum_aperture = [probe.N_x, probe.N_y] .* [probe.pitch_x, probe.pitch_y];
 
 azBfData = mid.go();
@@ -219,7 +218,6 @@ azBfData = mid.go();
 % elBfData = mid.go();
 
 %% Plot
-
 Xaz = reshape(azScan.x, [azScan.N_depth_axis, azScan.N_azimuth_axis]);
 Yaz = reshape(azScan.y, [azScan.N_depth_axis, azScan.N_azimuth_axis]);
 Zaz = reshape(azScan.z, [azScan.N_depth_axis, azScan.N_azimuth_axis]);
@@ -245,61 +243,7 @@ view(3)
 set(gca, 'ZDir', 'reverse')
 clim([-60, 0])
 ylabel(colorbar(), '[dB]')
-%%
-mid.scan = scan_3D_linear;
-mid.dimension = dimension.both();
-b_data_3D_linear = mid.go();
-img_3D_linear = reshape(b_data_3D_linear.data,scan_3D_linear.N_z_axis,scan_3D_linear.N_x_axis,scan_3D_linear.N_y_axis);
-img_3D_linear = img_3D_linear./max(img_3D_linear(:));
 
-%%
-mid.scan = scan_3D_sector;
-mid.dimension = dimension.both();
-b_data_3D_sector = mid.go()
 
-%%
-img_3D_sector= reshape(b_data_3D_sector.data,scan_3D_sector.N_depth_axis,scan_3D_sector.N_azimuth_axis,scan_3D_sector.N_elevation_axis);
-img_3D_sector = img_3D_sector./max(img_3D_sector(:));
-
-%%
-
-x_cube_spher = reshape(b_data_3D_sector.scan.x,b_data_3D_sector.scan.N_depth_axis,b_data_3D_sector.scan.N_azimuth_axis,b_data_3D_sector.scan.N_elevation_axis);
-y_cube_spher = reshape(b_data_3D_sector.scan.y,b_data_3D_sector.scan.N_depth_axis,b_data_3D_sector.scan.N_azimuth_axis,b_data_3D_sector.scan.N_elevation_axis);
-z_cube_spher = reshape(b_data_3D_sector.scan.z,b_data_3D_sector.scan.N_depth_axis,b_data_3D_sector.scan.N_azimuth_axis,b_data_3D_sector.scan.N_elevation_axis);
-% 
-x_cube_cart = reshape(b_data_3D_linear.scan.x,b_data_3D_linear.scan.N_z_axis,b_data_3D_linear.scan.N_x_axis,b_data_3D_linear.scan.N_y_axis);
-y_cube_cart = reshape(b_data_3D_linear.scan.y,b_data_3D_linear.scan.N_z_axis,b_data_3D_linear.scan.N_x_axis,b_data_3D_linear.scan.N_y_axis);
-z_cube_cart = reshape(b_data_3D_linear.scan.z,b_data_3D_linear.scan.N_z_axis,b_data_3D_linear.scan.N_x_axis,b_data_3D_linear.scan.N_y_axis);
-
-%% Plot 3D plot
-f = figure(90);clf;hold all;
-idx_x = 20;
-idx_y = 20;
-idx_z = 200;
-surface(squeeze(x_cube_cart(:,:,idx_x)),squeeze(y_cube_cart(:,:,idx_x)),squeeze(z_cube_cart (:,:,idx_x)),db(abs(squeeze(img_3D_linear(:,:,idx_x)./max(max(img_3D_linear(:)))))));
-surface(squeeze(x_cube_cart(:,idx_y,:)),squeeze(y_cube_cart(:,idx_y,:)),squeeze(z_cube_cart (:,idx_y,:)),db(abs(squeeze(img_3D_linear(:,idx_y,:)./max(max(img_3D_linear(:)))))));
-%alpha 0.5
-%surface(squeeze(z_cube_spher(idx_z,:,:)),squeeze(z_cube_spher(idx_z,:,:)),squeeze(z_cube_spher (idx_z,:,:)),db(abs(squeeze(img_3D_linear(idx_z,:,:)./max(max(img_3D_linear(:)))))));
-surface(squeeze(x_cube_spher(:,idx_y,:)),squeeze(y_cube_spher(:,idx_y,:)),squeeze(z_cube_spher (:,idx_y,:)),db(abs(squeeze(img_3D_sector(:,idx_y,:)./max(max(img_3D_sector(:)))))));
-axis image; title('3D','Color','white');
-xlabel('x [mm]');ylabel('y [mm]');zlabel('z [mm]');
-shading('flat');colormap gray; clim([-60 0]);view(40,0)
-set(gca,'YColor','white','XColor','white','ZColor','white','Color','k');
-set(gcf,'color','black'); set(gca,'Color','k')
-f_handle = gcf;set(gca,'ZDir','reverse')
-f_handle.InvertHardcopy = 'off';
-
-%% Plot 3D plot
-f = figure(91);clf;hold all;
-idx_x = size(y_cube_spher,3)/2;
-idx_y = size(y_cube_spher,2)/2;
-idx_z = 200;
-surface(squeeze(x_cube_spher(:,idx_y,:)),squeeze(y_cube_spher(:,idx_y,:)),squeeze(z_cube_spher (:,idx_y,:)),db(abs(squeeze(img_3D_sector(:,idx_y,:)./max(max(img_3D_sector(:)))))));
-surface(squeeze(x_cube_spher(:,:,idx_x)),squeeze(y_cube_spher(:,:,idx_x)),squeeze(z_cube_spher (:,:,idx_x)),db(abs(squeeze(img_3D_sector(:,:,idx_x)./max(max(img_3D_sector(:)))))));
-axis image; title('3D','Color','white');
-xlabel('x [mm]');ylabel('y [mm]');zlabel('z [mm]');
-shading('flat');colormap gray; clim([-60 0]);view(40,0)
-set(gca,'YColor','white','XColor','white','ZColor','white','Color','k');
-set(gcf,'color','black'); set(gca,'Color','k')
-f_handle = gcf;set(gca,'ZDir','reverse')
-f_handle.InvertHardcopy = 'off';
+%% Show Transmit apodization
+mid.transmit_apodization.plot();
