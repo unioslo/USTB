@@ -19,38 +19,39 @@ f0 = 2.7e6;               % Transducer center frequency [Hz]
 bw = 0.9;                 % Transducer bandwidth [1]
 lambda = c0/f0;           % Wavelength [m]
 Nc = 1.5;                 % Number of cycles
-scat_density = 10;
+scat_density = 0.1;
 
 %% Create idealized Matrix Array
 kerf = lambda/5;
 
 probe = uff.matrix_array();
-probe.pitch_x = lambda/2;
-probe.pitch_y = lambda/2;
+probe.pitch_x = lambda*0.8;
+probe.pitch_y = lambda*0.8;
 probe.element_width = probe.pitch_x-kerf;
 probe.element_height = probe.pitch_y-kerf;
 probe.N_x = 40;
 probe.N_y = 32;
-probe.plot();
 
 %% Transmit definition
-f = 1e3; % focus set at 1000 meters
+f = 30e-2; % focus set at 30 centimeters
 
-theta = linspace(-15, 15, 9) * pi / 180; % azimuth tx angles
-phi = linspace(-15, 15, 9) * pi / 180;  % elevation tx angles
+theta = linspace(-15, 15, 7) * pi / 180; % azimuth tx angles
+phi = linspace(-15, 15, 7) * pi / 180;  % elevation tx angles
 
-[TH, PH] = ndgrid(theta, phi);
+[PH, TH] = ndgrid(phi, theta);
 
-[tx.z, tx.x, tx.y] = sph2cart(TH(:), PH(:), f*ones([numel(TH), 1]));
+[tx.z, tx.y, tx.x] = sph2cart(TH(:), PH(:), f*ones([numel(TH), 1]));
 tx = [tx.x, tx.y, tx.z];
 
 N_waves = numel(TH);
 %% Pulse definition
-ti = -2/f0 : 1/fs : 2/f0;
-impulse_response = 1e9 * gauspuls(ti, f0, bw);
+timp = -2/f0 : 1/fs : 2/f0;
+impulse_response = 1e9 * gauspuls(timp, f0, bw);
 
-te = 0:1/fs:(Nc/f0-1/fs);
-excitation = square(2*pi*f0*te);
+impulse_response = impulse_response - mean(impulse_response); % To remove DC component
+
+texc = 0:1/fs:(Nc/f0-1/fs);
+excitation = square(2*pi*f0*texc);
 ir = conv(conv(impulse_response,excitation), impulse_response);
 [maxVal, lag] = max(abs(hilbert(ir)));
 
@@ -82,17 +83,17 @@ yPSF = 1.2*f_n(2)*lambda;
 zPSF = Nc*lambda/2;
 
 % === Define geometry of nonechoic cyst ===
-r = 1e-2;      % Radius of cyst [m]
+rc = 1e-2;      % Radius of cyst [m]
 xc = 0;        % Position of cyst in x [m]
 yc = 0;
 zc = 6e-2;     % Position of cyst in z [m]
 
-N_scatterers = round(scat_density * diff(zr)*diff(xr)*diff(yr) / (pi/6*xPSF*yPSF*zPSF));
+N_scatterers = round(scat_density * diff(zr)*diff(xr)*diff(yr) / (pi/6*xPSF*yPSF*zPSF))
 positions = (rand([N_scatterers, 3]) .* ...
         [diff(xr), diff(yr), diff(zr)]) + [xr(1), yr(1), zr(1)];
 
 %Find the indexes inside cyst
-positions(sqrt(sum((positions - [xc, yc, zc]).^2, 2)) < r, :) = [];
+positions(sqrt(sum((positions - [xc, yc, zc]).^2, 2)) < rc, :) = [];
 amplitudes = randn([size(positions, 1), 1]);
 
 figure()
@@ -136,22 +137,31 @@ xdc_times_focus(Rh, 0, zeros([1, probe.N_elements]))
 
 h = waitbar(0, 'Simulating channel data...');
 
-for n = 1:N_waves
-    waitbar(n/N_waves, h, sprintf('Simulating channel data...Tx %d of %d', n, N_waves))
-    
-    % === Set transmit focus ===
-    xdc_focus(Th, 0, tx(n,:))
+try
+    for n = 1:N_waves
+        waitbar(n/N_waves, h, sprintf('Simulating channel data...Tx %d of %d', n, N_waves))
 
-    % Generate channel data
-    [scat, start_time] = calc_scat_multi(Th, Rh, positions, amplitudes);
+        % === Set transmit focus ===
+        xdc_focus(Th, 0, tx(n,:))
 
-    ti = start_time + (0:length(scat)-1)/fs - lag/fs;
+        % Generate channel data
+        [scat, start_time] = calc_scat_multi(Th, Rh, positions, amplitudes);
 
-    % Interpolation
-    tmp = interp1(ti, scat, to, 'linear', 0);
-        
-    % === Downsampling ===
-    ch(:,:,n) = tmp(1:downfact:end,:);
+        ti = start_time + (0:length(scat)-1)/fs - lag/fs;
+
+        % Interpolation
+        tmp = interp1(ti, scat, to, 'linear', 0);
+
+        % === Downsampling ===
+        ch(:,:,n) = tmp(1:downfact:end,:);
+    end
+catch ME
+    close(h)
+    xdc_free(Th)
+    xdc_free(Rh)
+    field_end()
+
+    rethrow(ME)
 end
     
 % === Close Field II ===
@@ -171,69 +181,100 @@ for n = 1:N_waves
     seq(n).sound_speed=c0;
 end
 
+probe.plot();
+
+hold on
+for n = 1:N_waves
+    quiver3(seq(n).origin.x, seq(n).origin.y, seq(n).origin.z, ...
+            seq(n).source.x, seq(n).source.y, seq(n).source.z, 1e-2, 'filled');
+end
+
 %% Channel data object
-channel_data = uff.channel_data();
-channel_data.sampling_frequency = fs/downfact;
-channel_data.modulation_frequency = f0;
-channel_data.sound_speed = c0;
-channel_data.initial_time = to(1);
-channel_data.probe = probe;
-channel_data.sequence = seq;
-channel_data.data = ch;
+ch_rf = uff.channel_data();
+ch_rf.sampling_frequency = fs/downfact;
+ch_rf.modulation_frequency = f0;
+ch_rf.sound_speed = c0;
+ch_rf.initial_time = to(1);
+ch_rf.probe = probe;
+ch_rf.sequence = seq;
+ch_rf.data = ch;
 
 %% Demodulation
 demod = preprocess.fast_demodulation();      
-demod.input = channel_data;
+demod.input = ch_rf;
 demod.plot_on = true;
 demod.downsample_frequency = 5e6;
-demod.lowpass_frequency_vector = [0.3, 0.85];
+demod.lowpass_frequency_vector = [0.45, 0.9];
 
-channel_data_iq = demod.go();
+ch_iq = demod.go();
 
 %% Create Sector scan
-azScan = uff.sector_scan();
-azScan.azimuth_axis = linspace(-15, 15,100)*pi/180;
-azScan.elevation_axis = 0;
-azScan.depth_axis = 4e-2 : c0/2/fs*downfact : 8e-2;
+xzScan = uff.sector_scan();
+xzScan.azimuth_axis = linspace(-15, 15,100)*pi/180;
+xzScan.elevation_axis = 0;
+xzScan.depth_axis = 4e-2 : c0/2/ch_iq.sampling_frequency : 8e-2;
 
-elScan = uff.sector_scan();
-elScan.azimuth_axis = 0;
-elScan.elevation_axis = linspace(-15,15,100)*pi/180;
-elScan.depth_axis = 3e-2 : c0/2/fs*downfact : 8e-2;
+yzScan = uff.sector_scan();
+yzScan.azimuth_axis = 0;
+yzScan.elevation_axis = linspace(-15,15,100)*pi/180;
+yzScan.depth_axis = 4e-2 : c0/2/ch_iq.sampling_frequency : 8e-2;
+
+xyScan = uff.sector_scan();
+xyScan.azimuth_axis = linspace(-15, 15, 100)*pi/180;
+xyScan.elevation_axis = linspace(-15, 15, 100)*pi/180;
+xyScan.depth_axis = 6e-2;
 
 %% Define beamforming object
 mid = midprocess.das();
-mid.channel_data = channel_data_iq;
+mid.channel_data = ch_iq;
 mid.dimension = dimension.both();
-mid.scan = azScan;
+mid.scan = xzScan;
 mid.spherical_transmit_delay_model = spherical_transmit_delay_model.spherical;
 mid.receive_apodization.window = uff.window.hamming;
-mid.receive_apodization.f_number = 2.5;
-mid.transmit_apodization.window = uff.window.tukey50;
-mid.transmit_apodization.maximum_aperture = [probe.N_x, probe.N_y] .* [probe.pitch_x, probe.pitch_y];
+mid.receive_apodization.maximum_aperture = 1.5*[probe.N_x, probe.N_y] .* [probe.pitch_x, probe.pitch_y];
+mid.receive_apodization.f_number = 3.5;
+mid.transmit_apodization.window = uff.window.hamming;
+mid.transmit_apodization.maximum_aperture = ([probe.N_x, probe.N_y] .* [probe.pitch_x, probe.pitch_y]);
+mid.transmit_apodization.f_number = 30e-2 ./ mid.transmit_apodization.maximum_aperture;
 
-azBfData = mid.go();
+bf_iq_xz = mid.go();
 
-mid.scan = elScan;
-elBfData = mid.go();
+mid.scan = yzScan;
+bf_iq_yz = mid.go();
+
+mid.scan = xyScan;
+bf_iq_xy = mid.go();
 
 %% Plot
-Xaz = reshape(azScan.x, [azScan.N_depth_axis, azScan.N_azimuth_axis]);
-Yaz = reshape(azScan.y, [azScan.N_depth_axis, azScan.N_azimuth_axis]);
-Zaz = reshape(azScan.z, [azScan.N_depth_axis, azScan.N_azimuth_axis]);
 
-Xel = reshape(elScan.x, [elScan.N_depth_axis, elScan.N_elevation_axis]);
-Yel = reshape(elScan.y, [elScan.N_depth_axis, elScan.N_elevation_axis]);
-Zel = reshape(elScan.z, [elScan.N_depth_axis, elScan.N_elevation_axis]);
+% === Plot engine does not work for 3-D data for now. Need to plot
+% beamformed data manually ===
+Xxz = reshape(xzScan.x, [xzScan.N_depth_axis, xzScan.N_azimuth_axis]);
+Yxz = reshape(xzScan.y, [xzScan.N_depth_axis, xzScan.N_azimuth_axis]);
+Zxz = reshape(xzScan.z, [xzScan.N_depth_axis, xzScan.N_azimuth_axis]);
 
+Xyz = reshape(yzScan.x, [yzScan.N_depth_axis, yzScan.N_elevation_axis]);
+Yyz = reshape(yzScan.y, [yzScan.N_depth_axis, yzScan.N_elevation_axis]);
+Zyz = reshape(yzScan.z, [yzScan.N_depth_axis, yzScan.N_elevation_axis]);
+
+Xxy = reshape(xyScan.x, [xyScan.N_azimuth_axis, xyScan.N_elevation_axis]);
+Yxy = reshape(xyScan.y, [xyScan.N_azimuth_axis, xyScan.N_elevation_axis]);
+Zxy = reshape(xyScan.z, [xyScan.N_azimuth_axis, xyScan.N_elevation_axis]);
+
+% === Generate reference geometry ===
+[Xc, Yc, Zc] = sphere(25);
 
 figure()
 colormap(gray(256))
 hold on
-surface(Xaz*1e2, Yaz*1e2, Zaz*1e2, reshape(20*log10(abs(azBfData.data) / max(abs(azBfData.data), [], 'all')), [azScan.N_depth_axis, azScan.N_azimuth_axis]), ...
-    'LineStyle', 'none')
-surface(Xel*1e2, Yel*1e2, Zel*1e2, reshape(20*log10(abs(elBfData.data) / max(abs(elBfData.data), [], 'all')), [elScan.N_depth_axis, elScan.N_azimuth_axis]), ...
-    'LineStyle', 'none')
+surface(Xxz*1e2, Yxz*1e2, Zxz*1e2, reshape(20*log10(abs(bf_iq_xz.data).' / max(abs(bf_iq_xz.data), [], 'all')), ...
+    [xzScan.N_depth_axis, xzScan.N_azimuth_axis]), 'LineStyle', 'none')
+surface(Xyz*1e2, Yyz*1e2, Zyz*1e2, reshape(20*log10(abs(bf_iq_yz.data).' / max(abs(bf_iq_yz.data), [], 'all')), ...
+    [yzScan.N_depth_axis, yzScan.N_elevation_axis]), 'LineStyle', 'none')
+surface(Xxy*1e2, Yxy*1e2, Zxy*1e2, reshape(20*log10(abs(bf_iq_xy.data).' / max(abs(bf_iq_xy.data), [], 'all')), ...
+    [xyScan.N_azimuth_axis, xyScan.N_elevation_axis]), 'LineStyle', 'none')
+surface((Xc*rc + xc)*1e2, (Yc*rc + yc)*1e2, (Zc*rc + zc)*1e2, 'LineStyle', 'none', ...
+    'FaceColor', [0.85, 0.33, 0.1], 'FaceAlpha', 0.25)
 hold off
 grid on
 box on
@@ -243,9 +284,10 @@ ylabel('y [cm]')
 zlabel('z [cm]')
 view(3)
 set(gca, 'ZDir', 'reverse')
-clim([-60, 0])
+clim([-40, 0])
 ylabel(colorbar(), '[dB]')
 
 
 %% Show Transmit apodization
 mid.transmit_apodization.plot();
+mid.receive_apodization.plot()

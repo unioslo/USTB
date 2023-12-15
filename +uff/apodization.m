@@ -456,18 +456,24 @@ classdef apodization < uff
 
                 % Diverging Wave or Converging Wave case
                 else
+                    % source -> pixel vectors
+                    SP = [ h.focus.x-h.sequence(n).source.x, ...
+                           h.focus.y-h.sequence(n).source.y, ...
+                           h.focus.z-h.sequence(n).source.z];
 
-                    % Calculate distances
-                    x_dist=h.focus.x-h.sequence(n).source.x;
-                    y_dist=h.focus.y-h.sequence(n).source.y;
-                    z_dist=h.focus.z-h.sequence(n).source.z;
+                    % origin -> source vector
+                    OS = [ h.sequence(n).source.x-h.sequence(n).origin.x, ...
+                           h.sequence(n).source.y-h.sequence(n).origin.y, ...
+                           h.sequence(n).source.z-h.sequence(n).origin.z];
 
-                    % Calculate source angle with respect to the aperture origin
-                    s0theta=atan2(h.sequence(n).source.x-h.sequence(n).origin.x, h.sequence(n).source.z-h.sequence(n).origin.z);
-                    s0phi=atan2(h.sequence(n).source.y-h.sequence(n).origin.y, h.sequence(n).source.z-h.sequence(n).origin.z);
+                    zu = OS / sqrt(sum(OS.^ 2, 2));
+                    yu = cross(zu, [1, 0, 0]);
+                    xu = cross(zu, yu);
 
-                    % Apply beam & tilt
-                    [x_dist, y_dist, z_dist] = tools.rotate_points(x_dist, y_dist, z_dist, h.tilt(1)+s0theta, h.tilt(2)+s0phi);
+                    z_dist = SP * zu.';
+                    x_dist = SP * xu.';
+                    y_dist = SP * yu.';
+
                     zx_dist = z_dist;
                     zy_dist = z_dist;
 
@@ -552,14 +558,14 @@ classdef apodization < uff
                 fullfile(matlabroot, 'toolbox/shared/controllib/general/resources/toolstrip_icons/Back_16.png'), ...
                 'Tooltip', 'Previous','ButtonPushedFcn', @previousElementFcn);
 
-            if dim(2) > 1
+            if dim(2) > 1 && dim(3) == 1
                 surface(squeeze(X(:,:,x0(3)))*1e3,squeeze(Y(:,:,x0(3)))*1e3,squeeze(Z(:,:,x0(3)))*1e3, ...
                     squeeze(figure_handle.UserData.CData(:,:,x0(3),figure_handle.UserData.n_element)), ...
                     'LineStyle', 'none', 'Tag', 'apod.zx', 'ButtonDownFcn', @updateFcn, ...
                     'ApplicationData', struct('iptPointerBehavior', pointerBehaviour), 'UserData', struct('dim', 'zx', 'y', x0(3)))
             end
 
-            if dim(3) > 1
+            if dim(2) == 1 && dim(3) > 1
                 surface(squeeze(X(:,x0(2),:))*1e3,squeeze(Y(:,x0(2),:))*1e3,squeeze(Z(:,x0(2),:))*1e3, ...
                     squeeze(figure_handle.UserData.CData(:,x0(2),:,figure_handle.UserData.n_element)), ...
                     'LineStyle', 'none', 'Tag', 'apod.zy', 'ButtonDownFcn', @updateFcn, ...
