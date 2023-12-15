@@ -12,7 +12,7 @@ Please provide a written report that
 - all plots needed for supporting your arguments when answering the exercise parts
 
 The report should be uploaded to [devilry.ifi.uio.no](https//devilry.ifi.uio.no).  
-**Deadline for uploading: Tuesday 6. September at 10:00. **
+**Deadline for uploading: Wednesday 13. September at 10:00. **
 
 ## Exercise 1 : Set up MATLAB and the USTB
 The first exercise is simply to demonstrate that you have installed MATLAB and sucessfully set up the USTB. Run the "minimal_example.m" in this folder and add
@@ -22,8 +22,7 @@ NB! If you have trouble downloading the data using the download tool you can dow
 Delete the corrupt file with the same filename and move the downloaded data to the "data/" folder in the USTB repository and rerun the example. 
 
 ## Exercise 2 : Introduction to MATLAB
-The second exercise can be found in the document IN3015_IN4015_MATLAB_intro.pdf in this folder, and is a brief introuction to MATLAB and also pointing to relevant resoureces to 
-learn MATLAB. You need to answer each task with the given hints by running the code in the MATLAB_intro.m file.
+In the second exercise you will be exposed to some MATLAB concepts that are relevant for the course. You need to answer each task found in the "MATLAB_intro.m" file. If you are new to MATLAB you may want to read "IN3015_IN4015_MATLAB_intro.pdf".
 
 ## Additional USTB exercise:
 NB! You don't need add anything to the report from this exercise.

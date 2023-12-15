@@ -28,7 +28,7 @@ Please provide a written report that
 - all plots needed for supporting your arguments when answering the exercise parts
 
 The report should be uploaded to [devilry.ifi.uio.no](devilry.ifi.uio.no).  
-**Deadline for uploading: Tuesday 20. September at 10:00. **
+**Deadline for uploading: Wednesday 27. September at 10:00. **
  
 ## Exercise One:
 The m-code that needs modification is *exercise_1_soundFieldFromLinearTransducer.m*.  
