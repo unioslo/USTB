@@ -140,11 +140,6 @@ else
                             object.('origin')=uff.read_object(filename,prop{m}.location,verbose);  
                         elseif strcmp(class_name,'uff.sector_scan')&&strcmp(prop{m}.name,'apex')
                             object.('origin')=uff.read_object(filename,prop{m}.location,verbose);
-                         elseif strcmp(class_name,'uff.wave')&&strcmp(prop{m}.name,'source')                             
-                             object.(prop{m}.name)=uff.read_object(filename,prop{m}.location,verbose);
-                             origin = uff.point();
-                             origin.x = object.(prop{m}.name).x;
-                             object.('origin') = origin;
                         else
                             object.(prop{m}.name)=uff.read_object(filename,prop{m}.location,verbose);
                         end
