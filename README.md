@@ -68,10 +68,10 @@ The project administrators are:
 * Ole Marius Hoel Rindal <omrindal@ifi.uio.no>,
 * Stefano Fiorentini <stefano.fiorentini@ntnu.no>,
 * Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no>
+* Anders Emil Vrålstad <anders.e.vralstad@ntnu.no>
 
 Collaborators:
 
-* Anders Emil Vrålstad
 * Håvard Kjellmo Arnestad
 * Magnus Dalen Kvalevåg
 * Olivier Bernard
