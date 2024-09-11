@@ -14,7 +14,8 @@ channel_data = uff.channel_data();
 channel_data.read([data_path filesep filename],'/channel_data_speckle');
 
 %% Demodulation
-demod = preprocess.demodulation();
+demod = preprocess.fast_demodulation();
+demod.plot_on = true;
 demod.input = channel_data;
 channel_data_demod = demod.go();
 
