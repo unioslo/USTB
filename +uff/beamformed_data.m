@@ -242,10 +242,25 @@ classdef beamformed_data < uff
                     end
                     drawnow;
                 case 'uff.sector_scan'
-                    x_matrix=reshape(h.scan.x,[h.scan(1).N_depth_axis h.scan(1).N_azimuth_axis]);
-                    z_matrix=reshape(h.scan.z,[h.scan(1).N_depth_axis h.scan(1).N_azimuth_axis ]);
-                    h.all_images = reshape(envelope,[h.scan.N_depth_axis h.scan.N_azimuth_axis Nrx*Ntx*Nframes]);
-                    h.image_handle = pcolor(axis_handle,x_matrix*scale_factor,z_matrix*scale_factor,h.all_images(:,:,1));
+
+                    if h.scan(1).N_elevation_axis == 1
+                        x_matrix=reshape(h.scan.x,[h.scan(1).N_depth_axis h.scan(1).N_azimuth_axis]);
+                        z_matrix=reshape(h.scan.z,[h.scan(1).N_depth_axis h.scan(1).N_azimuth_axis ]);
+                        h.all_images = reshape(envelope,[h.scan.N_depth_axis h.scan.N_azimuth_axis Nrx*Ntx*Nframes]);
+                        h.image_handle = pcolor(axis_handle,x_matrix*scale_factor,z_matrix*scale_factor,h.all_images(:,:,1));
+                    else 
+                        if h.scan(1).N_elevation_axis > 1 && h.scan(1).N_azimuth_axis == 1
+                            y_matrix=reshape(h.scan.y,[h.scan(1).N_depth_axis h.scan(1).N_elevation_axis]);
+                            z_matrix=reshape(h.scan.z,[h.scan(1).N_depth_axis h.scan(1).N_elevation_axis ]);
+                            h.all_images = reshape(envelope,[h.scan.N_depth_axis h.scan.N_elevation_axis Nrx*Ntx*Nframes]);
+                            h.image_handle = pcolor(axis_handle,y_matrix*scale_factor,z_matrix*scale_factor,h.all_images(:,:,1));
+                        else 
+                            if h.scan(1).N_elevation_axis > 1 && h.scan(1).N_azimuth_axis > 1
+                                error('Plot for 3D scan not implemented');
+                            end
+                        end
+                    end
+                    
                     shading(axis_handle,'flat');
                     set(axis_handle,'YDir','reverse');
                     axis(axis_handle,'tight','equal');
