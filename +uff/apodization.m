@@ -156,6 +156,9 @@ classdef apodization < uff
         function value=tukey(~,ratio, roll)
             value=(ratio<=(1/2*(1-roll))) + (ratio>(1/2*(1-roll))).*(ratio<(1/2)).*0.5.*(1+cos(2*pi/roll*(ratio-roll/2-1/2)));
         end
+        function value=triangle(~,ratio)
+            value=double(ratio<=0.5).*(1-2*ratio);
+        end
         
         %% apply window
         function data = apply_window(h, ratio_theta, ratio_phi)
@@ -182,6 +185,13 @@ classdef apodization < uff
                 case uff.window.tukey75
                     roll=0.75;
                     data=h.tukey(ratio_theta,roll).*h.tukey(ratio_phi,roll);
+                    % TUKEY80
+                case uff.window.tukey80
+                    roll=0.80;
+                    data=h.tukey(ratio_theta,roll).*h.tukey(ratio_phi,roll);
+                    % TRIANGLE
+                case uff.window.triangle
+                    data=h.triangle(ratio_theta).*h.triangle(ratio_phi);
                 otherwise
                     error('Unknown apodization type!');
             end

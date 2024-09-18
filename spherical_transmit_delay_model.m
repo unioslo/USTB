@@ -12,5 +12,6 @@ classdef spherical_transmit_delay_model < int32
                      % Prager, R. W. (2016). High-Resolution Ultrasound Imaging With Unified Pixel-Based 
                      % Beamforming. IEEE Trans. Med. Imaging, 35(1), 98-108.
       hybrid(3)      % This is our model, a hybrid between the spherical and a plane wave model hopefully publised at IUS 2018
+      blended(4)     % This is our blended model, a blend between the spherical and a plane wave model.
    end
 end
