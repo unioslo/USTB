@@ -15,10 +15,12 @@ classdef das < midprocess
         
         spherical_transmit_delay_model = spherical_transmit_delay_model.hybrid; % spherical transmit delay model enumeration for deciding model when the source is in front of the transducer
         pw_margin = 1e-3;                   % The margin of the area around focus in m for the spherical_transmit_delay_model.hybrid
+
+        lens_delay = 0;                     % Additional delay added to the receive delay
         blending_power = 1/2; 
         transmit_delay                      % Variable returning the calculated tx part of the receive delay so that it can be plotted
         receive_delay                       % Variable returning the calculated rx part of the receive delay so that it can be plotted
-
+        
         elapsed_time                        % Variable to store the beamforming time. Used for benchmarking
     end
     
@@ -62,7 +64,7 @@ classdef das < midprocess
             xm=bsxfun(@minus,h.channel_data.probe.x.',h.scan.x);
             ym=bsxfun(@minus,h.channel_data.probe.y.',h.scan.y);
             zm=bsxfun(@minus,h.channel_data.probe.z.',h.scan.z);
-            receive_delay=single(sqrt(xm.^2+ym.^2+zm.^2)/h.channel_data.sound_speed); %#ok<*PROP> 
+            receive_delay=single(sqrt(xm.^2+ym.^2+zm.^2)/h.channel_data.sound_speed+h.lens_delay); %#ok<*PROP> 
             h.receive_delay = receive_delay;
             
             % calculate transmit delay
@@ -138,12 +140,11 @@ classdef das < midprocess
                                         else
                                             error('Only linear scan and sector scan in 2D is supported for the hybrid spherical transmit delay model.');
                                         end
-                                        %normalized_distance = min(sqrt((h.channel_data.sequence(n_wave).source.x-h.scan.x).^2+(h.channel_data.sequence(n_wave).source.y-h.scan.y).^2+(h.channel_data.sequence(n_wave).source.z-h.scan.z).^2) ./ h.channel_data.sequence(n_wave).source.distance, 1);
-                                        normalized_distance = min(abs(h.channel_data.sequence(n_wave).source.distance-sqrt(sum(h.scan.xyz.^2,2))) ./ h.channel_data.sequence(n_wave).source.distance, 1);
+
                                         normalized_distance = min(abs(h.channel_data.sequence(n_wave).source.distance-sqrt(sum(h.scan.xyz.^2,2))) ./ h.channel_data.sequence(n_wave).source.distance, 1);
                                         
                                         transmit_delay(:,n_wave) = transmit_delay(:,n_wave) + h.channel_data.sequence(n_wave).source.distance;
-                                        transmit_delay(:,n_wave) = transmit_delay(:,n_wave).*normalized_distance.^h.blending_power + plane_delay.*(1-normalized_distance.^h.blending_power) ;%+ h.channel_data.sequence(n_wave).source.distance;
+                                        transmit_delay(:,n_wave) = transmit_delay(:,n_wave).*normalized_distance.^h.blending_power + plane_delay.*(1-normalized_distance.^h.blending_power);
                                 end
                             end  
                         end

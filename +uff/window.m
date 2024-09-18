@@ -16,7 +16,6 @@ classdef window < int32
       tukey25(4) 
       tukey50(5) 
       tukey75(6)
-      tukey80(7)
       sta(7)
       scanline(8)
       triangle(9)
