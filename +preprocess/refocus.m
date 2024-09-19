@@ -2,11 +2,13 @@ classdef refocus < preprocess
     %REFOCUS
     %
     %   authors: Anders E. Vrålstad <anders.e.vralstad@ntnu.no>
+    %            Nick Bottenus
+    %            Rehman Ali
     %   
     %   Code adapted from 
     %   github.com/nbottenus/REFoCUS
     %   
-    %   $Last updated: 2024/09/16$
+    %   $Last updated: 2024/09/19$
     
     %% constructor
     methods (Access = public)
