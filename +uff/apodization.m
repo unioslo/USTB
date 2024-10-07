@@ -22,8 +22,8 @@ classdef apodization < uff
     
     %   authors: Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no>
     %            Stefano Fiorentini <stefano.fiorentini@ntnu.no>
-    %            Anders Vrålstaf <anders.e.vralstad@ntnu.no>
-    %   $Last updated: 16/08/2024$
+    %            Anders Vrålstad <anders.e.vralstad@ntnu.no>
+    %   $Last updated: 07/10/2024$
     
     %% public properties
     properties  (Access = public)
@@ -517,13 +517,6 @@ classdef apodization < uff
                     zx_dist = z_dist;
                     zy_dist = z_dist;
 
-                    z_dist_from_origin = OP * zu.';
-
-                    % Apply grating lobe masking
-                    zx_dist(abs(atan2(OP(:,1),OP(:,3))-atan2(OS(1),OS(3)))>0.5*h.grating_lobe_angle(1)) = z_dist_from_origin(abs(atan2(OP(:,1),OP(:,3))-atan2(OS(1),OS(3)))>0.5*h.grating_lobe_angle(1));
-                    zy_dist(abs(atan2(OP(:,2),OP(:,3))-atan2(OS(2),OS(3)))>0.5*h.grating_lobe_angle(2)) = z_dist_from_origin(abs(atan2(OP(:,2),OP(:,3))-atan2(OS(2),OS(3)))>0.5*h.grating_lobe_angle(2));
-                    
-                    
                     % Apply minimum aperture
                     zx_dist(abs(z_dist)<=h.minimum_aperture(1)*h.f_number(1)) = ...
                         sign(zx_dist(abs(z_dist)<=h.minimum_aperture(1)*h.f_number(1)))*h.minimum_aperture(1)*h.f_number(1);
@@ -535,6 +528,10 @@ classdef apodization < uff
                         sign(zx_dist(abs(z_dist)>=h.maximum_aperture(1)*h.f_number(1)))*h.maximum_aperture(1)*h.f_number(1);
                     zy_dist(abs(z_dist)>=h.maximum_aperture(2)*h.f_number(2)) = ...
                         sign(zy_dist(abs(z_dist)>=h.maximum_aperture(2)*h.f_number(2)))*h.maximum_aperture(2)*h.f_number(2);
+
+                    % Apply grating lobe masking
+                    zx_dist(abs(atan2(OP(:,1),OP(:,3))-atan2(OS(1),OS(3)))>0.5*h.grating_lobe_angle(1)) = eps;
+                    zy_dist(abs(atan2(OP(:,2),OP(:,3))-atan2(OS(2),OS(3)))>0.5*h.grating_lobe_angle(2)) = eps;
 
                     % Calculate tangents & distance
                     tan_theta(:,n) = x_dist./zx_dist;
