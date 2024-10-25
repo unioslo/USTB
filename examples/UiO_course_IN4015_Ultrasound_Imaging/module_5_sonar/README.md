@@ -1,4 +1,4 @@
-# Module 6 :  Sonar imaging 
+# Module 5 :  Sonar imaging 
 
 - See the sonar_exercise.pdf in the current folder for the exercise text. 
 - Use the sonar_exercise.m as a basis for your solution.
@@ -16,4 +16,4 @@ Please provide a written report that
 - all plots needed for supporting your arguments when answering the exercise parts
 
 The report should be uploaded to [devilry.ifi.uio.no](devilry.ifi.uio.no).  
-**Deadline for uploading: Wednesday 22. November at 10:00. **
+**Deadline for uploading: Tuesday 5. November at 14:00. **
