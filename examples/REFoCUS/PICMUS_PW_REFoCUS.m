@@ -16,10 +16,9 @@ filename='PICMUS_experiment_contrast_speckle.uff';
 % by setting an environment variable with setenv(DATA_PATH,'the_path_you_want_to_use');
 tools.download(filename, url, data_path);   
 
-channel_data=uff.read_object([data_path filesep filename],'/channel_data');
-scan=uff.read_object([data_path filesep filename],'/scan');
-
-
+scan = uff.linear_scan();
+scan.x_axis = linspace(-30/1000,30/1000,1024)';
+scan.z_axis = linspace(3/1000,60/1000,1024)';
 %% Beamforming
 %
 % We define a beamformer, and the corresponding transmit and apodization
@@ -78,3 +77,10 @@ figure;
 b_data.plot(subplot(1,2,1),'RTB');
 b_data_REFOCUS.plot(subplot(1,2,2),'REFoCUS');
 set(gcf,'Position',[100   100   750   450])
+
+b_data_compare = uff.beamformed_data(b_data)
+b_data_compare.data(:,:,1,1) = b_data.data./max(b_data.data(:));
+b_data_compare.data(:,:,1,2) = b_data_REFOCUS.data./max(b_data_REFOCUS.data(:));
+b_data_compare.plot()
+
+
