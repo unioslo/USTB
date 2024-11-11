@@ -2,7 +2,7 @@ classdef refocus < preprocess
     %REFOCUS
     %
     %   authors: Anders E. Vrålstad <anders.e.vralstad@ntnu.no>
-    %            Nick Bottenus
+    %            Nick Bottenus <Nick.Bottenus@colorado.edu>
     %            Rehman Ali
     %            Ole Marius Hoel Rindal <olemarius@olemarius.net>
     %   
@@ -19,7 +19,7 @@ classdef refocus < preprocess
                 'Encoding for Robust Recovery of the Multistatic Data Set. IEEE Transactions on Ultrasonics,'...
                 'Ferroelectrics, and Frequency Control, 67(5), 943–956. https://doi.org/10.1109/TUFFC.2019.2961875'...
                 'Original REFoCUS code from www.github.com/nbottenus/REFoCUS'];
-            h.implemented_by={'Anders E. Vrålstad <anders.e.vralstad@ntnu.no>'};
+            h.implemented_by={'Anders E. Vrålstad <anders.e.vralstad@ntnu.no>','Nick Bottenus <Nick.Bottenus@colorado.edu>','Rehman Ali','Ole Marius Hoel Rindal <omrindal@ifi.uio.no>'};
             h.version='v1.1.0'; 
         end
     end
