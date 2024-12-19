@@ -29,20 +29,15 @@ for seq = 1:channel_data.N_waves
     channel_data.sequence(seq).sound_speed = channel_data.sound_speed;
 end
 
-% Part II: 
-% As you have probably experienced now, when you reconstruct an image with
-% different sound speed, the objects in the image move and change sizes. To
-% evaluate the lowest point scatter you had to manually change what depth
-% index to investigate. However, to be able to use for example machine
-% learning to evaluate sound speed we need the reconstructed objects to be
-% at the same pixel in images with different reconstructed sound speeds so 
-% that one can compare two images with different sound speeds "pixel by
-% pixel". How can you set the z_axis of the reconstructed scan so that it
-% scales with the sound speed? 
-% Hint: Perhaps you can use the wavelength as a unit? It is found at
-% channel_data.lambda or you can calculate it on your own.
-% Explain why this works.
-
+%% Part II: 
+% During the reconstruction process with varying sound speeds, you may have noticed that objects within the 
+% image shift and alter in size. To accurately evaluate the lowest point scatter, you likely had to manually
+% adjust the depth index under consideration. Nevertheless, for applications such as machine learning, it is 
+% crucial that reconstructed objects remain stationary across images with different sound speeds, enabling a 
+% direct "pixel-by-pixel" comparison. How can the z_axis of the reconstructed scan be adjusted so that it appropriately 
+% scales with sound speed? Hint: One possible approach could be to use the wavelength as a unit, which you can find at
+% channel_data.lambda or calculate independently. Explain the reasoning behind why this method would be effective.
+       
 scan=uff.linear_scan();
 scan.x_axis = linspace(channel_data.probe.x(1),channel_data.probe.x(end),512).';
 scan.z_axis = linspace(3e-3,50e-3,512).'; %<------------- Update this in Part II
