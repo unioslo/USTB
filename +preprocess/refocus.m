@@ -9,7 +9,7 @@ classdef refocus < preprocess
     %   Code adapted from 
     %   github.com/nbottenus/REFoCUS
     %   
-    %   $Last updated: 2024/09/19$
+    %   $Last updated: 2025/02/06$
     
     %% constructor
     methods (Access = public)
@@ -71,7 +71,7 @@ classdef refocus < preprocess
             end
             
             % 1-D FFT to convert time to frequency
-            RF_encoded=fft(single(rf_encoded));
+            RF_encoded=fft(rf_encoded);
             RF_encoded=permute(RF_encoded,[3 2 1]); % (transmit event x receive channel x time sample)
             frequency=(0:n_samples-1)/n_samples;
             
@@ -197,7 +197,7 @@ classdef refocus < preprocess
     
     methods (Access = public)
         function output=go(h)  
-            disp('This is citationware. If you use REFoCUS in your publication you have to cite')
+            disp('This is citationware. If you use REFoCUS in your publication, please cite')
             fprintf('%s\n', h.reference);
             fprintf('Starting to REFoCUS channel data..');tic()
             % Check if we can skip calculation
@@ -223,7 +223,7 @@ classdef refocus < preprocess
             end
          
             rxdata_multiTx = padarray(h.input.data,h.post_pad_samples,'post');
-            normalized_rxdata_multiTx = double(rxdata_multiTx / max(rxdata_multiTx(:)));
+            normalized_rxdata_multiTx = rxdata_multiTx / max(rxdata_multiTx(:));
             N_samples_output = size(normalized_rxdata_multiTx,1);
 
             %%
@@ -237,7 +237,7 @@ classdef refocus < preprocess
             % Passband Filter Channel Data
             if h.use_filter
                 [b, a] = butter(h.filter_N, h.filter_Wn); % Filter
-                full_synth_data = filtfilt(b, a, double(full_synth_data));
+                full_synth_data = filtfilt(b, a, full_synth_data);
             end
 
             % Create output channel data object
