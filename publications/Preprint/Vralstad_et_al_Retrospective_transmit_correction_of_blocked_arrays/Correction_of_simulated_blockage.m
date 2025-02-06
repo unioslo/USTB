@@ -12,7 +12,7 @@
 % it first to successfully rund this code. To know more about the USTB 
 % visit http://www.ustb.no/
 %
-% by Anders E. Vrålstad
+% by Anders E. Vrålstad and Ole Marius Hoel Rindal
 %% Clear environment
 clear all; close all;
 %% Load data
