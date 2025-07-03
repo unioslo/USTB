@@ -5,11 +5,12 @@ classdef refocus < preprocess
     %            Nick Bottenus <Nick.Bottenus@colorado.edu>
     %            Rehman Ali
     %            Ole Marius Hoel Rindal <olemarius@olemarius.net>
+    %            Nazli Javadi Eshkalak <nazli.javadieshkalak@colorado.edu>
     %   
     %   Code adapted from 
     %   github.com/nbottenus/REFoCUS
-    %   
-    %   $Last updated: 2025/02/06$
+    %
+    %   $Last updated: 2025/04/16$
     
     %% constructor
     methods (Access = public)
@@ -19,8 +20,8 @@ classdef refocus < preprocess
                 'Encoding for Robust Recovery of the Multistatic Data Set. IEEE Transactions on Ultrasonics,'...
                 'Ferroelectrics, and Frequency Control, 67(5), 943–956. https://doi.org/10.1109/TUFFC.2019.2961875'...
                 'Original REFoCUS code from www.github.com/nbottenus/REFoCUS'];
-            h.implemented_by={'Anders E. Vrålstad <anders.e.vralstad@ntnu.no>','Nick Bottenus <Nick.Bottenus@colorado.edu>','Rehman Ali','Ole Marius Hoel Rindal <omrindal@ifi.uio.no>'};
-            h.version='v1.1.0'; 
+            h.implemented_by={'Anders E. Vrålstad <anders.e.vralstad@ntnu.no>','Nick Bottenus <Nick.Bottenus@colorado.edu>','Rehman Ali','Ole Marius Hoel Rindal <omrindal@ifi.uio.no>,Nazli Javadi Eshkalak <nazli.javadieshkalak@colorado.edu>'};
+            h.version='v1.1.1'; 
         end
     end
     
@@ -55,7 +56,9 @@ classdef refocus < preprocess
             
             [n_samples, n_receives, n_transmits]=size(rf_encoded);
             n_elements=size(delays,2);
-            assert(size(delays,1)==n_transmits,'Transmit count inconsistent between rf_encoded and delays')
+            
+            indices = [h.input.sequence.event];
+            assert(isempty(indices) || max(indices)==n_transmits,'Transmit count inconsistent between rf_encoded and delays')
             
             % Default apodization is all ones
             if(isempty(p.Results.apod))
@@ -97,7 +100,17 @@ classdef refocus < preprocess
         %   H = N x M model matrix
         function H = H_model_matrix(h,delays,f,apod)
             % Model Matrix with Delay, Frequency, and Apodization
-            H = apod.*exp(-1j*2*pi*f*delays);
+            H = apod.*exp(-1j*2*pi*f.*delays);
+
+            % Check if multiple waves belong to one event and sum
+            indices = [h.input.sequence.event];
+            if(~isempty(indices) && length(unique(indices))<size(delays,1))
+                H_sum = zeros(max(indices),size(H,2));
+                for i=1:max(indices)
+                    H_sum(i,:)=sum(H(indices==i,:),1);
+                end
+                H=H_sum;
+            end
         end
         
         %H_INV_ADJOINT Computes Adjoint of H Matrix
@@ -221,7 +234,7 @@ classdef refocus < preprocess
                 tx_delays(:,wave) = h.input.sequence(wave).delay_values - h.input.sequence(wave).delay;
                 tx_apod(:,wave) = h.input.sequence(wave).apodization_values;
             end
-         
+
             rxdata_multiTx = padarray(h.input.data,h.post_pad_samples,'post');
             normalized_rxdata_multiTx = rxdata_multiTx / max(rxdata_multiTx(:));
             N_samples_output = size(normalized_rxdata_multiTx,1);
@@ -249,6 +262,7 @@ classdef refocus < preprocess
             h.output.sound_speed = h.input.sound_speed;
             h.output.probe = uff.probe; h.output.probe.geometry = h.input.probe.geometry;
             h.output.sequence = uff.wave;
+          
 
             for wave = 1:N_channels
                 h.output.sequence(wave) = uff.wave;
