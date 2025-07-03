@@ -186,7 +186,6 @@ classdef wave < uff
             assert(~isempty(h.probe),'The PROBE must be inserted for delay calculation');
             assert(~isempty(h.sound_speed),'The sound speed must be inserted for delay calculation');
 
-%             source_origin_dist = sqrt(sum((h.source.xyz-h.origin.xyz).^2));
             source_origin_dist = sqrt(sum(h.source.xyz.^2));
             if ~isinf(source_origin_dist)
                 dst=sqrt((h.probe.x-h.source.x).^2+(h.probe.y-h.source.y).^2+(h.probe.z-h.source.z).^2);
@@ -196,7 +195,7 @@ classdef wave < uff
                     value=source_origin_dist/h.sound_speed-dst/h.sound_speed;
                 end
             else
-                value=(h.probe.x-h.origin.x)*sin(h.source.azimuth)/h.sound_speed+(h.probe.y-h.origin.y)*sin(h.source.elevation)/h.sound_speed;
+                value=(h.probe.x)*sin(h.source.azimuth)/h.sound_speed+(h.probe.y)*sin(h.source.elevation)/h.sound_speed;
             end
         end
         

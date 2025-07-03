@@ -81,7 +81,7 @@ classdef apodization < uff
             h.focus=in_scan;
         end
         function set.f_number(h,in_f_number)
-            validateattributes(in_f_number, {'single', 'double'}, {'vector', 'finite', 'positive'})
+            validateattributes(in_f_number, {'single', 'double'}, {'2d', 'finite', 'positive'})
 
             if(isscalar(in_f_number))
                 h.f_number=[in_f_number, in_f_number];
@@ -294,8 +294,8 @@ classdef apodization < uff
                 [tan_theta, tan_phi] = incidence_wave(h);
                 
                 % ratios
-                ratio_theta = abs(h.f_number(1)*tan_theta);
-                ratio_phi = abs(h.f_number(2)*tan_phi);
+                ratio_theta = abs(h.f_number(1).*tan_theta);
+                ratio_phi = abs(h.f_number(2).*tan_phi);
                                                
                 % apodization window
                 h.data_backup = apply_window(h, ratio_theta, ratio_phi);
@@ -340,8 +340,8 @@ classdef apodization < uff
                 [tan_theta, tan_phi] = incidence_aperture(h);
                 
                 % ratios F*tan(angle)
-                ratio_theta = abs(h.f_number(1)*tan_theta);
-                ratio_phi = abs(h.f_number(2)*tan_phi);
+                ratio_theta = abs(h.f_number(1).*tan_theta);
+                ratio_phi = abs(h.f_number(2).*tan_phi);
                 
                 % apodization window
                 h.data_backup = apply_window(h, ratio_theta, ratio_phi);
