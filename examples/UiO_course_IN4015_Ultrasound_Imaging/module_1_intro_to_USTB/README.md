@@ -12,7 +12,7 @@ Please provide a written report that
 - all plots needed for supporting your arguments when answering the exercise parts
 
 The report should be uploaded to [devilry.ifi.uio.no](https//devilry.ifi.uio.no).  
-**Deadline for uploading: Wednesday 3. September at 14:00. **
+**Deadline for uploading: Tuesday 2. September at 14:00. **
 
 ## Exercise 1 : Set up MATLAB and the USTB
 The first exercise is simply to demonstrate that you have installed MATLAB and sucessfully set up the USTB. Run the "minimal_example.m" in this folder and add
@@ -20,6 +20,8 @@ your name to the title of the figure of the ultrasound image. Save this figure a
 
 NB! If you have trouble downloading the data using the download tool you can download the data directly from https://ustb.no/datasets/Verasonics_P2-4_parasternal_long_small.uff . 
 Delete the corrupt file with the same filename and move the downloaded data to the "data/" folder in the USTB repository and rerun the example. 
+
+NB! There is a known issue with Mac and some C compilers and libraries, hopefully you find a solution and we can share this to everyone. If not, the quick workaround is for the "midprosessor" state that you want to use the MATLAB implementation by using "mid.code = code.matlab;"
 
 ## Exercise 2 : Introduction to MATLAB
 In the second exercise you will be exposed to some MATLAB concepts that are relevant for the course. You need to answer each task found in the "MATLAB_intro.m" file. If you are new to MATLAB you may want to read "IN3015_IN4015_MATLAB_intro.pdf".
