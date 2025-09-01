@@ -7,11 +7,12 @@
 % Works with Intel TBB library.
 %
 % FOR MAC:
-% Works with Intel TBB library. 
-%
-% Intel TBB library can be installed via "brew install tbb". Thus, using 
-% the Homebrew (https://brew.sh/index_no.html). It is then defaultly 
-% installed to /usr/local/Cellar/tbb/2017_U5/include/tbb/
+% Works with oneTBB parallellization library
+% oneTBB (formerly Intel TBB) can be installed with Homebrew using the command
+% "brew install tbb". By default, the latest versions of the necessary files
+% will be symlinked in the directories "/opt/homebrew/include" and "/opt/homebrew/lib". 
+% If the library is installed to a different location, this alternative 
+% path must be specified in build_mex.m. 
 
 copyfile(fullfile(matlabroot,'extern'),'.mex','f')
 

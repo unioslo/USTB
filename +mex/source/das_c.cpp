@@ -39,6 +39,7 @@
 #define BOTH 3
 
 #define VERSION "2.0.0" 
+// updated for apple silicon 2025-9-1 Sebastian Koranda
 // dasFast version 2022-06-21 Jorgen Avdal
 // Based on code by Alfonso Rodriguez-Molares
 
