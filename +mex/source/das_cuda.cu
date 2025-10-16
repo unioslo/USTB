@@ -37,6 +37,7 @@
 #include <cuda.h>
 #include <device_launch_parameters.h>
 
+
 // Constants
 #define eps 1E-6f
 #define pi acosf(-1.0)
@@ -142,9 +143,9 @@ void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 	size_t N_frames = (mxGetNumberOfDimensions(prhs[0]) > 3) ? channel_size[3] : 1;	// number of frames
 	size_t N_pixels = tx_delay_size[0];		// number of pixels
 
-	float Fs = *mxGetSingles(prhs[1]);		// Sampling frequency
-	float t0 = *mxGetSingles(prhs[2]);		// Initial time
-	float Fd = *mxGetSingles(prhs[7]);		// Modulation frequency
+	float Fs = *(float*)mxGetData(prhs[1]);		// Sampling frequency
+	float t0 = *(float*)mxGetData(prhs[2]);		// Initial time
+	float Fd = *(float*)mxGetData(prhs[7]);		// Modulation frequency
 	float i0 = t0 * Fs;               // Normalised initial sample
 
 	float wd = fabsf(Fd) > eps ? 2 * pi * Fd : 0.0;		// Demodulation frequency expressed in rad/s
@@ -176,10 +177,10 @@ void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 
 	// Transfer delay and apodization matrices to GPU
 	// Retrieve pointer to host arrays
-	float* host_tx_delay = mxGetSingles(prhs[5]);
-	float* host_tx_apod = mxGetSingles(prhs[3]);
-	float* host_rx_delay = mxGetSingles(prhs[6]);
-	float* host_rx_apod = mxGetSingles(prhs[4]);
+	float* host_tx_delay = (float*)mxGetData(prhs[5]);
+	float* host_tx_apod = (float*)mxGetData(prhs[3]);
+	float* host_rx_delay = (float*)mxGetData(prhs[6]);
+	float* host_rx_apod = (float*)mxGetData(prhs[4]);
 
 	// Allocate device memory
 	float* device_tx_delay;

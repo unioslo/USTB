@@ -263,6 +263,8 @@ classdef das < midprocess
 
                 h.elapsed_time = toc();
                 fprintf(1, "Completed in %.2f seconds.\n", h.elapsed_time);
+            else
+                error("All data is 0. Beamforming aborted.");
             end % end if
 
             % assign phase according to 2 times the receive propagation distance

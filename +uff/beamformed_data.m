@@ -198,6 +198,9 @@ classdef beamformed_data < uff
                     set(axis_handle,'YDir','reverse');
                     axis(axis_handle,'tight','equal');
                     cbar = colorbar(axis_handle);
+                    if strcmp(compression, 'log')
+                        ylabel(cbar, 'dB');
+                    end
                     set(cbar,'color',font_color);
                     colormap(axis_handle,'gray');
                     xlabel(axis_handle,['x[' spatial_units ']'],'color',font_color); ylabel(axis_handle,['z[' spatial_units ']'],'color',font_color);
