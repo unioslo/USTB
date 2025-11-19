@@ -39,6 +39,9 @@ the main changes are:
 * several bugfixes and other improvements have been done as well.
 * more tests have been added
 
+### Using a MAC? ###
+If you are using a Mac and are getting an error running the das_c.mexmaca64 file be sure to install rhw oneTBB parallellization library
+oneTBB (formerly Intel TBB) can be installed with Homebrew using the command "brew install tbb".
 
 ### Documentation ###
 Unfortunately, we have not had the time or resources to write a full documentation of the USTB. However, there are plenty of well documented examples that will help you to get started and hopefully understand the code. You find the examples under the /examples folder. 
