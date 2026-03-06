@@ -28,9 +28,9 @@ channel_data.read([data_path, filesep, filename], '/channel_data');
 
 %% Define scan
 scan = uff.linear_scan('x_axis', linspace(-20e-3, 20e-3, 256).', ...
-                       'z_axis', linspace(10e-3, 50e-3, 512).');
-scan = uff.linear_scan('x_axis', linspace(-20e-3, 20e-3, 768).', ...
-                       'z_axis', linspace(10e-3, 50e-3, 512).');
+                       'z_axis', linspace(10e-3, 50e-3, 256).');
+%scan = uff.linear_scan('x_axis', linspace(-20e-3, 20e-3, 768).', ...
+%                       'z_axis', linspace(10e-3, 50e-3, 512).');
 %scan=uff.linear_scan('x_axis',linspace(0e-3,15e-3,256).', 'z_axis', linspace(23e-3,27e-3,256).');
 
 

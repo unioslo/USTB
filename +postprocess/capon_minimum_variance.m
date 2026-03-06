@@ -38,11 +38,11 @@ classdef capon_minimum_variance < postprocess
     
     methods
         function [output]=go(h)       
-            % check if we can skip calculation (disabled due to probe type issues)
-            % if h.check_hash()
-            %     output = h.output; 
-            %     return;
-            % end  
+            % check if we can skip calculation
+            if h.check_hash()
+                output = h.output; 
+                return;
+            end  
             
             % check dimensions
             if (h.dimension==dimension.receive) && (h.input.N_channels<2)
@@ -157,8 +157,8 @@ classdef capon_minimum_variance < postprocess
             % pass reference
             output = h.output;
             
-            % update hash (disabled due to probe type issues in wave objects)
-            % h.save_hash();
+            % update hash
+            h.save_hash();
         end
         
         function z = capon_minimum_variance_implementation(h,data_cube,apod_matrix,progress)

@@ -31,11 +31,11 @@ classdef coherent_compounding < postprocess
     
     methods
         function output=go(h)
-            % check if we can skip calculation (disabled due to probe type issues)
-            % if h.check_hash()
-            %     output= h.output; 
-            %     return;
-            % end
+            % check if we can skip calculation
+            if h.check_hash()
+                output= h.output; 
+                return;
+            end
             
                         
             % Define output object
@@ -73,8 +73,8 @@ classdef coherent_compounding < postprocess
             % pass reference
             output = h.output;
             
-            % update hash (disabled due to probe type issues)
-            % h.save_hash();
+            % update hash
+            h.save_hash();
 
         end
     end
