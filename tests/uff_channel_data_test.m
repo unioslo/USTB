@@ -21,8 +21,11 @@ classdef uff_channel_data_test < matlab.unittest.TestCase
             prb.N = 64;
             prb.pitch = 300e-6;
 
+            seq(1,11) = uff.wave();
+
             cd = uff.channel_data();
             cd.probe = prb;
+            cd.sequence = seq;
             cd.data = randn(100, 64, 11, 2);
 
             testCase.verifyEqual(cd.N_samples, 100);
@@ -36,8 +39,11 @@ classdef uff_channel_data_test < matlab.unittest.TestCase
             prb.N = 32;
             prb.pitch = 300e-6;
 
+            seq(1,5) = uff.wave();
+
             cd = uff.channel_data();
             cd.probe = prb;
+            cd.sequence = seq;
             cd.data = randn(200, 32, 5);
 
             testCase.verifyEqual(cd.N_samples, 200);

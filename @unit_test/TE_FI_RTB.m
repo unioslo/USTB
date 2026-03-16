@@ -45,6 +45,7 @@ mid_RTB.transmit_apodization.window=uff.window.tukey25;
 mid_RTB.transmit_apodization.f_number = 2;
 mid_RTB.transmit_apodization.MLA = MLA;
 mid_RTB.transmit_apodization.MLA_overlap = MLA;
+mid_RTB.code = code.matlab;
 
 % Fix to Issue #132 S.F. 16.02.2023
 mid_RTB.transmit_apodization.minimum_aperture = [3e-3, 3e-3] ./ mid_RTB.transmit_apodization.f_number.^2; 

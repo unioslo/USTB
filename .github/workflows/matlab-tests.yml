@@ -7,8 +7,8 @@ on:
     branches: [master]
 
 jobs:
-  test:
-    name: Run MATLAB Tests
+  smoke-test:
+    name: Run Smoke Tests
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -28,5 +28,43 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
+          name: smoke-test-results
           path: test-results/results.xml
+
+  unit-tests:
+    name: Run Unit Tests
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install MEX dependencies
+        run: sudo apt-get update && sudo apt-get install -y libtbb2
+
+      - name: Set up MATLAB
+        uses: matlab-actions/setup-matlab@v2
+        with:
+          products: Signal_Processing_Toolbox
+
+      - name: Run legacy unit tests
+        id: run-tests
+        continue-on-error: true
+        uses: matlab-actions/run-command@v2
+        with:
+          command: |
+            if ~isfolder(fullfile(ustb_path(), 'logs')), mkdir(fullfile(ustb_path(), 'logs')); end
+            ut = unit_test();
+            ut.all();
+            fid = fopen(fullfile(getenv('GITHUB_WORKSPACE'), 'tests_passed.marker'), 'w');
+            fprintf(fid, 'ok');
+            fclose(fid);
+
+      - name: Verify tests passed
+        run: |
+          if [ -f tests_passed.marker ]; then
+            echo "All unit tests passed."
+          else
+            echo "Unit tests failed (no success marker found)."
+            exit 1
+          fi
