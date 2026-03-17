@@ -4,7 +4,7 @@ classdef integration_dw_linear_test < matlab.unittest.TestCase
         function test_dw_pipeline_produces_image(testCase)
             pha = uff.phantom();
             pha.sound_speed = 1540;
-            pha.points = [0, 0, 25e-3, 1];
+            pha.points = [0, 0, 20e-3, 1];
 
             prb = uff.linear_array();
             prb.N = 128;
@@ -16,8 +16,8 @@ classdef integration_dw_linear_test < matlab.unittest.TestCase
             pul.center_frequency = 5.2e6;
             pul.fractional_bandwidth = 0.6;
 
-            N = 11;
-            x0 = linspace(-10e-3, 10e-3, N);
+            N = 31;
+            x0 = linspace(-19.2e-3, 19.2e-3, N);
             z0 = -20e-3;
             seq = uff.wave();
             for n = 1:N
@@ -35,8 +35,9 @@ classdef integration_dw_linear_test < matlab.unittest.TestCase
             sim.sampling_frequency = 41.6e6;
             channel_data = sim.go();
 
-            scan = uff.linear_scan('x_axis', linspace(-10e-3, 10e-3, 128).', ...
-                                   'z_axis', linspace(10e-3, 40e-3, 128).');
+            Nx = 100; Nz = 100;
+            scan = uff.linear_scan('x_axis', linspace(-5e-3, 5e-3, Nx).', ...
+                                   'z_axis', linspace(15e-3, 25e-3, Nz).');
 
             mid = midprocess.das();
             mid.code = code.matlab;
@@ -54,14 +55,14 @@ classdef integration_dw_linear_test < matlab.unittest.TestCase
 
             b_data = mid.go();
 
-            testCase.verifyEqual(numel(b_data.data(:)), 128*128);
+            testCase.verifyEqual(numel(b_data.data(:)), Nx * Nz);
             testCase.verifyTrue(all(isfinite(b_data.data(:))));
 
             [~, idx] = max(abs(b_data.data));
             peak_x = scan.x(idx);
             peak_z = scan.z(idx);
-            testCase.verifyEqual(peak_x, 0, 'AbsTol', 5e-3);
-            testCase.verifyEqual(peak_z, 25e-3, 'AbsTol', 5e-3);
+            testCase.verifyEqual(peak_x, 0, 'AbsTol', 2e-3);
+            testCase.verifyEqual(peak_z, 20e-3, 'AbsTol', 2e-3);
         end
     end
 
