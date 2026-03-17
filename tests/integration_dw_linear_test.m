@@ -45,16 +45,14 @@ classdef integration_dw_linear_test < matlab.unittest.TestCase
             mid.channel_data = channel_data;
             mid.scan = scan;
 
-            mid.receive_apodization.window = uff.window.hanning;
+            mid.receive_apodization.window = uff.window.hamming;
             mid.receive_apodization.f_number = 1.7;
-            mid.receive_apodization.minimum_aperture = [3e-3 3e-3];
 
-            mid.transmit_apodization.window = uff.window.hanning;
-            mid.transmit_apodization.f_number = 1.7;
-            mid.transmit_apodization.minimum_aperture = [3e-3 3e-3];
+            mid.transmit_apodization.window = uff.window.none;
 
             b_data = mid.go();
 
+            testCase.verifyClass(b_data, ?uff.beamformed_data);
             testCase.verifyEqual(numel(b_data.data(:)), Nx * Nz);
             testCase.verifyTrue(all(isfinite(b_data.data(:))));
 
