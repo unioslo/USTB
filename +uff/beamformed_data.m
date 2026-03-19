@@ -1,27 +1,36 @@
 classdef beamformed_data < uff
-    %BEAMFORMED_DATA   UFF class to hold beamformed data
-    %   BEAMFORMED_DATA contains beamformed ultrasound data, i.e. a spacial
-    %   map. Data is stored in the property _data_ with
-    %   dimensions:
+    %BEAMFORMED_DATA   UFF data class for beamformed image data
     %
-    %   [pixel dimension x channel dimension x wave dimension x frame dimension]
+    %   BEAMFORMED_DATA holds the output of the beamforming (midprocess)
+    %   stage or any postprocess step. The data array has dimensions
+    %   [pixel x channel x wave x frame].
     %
-    %   Compulsory properties:
-    %       scan                       % SCAN object or array of SCAN objects
-    %       data                       % data [pixel x channel x wave x frame]
+    %   After a midprocess.das with dimension.both the data reduces to
+    %   [pixel x 1 x 1 x frame]. Intermediate results (e.g. dimension.receive)
+    %   preserve the wave dimension for further processing.
     %
-    %   Optional properties:
-    %       phantom                    % PHANTOM object
-    %       sequence                   % array of WAVE objects
-    %       probe                      % PROBE object
-    %       pulse                      % PULSE object
-    %       sampling_frequency         % Sampling frequency in the depth direction in [Hz]
-    %       modulation_frequency       % Modulation frequency in [Hz]
+    %   Properties:
+    %       scan                    UFF.SCAN defining pixel positions
+    %       data                    data [pixel x channel x wave x frame]
+    %       phantom                 UFF.PHANTOM object
+    %       sequence                array of UFF.WAVE objects
+    %       probe                   UFF.PROBE object
+    %       pulse                   UFF.PULSE object
+    %       sampling_frequency      effective sampling frequency [Hz]
+    %       modulation_frequency    modulation frequency [Hz]
+    %       frame_rate              frame rate for video export [fps]
+    %
+    %   Dependent properties:
+    %       N_pixels                number of pixels
+    %       N_channels              number of channels
+    %       N_waves                 number of waves
+    %       N_frames                number of frames
     %
     %   Example:
-    %         beam_dta = uff.beamformed_data();
+    %       b_data = uff.beamformed_data();
+    %       b_data.plot();
     %
-    %   See also UFF.CHANNEL_DATA, UFF.BEAMFORMED_DATA, UFF.SCAN
+    %   See also UFF.CHANNEL_DATA, UFF.SCAN, MIDPROCESS.DAS
     
     %   authors: Alfonso Rodriguez-Molares (alfonso.r.molares@ntnu.no)
     %            Ole Marius Hoel Rindal (olemarius@olemarius.net)

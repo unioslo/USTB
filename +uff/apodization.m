@@ -1,24 +1,35 @@
 classdef apodization < uff
-    %APODIZATION   UFF class to hold apodization data
-    %   APODIZATION contains data to define transmit, receive & synthetic
-    %   beams. Different parameters are needed depending on the use.
+    %APODIZATION   UFF data class for receive and transmit apodization
+    %
+    %   APODIZATION computes pixel-dependent apodization weights for
+    %   receive elements or transmit waves. It supports expanding
+    %   aperture (f-number based), fixed aperture, and various window
+    %   functions. In the Generalized Beamformer, this implements the
+    %   receive weighting w_m^Rx(x) from Eq. (22) and the transmit wave
+    %   weighting w_a^Tx(x) from Eq. (23).
     %
     %   Properties:
-    %         probe               % UFF.PROBE class (needed for transmit & receive apodization)
-    %         focus               % UFF.SCAN class (needed for transmit, receive & synthetic apodization)
-    %         sequence            % collection of UFF.WAVE classes (needed for synthetic apodizaton)
+    %       probe               UFF.PROBE (for receive/transmit apodization)
+    %       focus               UFF.SCAN (pixel positions)
+    %       sequence            array of UFF.WAVE (for transmit apodization)
+    %       window              UFF.WINDOW type (default: uff.window.none)
+    %       f_number            F-number [Fx Fy]
+    %       tilt                tilt angle [azimuth elevation] [rad]
+    %       minimum_aperture    minimum aperture size [x y] [m]
+    %       maximum_aperture    maximum aperture size [x y] [m]
+    %       apodization_vector  manual override of apodization values
+    %       origin              UFF.POINT to override aperture center
     %
-    %         window              % UFF.WINDOW class, default uff.window.noen
-    %         f_number            % F-number [Fx Fy] [unitless unitless]
-    %         M                   % Number of elements [Mx My] in case f_number=0
-    %
-    %         origin              % POINT class to overwrite the location of the aperture window as computed on the wave source location
-    %         tilt                % tilt angle [azimuth elevation] [rad rad]
+    %   Dependent properties:
+    %       data                computed apodization matrix
+    %       N_elements          number of elements or waves
     %
     %   Example:
-    %         apo = uff.apodization();
+    %       apo = uff.apodization();
+    %       apo.window = uff.window.hamming;
+    %       apo.f_number = 1.7;
     %
-    %   See also UFF.CHANNEL_DATA, UFF.BEAMFORMED_DATA, UFF.SCAN
+    %   See also UFF.WINDOW, UFF.WAVE, MIDPROCESS.DAS
     
     %   authors: Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no>
     %            Stefano Fiorentini <stefano.fiorentini@ntnu.no>

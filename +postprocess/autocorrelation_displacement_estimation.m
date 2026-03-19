@@ -1,27 +1,28 @@
 classdef autocorrelation_displacement_estimation < postprocess
-    % AUTOCORRELATION DISPLACEMENT ESTIMATION   
-    % 
-    % Process to estimate displacement. This was originally introduced
-    % estimate blood velocity, we have however modified it to estimate
-    % displacement in stead. 
+    %AUTOCORRELATION_DISPLACEMENT_ESTIMATION   Estimates tissue displacement via autocorrelation.
     %
-    % NB! There is also an implementation estimating the center frequency,
-    % see process.modified_autocorrelation_displacement_estimation
+    %   Time-domain displacement estimation using the autocorrelation method,
+    %   adapted from Doppler velocity estimation. Uses fixed center frequency.
+    %   For depth-dependent center frequency estimation, use modified_autocorrelation_displacement_estimation.
     %
-    % Excerpt from my master thesis http://www.olemarius.net/Thesis/ :
+    %   Input:  uff.beamformed_data -> Output: uff.beamformed_data
     %
-    % In 1985 Barber et al. published A New Time Domain Technique for 
-    % Velocity Measurements Using Doppler Ultrasound. This technique was 
-    % able to estimate the Doppler frequency using the autocorrelation function. 
-    % The estimation is done in the time domain, allowing a very fast implementation. 
-    % This technique was the basis of the first real-time blood flow imaging system 
-    % demonstrated by Kasai et al. (1985). The thoroughly mathematical analysis of 
-    % the technique was done by Angelsen and Kristoffersen (1983).
+    %   Properties:
+    %       z_gate       axial gate size [samples]
+    %       x_gate       lateral gate size [samples]
+    %       packet_size  number of frames per estimation [frames]
+    %       channel_data uff.channel_data for sound speed and center frequency
     %
-    % Credits to Thomas B?rstad for providing the original implementation
-    % in his masters thesis:
-    % B?rstad, T. K. (2010). Comparison of three ultrasound velocity estimators
-    % for strain imaging of the brain. NTNU.
+    %   Example:
+    %       obj = postprocess.autocorrelation_displacement_estimation();
+    %
+    %   See also POSTPROCESS, MODIFIED_AUTOCORRELATION_DISPLACEMENT_ESTIMATION
+    %
+    %   References:
+    %       Barber et al., IEEE Trans. Biomed. Eng., 1985
+    %       Kasai et al., IEEE Trans. Sonics Ultrason., 1985
+    %       Angelsen & Kristoffersen, IEEE Trans. Biomed. Eng., 1983
+    %       Børstad, "Comparison of three ultrasound velocity estimators", NTNU, 2010
     %
     %   Authors: Ole Marius Hoel Rindal <olemarius@olemarius.net>
     %   $Last updated: 2017/08/15$

@@ -1,16 +1,24 @@
 classdef refocus < preprocess
-    %REFOCUS
+    %REFOCUS   Decode multistatic channel data using REFoCUS
     %
-    %   authors: Anders E. Vrålstad <anders.e.vralstad@ntnu.no>
-    %            Nick Bottenus <Nick.Bottenus@colorado.edu>
-    %            Rehman Ali
-    %            Ole Marius Hoel Rindal <olemarius@olemarius.net>
-    %            Nazli Javadi Eshkalak <nazli.javadieshkalak@colorado.edu>
-    %   
-    %   Code adapted from 
-    %   github.com/nbottenus/REFoCUS
+    %   Decodes focused multistatic transmit beams into synthetic single-element
+    %   transmit data using the REFoCUS algorithm. Requires RF channel data.
+    %   Preprocess modifies channel data before beamforming.
     %
-    %   $Last updated: 2025/04/16$
+    %   Input:  uff.channel_data -> Output: uff.channel_data
+    %
+    %   Properties:
+    %       post_pad_samples              samples to pad after data [samples]
+    %       use_filter                    enable passband filtering
+    %       filter_N                      filter order
+    %       filter_Wn                     filter normalized frequency band
+    %       regularization                inverse function handle (e.g. @Hinv_adjoint)
+    %       decode_parameter             parameter for regularization function
+    %
+    %   Example:
+    %       obj = preprocess.refocus();
+    %
+    %   See also PREPROCESS, CHANNEL_DATA
     
     %% constructor
     methods (Access = public)

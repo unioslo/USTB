@@ -1,10 +1,28 @@
 classdef transform < uff
-    %TRANSFORM   UFF class to handle coordinate transforms in cartesian space
-    %roll              Rotation around the x axis [rad]
-    %pitch             Rotation around the y axis [rad]
-    %yaw               Rotation around the z axis [rad]
-    %rotation_order    Controls in which order the rotations are applied
-    %origo             UFF.POINT object that translates the origin of the system    	
+    %TRANSFORM   UFF data class for rigid-body coordinate transforms
+    %
+    %   TRANSFORM defines a rotation and translation in 3-D Cartesian
+    %   space. It builds a 4x4 homogeneous transformation matrix from
+    %   roll, pitch, yaw angles and a translation origin.
+    %
+    %   Properties:
+    %       roll            rotation around x-axis [rad]
+    %       pitch           rotation around y-axis [rad]
+    %       yaw             rotation around z-axis [rad]
+    %       rotation_order  order of rotations (default: 'ypr')
+    %       origo           UFF.POINT translation vector
+    %
+    %   Dependent properties:
+    %       R               3x3 rotation matrix
+    %       T               4x4 homogeneous transform matrix
+    %       t               3x1 translation vector
+    %
+    %   Example:
+    %       tf = uff.transform();
+    %       tf.yaw = 0.1;
+    %       tf.origo = uff.point('xyz', [5e-3 0 0]);
+    %
+    %   See also UFF.LINEAR_SCAN, UFF.SECTOR_SCAN
 
     properties  (Access = public)    
         roll           = 0           % Rotation around the x axis [rad]

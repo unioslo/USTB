@@ -1,12 +1,32 @@
 classdef pipeline < process
-%pipeline   pipeline definition
-%
-%   See also PROCESS, BEAM, PHANTOM, PROBE
-
-%   authors: Alfonso Rodriguez-Molares (alfonso.r.molares@ntnu.no)
-%            Ole Marius Hoel Rindal <olemarius@olemarius.net>
-%
-%   $Last updated: 2017/09/15$
+    %PIPELINE   Chains preprocess, midprocess, and postprocess steps
+    %
+    %   PIPELINE provides a convenient way to chain multiple processing steps
+    %   in sequence. It takes channel_data and a scan as input, and executes
+    %   a cell array of processing objects via its go() method.
+    %
+    %   The processing order must follow the USTB convention:
+    %       preprocess -> midprocess -> postprocess
+    %
+    %   Properties:
+    %       channel_data            UFF.CHANNEL_DATA input
+    %       scan                    UFF.SCAN defining the pixel grid
+    %       receive_apodization     UFF.APODIZATION for receive weighting
+    %       transmit_apodization    UFF.APODIZATION for transmit wave weighting
+    %       pulse                   UFF.PULSE object (optional)
+    %
+    %   Example:
+    %       pipe = pipeline();
+    %       pipe.channel_data = channel_data;
+    %       pipe.scan = scan;
+    %       b_data = pipe.go({midprocess.das() postprocess.coherent_compounding()});
+    %
+    %   See also PROCESS, MIDPROCESS, POSTPROCESS, PREPROCESS
+    
+    %   authors: Alfonso Rodriguez-Molares (alfonso.r.molares@ntnu.no)
+    %            Ole Marius Hoel Rindal <olemarius@olemarius.net>
+    %
+    %   $Last updated: 2017/09/15$
 
     %% public properties
     properties  (Access = public)

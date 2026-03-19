@@ -1,10 +1,23 @@
 classdef incoherent_compounding < postprocess
-    %INCOHERENT_COMPOUNDING   Matlab implementation of incoherent compounding
-    %
-    %   authors: Alfonso Rodriguez-Molares (alfonso.r.molares@ntnu.no)
-    %            Ole Marius Hoel Rindal <olemarius@olemarius.net>
-    %
-    %   $Last updated: 2017/05/11$
+%INCOHERENT_COMPOUNDING   Sum magnitude of beamformed data across dimensions.
+%
+%   Incoherent compounding sums the absolute value of beamformed data across
+%   the specified dimension(s), reducing speckle at the cost of phase information.
+%
+%   Input:  uff.beamformed_data -> Output: uff.beamformed_data
+%
+%   Properties:
+%       dimension   Which dimension(s) to sum over (transmit, receive, or both)
+%
+%   Example:
+%       obj = postprocess.incoherent_compounding();
+%
+%   See also POSTPROCESS, COHERENT_COMPOUNDING, DIMENSION
+%
+%   authors: Alfonso Rodriguez-Molares (alfonso.r.molares@ntnu.no)
+%            Ole Marius Hoel Rindal <olemarius@olemarius.net>
+%
+%   $Last updated: 2017/05/11$
     
     %% constructor
     methods (Access = public)

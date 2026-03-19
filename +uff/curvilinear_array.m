@@ -1,26 +1,27 @@
 classdef curvilinear_array < uff.probe 
-    %CURVILINEAR_ARRAY   UFF class to define a curvilinear array probe geometry
-    %   CURVILINEAR_ARRAY defines a array of regularly space elements on an 
-    %   arc in the azimuth dimensions.  Optionally it can hold each element 
-    %   width and height, assuming the elements are rectangular. 
+    %CURVILINEAR_ARRAY   UFF data class for a curvilinear (convex) transducer array
     %
-    %   Compulsory properties:
-    %         N              % number of elements 
-    %         pitch          % distance between the elements in the azimuth direction [m]
-    %         radius         % radius of the curvilinear array [m]
-    % 
-    %   Optional properties
-    %         element_width  % width of the elements in the azimuth direction [m]
-    %         element_height % height of the elements in the elevation direction [m]
-    % 
+    %   CURVILINEAR_ARRAY defines elements equally spaced along an arc in
+    %   the azimuth direction. The geometry is computed from N, pitch, and
+    %   radius.
+    %
+    %   Properties:
+    %       N               number of elements
+    %       pitch           inter-element spacing along the arc [m]
+    %       radius          radius of curvature [m]
+    %       element_width   element width [m] (default: pitch)
+    %       element_height  element height [m] (default: 10 * element_width)
+    %
+    %   Dependent properties:
+    %       maximum_angle   angle of the outermost elements [rad]
+    %
     %   Example:
-    %         prb = uff.curvilinear_probe();
-    %         prb.N = 128;
-    %         prb.pitch = 500e-6;
-    %         prb.radius = 70e-3;
-    %         prb.plot();
+    %       prb = uff.curvilinear_array();
+    %       prb.N = 128;
+    %       prb.pitch = 500e-6;
+    %       prb.radius = 70e-3;
     %
-    %   See also UFF.PROBE
+    %   See also UFF.PROBE, UFF.LINEAR_ARRAY
 
     %   authors: Alfonso Rodriguez-Molares (alfonsom@ntnu.no)
     %   $Last updated: 2017/06/09$

@@ -1,16 +1,25 @@
 classdef delay_multiply_and_sum < postprocess
-    %DELAY MULTIPLY AND SUM  Matlab implementation of Delay Multiply And Sum
+    %DELAY_MULTIPLY_AND_SUM   Delay Multiply And Sum beamforming algorithm
     %
-    %    Matlab implementation of Delay Multiply And Sum as described in 
-    %    the paper:
-    %   
-    %   Matrone, G., Savoia, A. S., & Magenes, G. (2015). The Delay 
-    %   Multiply and Sum Beamforming Algorithm in Ultrasound B-Mode Medical
-    %   Imaging, 34(4), 940?949.
+    %   Implements the Delay Multiply And Sum (DMAS) beamforming algorithm.
+    %   Computes coherence on transmit, receive, or both dimensions.
     %
-    %   The implementation computes coherence either on transmit, receive, 
-    %   or both. However, doing "both" takes a looong time, and might not
-    %   make sense. Haven't seen it published :)
+    %   Input:  uff.beamformed_data -> Output: uff.beamformed_data
+    %
+    %   Properties:
+    %       dimension       dimension to compute coherence on (transmit/receive/both)
+    %       channel_data    uff.channel_data object for parameters
+    %       filter_freqs    optional [4x1] passband/stopband edges [Hz]
+    %
+    %   Example:
+    %       obj = postprocess.delay_multiply_and_sum();
+    %
+    %   See also POSTPROCESS, SIMPLIFIED_DELAY_MULTIPLY_AND_SUM, DIMENSION
+    %
+    %   References:
+    %       Matrone, G., Savoia, A. S., & Magenes, G. (2015). The Delay
+    %       Multiply and Sum Beamforming Algorithm in Ultrasound B-Mode
+    %       Medical Imaging, IEEE TMI, 34(4), 940-949.
     %
     %   implementers: Ole Marius Hoel Rindal <olemarius@olemarius.net>
     %

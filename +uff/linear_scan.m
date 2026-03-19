@@ -1,17 +1,27 @@
 classdef linear_scan < uff.scan
-    %LINEAR_SCAN   UFF class to define a linear scan 
-    %   LINEAR_SCAN contains the position of the x and z axis
+    %LINEAR_SCAN   UFF data class for a Cartesian pixel grid
     %
-    %   Compulsory properties:
-    %         x_axis           % Vector containing the x coordinates [m]
-    %         y_axis           % Vector containing the y coordinates [m]
-    %         z_axis           % Vector containing the z coordinates [m]
+    %   LINEAR_SCAN defines a regular grid in Cartesian coordinates using
+    %   x_axis, y_axis, and z_axis vectors. Pixel positions are generated
+    %   on an ndgrid of these axes.
+    %
+    %   Properties:
+    %       x_axis      x-axis sample positions [m]
+    %       y_axis      y-axis sample positions [m] (default: 0)
+    %       z_axis      z-axis sample positions [m]
+    %       transform   UFF.TRANSFORM applied to pixel positions
+    %
+    %   Dependent properties:
+    %       N_x_axis            number of x-axis samples
+    %       N_y_axis            number of y-axis samples
+    %       N_z_axis            number of z-axis samples
+    %       x_step              step size in x [m]
+    %       z_step              step size in z [m]
+    %       reference_distance  distance for phase term calculation [m]
     %
     %   Example:
-    %         sca = uff.linear_scan();
-    %         sca.x_axis=linspace(-20e-3,20e-3,256);
-    %         sca.z_axis=linspace(0e-3,40e-3,256);
-    %         scan.plot()
+    %       scan = uff.linear_scan('x_axis', linspace(-20e-3, 20e-3, 256).', ...
+    %                              'z_axis', linspace(0e-3, 40e-3, 256).');
     %
     %   See also UFF.SCAN, UFF.SECTOR_SCAN
 

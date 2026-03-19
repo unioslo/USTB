@@ -1,17 +1,20 @@
 function out=index(filename,location,display)
-%% INDEX - Returns contains of a UFF location
+%INDEX   List contents of a UFF file at a given location
 %
-%   This UFF method returns a list of the datasets and groups
-%   in the specified location. The location must be group. The
-%   display flag will plot the list on screen.
+%   Returns a cell array of dataset and group names stored at the
+%   specified location within a UFF (.uff / .h5) file.
 %
-%   out = UFF.INDEX(filename,location,display)
+%   out = uff.index(filename, location, display)
+%
+%   Parameters:
+%       filename    path to the UFF file
+%       location    HDF5 group path (default: '/')
+%       display     print list to screen (default: false)
 %
 %   Example:
+%       list = uff.index('data.uff', '/', true);
 %
-%       list = uff.index('/',true);
-%
-%   See also UFF.READ, UFF.UFF, UFF.WRITE
+%   See also UFF.READ_OBJECT, UFF.WRITE_OBJECT, UFF.VERSION
 
 if nargin<2||isempty(location) location='/'; end
 if nargin<3||isempty(display) display=false; end

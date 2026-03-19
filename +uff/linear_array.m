@@ -1,23 +1,22 @@
 classdef linear_array < uff.probe 
-    %LINEAR_ARRAY   UFF class to define a linear array probe geometry
-    %   LINEAR_ARRAY defines an array of elements regularly place along a line. 
-    %   Optionally LINEAR_ARRAY specifies element width and height
-    %   assuming the they are rectangular. 
+    %LINEAR_ARRAY   UFF data class for a linear (1-D) transducer array
     %
-    %   Compulsory properties:
-    %         N              % number of elements 
-    %         pitch          % distance between the elements in the azimuth direction [m]
-    % 
-    %   Optional properties
-    %         element_width  % width of the elements in the azimuth direction [m]
-    %         element_height % height of the elements in the elevation direction [m]
-    % 
+    %   LINEAR_ARRAY defines an array of elements equally spaced along a
+    %   straight line (the x-axis). The geometry is computed automatically
+    %   when N and pitch are set.
+    %
+    %   Properties:
+    %       N               number of elements
+    %       pitch           inter-element spacing [m]
+    %       element_width   element width [m] (default: pitch)
+    %       element_height  element height [m] (default: 10 * element_width)
+    %
     %   Example:
-    %         prb = uff.linear_array();
-    %         prb.N = 128;
-    %         prb.pitch = 300e-6;
+    %       prb = uff.linear_array();
+    %       prb.N = 128;
+    %       prb.pitch = 300e-6;
     %
-    %   See also UFF.PROBE
+    %   See also UFF.PROBE, UFF.CURVILINEAR_ARRAY, UFF.MATRIX_ARRAY
 
     %   authors: Alfonso Rodriguez-Molares (alfonsom@ntnu.no)
     %   $Last updated: 2017/06/09$

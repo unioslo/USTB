@@ -1,29 +1,31 @@
 classdef modified_autocorrelation_displacement_estimation < postprocess
-    % MODIFIED AUTOCORRELATION DISPLACEMENT ESTIMATION   
-    % 
-    % Process to estimate displacement. This was originally introduced
-    % estimate blood velocity, we have however modified it to estimate
-    % displacement in stead. This implementation also estimates the center
-    % frequency as suggested by 
+    %MODIFIED_AUTOCORRELATION_DISPLACEMENT_ESTIMATION   Displacement estimation with depth-dependent center frequency.
     %
-    % Excerpt from my master thesis http://www.olemarius.net/Thesis/ :
+    %   Time-domain displacement estimation using the 2D autocorrelation method
+    %   (Loupas et al.). Estimates center frequency at each depth to compensate
+    %   for frequency-dependent attenuation, improving accuracy over the standard
+    %   autocorrelation method.
     %
-    % In 1985 Barber et al. published A New Time Domain Technique for 
-    % Velocity Measurements Using Doppler Ultrasound. This technique was 
-    % able to estimate the Doppler frequency using the autocorrelation function. 
-    % The estimation is done in the time domain, allowing a very fast implementation. 
-    % This technique was the basis of the first real-time blood flow imaging system 
-    % demonstrated by Kasai et al. (1985). The thoroughly mathematical analysis of 
-    % the technique was done by Angelsen and Kristoffersen (1983).
+    %   Input:  uff.beamformed_data -> Output: uff.beamformed_data
     %
-    % The center frequency is attenuated proportional to the depth in ultrasound imaging.
-    % In 1995 Loupas et al. suggested to include an estimate of the center frequency, 
-    % and called this the 2D autocorrelator. We will call it the modified autocorrelation method. 
+    %   Properties:
+    %       z_gate                       axial gate size [samples]
+    %       x_gate                       lateral gate size [samples]
+    %       packet_size                  number of frames per estimation [frames]
+    %       estimated_center_frequency   estimated center frequency per pixel [Hz]
+    %       channel_data                 uff.channel_data for sound speed
     %
-    % Credits to Thomas B?rstad for providing the original implementation
-    % in his masters thesis:
-    % B?rstad, T. K. (2010). Comparison of three ultrasound velocity estimators
-    % for strain imaging of the brain. NTNU.
+    %   Example:
+    %       obj = postprocess.modified_autocorrelation_displacement_estimation();
+    %
+    %   See also POSTPROCESS, AUTOCORRELATION_DISPLACEMENT_ESTIMATION
+    %
+    %   References:
+    %       Loupas et al., IEEE Trans. Ultrason. Ferroelectr. Freq. Control, 1995
+    %       Barber et al., IEEE Trans. Biomed. Eng., 1985
+    %       Kasai et al., IEEE Trans. Sonics Ultrason., 1985
+    %       Angelsen & Kristoffersen, IEEE Trans. Biomed. Eng., 1983
+    %       Børstad, "Comparison of three ultrasound velocity estimators", NTNU, 2010
     %
     %   Authors: Ole Marius Hoel Rindal <olemarius@olemarius.net>
     %   $Last updated: 2017/08/15$

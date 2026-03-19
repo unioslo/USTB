@@ -1,9 +1,20 @@
 classdef midprocess < process
-    %MIDPROCESS   midprocess part of the prcessing pipeline. Takes
-    % uff.channel_data and uff.scan structures and returns a
-    % uff.beamformed_data class.
+    %MIDPROCESS   Base class for beamforming (mid-processing) algorithms
     %
-    %   See also PROCESS, CHANNEL_DATA, BEAMFORMED_DATA
+    %   MIDPROCESS performs the delay-and-sum operation that transforms
+    %   channel data into beamformed image data. The output pixel grid is
+    %   defined by a scan object.
+    %
+    %   Input:  uff.channel_data -> Output: uff.beamformed_data
+    %
+    %   Properties:
+    %       channel_data            UFF.CHANNEL_DATA input
+    %       scan                    UFF.SCAN defining the pixel grid
+    %       receive_apodization     UFF.APODIZATION for receive weighting
+    %       transmit_apodization    UFF.APODIZATION for transmit wave weighting
+    %       beamformed_data         UFF.BEAMFORMED_DATA output
+    %
+    %   See also MIDPROCESS.DAS, PROCESS, PIPELINE, POSTPROCESS, PREPROCESS
     
     %   authors: Alfonso Rodriguez-Molares (alfonso.r.molares@ntnu.no)
     %            Ole Marius Hoel Rindal <olemarius@olemarius.net>

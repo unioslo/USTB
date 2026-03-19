@@ -1,21 +1,24 @@
 classdef point < uff
-    %POINT   UFF class to define a point location
-    %   POINT contains the position of a point in a tridimensional space. It
-    %   express that location in spherical coordinates which allows to place 
-    %   points at infinity but in a given direction. 
+    %POINT   UFF data class for a point in 3-D space
     %
-    %   Compulsory properties:
-    %         distance  = 0   % distance from the point location to the origin of coordinates [m]
-    %         azimuth   = 0   % angle from the point location to the plane YZ [rad]
-    %         elevation = 0   % angle from the point location to the plane XZ [rad]
+    %   POINT stores a location in spherical coordinates (distance, azimuth,
+    %   elevation). Setting distance to Inf places the point at infinity,
+    %   which is used for plane wave sources.
+    %
+    %   Properties:
+    %       distance    distance to origin [m] (Inf for plane waves)
+    %       azimuth     angle in the xz-plane [rad]
+    %       elevation   angle out of the xz-plane [rad]
+    %
+    %   Dependent properties:
+    %       xyz         Cartesian coordinates [x y z] [m]
+    %       x, y, z     individual Cartesian coordinates [m]
     %
     %   Example:
-    %         pnt = uff.point();
-    %         pnt.distance = 20e-3;
-    %         pnt.azimuth = 0.3*pi;
-    %         pnt.elevation = 0;
+    %       pt = uff.point();
+    %       pt.xyz = [0 0 20e-3];
     %
-    %   See also UFF.WAVE
+    %   See also UFF.WAVE, UFF.SCAN
 
     %   authors: Alfonso Rodriguez-Molares (alfonso.r.molares@ntnu.no)
     %   $Date: 2017/06/09 $

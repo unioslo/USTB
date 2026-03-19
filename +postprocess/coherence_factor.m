@@ -1,15 +1,26 @@
 classdef coherence_factor < postprocess
-%COHERENCE_FACTOR   Matlab implementation of Mallart-Fink Coherence Factor
+%COHERENCE_FACTOR   Mallart-Fink coherence factor adaptive beamforming.
 %
-%   MATLAB implementation of Mallart-Fink coherence factor beamforming
-%   method as described in the paper:
+%   Applies coherence factor weighting to beamformed data to suppress off-axis
+%   echoes and improve contrast. Coherence is computed on transmit, receive,
+%   or both dimensions.
 %
-%   R. Mallart and M. Fink, "Adaptive focusing in scattering media through 
-%   sound-speed inhomogeneities: The van Cittert Zernike approach and focusing 
-%   criterion", J. Acoust. Soc. Am., vol. 96, no. 6, pp. 3721-3732, 1994
+%   Input:  uff.beamformed_data -> Output: uff.beamformed_data
 %
-%   The implementation computes coherence either on transmit, receive, or
-%   both.
+%   Properties:
+%       CF                       Beamformed data with computed coherence factor
+%       active_element_criterium  Threshold for active element decision []
+%       dimension                Dimension(s) for coherence (transmit, receive, or both)
+%
+%   Example:
+%       obj = postprocess.coherence_factor();
+%
+%   See also POSTPROCESS, PHASE_COHERENCE_FACTOR, GENERALIZED_COHERENCE_FACTOR, DIMENSION
+%
+%   References:
+%       Mallart and Fink, "Adaptive focusing in scattering media through
+%       sound-speed inhomogeneities: The van Cittert Zernike approach and
+%       focusing criterion", J. Acoust. Soc. Am., vol. 96, no. 6, pp. 3721-3732, 1994
 %
 %   implementers: Ole Marius Hoel Rindal <olemarius@olemarius.net>
 %                 Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no>

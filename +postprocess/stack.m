@@ -1,5 +1,15 @@
 classdef stack < postprocess
-%STACK   Matlab implementation of scanline stacking
+%STACK   Scanline stacking for multi-angle beamformed data
+%
+%   Stacks scanlines from multiple transmit angles into a single
+%   extended image. Supports linear and sector scans.
+%
+%   Input:  uff.beamformed_data -> Output: uff.beamformed_data
+%
+%   Example:
+%       obj = postprocess.stack();
+%
+%   See also POSTPROCESS, MAX, UFF.LINEAR_SCAN, UFF.SECTOR_SCAN
 %
 %   authors: Alfonso Rodriguez-Molares (alfonso.r.molares@ntnu.no)
 %            Ole Marius Hoel Rindal <olemarius@olemarius.net>

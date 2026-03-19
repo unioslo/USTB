@@ -1,14 +1,25 @@
 classdef generalized_coherence_factor < postprocess
-%GENERALIZED_COHERENCE_FACTOR   Matlab implementation of Li et al Generalized Coherence Factor
+%GENERALIZED_COHERENCE_FACTOR   Lin-Li generalized coherence factor beamforming.
 %
-%   MATLAB implementation of Li et al Generalized coherence factor beamforming
-%   method as described in the paper:
+%   Uses frequency-domain low-frequency energy ratio as a coherence factor to
+%   weight beamformed data. Computes coherence on transmit, receive, or both.
 %
-%   Pai-Chi Lin and Meng-Lin Li, "Adaptive Imaging Using the Generalized
-%   Coherence Factor" IEEE TUFFC 50(2):128-141, 2003.
+%   Input:  uff.beamformed_data -> Output: uff.beamformed_data
 %
-%   The implementation computes coherence either on transmit, receive, or
-%   both.
+%   Properties:
+%       GCF                       Beamformed data with computed coherence factor
+%       active_element_criterium   Threshold for active element decision []
+%       dimension                 Dimension(s) for coherence (transmit, receive, or both)
+%       M0                        Low-frequency region size []
+%
+%   Example:
+%       obj = postprocess.generalized_coherence_factor();
+%
+%   See also POSTPROCESS, COHERENCE_FACTOR, GENERALIZED_COHERENCE_FACTOR_OMHR, DIMENSION
+%
+%   References:
+%       Lin and Li, "Adaptive imaging using the generalized coherence factor,"
+%       IEEE Trans. Ultrason. Ferroelectr. Freq. Control, vol. 50, no. 2, pp. 128-141, 2003
 %
 %   implementers: Ole Marius Hoel Rindal <olemarius@olemarius.net>
 %                 Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no>

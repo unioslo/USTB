@@ -1,5 +1,14 @@
 function [pf, h, w] = low_pass(p, Fs, F)
-    % function pf = low_pass(p, Fs, [upper_freq_on, upper_freq_off])
+    %LOW_PASS   Apply a Kaiser-window FIR low-pass filter
+    %
+    %   [pf, h, w] = tools.low_pass(p, Fs, F)
+    %
+    %   Parameters:
+    %       p       input signal (column-oriented)
+    %       Fs      sampling frequency [Hz]
+    %       F       transition band edges [f_pass f_stop] [Hz]
+    %
+    %   See also TOOLS.BAND_PASS, TOOLS.HIGH_PASS
     
     % Filter specification
     A = [1, 0];                                             % band type: 0='stop', 1='pass'

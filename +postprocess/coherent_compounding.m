@@ -1,8 +1,20 @@
 classdef coherent_compounding < postprocess
-%COHERENT_COMPOUNDING   Matlab implementation of Coherent compounding
-% If the window_size property is specified, a sliding window compounding approach with window size
-% window_size is performed. Sliding window compounding is only performed along the transmit
-% dimension. The receive dimension is compounded as usual
+%COHERENT_COMPOUNDING   Sum complex beamformed data across transmit/receive dimensions.
+%
+%   Coherent compounding sums the complex beamformed data across the specified
+%   dimension(s) to improve SNR while preserving phase information. If window_size
+%   is set, a sliding-window sum is applied along the transmit dimension.
+%
+%   Input:  uff.beamformed_data -> Output: uff.beamformed_data
+%
+%   Properties:
+%       dimension    Which dimension(s) to sum over (transmit, receive, or both)
+%       window_size  If set, sliding-window sum along transmit dimension []
+%
+%   Example:
+%       obj = postprocess.coherent_compounding();
+%
+%   See also POSTPROCESS, INCOHERENT_COMPOUNDING, DIMENSION
 %
 %   authors: Alfonso Rodriguez-Molares (alfonso.r.molares@ntnu.no)
 %            Ole Marius Hoel Rindal <olemarius@olemarius.net>

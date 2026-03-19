@@ -1,22 +1,37 @@
 classdef probe < uff
-    %PROBE   UFF class to define arbitrary probe geometries
-    %   PROBE contains the position and attitude of all elements of a
-    %   probe.  Optionally PROBE can hold each element width and height,
-    %   assuming the elements were rectangular. Information is stored in a 
-    %   single matrix form called geometry, one row per element containing:
+    %PROBE   UFF data class defining an arbitrary transducer geometry
     %
-    %   [x y z azimuth elevation width height]
+    %   PROBE is the base class for all probe types in the USTB. It stores
+    %   element positions and orientations in a geometry matrix with one row
+    %   per element:
     %
-    %   Compulsory properties:
-    %         geometry  = 0   % distance from the point location to the origin of coordinates [m]
+    %       [x  y  z  theta  phi  width  height]
+    %        m  m  m  rad    rad  m      m
+    %
+    %   Subclasses such as LINEAR_ARRAY, CURVILINEAR_ARRAY, and
+    %   MATRIX_ARRAY provide convenient constructors that compute the
+    %   geometry from higher-level parameters (N, pitch, radius, etc.).
+    %
+    %   Properties:
+    %       origin      UFF.POINT location of the probe w.r.t. global origin
+    %       geometry    element matrix [x y z theta phi width height]
+    %
+    %   Dependent properties:
+    %       N_elements  number of elements
+    %       x           element x-coordinates [m]
+    %       y           element y-coordinates [m]
+    %       z           element z-coordinates [m]
+    %       theta       element azimuth orientation [rad]
+    %       phi         element elevation orientation [rad]
+    %       width       element width [m]
+    %       height      element height [m]
+    %       r           distance from element to origin [m]
     %
     %   Example:
-    %         prb = uff.probe();
-    %         pnt.distance = 20e-3;
-    %         pnt.azimuth = 0.3*pi;
-    %         pnt.elevation = 0;
+    %       prb = uff.probe();
+    %       prb.geometry = [0 0 0 0 0 300e-6 5e-3];
     %
-    %   See also UFF.WAVE
+    %   See also UFF.LINEAR_ARRAY, UFF.CURVILINEAR_ARRAY, UFF.MATRIX_ARRAY
 
     %   authors: Alfonso Rodriguez-Molares (alfonsom@ntnu.no)
     %   $Date: 2017/06/09 $

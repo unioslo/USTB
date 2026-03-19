@@ -1,9 +1,19 @@
 classdef nyquist_limit_demodulation < preprocess
-    %COMPLEX_DEMODULATION   Matlab implementation of complex demodulation
+    %NYQUIST_LIMIT_DEMODULATION   IQ demodulation at 2 samples per wavelength
     %
-    %   authors: Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no>
+    %   Converts RF channel data to IQ (complex) channel data using a minimal
+    %   demodulation scheme at the Nyquist limit (Fs/4). Assumes 4 samples per
+    %   wavelength. Preprocess modifies channel data before beamforming.
     %
-    %   $Last updated: 2017/09/10$
+    %   Input:  uff.channel_data -> Output: uff.channel_data
+    %
+    %   Properties:
+    %       plot_on                      plot intermediate graphs
+    %
+    %   Example:
+    %       obj = preprocess.nyquist_limit_demodulation();
+    %
+    %   See also PREPROCESS, DEMODULATION
     
     %% constructor
     methods (Access = public)

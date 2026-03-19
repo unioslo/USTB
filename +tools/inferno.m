@@ -1,5 +1,9 @@
 function [cm_data]=inferno(m)
-% Colormap INFERNO from Python
+%INFERNO   Inferno perceptually-uniform colormap (from matplotlib)
+%
+%   cm = tools.inferno(m)
+%
+%   See also TOOLS.VIRIDIS, TOOLS.MAGMA, TOOLS.PLASMA
 
 cm = [[  1.46159096e-03,   4.66127766e-04,   1.38655200e-02],
        [  2.26726368e-03,   1.26992553e-03,   1.85703520e-02],

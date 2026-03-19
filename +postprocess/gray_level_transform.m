@@ -1,13 +1,29 @@
 classdef gray_level_transform < postprocess
-    %Gray level transform - Matlab implementation 
+    %GRAY_LEVEL_TRANSFORM   Applies polynomial gray-level mapping for dynamic range stretching.
     %
-    % To illustrate the claim that apparent image improvement can be achieved with dynamic range stretching, we introduce a gray level transformation on the beamformed signal prior to log-compression. A polinomial, $p(b) = \alpha b^2+ \beta b+ \epsilon$, with the wanted output is created in \textit{log space}, and mapped to \textit{linear space}. The function in linear space is estimated using cubic spline interpolation. We denote the function estimated with cubic spline $v(b)$. 
-    % The polynomial $p(b)$ is plotted in \textit{log space} in Fig. \ref{fig:GLT_log} together with the $20\log_{10}(v(b))$ of the estimated function and the uniform gray level mapping as reference, in Fig. \ref{fig:GLT_lin} the functions are plotted in linear space. The beamformed image after the gray level transformation is
-
-    %\[
-    %b_{\text{GLT}} = v(|\tilde{b}_{\text{DAS}}|),
-    %\]
-    %where $\tilde{b}_{\text{DAS}}$ is the DAS beamformed signal normalized to a maximum value of 1.
+    %   Transforms beamformed signal amplitudes using a polynomial in log space
+    %   (p(b) = a*b^3 + b*b^2 + c*b + d) mapped to linear space via cubic spline.
+    %   Improves apparent image quality through dynamic range stretching prior
+    %   to log-compression.
+    %
+    %   Input:  uff.beamformed_data -> Output: uff.beamformed_data
+    %
+    %   Properties:
+    %       a               cubic coefficient
+    %       b               quadratic coefficient
+    %       c               linear coefficient
+    %       d               constant offset
+    %       plot_functions  enable debug plotting of transfer functions
+    %       scan            uff.scan object (optional)
+    %       is_exp          experimental flag
+    %
+    %   Example:
+    %       obj = postprocess.gray_level_transform();
+    %
+    %   See also POSTPROCESS, POLYNOMIAL_GRAY_LEVEL_TRANSFORM, SCURVE_GRAY_LEVEL_TRANSFORM
+    %
+    %   References:
+    %       Rindal et al., "Dynamic Range Stretching in Ultrasound Imaging"
     %
     %   implementers: Ole Marius Hoel Rindal <olemarius@olemarius.net>
     %                 Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no>

@@ -1,5 +1,9 @@
 function cm_data=plasma(m)
-% Plasma Colormap from Python
+%PLASMA   Plasma perceptually-uniform colormap (from matplotlib)
+%
+%   cm = tools.plasma(m)
+%
+%   See also TOOLS.INFERNO, TOOLS.VIRIDIS, TOOLS.MAGMA
 
 cm = [[  5.03832136e-02,   2.98028976e-02,   5.27974883e-01],
        [  6.35363639e-02,   2.84259729e-02,   5.33123681e-01],

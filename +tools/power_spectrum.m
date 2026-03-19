@@ -1,5 +1,9 @@
 function [fx, pw] = power_spectrum(data, fs, normalised, N)
-    % function [fx, pw] = power_spectrum(data,fs)
+    %POWER_SPECTRUM   Compute the averaged power spectrum of channel data
+    %
+    %   [fx, pw] = tools.power_spectrum(data, fs, normalised, N)
+    %
+    %   See also TOOLS.ESTIMATE_FREQUENCY
     
     if nargin < 3
         normalised = true;

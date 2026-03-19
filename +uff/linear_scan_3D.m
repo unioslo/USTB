@@ -1,19 +1,22 @@
 classdef linear_scan_3D < uff.scan
-    %LINEAR_SCAN   UFF class to define a volume linear scan 
-    %   LINEAR_SCAN contains the position of the x and z axis
+    %LINEAR_SCAN_3D   UFF data class for a 3-D Cartesian volume scan
     %
-    %   Compulsory properties:
-    %         x_axis           % Vector containing the x coordinates of the x - axis [m]
-    %         y_axis           % Vector containing the y coordinates of the y - axis [m]
-    %         z_axis           % Vector containing the z coordinates of the z - axis [m]
+    %   LINEAR_SCAN_3D defines a regular 3-D grid using x_axis, y_axis,
+    %   and z_axis vectors.
+    %
+    %   Properties:
+    %       x_axis      x-axis sample positions [m]
+    %       y_axis      y-axis sample positions [m]
+    %       z_axis      z-axis sample positions [m]
+    %       transform   UFF.TRANSFORM applied to pixel positions
     %
     %   Example:
-    %         sca = uff.linear_scan();
-    %         sca.x_axis=linspace(-20e-3,20e-3,256);
-    %         sca.z_axis=linspace(0e-3,40e-3,256);
-    %         scan.plot()
+    %       sca = uff.linear_scan_3D();
+    %       sca.x_axis = linspace(-20e-3, 20e-3, 64);
+    %       sca.y_axis = linspace(-20e-3, 20e-3, 64);
+    %       sca.z_axis = linspace(0, 40e-3, 128);
     %
-    %   See also UFF.SCAN, UFF.SECTOR_SCAN
+    %   See also UFF.SCAN, UFF.LINEAR_SCAN
 
     %   authors: Alfonso Rodriguez-Molares (alfonso.r.molares@ntnu.no)
     %   $Date: 2017/06/18 $

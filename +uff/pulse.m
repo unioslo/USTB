@@ -1,7 +1,21 @@
 classdef pulse < uff
-    %pulse   Pulse definition
+    %PULSE   UFF data class defining the transmitted pulse waveform
     %
-    %   See also PULSE, PHANTOM
+    %   PULSE describes the excitation pulse used in an ultrasound
+    %   acquisition. The waveform is modelled as a Gaussian-windowed cosine.
+    %
+    %   Properties:
+    %       center_frequency        center frequency [Hz]
+    %       fractional_bandwidth    fractional bandwidth (e.g. 0.6 = 60%)
+    %       phase                   initial phase [rad]
+    %       waveform                arbitrary transmitted waveform
+    %
+    %   Example:
+    %       pul = uff.pulse();
+    %       pul.center_frequency = 5.2e6;
+    %       pul.fractional_bandwidth = 0.6;
+    %
+    %   See also UFF.CHANNEL_DATA, UFF.WAVE
     
     %   authors: Alfonso Rodriguez-Molares (alfonso.r.molares@ntnu.no)
     %   $Date: 2017/09/15 $

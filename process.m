@@ -1,7 +1,18 @@
 classdef process < handle
-    %PROCESS   process part of the beamforming chain
+    %PROCESS   Base class for all processing steps in the USTB pipeline
     %
-    %   See also PIPELINE, CHANNEL_DATA, BEAMFORMED_DATA
+    %   PROCESS is the superclass for all processing objects in the USTB.
+    %   The USTB pipeline is organized in three types of processes:
+    %   preprocess, midprocess, and postprocess. Each processing class
+    %   implements a go() method that executes the processing step.
+    %
+    %   Properties:
+    %       name             name of the process
+    %       reference        reference to the publication where it is disclosed
+    %       implemented_by   contact of the implementer(s)
+    %       version          version of the implementation
+    %
+    %   See also PIPELINE, MIDPROCESS, POSTPROCESS, PREPROCESS
     
     %   authors: Alfonso Rodriguez-Molares (alfonso.r.molares@ntnu.no)
     %            Ole Marius Hoel Rindal <olemarius@olemarius.net>

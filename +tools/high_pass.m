@@ -1,5 +1,14 @@
 function [filtered_p,h,w] = high_pass(p,Fs,F)
-    % function filtered_p = high_pass(p,Fs,[upper_freq_on upper_freq_off])
+    %HIGH_PASS   Apply a Kaiser-window FIR high-pass filter
+    %
+    %   [pf, h, w] = tools.high_pass(p, Fs, F)
+    %
+    %   Parameters:
+    %       p       input signal (column-oriented)
+    %       Fs      sampling frequency [Hz]
+    %       F       transition band edges [f_stop f_pass] [Hz]
+    %
+    %   See also TOOLS.LOW_PASS, TOOLS.BAND_PASS
     
     % filter specification
     A=[0 1];                % band type: 0='stop', 1='pass'

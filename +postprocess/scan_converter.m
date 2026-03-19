@@ -1,6 +1,19 @@
 classdef scan_converter < postprocess
-    %SCAN_CONVERTER postprocess that performs scan convertion on a
-    %beamformed_data object
+    %SCAN_CONVERTER   Converts sector-scan beamformed data to a linear scan grid.
+    %
+    %   Interpolates beamformed data from a sector scan geometry onto a 2D/3D
+    %   linear scan grid using scattered interpolation.
+    %
+    %   Input:  uff.beamformed_data -> Output: uff.beamformed_data
+    %
+    %   Properties:
+    %       scan   UFF.SCAN object defining the desired output scan geometry
+    %
+    %   Example:
+    %       obj = postprocess.scan_converter();
+    %
+    %   See also POSTPROCESS, UFF.BEAMFORMED_DATA, UFF.LINEAR_SCAN, UFF.SECTOR_SCAN
+    %
     %   authors:    Stefano Fiorentini (stefano.fiorentini@ntnu.no)
     %   $Date: 2022/12/19$
     methods (Access = public)

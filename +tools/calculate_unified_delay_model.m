@@ -1,6 +1,16 @@
 function [transmit_delay_out] = calculate_unified_delay_model(transmit_delay_temp,mask,scan,source)
-% Implementation of the transmit delay model introduced in  Nguyen, N. Q., & Prager, R. W. (2016).
-% High-Resolution Ultrasound Imaging With Unified Pixel-Based Beamforming. IEEE Trans. Med. Imaging, 35(1), 98-108.
+%CALCULATE_UNIFIED_DELAY_MODEL   Compute unified transmit delay model
+%
+%   Implements the unified pixel-based transmit delay model from Nguyen
+%   & Prager (2016) to avoid discontinuities in focused imaging.
+%
+%   delay = tools.calculate_unified_delay_model(delay, mask, scan, source)
+%
+%   See also MIDPROCESS.DAS, SPHERICAL_TRANSMIT_DELAY_MODEL
+%
+%   References:
+%       Nguyen & Prager, "High-Resolution Ultrasound Imaging With Unified
+%       Pixel-Based Beamforming", IEEE TMI, vol. 35(1), pp. 98-108, 2016
 
 try
     % Reshape the delays into the size of the scan

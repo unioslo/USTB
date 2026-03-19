@@ -1,4 +1,23 @@
 classdef wiener < postprocess
+    %WIENER   Wiener filter for ultrasound image denoising
+    %
+    %   Applies 2D Wiener filtering to reduce noise in beamformed images.
+    %   Works on combined (single-channel) images only.
+    %
+    %   Input:  uff.beamformed_data -> Output: uff.beamformed_data
+    %
+    %   Properties:
+    %       m                       filter window size (rows) [pixels]
+    %       n                       filter window size (columns) [pixels]
+    %       sigma                   noise variance estimate
+    %       run_on_logcompressed    apply to log-compressed data (default: true)
+    %
+    %   Example:
+    %       obj = postprocess.wiener();
+    %
+    %   See also POSTPROCESS, MEDIAN, NON_LOCAL_MEANS_FILTERING
+    %
+
     properties 
         m = 20;
         n = 20;
