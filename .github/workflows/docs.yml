@@ -5,21 +5,25 @@ on:
     branches: [main, master]
     paths:
       - 'docs/**'
+      - 'examples/**'
       - '+uff/**'
       - '+midprocess/**'
       - '+postprocess/**'
       - '+preprocess/**'
       - '+tools/**'
       - '*.m'
+      - 'generate_examples_index.py'
   pull_request:
     paths:
       - 'docs/**'
+      - 'examples/**'
       - '+uff/**'
       - '+midprocess/**'
       - '+postprocess/**'
       - '+preprocess/**'
       - '+tools/**'
       - '*.m'
+      - 'generate_examples_index.py'
   workflow_dispatch:
 
 permissions:
@@ -37,16 +41,32 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # --- Sphinx API docs ---
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
-      - name: Install dependencies
+      - name: Install Sphinx dependencies
         run: pip install -r docs/requirements.txt
 
-      - name: Build HTML documentation
+      - name: Build API documentation
         run: sphinx-build -b html docs docs/_build/html
 
+      # --- MATLAB example publishing ---
+      - uses: matlab-actions/setup-matlab@v2
+        with:
+          products: Signal_Processing_Toolbox
+
+      - name: Publish examples to HTML
+        uses: matlab-actions/run-command@v2
+        with:
+          command: publish_all_examples(fullfile(pwd,'docs','_build','html','examples'))
+
+      # --- Generate examples index ---
+      - name: Generate examples index page
+        run: python generate_examples_index.py docs/_build/html/examples
+
+      # --- Upload combined site ---
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
