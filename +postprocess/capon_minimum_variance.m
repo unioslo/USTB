@@ -1,14 +1,34 @@
 classdef capon_minimum_variance < postprocess
-    %   CAPON_MINIMUM_VARIANCE
-    %
-    %             Beamform a ultrasound image using the Capon beamformer
-    %
-    %             This implementation is written with focus of
-    %             intuition, not speed. Documentation to be written ;)
-    %
-    %   implementers: Ole Marius Hoel Rindal <olemarius@olemarius.net>
-    %
-    %   $Last updated: 2017/05/02$
+%CAPON_MINIMUM_VARIANCE   Capon (minimum variance) adaptive beamforming.
+%
+%   Applies Capon minimum-variance beamforming to beamformed data for improved
+%   resolution and sidelobe suppression. Requires channel_data and scan.
+%   Implementation emphasizes clarity over speed.
+%
+%   Input:  uff.beamformed_data -> Output: uff.beamformed_data
+%
+%   Properties:
+%       active_element_criterium   Threshold for active element decision []
+%       L_elements                Subarray size []
+%       K_in_lambda               Temporal averaging factor [lambda]
+%       regCoef                   Regularization (diagonal loading) factor []
+%       doForwardBackward         Forward-backward averaging (0 or 1)
+%       dimension                 Dimension(s) (transmit, receive, or both)
+%       channel_data              Channel data (required)
+%       scan                      Scan geometry (required)
+%
+%   Example:
+%       obj = postprocess.capon_minimum_variance();
+%
+%   See also POSTPROCESS, EIGENSPACE_BASED_MINIMUM_VARIANCE, DIMENSION
+%
+%   References:
+%       Capon, "High-resolution frequency-wavenumber spectrum analysis,"
+%       Proc. IEEE, vol. 57, no. 8, pp. 1408-1418, 1969
+%
+%   implementers: Ole Marius Hoel Rindal <olemarius@olemarius.net>
+%
+%   $Last updated: 2017/05/02$
     
     %% constructor
     methods (Access = public)

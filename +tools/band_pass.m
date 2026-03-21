@@ -1,5 +1,14 @@
 function [pf, h, w] = band_pass(p, Fs, F)
-    % function pf = band_pass(p, Fs, [upper_freq_on upper_freq_off])
+    %BAND_PASS   Apply a Kaiser-window FIR band-pass filter
+    %
+    %   [pf, h, w] = tools.band_pass(p, Fs, F)
+    %
+    %   Parameters:
+    %       p       input signal (column-oriented)
+    %       Fs      sampling frequency [Hz]
+    %       F       frequency band edges [f1 f2 f3 f4] [Hz]
+    %
+    %   See also TOOLS.LOW_PASS, TOOLS.HIGH_PASS
     
     % Filter specification
     A = [0, 1, 0];                                          % band type: 0='stop', 1='pass'

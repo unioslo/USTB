@@ -1,27 +1,23 @@
 classdef matrix_array < uff.probe 
-    %MATRIX_ARRAY   UFF class to define a matrix array probe geometry
-    %   MATRIX_ARRAY contains defines an 2D array of elements with regularly 
-    %   spaced in both dimmensions. 
+    %MATRIX_ARRAY   UFF data class for a 2-D matrix transducer array
     %
-    %   Compulsory properties
-    %     properties  (SetAccess = public)
-    %         pitch_x        % distance between the elements in the azimuth direction [m]
-    %         pitch_y        % distance between the elements in the elevation direction [m]
-    %         N_x            % number of elements in the azimuth direction
-    %         N_y            % number of elements in the elevation direction
-    %     end
-    % 
-    %  Optional properties
-    %     properties  (SetAccess = public)
-    %         element_width  % width of the elements in the azimuth direction [m]
-    %         element_height % height of the elements in the elevation direction [m]
-    %     end
-    % 
+    %   MATRIX_ARRAY defines a rectangular grid of elements equally spaced
+    %   in the azimuth (x) and elevation (y) directions.
+    %
+    %   Properties:
+    %       N_x             number of elements in azimuth
+    %       N_y             number of elements in elevation
+    %       pitch_x         inter-element spacing in azimuth [m]
+    %       pitch_y         inter-element spacing in elevation [m]
+    %       element_width   element width [m] (default: pitch_x)
+    %       element_height  element height [m] (default: pitch_y)
+    %
     %   Example:
-    %         prb = uff.matrix_array('N_x',32,'N_y',32,'pitch_x',300e-6,'pitch_y',300e-6);
-    %         prb.plot();
+    %       prb = uff.matrix_array();
+    %       prb.N_x = 32; prb.N_y = 32;
+    %       prb.pitch_x = 300e-6; prb.pitch_y = 300e-6;
     %
-    %   See also UFF.PROBE
+    %   See also UFF.PROBE, UFF.CURVILINEAR_MATRIX_ARRAY
 
     %   authors: Alfonso Rodriguez-Molares (alfonsom@ntnu.no)
     %   $Last updated: 2017/06/11$

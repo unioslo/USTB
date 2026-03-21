@@ -1,8 +1,19 @@
 classdef postprocess < process
-    %POSTPROCESS   postprocess part of the processing pipeline. Takes a
-    % uff.beamformed_data structure and returns another uff.beamformed_data
+    %POSTPROCESS   Base class for post-processing algorithms
     %
-    %   See also PROCESS, CHANNEL_DATA, BEAMFORMED_DATA
+    %   POSTPROCESS modifies beamformed data. This includes adaptive
+    %   beamforming techniques (e.g. Coherence Factor, Minimum Variance),
+    %   compounding, filtering, and image enhancement.
+    %
+    %   Input:  uff.beamformed_data -> Output: uff.beamformed_data
+    %
+    %   Properties:
+    %       input                   UFF.BEAMFORMED_DATA input
+    %       output                  UFF.BEAMFORMED_DATA output
+    %       receive_apodization     UFF.APODIZATION for receive weighting
+    %       transmit_apodization    UFF.APODIZATION for transmit wave weighting
+    %
+    %   See also PROCESS, PIPELINE, MIDPROCESS, PREPROCESS
     
     %   authors: Alfonso Rodriguez-Molares (alfonso.r.molares@ntnu.no)
     %            Ole Marius Hoel Rindal <olemarius@olemarius.net>

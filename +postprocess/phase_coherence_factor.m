@@ -1,15 +1,28 @@
 classdef phase_coherence_factor < postprocess
-%PHASE_COHERENCE_FACTOR   Matlab implementation of Camacho-Fritsch Phase Coherence Factor
+%PHASE_COHERENCE_FACTOR   Camacho-Fritsch phase coherence factor beamforming.
 %
-%   MATLAB implementation of Camacho-Fritsch Phase Coherence Factor beamforming
-%   method as described in the paper:
+%   Uses phase statistics to compute a coherence factor that weights beamformed
+%   data. Computes coherence on transmit, receive, or both dimensions.
 %
-%   J. Camacho and C. Fritsch, "Phase coherence imaging of grained materials," 
-%   in IEEE Transactions on Ultrasonics, Ferroelectrics, and Frequency Control, 
-%   vol. 58, no. 5, pp. 1006-1015, May 2011.
+%   Input:  uff.beamformed_data -> Output: uff.beamformed_data
 %
-%   The implementation computes coherence either on transmit, receive, or
-%   both.
+%   Properties:
+%       center_frequency   Center frequency of RF signals [Hz]
+%       sound_speed       Reference sound speed [m/s]
+%       gamma             Mixing ratio []
+%       sigma_0           Reference phase value []
+%       FCA               Absolute phase coherence factor (beamformed_data)
+%       FCC               Complex phase coherence factor (beamformed_data)
+%       dimension         Dimension(s) for coherence (transmit, receive, or both)
+%
+%   Example:
+%       obj = postprocess.phase_coherence_factor();
+%
+%   See also POSTPROCESS, COHERENCE_FACTOR, GENERALIZED_COHERENCE_FACTOR, DIMENSION
+%
+%   References:
+%       Camacho and Fritsch, "Phase coherence imaging of grained materials,"
+%       IEEE Trans. Ultrason. Ferroelectr. Freq. Control, vol. 58, no. 5, pp. 1006-1015, 2011
 %
 %   implementers: Ole Marius Hoel Rindal <olemarius@olemarius.net>
 %                 Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no>

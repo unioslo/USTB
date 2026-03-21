@@ -1,15 +1,26 @@
 classdef simplified_delay_multiply_and_sum < postprocess
-    %DELAY MULTIPLY AND SUM  Matlab implementation of Delay Multiply And Sum
+    %SIMPLIFIED_DELAY_MULTIPLY_AND_SUM   Simplified Delay Multiply And Sum beamforming
     %
-    %   Matlab implementation of Delay Multiply And Sum as described in 
-    %   the paper:
-    %   
-    %   Jeon, S., Park, E. Y., Choi, W., Managuli, R., jong Lee, K., & Kim,
-    %   C. (2019). Real-time delay-multiply-and-sum beamforming with 
-    %   coherence factor for in vivo clinical photoacoustic imaging of 
-    %   humans. Photoacoustics, 15, 100136.
+    %   Fast simplified implementation of the Delay Multiply And Sum (DMAS)
+    %   beamforming algorithm for real-time applications.
     %
-    %   The implementation is a simplified version of delay-multiply-and-sum
+    %   Input:  uff.beamformed_data -> Output: uff.beamformed_data
+    %
+    %   Properties:
+    %       dimension       dimension to compute coherence on (transmit/receive/both)
+    %       channel_data    uff.channel_data object for parameters
+    %       filter_freqs    optional [4x1] passband/stopband edges [Hz]
+    %
+    %   Example:
+    %       obj = postprocess.simplified_delay_multiply_and_sum();
+    %
+    %   See also POSTPROCESS, DELAY_MULTIPLY_AND_SUM, DIMENSION
+    %
+    %   References:
+    %       Jeon, S., Park, E. Y., Choi, W., et al. (2019). Real-time
+    %       delay-multiply-and-sum beamforming with coherence factor for in
+    %       vivo clinical photoacoustic imaging of humans. Photoacoustics,
+    %       15, 100136.
     %
     %   implementers: Sufayan Ikabal Mulani <sufayanm@ifi.uio.no> and Ole Marius Hoel Rindal <olemarius@olemarius.net>
     %

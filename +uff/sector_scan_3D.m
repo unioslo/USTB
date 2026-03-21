@@ -1,22 +1,22 @@
 classdef sector_scan_3D < uff.scan
-    %SECTOR_SCAN   UFF class to define a sector scan 
-    %   SECTOR_SCAN contains the position of the azimuth, elevations and depth axis
-    %   from a position apex. NB! Azimuth and elevation is given x as
-    %   pointing axis.
+    %SECTOR_SCAN_3D   UFF data class for a 3-D sector (spherical) volume scan
     %
-    %   Compulsory properties:
-    %         azimuth_axis     % Vector containing the azimuth coordinates of the azimuth axis [rad]
-    %         elevation_axis   % Vector containing the elevation coordinates of the elevation axis [rad]
-    %         depth_axis       % Vector containing the distance coordinates of the distance axis [m]
+    %   SECTOR_SCAN_3D defines a 3-D grid in spherical coordinates using
+    %   azimuth_axis, elevation_axis, and depth_axis vectors.
+    %
+    %   Properties:
+    %       azimuth_axis        azimuth angles [rad]
+    %       elevation_axis      elevation angles [rad]
+    %       depth_axis          depth (radial distance) [m]
+    %       transform           UFF.TRANSFORM applied to pixel positions
     %
     %   Example:
-    %         sca = uff.sector_scan_3D();
-    %         sca.azimuth_axis = linspace(-pi/4,pi/4,64);
-    %         sca.azimuth_axis = linspace(-pi/4,pi/4,64);
-    %         sca.depth_axis   = linspace(0, 70e-2, 256);
-    %         scan.plot()
+    %       sca = uff.sector_scan_3D();
+    %       sca.azimuth_axis = linspace(-pi/4, pi/4, 64);
+    %       sca.elevation_axis = linspace(-pi/4, pi/4, 64);
+    %       sca.depth_axis = linspace(0, 70e-3, 256);
     %
-    %   See also UFF.SCAN, UFF.LINEAR_SCAN
+    %   See also UFF.SCAN, UFF.SECTOR_SCAN
 
     %   authors: Alfonso Rodriguez-Molares (alfonso.r.molares@ntnu.no)
     %   $Date: 2017/06/18 $

@@ -1,23 +1,25 @@
 classdef scan < uff
-    %SCAN   UFF class to define a scan 
-    %   SCAN contains the position of a collection of pixels. It is a
-    %   superclass for more easy-to-handle classes such as UFF.LINEAR_SCAN
-    %   or UFF.SECTOR_SCAN
+    %SCAN   UFF data class defining a collection of pixel positions
     %
-    %   Compulsory properties:
-    %         xyz                % Vector containing the [x, y, z] coordinates of each pixel in [m]
+    %   SCAN is the base class for all pixel grids. It stores arbitrary
+    %   pixel positions as x, y, z coordinate vectors. Use the subclasses
+    %   LINEAR_SCAN and SECTOR_SCAN for structured grids.
     %
-    %   Read-only properties
-    %         x                  % Vector containing the x coordinates of each pixel in [m]
-    %         y                  % Vector containing the y coordinates of each pixel in [m]
-    %         z                  % Vector containing the z coordinates of each pixel in [m]
+    %   Properties:
+    %       x       x-coordinates of each pixel [m]
+    %       y       y-coordinates of each pixel [m]
+    %       z       z-coordinates of each pixel [m]
+    %
+    %   Dependent properties:
+    %       N_pixels    total number of pixels
+    %       xyz         Nx3 matrix of pixel positions [m]
     %
     %   Example:
-    %         sca = uff.scan();
-    %         x_axis=linspace(-20e-3,20e-3,256);
-    %         z_axis=linspace(0e-3,40e-3,256);
-    %         [X, Z]=meshgrid(x_axis,z_axis);
-    %         sca.xyz = [X(:), zeros([numel(X), 1]), Z(:)];
+    %       sca = uff.scan();
+    %       x_axis = linspace(-20e-3, 20e-3, 256);
+    %       z_axis = linspace(0e-3, 40e-3, 256);
+    %       [X, Z] = meshgrid(x_axis, z_axis);
+    %       sca.xyz = [X(:), zeros(numel(X), 1), Z(:)];
     %
     %   See also UFF.LINEAR_SCAN, UFF.SECTOR_SCAN
 

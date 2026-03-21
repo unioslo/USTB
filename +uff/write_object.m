@@ -1,23 +1,23 @@
 function dumped_objects = write_object(filename,object,name,location,verbose)
-%% WRITE_OBJECT  Writes object into location
+%WRITE_OBJECT   Write a UFF object to an HDF5 file
 %
-%   This UFF method writes the object provided into the specified location
-%   of a UFF file.
+%   Serializes a USTB object and stores it at the given location in a
+%   UFF (.uff / .h5) file.
 %
-%   WRITE_OBJECT(filename, object, name, location, verbose)
+%   uff.write_object(filename, object, name, location, verbose)
 %
 %   Parameters:
-%       filename    Name and path to the UFF file
-%       object      Object to be written into the UFF file
-%       name        Name of the object within the file
-%       location    Location within the UFF file
-%       verbose     Flag to get text messages
+%       filename    path to the UFF file
+%       object      USTB object to store
+%       name        name for the HDF5 group
+%       location    parent HDF5 group (default: '/')
+%       verbose     display progress messages (default: true)
 %
 %   Example:
-%       chdat = uff.channel_data();
-%       uff.write_object('test.uff',chdat,'channel_data');
+%       ch = uff.channel_data();
+%       uff.write_object('data.uff', ch, 'channel_data');
 %
-%   See also UFF.WRITE, UFF.INDEX
+%   See also UFF.READ_OBJECT, UFF.INDEX, UFF.VERSION
 
 if(nargin<1)||isempty(filename) error('Missing UFF filename'); end
 if(nargin<2)||isempty(object) error('Missing object to write in UFF file'); end

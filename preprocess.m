@@ -1,8 +1,17 @@
 classdef preprocess < process
-    %PREPROCESS   preprocess part of the prcessing pipeline. Takes a
-    % uff.channel_data structure and return another uff.channel_data
+    %PREPROCESS   Base class for pre-processing algorithms
     %
-    %   See also PROCESS, CHANNEL_DATA, BEAMFORMED_DATA
+    %   PREPROCESS modifies channel data before beamforming. Typical
+    %   operations include demodulation of RF data to produce IQ data
+    %   and refocusing.
+    %
+    %   Input:  uff.channel_data -> Output: uff.channel_data
+    %
+    %   Properties:
+    %       input    UFF.CHANNEL_DATA input
+    %       output   UFF.CHANNEL_DATA output
+    %
+    %   See also PROCESS, PIPELINE, MIDPROCESS, POSTPROCESS
     
     %   authors: Alfonso Rodriguez-Molares (alfonso.r.molares@ntnu.no)
     %            Ole Marius Hoel Rindal <olemarius@olemarius.net>

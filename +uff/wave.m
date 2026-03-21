@@ -1,43 +1,37 @@
 classdef wave < uff
-    %WAVE   UFF class that describes a transmitted wave 
-    %   WAVE contains information to describe a wave: plannar, spherical,
-    %   or photoacoustic, and the apodization used to produce it.
+    %WAVE   UFF data class describing a transmitted or received wave event
     %
-    %   WAVE.WAVEFRONT defines the type of wave produced: uff.wavefront.plane, 
-    %   uff.wavefront.plane, uff.wavefront.spherical, or uff.wavefront.photoacoustic.  
+    %   WAVE defines a single transmit event in the acquisition sequence.
+    %   The wave type is set by the wavefront property. A virtual source
+    %   model determines the transmit delays used in beamforming.
     %
-    %   WAVE.SOURCE defines the wave attitude. If WAVE.WAVEFRONT is uff.wavefront.spherical 
-    %   then WAVE.SOURCE defines the point in space from which the wave originated. 
-    %   If WAVE.SOURCE is behind the plane z=0 then the spherical wave will be
-    %   diverging. If WAVE.SOURCE is in front of the plane z=0 the the spherical 
-    %   wave will be converging. If the WAVE.TYPWAVEFRONTE is uff.wavefront.plane then 
-    %   WAVE.SOURCE defines the orientation through the azimuth and elevation 
-    %   angles, i.e. WAVE.SOURCE.DISTANCE becomes meaningless. If the WAVE.WAVEFRONT is
-    %   uff.wavefront.photoacoustic then WAVE.SOURCE is ignored.
+    %   For spherical waves (diverging or focused imaging) the source
+    %   property defines the virtual source position. If source.z < 0 the
+    %   wave is diverging; if source.z > 0 the wave is converging (focused).
+    %   For plane waves the source azimuth and elevation angles set the
+    %   steering direction.
     %
-    %   WAVE.APODIZATION is a UFF.APODIZATION class used to compute the apodization
-    %   values that generate the UFF.WAVE.
+    %   Properties:
+    %       wavefront           UFF.WAVEFRONT type (plane, spherical, photoacoustic)
+    %       source              UFF.POINT virtual source location
+    %       origin              UFF.POINT origin for delay calculations
+    %       apodization         UFF.APODIZATION transmit apodization
+    %       probe               UFF.PROBE reference
+    %       event               index of the transmit/receive event
+    %       delay               time between t0 and acquisition start [s]
+    %       sound_speed         reference speed of sound [m/s]
     %
-    %   WAVE.INITIAL_TIME defines the time interval between the reference
-    %   time t0 and the start of acquisition for this particular wave. We 
-    %   refer to reference time, or time zero, as the moment the wave passes 
-    %   through the origin of coordinates (0,0,0).
-    %
-    %   Compulsory properties:
-    %    wavefront          % WAVEFRONT enumeration class
-    %    source             % POINT class
-    %    apodization        % APODIZATION class
-    %
-    %   Optional properties:
-    %    probe              % PROBE class 
-    %    event              % index of the transmit/receive events this wave refers to
-    %    sound_speed        % reference speed of sound
-    %    initial_time       % time interval between generation and acquistion 
+    %   Dependent properties:
+    %       N_elements          number of probe elements
+    %       delay_values        per-element transmit delays [s]
+    %       apodization_values  per-element transmit apodization weights
     %
     %   Example:
-    %         wave = uff.wave();
+    %       w = uff.wave();
+    %       w.wavefront = uff.wavefront.plane;
+    %       w.source.azimuth = 0.1;
     %
-    %   See also UFF.POINT, UFF.BEAMFORMED_DATA, UFF.PROBE
+    %   See also UFF.CHANNEL_DATA, UFF.WAVEFRONT, UFF.POINT, UFF.APODIZATION
     
     %   authors: Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no>
     %            Ole Marius Hoel Rindal <olemarius@olemarius.net>

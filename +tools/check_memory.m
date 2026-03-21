@@ -1,5 +1,9 @@
 function check_memory(bytes)
-%CHECK_MEMORY Checks if there is room for more data in the RAM
+%CHECK_MEMORY   Check that enough RAM is available for an allocation
+%
+%   tools.check_memory(bytes)
+%
+%   See also TOOLS.GETAVAILABLEMEMORY
 
 if ispc %The memory check is only available on windows
     [user,sys] = memory;

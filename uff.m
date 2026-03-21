@@ -1,11 +1,26 @@
 classdef uff < handle
-    %UFF   Ultrasound File Format (UFF) superclass
+    %UFF   Base class for all Ultrasound File Format (UFF) data objects
     %
-    %   See also CHANNEL_DATA, BEAMFORMED_DATA
+    %   UFF is the superclass for all data objects in the USTB. It provides
+    %   common metadata properties (name, reference, author, version, info)
+    %   and methods for reading from and writing to UFF files, which are
+    %   based on the HDF5 file format.
+    %
+    %   Properties:
+    %       name        name of the dataset
+    %       reference   reference to the publication where it was used
+    %       author      contact of the authors
+    %       version     version of the dataset
+    %       info        other information
+    %
+    %   Example:
+    %       obj = uff();
+    %
+    %   See also UFF.CHANNEL_DATA, UFF.BEAMFORMED_DATA, UFF.PROBE, UFF.SCAN
     
     %   authors: Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no>
     %
-    %   $Last updated: 2017/08/07$ 
+    %   $Last updated: 2017/08/07$
     
     %% Logistics parameters
     properties  (Access = public)

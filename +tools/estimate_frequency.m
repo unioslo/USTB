@@ -1,4 +1,9 @@
 function [fc, bw] = estimate_frequency(time,data)
+    %ESTIMATE_FREQUENCY   Estimate center frequency and bandwidth of a signal
+    %
+    %   [fc, bw] = tools.estimate_frequency(time, data)
+    %
+    %   See also TOOLS.POWER_SPECTRUM
     Fs=1/mean(diff(time));                      % sampling frequency
     [fx pw]=tools.power_spectrum(data,Fs);
     fpw=filter(ones(1,26)./26,1,pw);fpw=[fpw(13:end); zeros(12,1)];

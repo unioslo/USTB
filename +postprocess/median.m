@@ -1,4 +1,21 @@
 classdef median < postprocess
+    %MEDIAN   Median filter for ultrasound image denoising
+    %
+    %   Applies 2D median filtering to reduce speckle and noise in
+    %   beamformed images. Works on combined (single-channel) images only.
+    %
+    %   Input:  uff.beamformed_data -> Output: uff.beamformed_data
+    %
+    %   Properties:
+    %       m   filter window size (rows) [pixels]
+    %       n   filter window size (columns) [pixels]
+    %
+    %   Example:
+    %       obj = postprocess.median();
+    %
+    %   See also POSTPROCESS, WIENER, NON_LOCAL_MEANS_FILTERING
+    %
+
     properties 
         m = 20;
         n = 20;

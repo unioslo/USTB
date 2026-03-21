@@ -1,4 +1,9 @@
 function val = getAvailableMemory
+%GETAVAILABLEMEMORY   Return available physical memory in bytes
+%
+%   val = tools.getAvailableMemory()
+%
+%   See also TOOLS.CHECK_MEMORY
 if isunix
     [~, val] = system('grep MemAvailable /proc/meminfo');
     val = sscanf(val, 'MemAvailable:   %d kB');

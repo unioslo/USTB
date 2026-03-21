@@ -1,18 +1,33 @@
 classdef non_local_means_filtering < postprocess
-    %NON LOCAL MEANS FILTERING Matlab implementation of the nonlocal means
-    %   denoising filter
+    %NON_LOCAL_MEANS_FILTERING   Non-local means denoising filter
     %
-    %   A fast implementation of the non-local means based on distances in
-    %   the features space. The full algorithm is discussed in detail in the
-    %   following paper:
+    %   Fast non-local means denoising based on distances in feature space.
+    %   Supports Gaussian and Rician noise models.
     %
-    %      A. Tristān-Vega, V. Garcėa-Pčrez, S. Aja-Fernāndez, C.-F. Westin
-    %      "Efficient and robust nonlocal means denoising of MR data based on
-    %      salient features matching"
-    %      Computer Methods and Programs in Biomedicine, vol. 105, pp. 131-144
-    %      (2012)
+    %   Input:  uff.beamformed_data -> Output: uff.beamformed_data
     %
-    %   implementers:   Antonio Tristān-Vega <atriveg@lpi.tel.uva.es>
+    %   Properties:
+    %       dimension               transmit, receive, or both
+    %       run_on_logcompressed    apply to log-compressed data
+    %       sigma                   noise power (std dev)
+    %       beta                    filtering strength (0.8-1.2)
+    %       rs                      search radii [3x1]
+    %       rc                      comparison radii [3x1]
+    %       ps                      preselection threshold
+    %       flag                    'gaussian' or 'rician'
+    %       block                   vector (1) or loop (0) computation
+    %
+    %   Example:
+    %       obj = postprocess.non_local_means_filtering();
+    %
+    %   See also POSTPROCESS, WIENER, MEDIAN
+    %
+    %   References:
+    %       Tristan-Vega, A., et al. (2012). Efficient and robust nonlocal
+    %       means denoising of MR data based on salient features matching.
+    %       CMPB, 105, 131-144.
+    %
+    %   implementers:   Antonio Tristan-Vega <atriveg@lpi.tel.uva.es>
     %                   Ole Marius Hoel Rindal <olemarius@olemarius.net>
     %
     %   $Last updated: 2020/01/04$

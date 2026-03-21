@@ -1,10 +1,30 @@
 classdef phantom 
-%phantom   Phantom definition
-%
-%   See also 
-
-%   authors: Alfonso Rodriguez-Molares (alfonso.r.molares@ntnu.no)
-%   $Date: 2017/02/22 $
+    %PHANTOM   UFF data class describing a scattering phantom
+    %
+    %   PHANTOM defines point scatterers and medium properties used by
+    %   simulators such as FRESNEL.
+    %
+    %   Properties:
+    %       points          Nx4 matrix of scatterers [x y z Gamma] [m m m unitless]
+    %       time            time instant [s]
+    %       sound_speed     medium speed of sound [m/s]
+    %       density         medium density [kg/m3]
+    %       alpha           attenuation coefficient [dB/cm/MHz]
+    %
+    %   Dependent properties:
+    %       N_points        number of point scatterers
+    %       x, y, z         scatterer coordinates [m]
+    %       Gamma           reflection coefficients
+    %
+    %   Example:
+    %       pha = uff.phantom();
+    %       pha.sound_speed = 1540;
+    %       pha.points = [0, 0, 20e-3, 1];
+    %
+    %   See also UFF.CHANNEL_DATA, FRESNEL
+    
+    %   authors: Alfonso Rodriguez-Molares (alfonso.r.molares@ntnu.no)
+    %   $Date: 2017/02/22 $
 
     %% public properties
     properties  (Access = public)
@@ -32,15 +52,9 @@ classdef phantom
         function h=phantom(points_in,time_in,sound_speed_in,density_in,alpha_in)
             %PHANTOM   Constructor of PHANTOM class
             %
-            %   Syntax:
-            %   h = phantom(points,time)
-            %        points           % matrix of point scaterers [x y z Gamma] - [m m m unitless]
-            %        time             % time [s]
-            %        sound_speed      % medium sound speed [m/s]
-            %        density          % medium density [kg/m3]
-            %        alpha            % medium attenuation [dB/cm/MHz]
+            %   h = phantom(points, time, sound_speed, density, alpha)
             %
-            %   See also BEAM
+            %   See also UFF.CHANNEL_DATA
             
             h.time=0;               % time [s]
             h.sound_speed=1540;     % sound speed [m/s]

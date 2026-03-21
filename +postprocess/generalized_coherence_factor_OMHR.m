@@ -1,21 +1,31 @@
 classdef generalized_coherence_factor_OMHR < postprocess
-    %GENERALIZED COHERENCE FACTOR MATLAB implementation of the Generalized
-    % Coherence Factor
-    %
-    %   MATLAB implementation of the Generalized Coherence Factor
-    %   method as described in the paper:
-    %
-    %   Li, P. C., & Li, M. L. (2003). Adaptive imaging using the generalized
-    %   coherence factor. IEEE Transactions on Ultrasonics, Ferroelectrics, and 
-    %   Frequency Control, 50(2), 128?141. https://doi.org/10.1109/TUFFC.2003.1182117
-    %
-    %   The implementation computes coherence either on transmit, receive.
-    %   Use dimension do decide wihich.
-    %
-    %   implementers: Ole Marius Hoel Rindal <olemarius@olemarius.net>
-    %                 Andreas Austeng <AndreasAusteng@ifi.uio.no>
-    %
-    %   $Last updated: 2017/05/05$
+%GENERALIZED_COHERENCE_FACTOR_OMHR   Generalized coherence factor (pixel-wise FFT).
+%
+%   Alternative implementation of the generalized coherence factor using
+%   pixel-wise FFT over active elements. Requires channel_data for apodization.
+%   Use dimension to select transmit or receive.
+%
+%   Input:  uff.beamformed_data -> Output: uff.beamformed_data
+%
+%   Properties:
+%       M0            Low-frequency region size []
+%       channel_data  Channel data (required for probe/apodization)
+%       GCF           Beamformed data with computed coherence factor
+%       dimension     Dimension(s) for coherence (transmit, receive, or both)
+%
+%   Example:
+%       obj = postprocess.generalized_coherence_factor_OMHR();
+%
+%   See also POSTPROCESS, GENERALIZED_COHERENCE_FACTOR, COHERENCE_FACTOR, DIMENSION
+%
+%   References:
+%       Li and Li, "Adaptive imaging using the generalized coherence factor,"
+%       IEEE Trans. Ultrason. Ferroelectr. Freq. Control, vol. 50, no. 2, pp. 128-141, 2003
+%
+%   implementers: Ole Marius Hoel Rindal <olemarius@olemarius.net>
+%                 Andreas Austeng <AndreasAusteng@ifi.uio.no>
+%
+%   $Last updated: 2017/05/05$
     
     %% constructor
     methods (Access = public)

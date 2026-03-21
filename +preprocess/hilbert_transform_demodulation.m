@@ -1,11 +1,24 @@
 classdef hilbert_transform_demodulation < preprocess
-    %HILBERT_DEMODULATION   Hilbert transform-based implementation of IQ demodulation in MATLAB
+    %HILBERT_TRANSFORM_DEMODULATION   IQ demodulation via Hilbert transform and down-mix
     %
+    %   Converts RF channel data to IQ (complex) channel data using the Hilbert
+    %   transform to obtain the analytic signal, then down-mixing and decimation.
+    %   Preprocess modifies channel data before beamforming.
     %
-    %   authors: Bastien Denarie
-    %            Stefano Fiorentini <stefano.fiorentini@ntnu.no>
+    %   Input:  uff.channel_data -> Output: uff.channel_data
     %
-    %   $Last updated: 2020/10/9$
+    %   Properties:
+    %       plot_on                      plot intermediate graphs
+    %       modulation_frequency         modulation frequency [Hz]
+    %       downsample_frequency         sampling frequency after downsampling [Hz]
+    %
+    %   Example:
+    %       obj = preprocess.hilbert_transform_demodulation();
+    %
+    %   See also PREPROCESS, DEMODULATION
+    %
+    %   implementers: Bastien Denaire
+    %                 Stefano Fiorentini <stefano.fiorentini@ntnu.no>
     
     %% constructor
     methods (Access = public)

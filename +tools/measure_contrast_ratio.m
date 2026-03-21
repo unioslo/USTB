@@ -1,4 +1,11 @@
 function [CR C] = measure_contrast_ratio(sta_image,image,xc_nonecho,zc_nonecho,r_nonecho,r_speckle_inner,r_speckle_outer,f_filename,plot_flag)
+%MEASURE_CONTRAST_RATIO   Measure contrast ratio between cyst and speckle regions
+%
+%   [CR, C] = tools.measure_contrast_ratio(sta_image, image, xc_nonecho, ...
+%       zc_nonecho, r_nonecho, r_speckle_inner, r_speckle_outer, filename, plot_flag)
+%
+%   See also TOOLS.MEASURE_CONTRAST_CIRCLES
+
 if nargin < 9
     plot_flag = 0;
 end

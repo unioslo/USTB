@@ -1,5 +1,18 @@
 classdef max < postprocess
-%MAX   Matlab implementation of max of beamformed values
+%MAX   Maximum-value compounding of beamformed data
+%
+%   Takes the maximum absolute value across transmit and/or receive
+%   dimensions to produce a compounded image.
+%
+%   Input:  uff.beamformed_data -> Output: uff.beamformed_data
+%
+%   Properties:
+%       dimension   dimension to take max over (transmit/receive/both)
+%
+%   Example:
+%       obj = postprocess.max();
+%
+%   See also POSTPROCESS, STACK, DIMENSION
 %
 %   authors: Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no>
 %            Ole Marius Hoel Rindal <olemarius@olemarius.net>

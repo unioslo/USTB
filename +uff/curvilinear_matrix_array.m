@@ -1,14 +1,22 @@
 classdef curvilinear_matrix_array < uff.matrix_array 
-    %CURVILINEAR_ARRAY   UFF class to define a curvilinear matrix array probe geometry
-    %   CURVILINEAR__MATRIX_ARRAY defines a array of regularly space elements on an 
-    %   arc in the azimuth dimensions and linear in elevation direction.  Optionally it can hold each element 
-    %   width and height, assuming the elements are rectangular. 
+    %CURVILINEAR_MATRIX_ARRAY   UFF data class for a curvilinear 2-D matrix array
     %
-    %   Compulsory properties:
-    %         radius_x         % radius of the curvilinear array in azimuth direction [m]
-    % 
+    %   CURVILINEAR_MATRIX_ARRAY defines a 2-D grid of elements arranged on
+    %   a cylindrical surface: curved in the azimuth direction and linear
+    %   in the elevation direction. Inherits N_x, N_y, pitch_x, pitch_y
+    %   from MATRIX_ARRAY.
     %
-    %   See also UFF.PROBE
+    %   Properties:
+    %       radius_x        radius of curvature in azimuth [m]
+    %
+    %   Dependent properties:
+    %       maximum_angle   angle of the outermost elements [rad]
+    %
+    %   Example:
+    %       prb = uff.curvilinear_matrix_array('N_x', 32, 'N_y', 32, ...
+    %           'pitch_x', 300e-6, 'pitch_y', 300e-6, 'radius_x', 60e-3);
+    %
+    %   See also UFF.MATRIX_ARRAY, UFF.PROBE
 
     %   authors: Anders E. Vrålstad (anders.e.vralstad@ntnu.no)
     %   $Last updated: 2022/11/22$

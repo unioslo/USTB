@@ -1,13 +1,29 @@
 classdef scurve_gray_level_transform < postprocess
-    %Gray level transform - Matlab implementation 
+    %SCURVE_GRAY_LEVEL_TRANSFORM   S-curve (sigmoid) gray-level mapping for dynamic range stretching.
     %
-    % To illustrate the claim that apparent image improvement can be achieved with dynamic range stretching, we introduce a gray level transformation on the beamformed signal prior to log-compression. A polinomial, $p(b) = \alpha b^2+ \beta b+ \epsilon$, with the wanted output is created in \textit{log space}, and mapped to \textit{linear space}. The function in linear space is estimated using cubic spline interpolation. We denote the function estimated with cubic spline $v(b)$. 
-    % The polynomial $p(b)$ is plotted in \textit{log space} in Fig. \ref{fig:GLT_log} together with the $20\log_{10}(v(b))$ of the estimated function and the uniform gray level mapping as reference, in Fig. \ref{fig:GLT_lin} the functions are plotted in linear space. The beamformed image after the gray level transformation is
-
-    %\[
-    %b_{\text{GLT}} = v(|\tilde{b}_{\text{DAS}}|),
-    %\]
-    %where $\tilde{b}_{\text{DAS}}$ is the DAS beamformed signal normalized to a maximum value of 1.
+    %   Applies an S-curve transfer function (1/(1+exp(-a*(x_dB-b)))) in log space,
+    %   mapped to linear space via cubic spline. Provides a sigmoidal compression
+    %   for dynamic range stretching of beamformed ultrasound images.
+    %
+    %   Input:  uff.beamformed_data -> Output: uff.beamformed_data
+    %
+    %   Properties:
+    %       a               sigmoid steepness parameter
+    %       b               sigmoid center point [dB]
+    %       c               scaling factor
+    %       plot_functions  enable debug plotting of transfer functions
+    %       scan            uff.scan object (optional)
+    %
+    %   Example:
+    %       obj = postprocess.scurve_gray_level_transform();
+    %
+    %   See also POSTPROCESS, GRAY_LEVEL_TRANSFORM, POLYNOMIAL_GRAY_LEVEL_TRANSFORM
+    %
+    %   References:
+    %       Rindal, O. M. H., Austeng, A., Fatemi, A., Rodriguez-Molares, A.,
+    %       "The effect of dynamic range alterations in the estimation of
+    %       contrast," IEEE TUFFC, vol. 66, no. 7, pp. 1198-1208, 2019.
+    %       https://ieeexplore.ieee.org/document/8691813
     %
     %   implementers: Ole Marius Hoel Rindal <olemarius@olemarius.net>
     %                 Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no>

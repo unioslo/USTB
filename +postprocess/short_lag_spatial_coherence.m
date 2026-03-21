@@ -1,24 +1,40 @@
 classdef short_lag_spatial_coherence < postprocess
-% SHORT LAG SPATIAL COHERENCE (SLSC)
-% This process implements the SLSC algorithm as described in 
-% Lediju, M. A., Trahey, G. E., Byram, B. C., & Dahl, J. J. (2011). 
-% Short-lag spatial coherence of backscattered echoes: Imaging characteristics.
-% IEEE Transactions on Ultrasonics, Ferroelectrics, and Frequency Control, 58(7),
-% 1377-1388. https://doi.org/10.1109/TUFFC.2011.1957
-%
-% To use this process, you have to reference the article above, and if you
-% use it on cardiac imaging you also have to reference:
-% Lediju Bell, M. A., Goswami, R., Kisslo, J. A., Dahl, J. J., & Trahey, 
-% G. E. (2013). Short-Lag Spatial Coherence (SLSC) Imaging of Cardiac Ultrasound
-% Data: Initial Clinical Results. Ultrasound in Medicine & Biology, 39(10), 
-% 1861?1874. https://doi.org/10.1016/j.ultrasmedbio.2013.03.029
-%
-% Please see our citation policy http://www.ustb.no/citation/.
-%
-% Please see the example under examples/advanced_beamforming/FI_UFF_short_lag_spatial_coherence
-% on how to use it.
-% 
-% $Last updated: 2017/09/10$
+    %SHORT_LAG_SPATIAL_COHERENCE   Short-lag spatial coherence imaging
+    %
+    %   Implements the Short-Lag Spatial Coherence (SLSC) algorithm for
+    %   coherence-based ultrasound imaging.
+    %
+    %   Input:  uff.beamformed_data -> Output: uff.beamformed_data
+    %
+    %   Properties:
+    %       active_element_criterium   threshold for element activation
+    %       K_in_lambda               axial kernel length [lambda]
+    %       dimension                 transmit, receive, or both
+    %       maxM                      maximum lag value
+    %       slsc_values               computed SLSC values
+    %       channel_data              uff.channel_data object
+    %
+    %   Example:
+    %       obj = postprocess.short_lag_spatial_coherence();
+    %
+    %   See also POSTPROCESS, DIMENSION, UFF.APODIZATION
+    %
+    %   References (must be cited when using this process):
+    %       Lediju, M. A., Trahey, G. E., Byram, B. C., & Dahl, J. J. (2011).
+    %       "Short-lag spatial coherence of backscattered echoes: Imaging
+    %       characteristics." IEEE TUFFC, 58(7), 1377-1388.
+    %       https://doi.org/10.1109/TUFFC.2011.1957
+    %
+    %       For cardiac imaging, also cite:
+    %       Lediju Bell, M. A., Goswami, R., Kisslo, J. A., Dahl, J. J., &
+    %       Trahey, G. E. (2013). "Short-Lag Spatial Coherence (SLSC)
+    %       Imaging of Cardiac Ultrasound Data: Initial Clinical Results."
+    %       Ultrasound Med. Biol., 39(10), 1861-1874.
+    %       https://doi.org/10.1016/j.ultrasmedbio.2013.03.029
+    %
+    %   Citation policy: http://www.ustb.no/citation/
+    %
+    %   $Last updated: 2017/09/10$
     
     %% constructor
     methods (Access = public)

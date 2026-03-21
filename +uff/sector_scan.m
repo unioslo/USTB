@@ -1,20 +1,27 @@
 classdef sector_scan < uff.scan
-    %SECTOR_SCAN   UFF class to define a sector scan 
-    %   SECTOR_SCAN contains the position of the azimuth and depth axis
-    %   from an origin. If more origins are present
+    %SECTOR_SCAN   UFF data class for a polar/sector pixel grid
     %
-    %   Compulsory properties:
-    %         azimuth_axis         % Vector containing the azimuth coordinates [rad]
-    %         elevation_axis       % Vector containing the azimuth coordinates [rad]
-    %         depth_axis           % Vector containing the distance coordinates [m]
-    %         origin               % Vector of UFF.POINT objects
+    %   SECTOR_SCAN defines a grid in spherical coordinates using
+    %   azimuth_axis, elevation_axis, and depth_axis vectors. Commonly
+    %   used with phased array probes.
+    %
+    %   Properties:
+    %       azimuth_axis        azimuth angles [rad]
+    %       elevation_axis      elevation angles [rad]
+    %       depth_axis          depth (radial distance) [m]
+    %       origin              UFF.POINT scan-line origin(s)
+    %       transform           UFF.TRANSFORM applied to pixel positions
+    %
+    %   Dependent properties:
+    %       N_azimuth_axis      number of azimuth samples
+    %       N_elevation_axis    number of elevation samples
+    %       N_depth_axis        number of depth samples
+    %       depth_step          step size in depth [m]
+    %       reference_distance  distance for phase term calculation [m]
     %
     %   Example:
-    %         sca = uff.sector_scan();
-    %         sca.azimuth_axis=linspace(-pi/3,pi/3,100);
-    %         sca.elevation_axis=linspace(-pi/3,pi/3,100);
-    %         sca.elevation_axis=linspace(0e-3,80e-3,256);
-    %         scan.plot()
+    %       scan = uff.sector_scan('azimuth_axis', linspace(-pi/6, pi/6, 128).', ...
+    %                              'depth_axis', linspace(0, 80e-3, 256).');
     %
     %   See also UFF.SCAN, UFF.LINEAR_SCAN
 

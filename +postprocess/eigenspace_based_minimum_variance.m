@@ -1,22 +1,37 @@
 classdef eigenspace_based_minimum_variance < postprocess
-    %CAPON_MINIMUM_VARIANCE
-    %
-    %             Beamform a ultrasound image using the Capon beamformer
-    %
-    %             This implementation is written with focus of
-    %             intuition, not speed.
-    %
-    %             @Input:
-    %                h.data_cube : RF-data [range,axial,elemt]
-    %                regCoef : Diagonal loading constant
-    %                L       : Subarray size
-    %                K       : Temporal averaging factor
-    %                doForwardBackward : Forward backward averaging
-    %                        (This is never used in this thesis)
-    %             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %   implementers: Ole Marius Hoel Rindal <olemarius@olemarius.net>
-    %
-    %   $Last updated: 2017/05/02$
+%EIGENSPACE_BASED_MINIMUM_VARIANCE   Eigenspace-based minimum variance beamforming.
+%
+%   Projects Capon weights onto the signal subspace to improve robustness.
+%   Uses gamma to separate signal and noise subspaces. Requires channel_data
+%   and scan. Implementation emphasizes clarity over speed.
+%
+%   Input:  uff.beamformed_data -> Output: uff.beamformed_data
+%
+%   Properties:
+%       active_element_criterium   Threshold for active element decision []
+%       L_elements                Subarray size []
+%       K_in_lambda               Temporal averaging factor [lambda]
+%       regCoef                   Regularization (diagonal loading) factor []
+%       doForwardBackward         Forward-backward averaging (0 or 1)
+%       dimension                 Dimension(s) (transmit, receive, or both)
+%       gamma                     Signal subspace eigenvalue threshold []
+%       channel_data              Channel data (required)
+%       scan                      Scan geometry (required)
+%
+%   Example:
+%       obj = postprocess.eigenspace_based_minimum_variance();
+%
+%   See also POSTPROCESS, CAPON_MINIMUM_VARIANCE, DIMENSION
+%
+%   References:
+%       Mohammadzadeh Asl, B. and Mahloojifar, A., "Eigenspace-based minimum
+%       variance beamforming applied to medical ultrasound imaging," IEEE
+%       Trans. Ultrason. Ferroelectr. Freq. Control, vol. 57, no. 11,
+%       pp. 2381-2390, 2010. https://ieeexplore.ieee.org/document/5611687
+%
+%   implementers: Ole Marius Hoel Rindal <olemarius@olemarius.net>
+%
+%   $Last updated: 2017/05/02$
     
     %% constructor
     methods (Access = public)

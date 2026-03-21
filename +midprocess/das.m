@@ -1,6 +1,44 @@
 classdef das < midprocess
-    %DAS   Implementation of USTB DAS general beamformer
+    %DAS   Generalized Delay-And-Sum beamformer
     %
+    %   DAS implements the Generalized Beamformer described in Eq. (2) of
+    %   the reference paper. It computes pixel values by delaying and
+    %   summing channel data according to round-trip propagation times.
+    %
+    %   The dimension property controls which summation is performed:
+    %       dimension.receive   - sum over Rx channels, Eq. (24)
+    %       dimension.transmit  - sum over Tx events, Eq. (26)
+    %       dimension.both      - sum over both Rx and Tx, Eq. (2)
+    %       dimension.none      - return delayed data without summation
+    %
+    %   Properties:
+    %       dimension                           DIMENSION (default: dimension.both)
+    %       code                                CODE implementation selector (default: code.mex)
+    %       gpu_id                              CUDA GPU device id (for GPU implementations)
+    %       spherical_transmit_delay_model      model for focused Tx delay calculation
+    %       pw_margin                           margin for hybrid delay model [m]
+    %       lens_delay                          additional receive delay offset [s]
+    %       elapsed_time                        execution time of last go() call [s]
+    %
+    %   Inherited from midprocess:
+    %       channel_data            UFF.CHANNEL_DATA input
+    %       scan                    UFF.SCAN pixel grid
+    %       receive_apodization     UFF.APODIZATION Rx weighting, w_m^Rx(x), Eq. (22)
+    %       transmit_apodization    UFF.APODIZATION Tx weighting, w_a^Tx(x), Eq. (23)
+    %
+    %   Example:
+    %       mid = midprocess.das();
+    %       mid.channel_data = channel_data;
+    %       mid.scan = scan;
+    %       mid.dimension = dimension.both;
+    %       b_data = mid.go();
+    %
+    %   See also MIDPROCESS, DIMENSION, CODE, SPHERICAL_TRANSMIT_DELAY_MODEL
+    %
+    %   References:
+    %       Rindal et al., "The Generalized Beamformer", TechRxiv preprint,
+    %       https://www.techrxiv.org/users/684320/articles/1263073-the-generalized-beamformer-in-the-ultrasound-toolbox
+    
     %   authors:    Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no>
     %               Ole Marius Hoel Rindal <olemarius@olemarius.net>
     %               Stefano Fiorentini <stefano.fiorentini@ntnu.no>

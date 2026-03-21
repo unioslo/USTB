@@ -1,17 +1,38 @@
 classdef spherical_transmit_delay_model < int32
-%DIMENSION   Enumeration for transmit delay models for when the source is placed in front of the transducer. To see the options available write "tx_delay_model." and press <TAB>.
-%
-%   See also DAS and examples/uff/FI_UFF_phased_array_MLA_and_RTB_fix.m
-
-%   authors: Ole Marius Hoel Rindal (olemarius@olemarius.net)
-%   $Date: 2018/05/20 $
+    %SPHERICAL_TRANSMIT_DELAY_MODEL   Enumeration for transmit delay models
+    %
+    %   SPHERICAL_TRANSMIT_DELAY_MODEL selects the model used to calculate
+    %   the transmit distance T(x) when the virtual source is in front of
+    %   the transducer (focused imaging). The standard spherical model has
+    %   a discontinuity at the sides of the focal point; the hybrid and
+    %   unified models address this.
+    %
+    %   Values:
+    %       spherical_transmit_delay_model.spherical   Standard virtual source model, Eq. (7)
+    %       spherical_transmit_delay_model.unified     Unified model from Nguyen & Prager (2016)
+    %       spherical_transmit_delay_model.hybrid      Hybrid spherical/plane model (default)
+    %       spherical_transmit_delay_model.blended     Blended spherical/plane model
+    %
+    %   Example:
+    %       mid = midprocess.das();
+    %       mid.spherical_transmit_delay_model = spherical_transmit_delay_model.hybrid;
+    %
+    %   See also MIDPROCESS.DAS, CODE, DIMENSION
+    %
+    %   References:
+    %       Nguyen & Prager, "High-Resolution Ultrasound Imaging With Unified
+    %       Pixel-Based Beamforming", IEEE TMI, vol. 35(1), pp. 98-108, 2016
+    %
+    %       Rindal et al., "A simple, artifact-free, virtual source model",
+    %       IEEE IUS, 2018
+    
+    %   authors: Ole Marius Hoel Rindal (olemarius@olemarius.net)
+    %   $Date: 2018/05/20 $
     
    enumeration
-      spherical(1)   % This is the standard spherical virtual source model
-      unified(2)     % This is the unifed model introduced in Nguyen, N. Q., &
-                     % Prager, R. W. (2016). High-Resolution Ultrasound Imaging With Unified Pixel-Based 
-                     % Beamforming. IEEE Trans. Med. Imaging, 35(1), 98-108.
-      hybrid(3)      % This is our model, a hybrid between the spherical and a plane wave model hopefully publised at IUS 2018
-      blended(4)     % This is our blended model, a blend between the spherical and a plane wave model.
+      spherical(1)   % Standard spherical virtual source model
+      unified(2)     % Unified model (Nguyen & Prager, 2016)
+      hybrid(3)      % Hybrid spherical/plane wave model (default)
+      blended(4)     % Blended spherical/plane wave model
    end
 end

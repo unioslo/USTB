@@ -1,10 +1,26 @@
 classdef fast_demodulation < preprocess
-    %FAST_DEMODULATION   Faster implementation of IQ demodulation in MATLAB
+    %FAST_DEMODULATION   Faster IQ demodulation via down-mix, low-pass, and decimation
     %
-    %   authors: Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no>
-    %            Stefano Fiorentini <stefano.fiorentini@ntnu.no>
+    %   Converts RF channel data to IQ (complex) channel data using down-mixing
+    %   to baseband, low-pass filtering, and decimation. Skips band-pass filtering
+    %   for speed. Preprocess modifies channel data before beamforming.
     %
-    %   $Last updated: 2020/10/06$
+    %   Input:  uff.channel_data -> Output: uff.channel_data
+    %
+    %   Properties:
+    %       plot_on                      plot intermediate graphs
+    %       modulation_frequency         modulation frequency [Hz]
+    %       downsample_frequency         sampling frequency after downsampling [Hz]
+    %       lowpass_frequency_vector     low-pass filter transition band [multiple of modulation frequency]
+    %       b                           low-pass FIR filter coefficients (dependent)
+    %
+    %   Example:
+    %       obj = preprocess.fast_demodulation();
+    %
+    %   See also PREPROCESS, DEMODULATION
+    %
+    %   implementers: Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no>
+    %                 Stefano Fiorentini <stefano.fiorentini@ntnu.no>
     
     %% constructor
     methods (Access = public)

@@ -1,5 +1,9 @@
 function cm_data=viridis(m)
-% VIRIDIS colormap from Python
+%VIRIDIS   Viridis perceptually-uniform colormap (from matplotlib)
+%
+%   cm = tools.viridis(m)
+%
+%   See also TOOLS.INFERNO, TOOLS.MAGMA, TOOLS.PLASMA
 
 cm = [[ 0.26700401,  0.00487433,  0.32941519],
        [ 0.26851048,  0.00960483,  0.33542652],

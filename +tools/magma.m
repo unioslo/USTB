@@ -1,5 +1,9 @@
 function [cm_data]=magma(m)
-% Colormap MAGMA from Python
+%MAGMA   Magma perceptually-uniform colormap (from matplotlib)
+%
+%   cm = tools.magma(m)
+%
+%   See also TOOLS.INFERNO, TOOLS.VIRIDIS, TOOLS.PLASMA
 
 cm = [[  1.46159096e-03,   4.66127766e-04,   1.38655200e-02],
     [  2.25764007e-03,   1.29495431e-03,   1.83311461e-02],
