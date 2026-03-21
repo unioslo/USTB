@@ -16,6 +16,9 @@ classdef hilbert_transform_demodulation < preprocess
     %       obj = preprocess.hilbert_transform_demodulation();
     %
     %   See also PREPROCESS, DEMODULATION
+    %
+    %   implementers: Bastien Denaire
+    %                 Stefano Fiorentini <stefano.fiorentini@ntnu.no>
     
     %% constructor
     methods (Access = public)

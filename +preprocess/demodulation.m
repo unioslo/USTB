@@ -20,6 +20,9 @@ classdef demodulation < preprocess
     %       obj = preprocess.demodulation();
     %
     %   See also PREPROCESS, FAST_DEMODULATION, HILBERT_TRANSFORM_DEMODULATION, NYQUIST_LIMIT_DEMODULATION
+    %
+    %   implementers: Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no>
+    %                 Stefano Fiorentini <stefano.fiorentini@ntnu.no>
     
     %% constructor
     methods (Access = public)

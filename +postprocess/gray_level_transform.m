@@ -23,7 +23,10 @@ classdef gray_level_transform < postprocess
     %   See also POSTPROCESS, POLYNOMIAL_GRAY_LEVEL_TRANSFORM, SCURVE_GRAY_LEVEL_TRANSFORM
     %
     %   References:
-    %       Rindal et al., "Dynamic Range Stretching in Ultrasound Imaging"
+    %       Rindal, O. M. H., Austeng, A., Fatemi, A., Rodriguez-Molares, A.,
+    %       "The effect of dynamic range alterations in the estimation of
+    %       contrast," IEEE TUFFC, vol. 66, no. 7, pp. 1198-1208, 2019.
+    %       https://ieeexplore.ieee.org/document/8691813
     %
     %   implementers: Ole Marius Hoel Rindal <olemarius@olemarius.net>
     %                 Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no>

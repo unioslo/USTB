@@ -14,6 +14,8 @@ classdef nyquist_limit_demodulation < preprocess
     %       obj = preprocess.nyquist_limit_demodulation();
     %
     %   See also PREPROCESS, DEMODULATION
+    %
+    %   implementers: Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no>
     
     %% constructor
     methods (Access = public)

@@ -24,8 +24,10 @@ classdef eigenspace_based_minimum_variance < postprocess
 %   See also POSTPROCESS, CAPON_MINIMUM_VARIANCE, DIMENSION
 %
 %   References:
-%       Feldman and Griffiths, "A projection approach for robust adaptive
-%       beamforming," IEEE Trans. Signal Process., vol. 42, no. 4, pp. 867-876, 1994
+%       Mohammadzadeh Asl, B. and Mahloojifar, A., "Eigenspace-based minimum
+%       variance beamforming applied to medical ultrasound imaging," IEEE
+%       Trans. Ultrason. Ferroelectr. Freq. Control, vol. 57, no. 11,
+%       pp. 2381-2390, 2010. https://ieeexplore.ieee.org/document/5611687
 %
 %   implementers: Ole Marius Hoel Rindal <olemarius@olemarius.net>
 %

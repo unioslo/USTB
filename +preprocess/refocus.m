@@ -19,6 +19,20 @@ classdef refocus < preprocess
     %       obj = preprocess.refocus();
     %
     %   See also PREPROCESS, CHANNEL_DATA
+    %
+    %   References:
+    %       Ali, R., Herickhoff, C. D., Hyun, D., Dahl, J. J., & Bottenus, N.
+    %       (2020). "Extending Retrospective Encoding for Robust Recovery of the
+    %       Multistatic Data Set." IEEE TUFFC, 67(5), 943-956.
+    %       https://doi.org/10.1109/TUFFC.2019.2961875
+    %
+    %   Original REFoCUS code: https://github.com/nbottenus/REFoCUS
+    %
+    %   implementers: Anders E. Vralstad <anders.e.vralstad@ntnu.no>
+    %                 Nick Bottenus <Nick.Bottenus@colorado.edu>
+    %                 Rehman Ali
+    %                 Ole Marius Hoel Rindal <omrindal@ifi.uio.no>
+    %                 Nazli Javadi Eshkalak <nazli.javadieshkalak@colorado.edu>
     
     %% constructor
     methods (Access = public)
