@@ -33,6 +33,9 @@ skip_dirs = {'FLUST', ...             % needs MUST toolbox + edit() calls
              fullfile('UiO_course_IN4015_Ultrasound_Imaging','module_6_sonar','utils'), ...
              fullfile('UiO_course_IN4015_Ultrasound_Imaging','module_2_wave_physics')};
 
+skip_files = {'kWave_USTB_REFoCUS.m', ...  % needs k-Wave, causes segfault
+              'calculate_VZC_curves.m'};    % needs precomputed data from other scripts
+
 all_m = dir(fullfile(examples_dir, '**', '*.m'));
 
 addpath(genpath(ustb_root));
@@ -55,6 +58,14 @@ for k = 1:numel(all_m)
         if contains(rel, skip_dirs{s})
             should_skip = true;
             break;
+        end
+    end
+    if ~should_skip
+        for s = 1:numel(skip_files)
+            if strcmp(all_m(k).name, skip_files{s})
+                should_skip = true;
+                break;
+            end
         end
     end
     if should_skip
