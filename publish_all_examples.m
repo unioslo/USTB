@@ -27,6 +27,7 @@ examples_dir = fullfile(ustb_root, 'examples');
 skip_dirs = {'FLUST', ...             % needs MUST toolbox + edit() calls
              'field_II', ...          % needs Field II toolbox
              'kWave', ...             % needs k-Wave toolbox + can segfault
+             'REFoCUS', ...           % causes segfault in headless CI
              'verasonics', ...        % needs Verasonics hardware/data
              'alpinion', ...          % needs Alpinion hardware/data
              'acoustical_radiation_force_imaging', ... % needs hardware data
