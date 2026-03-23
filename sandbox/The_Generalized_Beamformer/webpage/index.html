@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Generalized Beamformer &mdash; USTB Examples</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fafaf8; --fg: #1c1917; --accent: #1e3a5f;
+    --link: #1a5fb4; --card: #fff; --border: #e7e5e4;
+    --tag-bg: #e8edf2; --tag-fg: #1e3a5f; --muted: #78716c;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1917; --fg: #e7e5e4; --accent: #93c5fd;
+      --link: #93c5fd; --card: #292524; --border: #44403c;
+      --tag-bg: #1e3a5f; --tag-fg: #bfdbfe; --muted: #a8a29e;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg); color: var(--fg);
+    line-height: 1.65; max-width: 820px;
+    margin: 0 auto; padding: 3rem 1.5rem 4rem;
+  }
+  h1 {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 2.2rem; font-weight: 700; color: var(--accent);
+    margin-bottom: .35rem; letter-spacing: -0.02em;
+  }
+  .authors { color: var(--muted); margin-bottom: .5rem; font-size: .95rem; }
+  .abstract {
+    margin-bottom: 2.5rem; font-size: .95rem; line-height: 1.7;
+    border-left: 3px solid var(--accent); padding-left: 1rem;
+    color: var(--muted);
+  }
+  .abstract a { color: var(--link); text-decoration: none; }
+  .abstract a:hover { text-decoration: underline; }
+  h2 {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 1.3rem; font-weight: 600; color: var(--accent);
+    margin-bottom: 1.2rem;
+  }
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.4rem 1.6rem;
+    margin-bottom: 1rem; transition: box-shadow .15s;
+  }
+  .card:hover { box-shadow: 0 2px 12px rgba(0,0,0,.08); }
+  .card h3 { font-size: 1.05rem; margin-bottom: .4rem; }
+  .card h3 a { color: var(--link); text-decoration: none; }
+  .card h3 a:hover { text-decoration: underline; }
+  .card p { font-size: .9rem; color: var(--muted); margin-bottom: .6rem; }
+  .tags { display: flex; flex-wrap: wrap; gap: .35rem; }
+  .tag {
+    background: var(--tag-bg); color: var(--tag-fg);
+    font-size: .75rem; font-weight: 500; padding: .15rem .55rem;
+    border-radius: 4px;
+  }
+  footer {
+    margin-top: 3rem; padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    font-size: .82rem; color: var(--muted);
+  }
+  footer a { color: var(--link); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<h1>The Generalized Beamformer</h1>
+<p class="authors">
+  Ole Marius Hoel Rindal, Alfonso Rodriguez-Molares, Anders Vrålstad, Stefano Fiorentini, Andreas Austeng
+</p>
+
+<div class="abstract">
+  These examples accompany the paper
+  <a href="https://www.techrxiv.org/users/684320/articles/1263073-the-generalized-beamformer-in-the-ultrasound-toolbox"
+     target="_blank"><em>The Generalized Beamformer in the UltraSound ToolBox</em></a>.
+  Each page is a published MATLAB script from the
+  <a href="https://github.com/unioslo/USTB" target="_blank">USTB</a>
+  repository that demonstrates a key concept or result from the paper.
+</div>
+
+<h2>Examples</h2>
+
+<div class="card">
+  <h3><a href="CPWC_double_adaptive_redone.html">Double Adaptive Beamforming</a></h3>
+  <p>Compares five TX/RX beamforming configurations using Capon Minimum Variance (MV) on the PICMUS numerical phantom: conventional DAS, MV on RX, MV on TX, double adaptive MV, and reversed order. Includes gCNR, FWHM resolution analysis, and lateral profiles.</p>
+  <div class="tags"><span class="tag">Capon MV</span><span class="tag">CPWC</span><span class="tag">gCNR</span><span class="tag">FWHM</span><span class="tag">adaptive</span></div>
+</div>
+<div class="card">
+  <h3><a href="illustrate_virtual_sources.html">Virtual Source Geometry &amp; Scan Types</a></h3>
+  <p>Visualises the probe geometry and virtual source positions for diverging wave (DW), synthetic transmit aperture (STA), and plane wave (PW) sequences. Also shows linear scan, sector scan, and their 3-D counterparts.</p>
+  <div class="tags"><span class="tag">geometry</span><span class="tag">virtual source</span><span class="tag">DW</span><span class="tag">STA</span><span class="tag">PW</span><span class="tag">scan</span></div>
+</div>
+<div class="card">
+  <h3><a href="FI_coherence_factor.html">Focused Imaging with Coherence Factor</a></h3>
+  <p>Demonstrates focused imaging on a phased-array cardiac dataset using the Generalized Beamformer with scanline and retrospective transmit beamforming (RTB), combined with coherence factor weighting.</p>
+  <div class="tags"><span class="tag">FI</span><span class="tag">phased array</span><span class="tag">coherence factor</span><span class="tag">RTB</span><span class="tag">cardiac</span></div>
+</div>
+<div class="card">
+  <h3><a href="kWave_USTB_generalized_beamformer.html">k-Wave Full-Wave Simulation</a></h3>
+  <p>Full-wave acoustic simulation using k-Wave with a selectable transmit waveform (FI, PW, STAI, DW). Simulates point scatterers, a hyperechoic cyst, and a gradient bar, then beamforms with USTB.</p>
+  <div class="tags"><span class="tag">k-Wave</span><span class="tag">simulation</span><span class="tag">FI</span><span class="tag">PW</span><span class="tag">STAI</span><span class="tag">DW</span></div>
+</div>
+
+<footer>
+  Generated from the <a href="https://github.com/unioslo/USTB">USTB</a> repository.
+  The UltraSound ToolBox is developed at the University of Oslo.
+</footer>
+
+</body>
+</html>
