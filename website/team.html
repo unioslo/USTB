@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team – UltraSound ToolBox</title>
+    <link rel="icon" href="assets/images/ustb-logo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Gudea:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css">
+    <style>
+        .partner-logos {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0 30px;
+        }
+        .partner-logos a { display: inline-block; }
+        .partner-logos img { height: 60px; width: auto; }
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        .team-member {
+            text-align: center;
+            background: #f9f9f9;
+            border: 1px solid #eee;
+            padding: 10px;
+        }
+        .team-member img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            display: block;
+            margin-bottom: 8px;
+            filter: grayscale(100%);
+        }
+        .team-member .name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #303030;
+        }
+        @media (max-width: 768px) {
+            .team-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-inner">
+        <div class="site-branding">
+            <a href="index.html"><img src="assets/images/ustb-logo.png" alt="USTB Logo"></a>
+            <div>
+                <div class="site-title"><a href="index.html">UltraSound ToolBox</a></div>
+                <div class="site-description">MATLAB toolbox for processing ultrasonic signals</div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<nav class="main-nav">
+    <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="documentation.html">Documentation</a></li>
+        <li><a href="examples.html">Examples</a></li>
+        <li><a href="publications.html">Publications</a></li>
+        <li><a href="team.html">Team</a></li>
+        <li><a href="citation.html">Citation</a></li>
+    </ul>
+</nav>
+
+<div class="content-wrap">
+    <main class="main-content">
+        <div class="page-content">
+            <h1>Team</h1>
+
+            <p>The USTB is developed and maintained as a freely available, open-source project by a global community of scientists and developers.</p>
+
+            <h2>Institutional Partners</h2>
+            <div class="partner-logos">
+                <a href="https://www.ntnu.no/isb" target="_blank"><img src="assets/images/partners/ntnu.png" alt="NTNU"></a>
+                <a href="https://www.mn.uio.no/ifi/" target="_blank"><img src="assets/images/partners/uio.png" alt="UiO Department of Informatics"></a>
+                <a href="https://pulselab.jhu.edu/" target="_blank"><img src="assets/images/partners/pulse.png" alt="PULSE Lab, Johns Hopkins"></a>
+                <a href="https://www.creatis.insa-lyon.fr/site7/en" target="_blank"><img src="assets/images/partners/creatis.png" alt="CREATIS"></a>
+                <a href="https://www.sintef.no/sintef-digital/" target="_blank"><img src="assets/images/partners/sintef.jpg" alt="SINTEF Digital"></a>
+            </div>
+
+            <h2>The USTB task force</h2>
+
+            <h3 style="font-size: 18px; margin-bottom: 10px;">Administrators</h3>
+            <div class="team-grid">
+                <div class="team-member">
+                    <img src="assets/images/team/ole-marius.jpg" alt="Ole Marius Hoel Rindal">
+                    <div class="name">Ole Marius Hoel Rindal</div>
+                </div>
+                <div class="team-member">
+                    <img src="assets/images/team/anders.jpg" alt="Anders Emil Vrålstad">
+                    <div class="name">Anders Emil Vrålstad</div>
+                </div>
+                <div class="team-member">
+                    <img src="assets/images/team/jorgen.jpg" alt="Jørgen Avdal">
+                    <div class="name">Jørgen Avdal</div>
+                </div>
+                <div class="team-member">
+                    <img src="assets/images/team/alfonso.jpg" alt="Alfonso Rodriguez-Molares">
+                    <div class="name">Alfonso Rodriguez-Molares</div>
+                </div>
+            </div>
+
+            <h3 style="font-size: 18px; margin-bottom: 10px;">Contributors</h3>
+            <div class="team-grid">
+                <div class="team-member">
+                    <img src="assets/images/team/stefano.jpg" alt="Stefano Fiorentini">
+                    <div class="name">Stefano Fiorentini</div>
+                </div>
+                <div class="team-member">
+                    <img src="assets/images/team/andreas.jpg" alt="Andreas Austeng">
+                    <div class="name">Andreas Austeng</div>
+                </div>
+                <div class="team-member">
+                    <img src="assets/images/team/muyinatu.jpg" alt="Muyinatu Lediju Bell">
+                    <div class="name">Muyinatu Lediju Bell</div>
+                </div>
+                <div class="team-member">
+                    <img src="assets/images/team/olivier.jpg" alt="Olivier Bernard">
+                    <div class="name">Olivier Bernard</div>
+                </div>
+                <div class="team-member">
+                    <img src="assets/images/team/herve.jpg" alt="Hervè Liebgott">
+                    <div class="name">Hervè Liebgott</div>
+                </div>
+                <div class="team-member">
+                    <img src="assets/images/team/lasse.jpg" alt="Lasse Løvstakken">
+                    <div class="name">Lasse Løvstakken</div>
+                </div>
+                <div class="team-member">
+                    <img src="assets/images/team/svein.jpg" alt="Svein Bøe">
+                    <div class="name">Svein Bøe</div>
+                </div>
+                <div class="team-member">
+                    <img src="assets/images/team/havard.jpg" alt="Håvard Arnestad">
+                    <div class="name">Håvard Arnestad</div>
+                </div>
+                <div class="team-member">
+                    <img src="assets/images/team/gabor.jpg" alt="Gabor Gereb">
+                    <div class="name">Gabor Gereb</div>
+                </div>
+                <div class="team-member">
+                    <img src="assets/images/team/stefano.jpg" style="visibility: hidden;" alt="">
+                    <div class="name">Sufayan Mulani</div>
+                </div>
+            </div>
+
+            <h2>Acknowledgements</h2>
+            <ul>
+                <li>Bastien Denarie</li>
+                <li>Øyvind Krøvel-Velle Standal</li>
+                <li>Jochen Rau</li>
+                <li>Hans Torp</li>
+                <li>Sverre Holm</li>
+            </ul>
+
+            <h2>Support</h2>
+            <p>The USTB project is supported by <a href="https://www.ntnu.edu/cius" target="_blank">CIUS – Centre for Innovative Ultrasound Solutions</a>. CIUS is a centre for research-based innovation (SFI) appointed by the Norwegian Research Council (NFR).</p>
+        </div>
+    </main>
+
+    <aside class="sidebar">
+        <div class="sidebar-widget">
+            <h3>About</h3>
+            <p>The aim of USTB is to facilitate the comparison between processing techniques and encourage the publication of datasets and algorithms.</p>
+        </div>
+        <div class="sidebar-widget" style="text-align: center;">
+            <h3>Support to USTB comes from</h3>
+            <img src="assets/images/cius.png" alt="CIUS" style="max-width: 150px;">
+        </div>
+        <div class="sidebar-widget">
+            <h3>External Links</h3>
+            <ul style="list-style: none; padding-left: 0;">
+                <li><a href="http://www.ultrasoundtoolbox.com" target="_blank">UFF project</a></li>
+                <li><a href="https://www.creatis.insa-lyon.fr/Challenge/IEEE_IUS_2016/" target="_blank">PICMUS</a></li>
+            </ul>
+        </div>
+    </aside>
+</div>
+
+<footer class="site-footer">
+    <p>WordPress Theme: <a href="https://themezee.com/themes/wellington/" target="_blank">Wellington</a> by ThemeZee.</p>
+</footer>
+
+</body>
+</html>
