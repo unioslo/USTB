@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citation – UltraSound ToolBox</title>
+    <link rel="icon" href="assets/images/ustb-logo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Gudea:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-inner">
+        <div class="site-branding">
+            <a href="index.html"><img src="assets/images/ustb-logo.png" alt="USTB Logo"></a>
+            <div>
+                <div class="site-title"><a href="index.html">UltraSound ToolBox</a></div>
+                <div class="site-description">MATLAB toolbox for processing ultrasonic signals</div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<nav class="main-nav">
+    <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="documentation.html">Documentation</a></li>
+        <li><a href="examples.html">Examples</a></li>
+        <li><a href="publications.html">Publications</a></li>
+        <li><a href="team.html">Team</a></li>
+        <li><a href="citation.html">Citation</a></li>
+    </ul>
+</nav>
+
+<div class="content-wrap">
+    <main class="main-content">
+        <div class="page-content">
+            <h1>Citation</h1>
+
+            <p>USTB is made possible through the contribution of several labs around the world. It contains pieces of intellectual property from many authors, and because of that different references must be cited depending on your use of USTB. There are three kinds of intellectual property that must be acknowledged: datasets, processes, and the toolbox itself.</p>
+
+            <h2>Datasets</h2>
+            <p>USTB hosts several datasets that can be downloaded from the <a href="https://github.com/unioslo/USTB">repository</a>. Datasets have an associated reference that must be cited if you want to use it in your article or thesis. The reference is displayed in the <code>reference</code> property of the corresponding UFF class (normally <code>uff.channel_data</code> or <code>uff.beamformed_data</code>).</p>
+
+            <h2>Processes</h2>
+            <p>The backbone of USTB are its processes. A process is an abstract class that implements some kind of processing or algorithm. For instance a process can be a delay-and-sum beamformer, a coherence factor computation, a clutter filter, an edge detector, etc. All these processes have an associated <code>reference</code> property that must be cited if you want to use that process in your work. Note that sometimes more than one process is used in the processing chain; every process must be cited.</p>
+
+            <h2>Toolbox</h2>
+            <p>The USTB toolbox should be cited as well. Please use the reference from the proceedings of the IUS (IEEE International Ultrasonics Symposium) 2017:</p>
+            <blockquote style="border-left: 3px solid #c9302c; padding: 10px 20px; margin: 15px 0; background: #f9f9f9;">
+                Rodriguez-Molares, A., Rindal, O. M. H., Bernard, O., Nair, A., Bell, M. A. L., Liebgott, H., Austeng, A., Løvstakken, L. (2017). <em>The UltraSound ToolBox.</em> IEEE International Ultrasonics Symposium, IUS, 1–4. <a href="https://doi.org/10.1109/ULTSYM.2017.8092389">doi:10.1109/ULTSYM.2017.8092389</a>
+            </blockquote>
+
+            <h2>Authors vs implementers</h2>
+            <p>Processes also have an <code>implemented_by</code> property. In many cases algorithms are not implemented by their original authors. There is no mechanism yet to cite implementations, unless the implementation itself is a piece of intellectual property and has an associated reference. But implementers can be acknowledged in the acknowledgements section of your article or thesis.</p>
+
+            <h2>Example</h2>
+            <p>Let us illustrate the citation policy with an example. Assume you want to use a dataset from the PICMUS challenge Tours'16, and compare your algorithm with the Mallart-Fink Coherent Factor and the Camacho-Fritsch Phase Coherence Factor, both included in the USTB's process library.</p>
+
+            <p>Checking the <code>reference</code> property of the dataset and processes you would find the following references:</p>
+            <ul>
+                <li>H. Liebgott, A. Rodriguez-Molares, F. Cervenansky, J. A. Jensen and O. Bernard, <em>Plane-Wave Imaging Challenge in Medical Ultrasound,</em> 2016 IEEE International Ultrasonics Symposium (IUS), Tours, 2016, pp. 1-4. doi: 10.1109/ULTSYM.2016.7728908.</li>
+                <li>J. Camacho and C. Fritsch, <em>Phase coherence imaging of grained materials,</em> in IEEE Transactions on Ultrasonics, Ferroelectrics, and Frequency Control, vol. 58, no. 5, pp. 1006-1015, May 2011.</li>
+                <li>R. Mallart and M. Fink, <em>Adaptive focusing in scattering media through sound-speed inhomogeneities: The van Cittert Zernike approach and focusing criterion,</em> J. Acoust. Soc. Am., vol. 96, no. 6, pp. 3721-3732, 1994.</li>
+            </ul>
+
+            <p>And you should also add the reference of the UltraSound ToolBox:</p>
+            <ul>
+                <li>Rodriguez-Molares, A., Rindal, O. M. H., Bernard, O., Nair, A., Bell, M. A. L., Liebgott, H., Austeng, A., Løvstakken, L. (2017). <em>The UltraSound ToolBox.</em> IEEE International Ultrasonics Symposium, IUS, 1–4. <a href="https://doi.org/10.1109/ULTSYM.2017.8092389">doi:10.1109/ULTSYM.2017.8092389</a></li>
+            </ul>
+
+            <p>These 4 references must be included in your article or thesis.</p>
+        </div>
+    </main>
+
+    <aside class="sidebar">
+        <div class="sidebar-widget">
+            <h3>About</h3>
+            <p>The aim of USTB is to facilitate the comparison between processing techniques and encourage the publication of datasets and algorithms.</p>
+        </div>
+        <div class="sidebar-widget">
+            <h3>Download</h3>
+            <ul style="list-style: none; padding-left: 0;">
+                <li><a href="https://github.com/unioslo/USTB">Repository</a></li>
+                <li><a href="https://github.com/unioslo/USTB/releases">Toolbox v2.3</a></li>
+            </ul>
+        </div>
+    </aside>
+</div>
+
+<footer class="site-footer">
+    <p>WordPress Theme: <a href="https://themezee.com/themes/wellington/" target="_blank">Wellington</a> by ThemeZee.</p>
+</footer>
+
+</body>
+</html>

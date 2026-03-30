@@ -1,18 +1,10 @@
-name: Build and Deploy Documentation
+name: Deploy Website to GitHub Pages
 
 on:
   push:
-    branches: [main, master]
+    branches: [master]
     paths:
-      - 'docs/**'
-      - '+uff/**'
-      - '+midprocess/**'
-      - '+postprocess/**'
-      - '+preprocess/**'
-      - '+tools/**'
-      - '*.m'
-  pull_request:
-    paths:
+      - 'website/**'
       - 'docs/**'
       - '+uff/**'
       - '+midprocess/**'
@@ -32,8 +24,11 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
 
@@ -41,25 +36,17 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install dependencies
+      - name: Install Sphinx dependencies
         run: pip install -r docs/requirements.txt
 
-      - name: Build HTML documentation
-        run: sphinx-build -b html docs docs/_build/html
+      - name: Build API documentation
+        run: sphinx-build -b html docs website/api
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs/_build/html
+          path: website
 
-  deploy:
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
