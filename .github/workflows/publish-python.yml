@@ -32,6 +32,8 @@ jobs:
     name: Build Package
     needs: test
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
       - uses: actions/checkout@v4
 
@@ -76,7 +78,7 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
-          name: ustb-${{ steps.version.outputs.version }}
+          name: ustb-${{ needs.build.outputs.version }}
           path: dist/
 
       - name: Publish to PyPI
@@ -89,22 +91,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Extract version from tag
-        id: version
-        run: |
-          TAG="${GITHUB_REF#refs/tags/releases/python/v}"
-          echo "version=$TAG" >> "$GITHUB_OUTPUT"
-
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
-          name: ustb-${{ steps.version.outputs.version }}
+          name: ustb-${{ needs.build.outputs.version }}
           path: dist/
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: dist/*
-          name: Python USTB v${{ steps.version.outputs.version }}
+          name: Python USTB v${{ needs.build.outputs.version }}
           draft: false
           generate_release_notes: true
