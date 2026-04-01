@@ -6,12 +6,26 @@ on:
     paths:
       - 'website/**'
       - 'docs/**'
+      - 'examples/**'
       - '+uff/**'
       - '+midprocess/**'
       - '+postprocess/**'
       - '+preprocess/**'
       - '+tools/**'
       - '*.m'
+      - 'generate_examples_index.py'
+  pull_request:
+    paths:
+      - 'website/**'
+      - 'docs/**'
+      - 'examples/**'
+      - '+uff/**'
+      - '+midprocess/**'
+      - '+postprocess/**'
+      - '+preprocess/**'
+      - '+tools/**'
+      - '*.m'
+      - 'generate_examples_index.py'
   workflow_dispatch:
 
 permissions:
@@ -20,18 +34,27 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
-  cancel-in-progress: false
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build:
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install MEX dependencies
+        run: sudo apt-get update && sudo apt-get install -y libtbb2
+
+      # --- Field II installation ---
+      - name: Install Field II
+        run: |
+          mkdir -p /opt/field_ii
+          curl -L -A "Mozilla/5.0" -o /tmp/field_ii.tar.gz "https://www.field-ii.dk/program_code/matlab_2021/Field_II_ver_3_30_linux.tar.gz"
+          tar -xzf /tmp/field_ii.tar.gz -C /opt/field_ii
+          rm /tmp/field_ii.tar.gz
+
+      # --- Sphinx API docs ---
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -42,11 +65,36 @@ jobs:
       - name: Build API documentation
         run: sphinx-build -b html docs website/api
 
+      # --- MATLAB example publishing ---
+      - uses: matlab-actions/setup-matlab@v2
+        with:
+          products: Signal_Processing_Toolbox Image_Processing_Toolbox
+
+      - name: Publish examples to HTML
+        uses: matlab-actions/run-command@v2
+        continue-on-error: true
+        timeout-minutes: 60
+        with:
+          command: addpath('/opt/field_ii'); publish_all_examples(fullfile(pwd,'website','examples'), true)
+
+      # --- Generate examples index ---
+      - name: Generate examples index page
+        run: python generate_examples_index.py website/examples
+
+      # --- Upload combined site ---
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: website
 
+  deploy:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
