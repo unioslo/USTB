@@ -6,12 +6,26 @@ on:
     paths:
       - 'website/**'
       - 'docs/**'
+      - 'examples/**'
       - '+uff/**'
       - '+midprocess/**'
       - '+postprocess/**'
       - '+preprocess/**'
       - '+tools/**'
       - '*.m'
+      - 'generate_examples_index.py'
+  pull_request:
+    paths:
+      - 'website/**'
+      - 'docs/**'
+      - 'examples/**'
+      - '+uff/**'
+      - '+midprocess/**'
+      - '+postprocess/**'
+      - '+preprocess/**'
+      - '+tools/**'
+      - '*.m'
+      - 'generate_examples_index.py'
   workflow_dispatch:
 
 permissions:
@@ -20,18 +34,16 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
-  cancel-in-progress: false
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build:
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
 
+      # --- Sphinx API docs ---
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -42,11 +54,28 @@ jobs:
       - name: Build API documentation
         run: sphinx-build -b html docs website/api
 
+      # --- Pre-built MATLAB examples ---
+      - name: Download published examples
+        run: |
+          mkdir -p website/examples
+          curl -L -o /tmp/examples-html.tar.gz "https://github.com/${{ github.repository }}/releases/download/examples-v1/examples-html.tar.gz" || \
+          curl -L -o /tmp/examples-html.tar.gz "https://github.com/olemarius90/USTB/releases/download/examples-v1/examples-html.tar.gz"
+          tar -xzf /tmp/examples-html.tar.gz -C website/examples
+
+      # --- Upload combined site ---
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: website
 
+  deploy:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
