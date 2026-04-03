@@ -45,29 +45,34 @@
     <!-- Python Examples -->
     <div class="page-content" style="margin-bottom: 10px;">
         <h1>Python Examples</h1>
-        <p>Interactive Jupyter notebooks with the Python USTB implementation. Click to view with code, output, and figures.</p>
-        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-            <tr style="border-bottom: 2px solid #c9302c;">
-                <th style="text-align: left; padding: 8px;">Notebook</th>
-                <th style="text-align: left; padding: 8px;">Description</th>
-            </tr>
-            <tr style="border-bottom: 1px solid #ddd;">
-                <td style="padding: 8px;"><a href="https://nbviewer.org/github/unioslo/USTB/blob/master/python/notebooks/minimal_example.ipynb" target="_blank">Minimal Example</a></td>
-                <td style="padding: 8px;">Cardiac phased array imaging with sector scan</td>
-            </tr>
-            <tr style="border-bottom: 1px solid #ddd;">
-                <td style="padding: 8px;"><a href="https://nbviewer.org/github/unioslo/USTB/blob/master/python/notebooks/cpwc_linear.ipynb" target="_blank">CPWC Linear Array</a></td>
-                <td style="padding: 8px;">Plane wave compound imaging with L7 linear array</td>
-            </tr>
-            <tr style="border-bottom: 1px solid #ddd;">
-                <td style="padding: 8px;"><a href="https://nbviewer.org/github/unioslo/USTB/blob/master/python/notebooks/picmus_experiment_resolution.ipynb" target="_blank">PICMUS Resolution</a></td>
-                <td style="padding: 8px;">75 plane-wave experimental resolution phantom</td>
-            </tr>
-            <tr style="border-bottom: 1px solid #ddd;">
-                <td style="padding: 8px;"><a href="https://nbviewer.org/github/unioslo/USTB/blob/master/python/notebooks/maximal_example.ipynb" target="_blank">Maximal Example</a></td>
-                <td style="padding: 8px;">Full pipeline: demodulation &rarr; DAS &rarr; coherence factor &rarr; median</td>
-            </tr>
-        </table>
+        <p>Interactive Jupyter notebooks with the Python USTB implementation. Click to expand and view with code, output, and figures.</p>
+        <style>
+            .nb-details { margin-bottom: 15px; }
+            .nb-details summary { cursor: pointer; color: #c9302c; font-weight: 600; font-size: 15px; padding: 8px 0; }
+            .nb-details summary:hover { text-decoration: underline; }
+            .nb-details .nb-desc { color: #666; font-size: 14px; margin-left: 5px; font-weight: 400; }
+            .nb-iframe { width: 100%; height: 80vh; border: 1px solid #ddd; background: #fff; margin-top: 5px; }
+        </style>
+
+        <details class="nb-details">
+            <summary>Minimal Example <span class="nb-desc">— Cardiac phased array imaging with sector scan</span></summary>
+            <iframe class="nb-iframe" src="https://nbviewer.org/github/unioslo/USTB/blob/master/python/notebooks/minimal_example.ipynb"></iframe>
+        </details>
+
+        <details class="nb-details">
+            <summary>CPWC Linear Array <span class="nb-desc">— Plane wave compound imaging with L7 linear array</span></summary>
+            <iframe class="nb-iframe" src="https://nbviewer.org/github/unioslo/USTB/blob/master/python/notebooks/cpwc_linear.ipynb"></iframe>
+        </details>
+
+        <details class="nb-details">
+            <summary>PICMUS Resolution <span class="nb-desc">— 75 plane-wave experimental resolution phantom</span></summary>
+            <iframe class="nb-iframe" src="https://nbviewer.org/github/unioslo/USTB/blob/master/python/notebooks/picmus_experiment_resolution.ipynb"></iframe>
+        </details>
+
+        <details class="nb-details">
+            <summary>Maximal Example <span class="nb-desc">— Full pipeline: demodulation &rarr; DAS &rarr; coherence factor &rarr; median</span></summary>
+            <iframe class="nb-iframe" src="https://nbviewer.org/github/unioslo/USTB/blob/master/python/notebooks/maximal_example.ipynb"></iframe>
+        </details>
     </div>
 
 </div>
