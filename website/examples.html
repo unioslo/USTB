@@ -34,15 +34,42 @@
 </nav>
 
 <div class="content-wrap" style="display: block; max-width: 1100px;">
+
+    <!-- MATLAB Examples -->
     <div class="page-content" style="margin-bottom: 10px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <h1 style="margin-bottom: 0;">Examples</h1>
-            <a href="examples/index.html" target="_blank" style="font-size: 14px;">Open in new tab &rarr;</a>
-        </div>
-        <p>Published MATLAB examples demonstrating beamforming, signal processing, and visualization with the USTB. Browse the gallery below, or <a href="examples/index.html" target="_blank">open it in a new tab</a> for the full experience.</p>
+        <h1>MATLAB Examples</h1>
+        <p>Published MATLAB examples with executed code, output, and figures. <a href="examples/index.html" target="_blank">Open gallery in new tab &rarr;</a></p>
+    </div>
+    <iframe src="examples/index.html" style="width: 100%; height: 50vh; border: 1px solid #ddd; background: #fff; margin-bottom: 20px;"></iframe>
+
+    <!-- Python Examples -->
+    <div class="page-content" style="margin-bottom: 10px;">
+        <h1>Python Examples</h1>
+        <p>Interactive Jupyter notebooks with the Python USTB implementation. Click to view with code, output, and figures.</p>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+            <tr style="border-bottom: 2px solid #c9302c;">
+                <th style="text-align: left; padding: 8px;">Notebook</th>
+                <th style="text-align: left; padding: 8px;">Description</th>
+            </tr>
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 8px;"><a href="https://nbviewer.org/github/unioslo/USTB/blob/master/python/notebooks/minimal_example.ipynb" target="_blank">Minimal Example</a></td>
+                <td style="padding: 8px;">Cardiac phased array imaging with sector scan</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 8px;"><a href="https://nbviewer.org/github/unioslo/USTB/blob/master/python/notebooks/cpwc_linear.ipynb" target="_blank">CPWC Linear Array</a></td>
+                <td style="padding: 8px;">Plane wave compound imaging with L7 linear array</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 8px;"><a href="https://nbviewer.org/github/unioslo/USTB/blob/master/python/notebooks/picmus_experiment_resolution.ipynb" target="_blank">PICMUS Resolution</a></td>
+                <td style="padding: 8px;">75 plane-wave experimental resolution phantom</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 8px;"><a href="https://nbviewer.org/github/unioslo/USTB/blob/master/python/notebooks/maximal_example.ipynb" target="_blank">Maximal Example</a></td>
+                <td style="padding: 8px;">Full pipeline: demodulation &rarr; DAS &rarr; coherence factor &rarr; median</td>
+            </tr>
+        </table>
     </div>
 
-    <iframe src="examples/index.html" style="width: 100%; height: 80vh; border: 1px solid #ddd; background: #fff;"></iframe>
 </div>
 
 <footer class="site-footer">
