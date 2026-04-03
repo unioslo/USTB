@@ -54,13 +54,19 @@ jobs:
       - name: Build API documentation
         run: sphinx-build -b html docs website/api
 
-      # --- Pre-built MATLAB examples ---
+      # --- Pre-built MATLAB examples and publication pages ---
       - name: Download published examples
         run: |
           mkdir -p website/examples
           curl -L -o /tmp/examples-html.tar.gz "https://github.com/${{ github.repository }}/releases/download/examples-v1/examples-html.tar.gz" || \
           curl -L -o /tmp/examples-html.tar.gz "https://github.com/olemarius90/USTB/releases/download/examples-v1/examples-html.tar.gz"
           tar -xzf /tmp/examples-html.tar.gz -C website/examples
+
+      - name: Download publication pages
+        run: |
+          curl -L -o /tmp/publications-html.tar.gz "https://github.com/${{ github.repository }}/releases/download/examples-v1/publications-html.tar.gz" || \
+          curl -L -o /tmp/publications-html.tar.gz "https://github.com/olemarius90/USTB/releases/download/examples-v1/publications-html.tar.gz"
+          tar -xzf /tmp/publications-html.tar.gz -C website/examples
 
       # --- Upload combined site ---
       - name: Upload artifact
