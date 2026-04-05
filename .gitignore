@@ -10,10 +10,8 @@
 *.pptx
 *.png
 *.obj
-*.uff
 *.bmp
 *.gif
-*.png
 *.jpg
 *.pdb
 *.ilk
@@ -26,4 +24,5 @@ log_*.txt
 !*.keep_this_folder_in_git
 *.eps
 *.m~
+*.zip
 docs/_build/
