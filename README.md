@@ -6,6 +6,13 @@ An open source MATLAB toolbox for beamforming, processing, and visualization of 
 * [Department of Informatics of the University of Oslo](http://www.uio.no/), and
 * [CREATIS Laboratory of the University of Lyon](https://www.creatis.insa-lyon.fr/site7/en).
 
+### Repository mirrors ###
+
+The USTB source is available from **both** of these official locations; use whichever host you prefer for cloning or forking:
+
+* **GitHub:** [github.com/unioslo/USTB](https://github.com/unioslo/USTB)
+* **Bitbucket:** [bitbucket.org/ustb/ustb](https://bitbucket.org/ustb/ustb)
+
 ### How do I get set up? ###
 
 * Just clone the repository and add the folder (without subfolders) to MATLAB's path
