@@ -131,7 +131,7 @@ classdef fast_demodulation < preprocess
             
             if s < tools.getAvailableMemory() / 4 
                 % Down-mix
-                data = h.input.data .* exp(-1j*2*pi*h.modulation_frequency*h.input.time);
+                data = double(h.input.data) .* exp(-1j*2*pi*h.modulation_frequency*h.input.time);
                 
                 if(h.plot_on)
                     [fx, pw] = tools.power_spectrum(data, h.input.sampling_frequency);
