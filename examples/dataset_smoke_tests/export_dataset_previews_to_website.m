@@ -187,12 +187,12 @@ end
 end
 
 function write_gray_stub_preview(path, label)
-% Minimal 400x260 RGB PNG without Image Processing Toolbox
+% Minimal 400x260 RGB PNG without Image Processing Toolbox.
+% Neutral gray (R=G=B) — a green-only channel was used previously and looked
+% like a bad beamformed image on the public datasets page.
 w = 400; h = 260;
-r = uint8(zeros(h, w));
-g = uint8(repmat(linspace(200, 235, h)', 1, w));
-b = r;
-rgb = cat(3, r, g, b);
+gray = uint8(218 * ones(h, w));
+rgb = cat(3, gray, gray, gray);
 if exist('imwrite', 'file') == 2 %#ok<EXIST>
     imwrite(rgb, path);
 else
