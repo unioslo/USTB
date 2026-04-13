@@ -1,4 +1,4 @@
-url='http://ustb.no/datasets/';                  %Download and read dataset
+url='https://zenodo.org/records/19549463/files/';                  %Download and read dataset
 local_path = [ustb_path(),'/data/']; 
 filename='Verasonics_P2-4_parasternal_long_small.uff';
 tools.download(filename, url, local_path);
