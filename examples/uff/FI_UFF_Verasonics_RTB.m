@@ -17,8 +17,8 @@
 
 clear all; close all;
 
-% data location
-url='http://ustb.no/datasets/';      % if not found downloaded from here
+% data location (Zenodo — see tools.zenodo_dataset_files_base)
+url = tools.zenodo_dataset_files_base();
 filename='L7_FI_IUS2018.uff';
 
 % checks if the data is in your data path, and downloads it otherwise.

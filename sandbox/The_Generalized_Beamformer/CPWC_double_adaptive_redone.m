@@ -18,7 +18,7 @@ clear all;
 close all;
 
 %% Download and load channel data
-url = 'http://ustb.no/datasets/';
+url = tools.zenodo_dataset_files_base();
 filename = 'PICMUS_numerical_calib_v2.uff';
 
 tools.download(filename, url, data_path);

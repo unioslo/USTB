@@ -18,7 +18,7 @@
 % We define the local path and the url where the data is stored
 
 % data location
-url='http://ustb.no/datasets/';      % if not found data will be downloaded from here
+url = tools.zenodo_dataset_files_base();
 filename='PICMUS_carotid_cross.uff';
 
 % checks if the data is in your data path, and downloads it otherwise.

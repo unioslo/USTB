@@ -17,8 +17,8 @@
 
 clear all; close all;
 
-% data location
-url='http://ustb.no/datasets/';      % if not found downloaded from here
+% data location (Zenodo — see tools.zenodo_dataset_files_base)
+url = tools.zenodo_dataset_files_base();
 filename='Alpinion_L3-8_CPWC_hyperechoic_scatterers.uff';
 
 % checks if the data is in your data path, and downloads it otherwise.
