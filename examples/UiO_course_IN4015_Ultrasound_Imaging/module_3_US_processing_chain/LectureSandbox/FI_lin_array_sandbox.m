@@ -1,4 +1,10 @@
 %% Linear array  % Linear Scan
+if ~exist(fullfile(data_path, 'L7_FI_IUS2018.uff'), 'file')
+    tools.download('L7_FI_IUS2018.uff', tools.zenodo_dataset_files_base(), data_path);
+end
+if ~exist(fullfile(data_path, 'FieldII_P4_point_scatterers.uff'), 'file')
+    tools.download('FieldII_P4_point_scatterers.uff', tools.zenodo_dataset_files_base(), data_path);
+end
 channel_data = uff.channel_data()
 channel_data.read([data_path,filesep,'L7_FI_IUS2018.uff'],'/channel_data')
 

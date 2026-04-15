@@ -38,7 +38,7 @@ If you have any trouble downloading the data using the built in download tool yo
 can download the data directly from the USTB website:
 
 + https://www.ustb.no/datasets/PICMUS_experiment_resolution_distortion.uff
-+ https://www.ustb.no/datasets/PICMUS_simulation_contrast_speckle.uff
++ https://zenodo.org/records/19550715/files/PICMUS_simulation_contrast_speckle.uff?download=1
 
 ## The exercise:
 ### Part I

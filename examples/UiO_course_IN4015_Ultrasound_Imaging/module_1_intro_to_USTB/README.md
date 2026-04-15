@@ -18,7 +18,7 @@ The report should be uploaded to [devilry.ifi.uio.no](https//devilry.ifi.uio.no)
 The first exercise is simply to demonstrate that you have installed MATLAB and sucessfully set up the USTB. Run the "minimal_example.m" in this folder and add
 your name to the title of the figure of the ultrasound image. Save this figure and add it to your report.
 
-NB! If you have trouble downloading the data using the download tool you can download the data directly from https://ustb.no/datasets/Verasonics_P2-4_parasternal_long_small.uff . 
+NB! If you have trouble downloading the data using the download tool you can download the data directly from Zenodo: https://zenodo.org/records/19550715/files/Verasonics_P2-4_parasternal_long_small.uff?download=1
 Delete the corrupt file with the same filename and move the downloaded data to the "data/" folder in the USTB repository and rerun the example. 
 
 NB! There is a known issue with Mac and some C compilers and libraries, hopefully you find a solution and we can share this to everyone. If not, the quick workaround is for the "midprosessor" state that you want to use the MATLAB implementation by using "mid.code = code.matlab;"

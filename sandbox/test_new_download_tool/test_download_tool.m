@@ -21,7 +21,7 @@ switch file_id
             'ps_cpw_rf.mat'];
         name = 'ps_cpw_rf.mat';
     case 4
-        url = 'https://ustb.no/datasets/L7_FI_IUS2018.uff';
+        url = sprintf('%s/L7_FI_IUS2018.uff', tools.zenodo_dataset_files_base());
         name = 'L7_FI_IUS2018.uff';
 end
 

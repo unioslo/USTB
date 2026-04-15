@@ -21,12 +21,14 @@ function download(file, url, local_path)
 if nargin > 2 
     path = local_path;  % The third argument used to be the path
     % Strip trailing slash from base URL so we do not produce .../datasets//file.uff
-    % (some servers return 404 for the double slash, e.g. GitHub Actions).
+    % or Zenodo .../files//name.uff (some servers return 404 for the double slash,
+    % e.g. GitHub Actions).
     base = url;
     while ~isempty(base) && base(end) == '/'
         base = base(1:end-1);
     end
     url = [base, '/', file]; % The URL now needs to include the file name
+    url = merge_url_duplicate_slashes(url);
     file = fullfile(path, [name, ext]); % The file need to have the full path 
                                         % to be saved correctly later
 end
@@ -61,8 +63,20 @@ if ~exist(file,  'file')
     opts = matlab.net.http.HTTPOptions('ProgressMonitorFcn', ...
         @tools.progressMonitor, 'UseProgressMonitor',true);
     
-    % We send a first GET request
-    response = send(matlab.net.http.RequestMessage(), url, opts);
+    % We send a first GET request. Zenodo (and a few CDNs) may send duplicate
+    % Content-Type headers; MATLAB's parser then errors ("more than one header
+    % field with the name Content-Type"). Fall back to websave in that case.
+    response = [];
+    try
+        response = send(matlab.net.http.RequestMessage(), url, opts);
+    catch ME
+        if contains(ME.message, 'Content-Type') || contains(ME.message, 'header field')
+            websave_with_redirects(file, url);
+            return
+        else
+            rethrow(ME);
+        end
+    end
     
     % First, we check that the response from the server was OK
     if response.StatusCode == 200
@@ -74,8 +88,8 @@ if ~exist(file,  'file')
         if isempty(response.Body.ContentType) || ...
                 strcmp(response.Body.ContentType.Type, 'application')
             
-            % We just need to save the file
-            fid = fopen(file, 'w');
+            % We just need to save the file (binary mode on Windows)
+            fid = fopen(file, 'wb');
             fwrite(fid, response.Body.Data);
             fclose(fid);
             
@@ -107,8 +121,8 @@ if ~exist(file,  'file')
             % We send the second GET request and begin the file download
             response = send(request, strcat(url, '&confirm=', key), opts);
             
-            % We save the file
-            fid = fopen(file, 'w');
+            % We save the file (binary mode on Windows)
+            fid = fopen(file, 'wb');
             fwrite(fid, response.Body.Data);
             fclose(fid);
         else
@@ -119,4 +133,30 @@ if ~exist(file,  'file')
         error('The HTTP request failed with error %d', response.StatusCode);
     end
 end
+end
+
+function u = merge_url_duplicate_slashes(u)
+%MERGE_URL_DUPLICATE_SLASHES  Collapse // in path; keep :// scheme intact.
+%   E.g. https://host/a//b -> https://host/a/b
+if isempty(u)
+    return
+end
+k = strfind(u, '://');
+if isempty(k)
+    return
+end
+prefix = u(1:k(1)+2);
+suffix = u(k(1)+3:end);
+suffix = strrep(suffix, '//', '/');
+u = [prefix suffix];
+end
+
+function websave_with_redirects(outfile, url)
+%WEBSAVE_WITH_REDIRECTS  Download URL to outfile (follows redirects).
+%   Used when matlab.net.http fails on malformed duplicate headers.
+if exist('websave', 'file') ~= 2 %#ok<EXIST>
+    error('tools.download:websave', 'websave not available; update MATLAB or fix HTTP response headers on the server.');
+end
+wo = weboptions('Timeout', Inf);
+websave(outfile, char(url), wo);
 end

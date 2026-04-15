@@ -13,7 +13,7 @@ close all;
 % We define the local path and the url where the data is stored
 
 % data location
-url='http://ustb.no/datasets/';      % if not found data will be downloaded from here
+url = tools.zenodo_dataset_files_base();
 filename='PICMUS_experiment_resolution_distortion.uff';
 filename='PICMUS_simulation_contrast_speckle.uff';
 

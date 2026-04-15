@@ -1,7 +1,7 @@
 clear all;
 close all;
 
-url='http://ustb.no/datasets/';                  %Download and read dataset
+url = tools.zenodo_dataset_files_base();
 local_path = [ustb_path(),'/data/']; 
 filename='Verasonics_P2-4_parasternal_long_small.uff';end_depth = 110e-3;
 filename='P4_FI_121444_45mm_focus.uff';end_depth = 70e-3;

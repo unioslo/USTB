@@ -1,11 +1,11 @@
-url='http://ustb.no/datasets/';                  %Download and read dataset
-local_path = [ustb_path(),'/data/']; 
+url = tools.zenodo_dataset_files_base();  % Zenodo deposit (see tools/zenodo_dataset_files_base.m)
+local_path = [ustb_path(),'/data/'];
 filename='Verasonics_P2-4_parasternal_long_small.uff';
 tools.download(filename, url, local_path);
 channel_data = uff.read_object([local_path, filename],'/channel_data');
 
 % NB! If you have trouble downloading the data using the download tool you can 
-% download the data directly from https://ustb.no/datasets/Verasonics_P2-4_parasternal_long_small.uff
+% download the data directly from Zenodo (same record as tools.zenodo_dataset_files_base)
 % Delete the corrupt file with the same filename and move the downloaded data
 % to the "data/" folder in the USTB repository and rerun the example.
 

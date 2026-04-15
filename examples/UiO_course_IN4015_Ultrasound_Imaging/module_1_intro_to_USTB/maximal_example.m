@@ -10,7 +10,7 @@
 % Date: 14.06.2021
 
 % Download and read dataset
-url='http://ustb.no/datasets/';                  
+url = tools.zenodo_dataset_files_base();
 local_path = [ustb_path(),'/data/']; 
 filename='Verasonics_P2-4_parasternal_long_small.uff';
 tools.download(filename, url, local_path);
