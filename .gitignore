@@ -28,3 +28,10 @@ log_*.txt
 *.eps
 *.m~
 docs/_build/
+
+# Local / generated (not committed)
+__pycache__/
+*.py[cod]
+python/dist/
+website/api/
+/das_c.mexa64
