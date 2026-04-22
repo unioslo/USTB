@@ -24,6 +24,7 @@ log_*.txt
 !multi_frame_gui.fig
 !window.png
 !website/assets/images/datasets/*.png
+!website/examples/**/*.png
 !*.keep_this_folder_in_git
 *.eps
 *.m~

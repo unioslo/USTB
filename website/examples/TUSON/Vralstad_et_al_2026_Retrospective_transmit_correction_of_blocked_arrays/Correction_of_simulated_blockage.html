@@ -163,6 +163,7 @@ mkdir(storefolder);
 </pre>
 <pre class="codeoutput">UFF: reading channel_data [uff.channel_data]
 UFF: reading sequence [uff.wave] [====================] 100%
+Warning: Directory already exists. 
 </pre>
 <h2 id="3">Run REFoCUS preprocess</h2>
 <pre class="codeinput">tic
@@ -179,8 +180,8 @@ toc()
 </pre>
 <pre class="codeoutput">This is citationware. If you use REFoCUS in your publication, please cite
 Ali, R., Herickhoff, C. D., Hyun, D., Dahl, J. J., &amp; Bottenus, N. (2020). Extending RetrospectiveEncoding for Robust Recovery of the Multistatic Data Set. IEEE Transactions on Ultrasonics,Ferroelectrics, and Frequency Control, 67(5), 943&ndash;956. https://doi.org/10.1109/TUFFC.2019.2961875Original REFoCUS code from www.github.com/nbottenus/REFoCUS
-Starting to REFoCUS channel data...Completed in 18.2464 seconds. 
-Elapsed time is 18.294260 seconds.
+Starting to REFoCUS channel data...Completed in 17.4635 seconds. 
+Elapsed time is 17.507374 seconds.
 </pre>
 <h2 id="4">Create Sector scan</h2>
 <pre class="codeinput">depth_axis=linspace(0e-3,110e-3,512).';
@@ -212,7 +213,7 @@ b_data_RTB = mid.go();
 b_data_RTB.frame_rate = 20;
 b_data_RTB.plot([], <span class="string">'RTB'</span>);
 </pre>
-<pre class="codeoutput">USTB MATLAB beamformer...Completed in 12.79 seconds.
+<pre class="codeoutput">USTB MATLAB beamformer...Completed in 12.71 seconds.
 </pre>
 <img vspace="5" hspace="5" src="Correction_of_simulated_blockage_01.png" alt=""> <h2 id="6">Store the Original RTB weights for plotting later</h2>
 <pre class="codeinput">b_data_tx_apod = uff.beamformed_data(b_data_RTB);
@@ -242,7 +243,7 @@ b_data_RTB_comp = mid.go();
 b_data_RTB_comp.frame_rate = 20;
 b_data_RTB_comp.plot([],<span class="string">'Proposed RTB'</span>);
 </pre>
-<pre class="codeoutput">USTB MATLAB beamformer...Completed in 12.25 seconds.
+<pre class="codeoutput">USTB MATLAB beamformer...Completed in 12.58 seconds.
 </pre>
 <img vspace="5" hspace="5" src="Correction_of_simulated_blockage_03.png" alt=""> <h2 id="8">Store the Compensated RTB weights for plotting later</h2>
 <pre class="codeinput">b_data_tx_apod = uff.beamformed_data(b_data_RTB_comp);
@@ -282,7 +283,7 @@ cc.input = b_data_delayed_REFoCUS;
 b_data_REFoCUS = cc.go();
 b_data_REFoCUS.plot();
 </pre>
-<pre class="codeoutput">USTB MATLAB beamformer...Completed in 15.89 seconds.
+<pre class="codeoutput">USTB MATLAB beamformer...Completed in 15.77 seconds.
 </pre>
 <img vspace="5" hspace="5" src="Correction_of_simulated_blockage_05.png" alt=""> <img vspace="5" hspace="5" src="Correction_of_simulated_blockage_06.png" alt=""> <h2 id="11">Save PNGs</h2>
 <pre class="codeinput">f = figure;
