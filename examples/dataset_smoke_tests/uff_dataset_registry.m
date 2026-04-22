@@ -45,7 +45,7 @@ T = add(T, 'FieldII_speckle_simulation.uff', '', 'beamform', 'examples: field_II
 T = add(T, 'test02.uff', '', 'beamform', 'examples: CPWC_UFF_read');
 
 % --- publications/ (ustb.no/datasets) ---
-T = add(T, 'speckle_sim_FI_P4_probe_apod_3_speckle_long_many_angles.uff', '', 'beamform', 'publications/TUFFC: Vralstad et al., blocked array (TUSON 2026)');
+T = add(T, 'speckle_sim_FI_P4_probe_apod_3_speckle_long_many_angles.uff', '', 'beamform', 'publications/TUSON/2026: Vralstad et al., blocked array');
 T = add(T, 'L7_FI_Verasonics_CIRS_points.uff', '', 'beamform', 'publications: TUFFC fDMAS');
 T = add(T, 'L7_FI_carotid_cross_sub_2.uff', '', 'beamform', 'publications: TUFFC GCNR');
 T = add(T, 'invitro_20.uff', '', 'beamform', 'publications: TUFFC GCNR');
