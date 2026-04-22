@@ -9,10 +9,9 @@ function base = zenodo_dataset_files_base()
 %   deposit version or record ID changes. For files in *other* Zenodo records,
 %   use tools.zenodo_record_files_base(record_id) instead.
 %
-%   Files covered by examples (non-exhaustive): Verasonics_P2-4_parasternal_long_small,
-%   L7_FI_IUS2018, Alpinion CPWC/FI, FieldII_P4_point_scatterers, P4_FI_121444_45mm_focus,
-%   PICMUS_carotid_cross, PICMUS_simulation_contrast_speckle, PICMUS_numerical_calib_v2,
-%   PICMUS_2_CPWC_numerical_simulated_phantom (present on Zenodo; not referenced in USTB yet).
+%   Not every historical example .uff is in this record; upload a new Zenodo version
+%   to add files. Current bundle (non-exhaustive): L7_FI_IUS2018, P4_FI_121444_45mm_focus,
+%   PICMUS_* subset, FieldII_P4_point_scatterers, Alpinion L3-8 CPWC/FI, etc.
 
 base = 'https://zenodo.org/records/19550715/files';
 end

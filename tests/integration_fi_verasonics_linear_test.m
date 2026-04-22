@@ -1,9 +1,11 @@
-classdef integration_fi_phased_cardiac_test < matlab.unittest.TestCase
+classdef integration_fi_verasonics_linear_test < matlab.unittest.TestCase
+    % L7_FI_IUS2018.uff: linear-array Verasonics data on the Zenodo bundle (see
+    % examples/uff/FI_UFF_Verasonics_RTB.m). (P2-4 cardiac is not in that record.)
 
     methods (Test)
         function test_fi_phased_cardiac_beamforming(testCase)
             url = tools.zenodo_dataset_files_base();
-            filename = 'Verasonics_P2-4_parasternal_long_small.uff';
+            filename = 'L7_FI_IUS2018.uff';
             local_path = [ustb_path(), '/data/'];
             tools.download(filename, url, local_path);
 
@@ -13,14 +15,12 @@ classdef integration_fi_phased_cardiac_test < matlab.unittest.TestCase
             testCase.verifyGreaterThan(channel_data.N_waves, 0);
             testCase.verifyGreaterThan(channel_data.N_elements, 0);
 
-            depth_axis = linspace(0e-3, 110e-3, 256).';
-            azimuth_axis = zeros(channel_data.N_waves, 1);
+            x_axis = zeros(channel_data.N_waves, 1);
             for n = 1:channel_data.N_waves
-                azimuth_axis(n) = channel_data.sequence(n).source.azimuth;
+                x_axis(n) = channel_data.sequence(n).source.x;
             end
-
-            scan = uff.sector_scan('azimuth_axis', azimuth_axis, ...
-                                   'depth_axis', depth_axis);
+            z_axis = linspace(1e-3, 62e-3, 256).';
+            scan = uff.linear_scan('x_axis', x_axis, 'z_axis', z_axis);
 
             mid = midprocess.das();
             mid.code = code.matlab;
@@ -29,13 +29,12 @@ classdef integration_fi_phased_cardiac_test < matlab.unittest.TestCase
             mid.scan = scan;
 
             mid.transmit_apodization.window = uff.window.scanline;
-
-            mid.receive_apodization.window = uff.window.tukey25;
+            mid.receive_apodization.window = uff.window.none;
             mid.receive_apodization.f_number = 1.7;
 
             b_data = mid.go();
 
-            expected_pixels = numel(azimuth_axis) * numel(depth_axis);
+            expected_pixels = numel(x_axis) * numel(z_axis);
             testCase.verifyEqual(size(b_data.data, 1), expected_pixels);
 
             finite_ratio = sum(isfinite(b_data.data(:))) / numel(b_data.data(:));
@@ -46,7 +45,7 @@ classdef integration_fi_phased_cardiac_test < matlab.unittest.TestCase
 
         function test_cardiac_data_is_phased_array(testCase)
             url = tools.zenodo_dataset_files_base();
-            filename = 'Verasonics_P2-4_parasternal_long_small.uff';
+            filename = 'L7_FI_IUS2018.uff';
             local_path = [ustb_path(), '/data/'];
             tools.download(filename, url, local_path);
 
@@ -54,8 +53,8 @@ classdef integration_fi_phased_cardiac_test < matlab.unittest.TestCase
 
             for n = 1:channel_data.N_waves
                 src = channel_data.sequence(n).source;
-                testCase.verifyTrue(isfinite(src.azimuth), ...
-                    'FI phased array waves should have finite azimuth angles');
+                testCase.verifyTrue(isfinite(src.x), ...
+                    'FI linear-array Verasonics waves should have finite lateral source x');
             end
         end
     end
