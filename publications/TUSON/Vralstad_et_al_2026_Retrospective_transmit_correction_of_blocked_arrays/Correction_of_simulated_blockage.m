@@ -16,6 +16,8 @@
 % Authors: Anders E. Vrålstad, Ole Marius Høel Rindal
 %% Clear environment
 clear all; close all;
+% Headless / publish / CI: no interactive ROI drawing; no demod figure
+headless = ~usejava('desktop');
 %% Load data
 % Read the data; download if missing (USTB example datasets on Zenodo)
 url = tools.zenodo_dataset_files_base();
@@ -62,7 +64,11 @@ mid=midprocess.das();
 mid.channel_data=channel_data;
 mid.dimension = dimension.both();
 mid.scan=scan;
-mid.code = code.mex;
+if isempty(which('das_c'))
+    mid.code = code.matlab;
+else
+    mid.code = code.mex;
+end
 mid.receive_apodization.window=uff.window.boxcar;
 mid.receive_apodization.f_number=1.7;
 mid.transmit_apodization.window=uff.window.hamming;
@@ -105,14 +111,18 @@ colormap default;
 demod = preprocess.fast_demodulation();
 demod.modulation_frequency = 2.5*10^6;
 demod.input = channel_data_REFoCUS;
-demod.plot_on = true;
+demod.plot_on = ~headless;
 channel_data_STAI_demod = demod.go();
 %% REFoCUS Beamforming
 mid_REFoCUS = midprocess.das();
 mid_REFoCUS.channel_data=channel_data_STAI_demod;
 mid_REFoCUS.dimension = dimension.receive();
 mid_REFoCUS.scan=scan;
-mid_REFoCUS.code = code.mex;
+if isempty(which('das_c'))
+    mid_REFoCUS.code = code.matlab;
+else
+    mid_REFoCUS.code = code.mex;
+end
 mid_REFoCUS.transmit_apodization.window=uff.window.boxcar;
 mid_REFoCUS.receive_apodization.f_number=1.7;
 mid_REFoCUS.receive_apodization.window=uff.window.boxcar;
@@ -162,21 +172,25 @@ b_data_compare.frame_rate = 1;
 b_data_compare.save_as_gif(['Figures/Comparison_',tag,'.gif']);
 
 
-%% Measure contrast
-[RTB_sc, Xs,Zs] = tools.scan_convert(b_data_RTB.get_image(),b_data_compare.scan.azimuth_axis,b_data_compare.scan.depth_axis, 1024,1024);
-[RTB_comp_sc, Xs,Zs] = tools.scan_convert(b_data_RTB_comp.get_image(),b_data_compare.scan.azimuth_axis,b_data_compare.scan.depth_axis, 1024,1024);
-[REFoCUS_sc, Xs,Zs] = tools.scan_convert(b_data_REFoCUS.get_image()-12,b_data_compare.scan.azimuth_axis,b_data_compare.scan.depth_axis, 1024,1024);
-img_cell = {RTB_sc,RTB_comp_sc,REFoCUS_sc};
-name_cell = {'RTB','RTB Compensated', 'REFoCUS'};
-das_handle = figure(); imagesc(Xs,Zs,img_cell{3});
+%% Measure contrast (interactive drawrectangle; skipped in headless publish/CI)
+if ~headless
+    [RTB_sc, Xs,Zs] = tools.scan_convert(b_data_RTB.get_image(),b_data_compare.scan.azimuth_axis,b_data_compare.scan.depth_axis, 1024,1024);
+    [RTB_comp_sc, Xs,Zs] = tools.scan_convert(b_data_RTB_comp.get_image(),b_data_compare.scan.azimuth_axis,b_data_compare.scan.depth_axis, 1024,1024);
+    [REFoCUS_sc, Xs,Zs] = tools.scan_convert(b_data_REFoCUS.get_image()-12,b_data_compare.scan.azimuth_axis,b_data_compare.scan.depth_axis, 1024,1024);
+    img_cell = {RTB_sc,RTB_comp_sc,REFoCUS_sc};
+    name_cell = {'RTB','RTB Compensated', 'REFoCUS'};
+    das_handle = figure(); imagesc(Xs,Zs,img_cell{3});
 
 
-center_rectangle = [-0.006,0.07,0.007,0.04];
-v1_area =drawrectangle('Position',center_rectangle-[0.008,0,0,0]);
-v2_area =drawrectangle('Position',center_rectangle+[0.008,0,0,0]);
-c_area =drawrectangle('Position',center_rectangle);
+    center_rectangle = [-0.006,0.07,0.007,0.04];
+    v1_area =drawrectangle('Position',center_rectangle-[0.008,0,0,0]);
+    v2_area =drawrectangle('Position',center_rectangle+[0.008,0,0,0]);
+    c_area =drawrectangle('Position',center_rectangle);
 
-[GCNR, v1_binary, v2_binary, c_binary] = contrast_calc_insilico(img_cell,name_cell, Xs, Zs, das_handle, 60,storefolder,c_area,v1_area,v2_area);
+    [GCNR, v1_binary, v2_binary, c_binary] = contrast_calc_insilico(img_cell,name_cell, Xs, Zs, das_handle, 60,storefolder,c_area,v1_area,v2_area);
+else
+    fprintf('[Correction_of_simulated_blockage] Skipping interactive gCNR (headless run).\n');
+end
 
 %% Make Difference Images: of RTBs
 all_images = b_data_compare.get_image();
