@@ -354,7 +354,7 @@ switch fn
         b_data = mid.go();
 
     case 'speckle_sim_FI_P4_probe_apod_3_speckle_long_many_angles.uff'
-        % publications/.../Correction_of_simulated_blockage.m (RTB block)
+        % publications/TUFFC/Vralstad_et_al_.../Correction_of_simulated_blockage.m (RTB block)
         channel_data = uff.read_object(uff_file, '/channel_data');
         channel_data.data = channel_data.data ./ max(channel_data.data(:));
         depth_axis = linspace(0e-3, 110e-3, 512).';

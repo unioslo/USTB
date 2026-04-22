@@ -2,23 +2,24 @@
 %
 % Creating the simulated results in the paper:
 %
-% A.E. Vrålstad, S.-E. Måsøy, T.G. Bjåstad, A.R. Sørnes and O.M.H. Rindal,
+% A. E. Vrålstad, S.-E. Måsøy, T. G. Bjåstad, A. R. Sørnes and O. M. H. Rindal,
 % "Retrospective transmit correction of blocked arrays applied to cardiac
-% ultrasound imaging" in XX. doi:YY.ZZZZ/XX.QQQQQQQQ.
+% ultrasound imaging," IEEE Trans. Ultrason., Ferroelect., Freq. Control,
+% short paper (TUSON 2026, to appear).
 %
-% This script creates Fig.3-4 in the paper. 
+% This script creates Figs. 3-4 in the paper.
 %
-% This code uses the UltraSound ToolBox (USTB) and you'll need to download 
-% it first to successfully rund this code. To know more about the USTB 
-% visit http://www.ustb.no/
+% This code uses the UltraSound ToolBox (USTB). Clone or add USTB to the
+% MATLAB path before running. See <https://github.com/unioslo/USTB> and
+% the project website.
 %
-% by Anders E. Vrålstad and Ole Marius Hoel Rindal
+% Authors: Anders E. Vrålstad, Ole Marius Høel Rindal
 %% Clear environment
 clear all; close all;
 %% Load data
-% Read the data, poentitally download it
-url='http://ustb.no/datasets/';      % if not found downloaded from here
-local_path = [ustb_path(),'/data/']; % location of example data
+% Read the data; download if missing (USTB example datasets on Zenodo)
+url = tools.zenodo_dataset_files_base();
+local_path = [ustb_path(), '/data/'];
 addpath(local_path);
 
 % Choose dataset
