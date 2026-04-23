@@ -6,10 +6,9 @@ classdef integration_picmus_resolution_test < matlab.unittest.TestCase
 
     methods (Test)
         function test_picmus_beamforming_matches_reference(testCase)
-            url = tools.zenodo_dataset_files_base();
-            % Use a PICMUS .uff that is in the current Zenodo record (see API file list);
-            % has /channel_data, /scan, /beamformed_data like the resolution example.
-            filename = 'PICMUS_simulation_contrast_speckle.uff';
+            % Original USTB webhost; file not in the minimal Zenodo bundle for this test.
+            url = 'http://ustb.no/datasets/';
+            filename = 'PICMUS_simulation_resolution_distortion.uff';
             tools.download(filename, url, data_path);
             filepath = [data_path filesep filename];
 
@@ -43,8 +42,8 @@ classdef integration_picmus_resolution_test < matlab.unittest.TestCase
         end
 
         function test_picmus_uff_contents(testCase)
-            url = tools.zenodo_dataset_files_base();
-            filename = 'PICMUS_simulation_contrast_speckle.uff';
+            url = 'http://ustb.no/datasets/';
+            filename = 'PICMUS_simulation_resolution_distortion.uff';
             tools.download(filename, url, data_path);
             filepath = [data_path filesep filename];
 
