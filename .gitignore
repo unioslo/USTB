@@ -10,10 +10,8 @@
 *.pptx
 *.png
 *.obj
-*.uff
 *.bmp
 *.gif
-*.png
 *.jpg
 *.pdb
 *.ilk
@@ -34,6 +32,7 @@ publications-html.tar.gz
 publish_publications.log
 *.eps
 *.m~
+*.zip
 docs/_build/
 
 # Local / generated (not committed)
