@@ -4,6 +4,7 @@ on:
   push:
     branches: [master]
     paths:
+      - '.github/workflows/deploy-website.yml'
       - 'website/**'
       - 'docs/**'
       - 'examples/**'
@@ -17,6 +18,7 @@ on:
       - 'publish_publications.sh'
   pull_request:
     paths:
+      - '.github/workflows/deploy-website.yml'
       - 'website/**'
       - 'docs/**'
       - 'examples/**'
@@ -57,18 +59,48 @@ jobs:
         run: sphinx-build -b html docs website/api
 
       # --- Pre-built MATLAB examples and publication pages ---
+      # curl -f: 404 HTML from GitHub must not be treated as success (else fallback never runs; iframe 404).
       - name: Download published examples
         run: |
+          set -e
           mkdir -p website/examples
-          curl -L -o /tmp/examples-html.tar.gz "https://github.com/${{ github.repository }}/releases/download/examples-v1/examples-html.tar.gz" || \
-          curl -L -o /tmp/examples-html.tar.gz "https://github.com/olemarius90/USTB/releases/download/examples-v1/examples-html.tar.gz"
+          PRIMARY="https://github.com/${{ github.repository }}/releases/download/examples-v1/examples-html.tar.gz"
+          FALLBACK="https://github.com/olemarius90/USTB/releases/download/examples-v1/examples-html.tar.gz"
+          if ! curl -fL --retry 2 --connect-timeout 20 -S -o /tmp/examples-html.tar.gz "$PRIMARY"; then
+            echo "Primary examples download failed, trying olemarius90/USTB release..."
+            curl -fL --retry 2 --connect-timeout 20 -S -o /tmp/examples-html.tar.gz "$FALLBACK"
+          fi
+          gzip -t /tmp/examples-html.tar.gz
           tar -xzf /tmp/examples-html.tar.gz -C website/examples
 
+      # Verify archive *contents* after extract: a wrong file can be 200+valid gzip (e.g. misnamed asset)
       - name: Download publication pages
         run: |
-          curl -L -o /tmp/publications-html.tar.gz "https://github.com/${{ github.repository }}/releases/download/examples-v1/publications-html.tar.gz" || \
-          curl -L -o /tmp/publications-html.tar.gz "https://github.com/olemarius90/USTB/releases/download/examples-v1/publications-html.tar.gz"
-          tar -xzf /tmp/publications-html.tar.gz -C website/examples
+          set -e
+          STAGE="/tmp/publications-staging"
+          EXPECTED="publications/TUSON/Vralstad_et_al_2026_Retrospective_transmit_correction_of_blocked_arrays/Correction_of_simulated_blockage.html"
+          PRIMARY="https://github.com/${{ github.repository }}/releases/download/examples-v1/publications-html.tar.gz"
+          FALLBACK="https://github.com/olemarius90/USTB/releases/download/examples-v1/publications-html.tar.gz"
+          try_publications() {
+            local url="$1"
+            rm -rf "$STAGE" && mkdir -p "$STAGE"
+            curl -fL --retry 2 --connect-timeout 20 -S -o /tmp/publications-html.tar.gz "$url"
+            gzip -t /tmp/publications-html.tar.gz
+            tar -xzf /tmp/publications-html.tar.gz -C "$STAGE"
+            # with set -e, bare [ -f ... ] would exit the whole script on miss
+            if [ -f "$STAGE/$EXPECTED" ]; then return 0; else return 1; fi
+          }
+          mkdir -p website/examples
+          if try_publications "$PRIMARY"; then
+            echo "publications: using primary release asset"
+          elif try_publications "$FALLBACK"; then
+            echo "publications: primary missing or wrong bundle; used olemarius90/USTB"
+          else
+            echo "::error::publications-html.tar.gz must contain ${EXPECTED}"
+            exit 1
+          fi
+          # Tarball root is publications/TUSON/... ; site iframes use examples/TUSON/...
+          cp -a "$STAGE/publications/TUSON" website/examples/
 
       # --- Regenerate examples index to include publications ---
       - name: Generate examples index
