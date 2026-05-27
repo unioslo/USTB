@@ -54,6 +54,11 @@ classdef probe < uff
         height             % element height [m]
         r                  % distance from the element center to the origin of coordinates [m]
     end
+
+    %% protected properties
+    properties (Access = protected)
+        lock_geometry = false % lock geometry matrix from updating
+    end
     
     %% constructor
     methods (Access = public)
@@ -102,6 +107,7 @@ classdef probe < uff
             
             assert(size(in_geometry,2)==7, 'The elements matrix should be [x y z theta phi width height] - [m m m rad rad m m]');
             h.geometry=in_geometry;
+            h.lock_geometry = true;
         end
     end
     

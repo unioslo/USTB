@@ -43,7 +43,7 @@ classdef linear_array < uff.probe
     %% update method
     methods 
         function h=update(h)
-            if ~isempty(h.pitch)&~isempty(h.N) 
+            if ~isempty(h.pitch)&~isempty(h.N)&~h.lock_geometry
                 
                 if isempty(h.element_width)
                     h.element_width=h.pitch;
@@ -59,6 +59,7 @@ classdef linear_array < uff.probe
 
                 % assign geometry
                 h.geometry=[x0(:) zeros(h.N,4) h.element_width*ones(h.N,1) h.element_height*ones(h.N,1)]; % probe geometry
+                h.lock_geometry = false;
             end
         end
     end

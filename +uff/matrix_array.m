@@ -47,7 +47,7 @@ classdef matrix_array < uff.probe
     %% update method
     methods 
         function update(h)
-            if ~isempty(h.pitch_x)&&~isempty(h.pitch_y)&&~isempty(h.N_x)&&~isempty(h.N_y) 
+            if ~isempty(h.pitch_x)&&~isempty(h.pitch_y)&&~isempty(h.N_x)&&~isempty(h.N_y)&~h.lock_geometry
                 
                 if isempty(h.element_width)
                     h.element_width=h.pitch_x;
@@ -68,6 +68,7 @@ classdef matrix_array < uff.probe
 
                 % assign geometry
                 h.geometry=[X(:) Y(:) zeros(h.N_x*h.N_y,3) h.element_width*ones(h.N_x*h.N_y,1) h.element_height*ones(h.N_x*h.N_y,1)]; % probe geometry
+                h.lock_geometry = false;
             end
         end
     end
