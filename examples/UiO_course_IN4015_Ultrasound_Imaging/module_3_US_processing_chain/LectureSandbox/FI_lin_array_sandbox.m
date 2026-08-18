@@ -180,7 +180,7 @@ f_number = (40/1000)/(channel_data.probe.pitch*channel_data.probe.N_elements)
 
 %%
 b_data_hamming_expanding = mid.go();toc();                         
-b_data.plot([],['Point Scatters'],[],[],[],[],[],'dark');            % Display
+b_data.plot([],['Point Scatterers'],[],[],[],[],[],'dark');            % Display
 
 
 %%

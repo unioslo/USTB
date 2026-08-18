@@ -55,7 +55,7 @@ b_data_me.plot([],['Human Heart'],[80],[],[],[],[],'dark');      % Display
 %% There must be a more efficient way?! 
 % Yes there is, it's called a processing pipeline. With the pipeline we can
 % group the call to the processing objects together and the pipeline
-% handles the forwarding of data between and soem paramteres between the
+% handles the forwarding of data between and some parameters between the
 % processing objects.
 
 pipe=pipeline();

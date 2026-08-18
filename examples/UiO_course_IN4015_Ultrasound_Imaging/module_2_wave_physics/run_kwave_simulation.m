@@ -9,11 +9,11 @@
 % Homogeneous Propagation Medium and Recording The Particle Velocity
 % examples.
 %
-% orgiginal author: Bradley Treeby
+% orginal author: Bradley Treeby
 % date: 2nd December 2009
 %
 % Modified by Ole Marius Hoel Rindal <olemarius@olemarius.net>
-%   Using a "burst" instead of continous sinus as transmit signal
+%   Using a "burst" instead of continuous sine as transmit signal
 %   Using multiple receive sensors
 %   One-way beamforming using the USTB.
 
@@ -38,13 +38,13 @@ source.p_mask = zeros(Nx, Ny);
 source.p_mask(Nx/2, Ny/2) = 1;
 
 % define a time varying sinusoidal source
-source_freq = 0.5e6;0.25e6;   % [Hz]
+source_freq = 0.5e6;   % [Hz]
 source_mag = 5;         % [Pa]
 switch transmit_signal
     case 'sinus'
         source.p = source_mag * sin(2 * pi * source_freq * kgrid.t_array);
     case 'gaussian_pulse'
-        source.p = source_mag * gauspuls(kgrid.t_array-mean(kgrid.t_array),source_freq,1)
+        source.p = source_mag * gauspuls(kgrid.t_array-mean(kgrid.t_array),source_freq,1);
 end
 
 

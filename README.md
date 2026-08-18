@@ -27,13 +27,13 @@ Machine-readable citation metadata: [`CITATION.cff`](CITATION.cff) (GitHub citat
 
 ### Current version ###
 
-The USTB is still under development, so there might be larger structural changes. The current version in main is;
+The USTB is actively developed, so there might be structural changes between releases. The current version in `master` is:
 
-* v2.3: https://bitbucket.org/ustb/ustb/commits/tag/v2.3.3
+* v2.3: https://github.com/unioslo/USTB/releases/tag/v2.3.3
 
-compared to the previous version
+compared to the previous version:
 
-* v2.2: https://bitbucket.org/ustb/ustb/commits/tag/v2.2.4
+* v2.2: https://github.com/unioslo/USTB/releases/tag/v2.2.4
 
 the main changes are:
 
@@ -42,36 +42,31 @@ the main changes are:
 * A CUDA implementation of the generalized beamformer
 * corrected implementation of Unified Delay Model for RTB/MLA processing
 * major update of the FLUST simulator
-* corrected issue with divering wave delay calculation
+* corrected issue with diverging wave delay calculation
 * corrected data location for unit tests
 * added examples and exercises used in the course IN3015/4015 Ultrasound Imaging at the University of Oslo.
 * several bugfixes and other improvements have been done as well.
 * more tests have been added
 
 ### Using a MAC? ###
-If you are using a Mac and are getting an error running the das_c.mexmaca64 file be sure to install rhw oneTBB parallellization library
+If you are using a Mac and are getting an error running the das_c.mexmaca64 file be sure to install the oneTBB parallelization library.
 oneTBB (formerly Intel TBB) can be installed with Homebrew using the command "brew install tbb".
 
 ### Documentation ###
 Unfortunately, we have not had the time or resources to write a full documentation of the USTB. However, there are plenty of well documented examples that will help you to get started and hopefully understand the code. You find the examples under the /examples folder. 
 
 ### How to contribute? ###
-First of all, please make yourself familiar with the Gitflow workflow. See for example this tutorial: https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow. According to the Gitflow workflow there are two types of contributions to the code a, __hotifx__ and a __feature__:
+Contributions to USTB are welcome! We follow a standard GitHub pull request workflow where all changes are merged directly into the primary `master` branch after automated testing and review.
 
-* __hotfix__: This is a change done on the main branch. Typically, an urgent bugfix often related to a reported issue: https://bitbucket.org/ustb/ustb/issues?status=new&status=open
-* __feature__: This is a change done on the develop branch. Typically, a larger change to the code or added or improved functionality. 
+To contribute code to the project:
 
-To contribute to the project with your code you should do the following:
-
-* Step 1: Create your own fork of the project. 
-* Step 2: Create a hotfix branch from the main branch to fix an urgent bug, or a feature branch from the develop branch to add a feature.
-* Step 3: Create a pull request from your forked repository back to our repository and add @omrindal and @alfonsomolares as reviewers. 
-* Step 4: Once we have time to review your code and are happy with the changes we will merge your pull request into the USTB and you have sucessfully contributed!
-
-Once we are happy and comfortable that the develop branch is stable and useful we will merge it into main and a new version will be released :D
+* **Step 1:** Create your own fork of the project repository ([github.com/unioslo/USTB](https://github.com/unioslo/USTB)).
+* **Step 2:** Create a feature or bugfix branch from your fork's `master` branch.
+* **Step 3:** Create a Pull Request (PR) from your branch back to the official repository's `master` branch.
+* **Step 4:** Once automated tests pass and the review is approved, your PR will be merged into `master` and you have successfully contributed!
 
 ### Did you find a bug or have suggestions? ###
-Please use the issue tracker to report bugs and make suggestions: https://bitbucket.org/ustb/ustb/issues?status=new&status=open. All feedback is much appreciated. Don’t hesitate to contact us if you have any problems.
+Please use the GitHub issue tracker to report bugs and make suggestions: [github.com/unioslo/USTB/issues](https://github.com/unioslo/USTB/issues). All feedback is much appreciated. Don’t hesitate to contact us if you have any problems.
 
 ### Who do I talk to? ###
 

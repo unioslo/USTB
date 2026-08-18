@@ -1,4 +1,4 @@
-% Receive beamforming on k-wave single source exampler
+% Receive beamforming on k-wave single source example
 %
 % See the README.md in the current folder module_2_wave_physics
 % 
@@ -39,7 +39,7 @@ b_data.plot(f,['Beamformed image using USTB'],[dynamic_range])
 
 %% Part I : Your own receive beamforming
 % Now, your assignment is to implement a receive beamformer. However, most
-% of the code is allready written, so you simply have to get the receive
+% of the code is already written, so you simply have to get the receive
 % delay correct (thus update the line that says <------ UPDATE THIS LINE)
 % and your image should be similar to the one resulting from the USTB.
 
@@ -77,18 +77,18 @@ set(gca,'fontsize',14);
 
 %% Part III: Visualize the channel data before and after delay for point scatter
 % First of all, this plot is much better if you use e.g. 16 elements use the 
-% *gausian_pulse* as the signal transmitted so make sure you use this towards the top of the script.
+% *gaussian_pulse* as the signal transmitted so make sure you use this towards the top of the script.
 % Look for "<------- CHANGE NUMBER OF ELEMENTS HERE"
 % 
 % Your task here is to use the plot above to find the location of the point
 % scatter. Use the cursor in the plot and find the maximum, and simply set
-% the correct value in the variables below for the x and z locatino of the
+% the correct value in the variables below for the x and z location of the
 % scatterer, also known as the point spread function (PSF).
 %
 % Describe what you see in the resulting figure and interpret the results.
 
 psf_x_loc = 0/1000; % Find the x-location of the point scatter in m <------- UPDATE THIS LINE
-psf_z_loc = 0/1000; % FInd the z-location of the point scatter in m <------- UPDATE THIS LINE
+psf_z_loc = 0/1000; % Find the z-location of the point scatter in m <------- UPDATE THIS LINE
 
 [~,scatter_pos_indx_x] = min(abs(scan.x_axis-psf_x_loc))
 [~,scatter_pos_indx_z] = min(abs(scan.z_axis-psf_z_loc))
@@ -138,7 +138,7 @@ for a = 1:length(ax)
     camroll(ax{a},90)
 end
 
-%% Part IV: More indepth analysis of the partial and final results
+%% Part IV: More in-depth analysis of the partial and final results
 % The next plot is displaying the spatial value of the x-value and z-value of the
 % coordinates of the pixels.
 figure(12);clf

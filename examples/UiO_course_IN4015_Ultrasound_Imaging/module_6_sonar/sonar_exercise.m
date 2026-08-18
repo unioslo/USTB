@@ -1,4 +1,4 @@
-% Sonar imaging : Exercise for Module 4
+% Sonar imaging : Exercise for Module 6
 %
 %   See the sonar_exercise.pdf in the current folder for the exercise text.
 %
@@ -8,13 +8,13 @@
 clear all;
 close all;
 
-%% Read the data channel data
+%% Read the channel data
 channel_data = uff.channel_data();
 channel_data.read('./sonar_ping.uff','/channel_data');
 channel_data.plot()
 
 %% Read a beamformed image of the raw uncompressed signal
-% This is an example of how the image beamformed fomr the raw uncompressed
+% This is an example of how the image beamformed from the raw uncompressed
 % signal might look like in part c) of the exercise
 b_data_raw= uff.beamformed_data();
 b_data_raw.read('./sonar_ping.uff','/b_data_raw');
@@ -48,24 +48,24 @@ match_filtered_data = zeros(2*channel_data.N_samples-1,channel_data.N_elements);
 channel_data_compressed.data = match_filtered_data;
 
 %% Plot and compare channel data compressed and not compressed
-% You need to write this code to make plots simiar to the ones shown in the
+% You need to write this code to make plots similar to the ones shown in the
 % exercise text.
 
 %% Define a sector scan based on the theoretical angular resolution calculated in a)
 
 %% Set up the DAS beamformer in USTB
 % Look back at previous examples and the previous exercise on how to set up
-% beamforming with the USTB. Make sure that you for this setups use "no"
+% beamforming with the USTB. Make sure that you for this setup use "no"
 % apodization for the transmit wave apodization and the receive
 % apodization. Thus, you should use the "uff.window.none" for both.
 %
 % Also make sure that you create the image for both the raw uncompressed
-% channel data and the channel data where you have ran pulse compression
+% channel data and the channel data where you have run pulse compression
 
 %% To have a nice interactive way of comparing the images you can use the
 % following code given that your resulting beamformed data objects are
 % called b_data and b_data_compressed. This code also shows how it can be
-% suitable do display the images with a default colormap and suitable caxis
+% suitable to display the images with a default colormap and suitable caxis
 b_data_compare = uff.beamformed_data(b_data);
 b_data_compare.data(:,1) = b_data.data./mean(b_data.data(:));
 b_data_compare.data(:,2) = b_data_compressed.data./mean(b_data_compressed.data(:));
