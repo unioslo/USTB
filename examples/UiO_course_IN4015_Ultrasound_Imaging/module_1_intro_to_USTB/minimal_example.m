@@ -24,4 +24,4 @@ mid.receive_apodization.window=uff.window.none;
 b_data = mid.go();toc();                         
 b_data.plot([],['Human Heart'],[],[],[],[],[],'dark');    % Display 
 % Exercise Module 1: Add your name to the title above so that it says
-% "Human Heart by Your Name" and add the image your report.
+% "Human Heart by Your Name" and add the image to your report.

@@ -14,11 +14,7 @@ on:
       - '+preprocess/**'
       - '+tools/**'
       - '*.m'
-      - 'generate_examples_index.py'
-      - 'publish_common.sh'
-      - 'publish_examples.sh'
-      - 'publish_publications.sh'
-      - 'publish_datasets.sh'
+      - 'scripts/**'
   pull_request:
     paths:
       - '.github/workflows/deploy-website.yml'
@@ -31,11 +27,7 @@ on:
       - '+preprocess/**'
       - '+tools/**'
       - '*.m'
-      - 'generate_examples_index.py'
-      - 'publish_common.sh'
-      - 'publish_examples.sh'
-      - 'publish_publications.sh'
-      - 'publish_datasets.sh'
+      - 'scripts/**'
   workflow_dispatch:
 
 permissions:
@@ -150,11 +142,11 @@ jobs:
 
       # --- Regenerate examples index to include publications ---
       - name: Generate examples index
-        run: python generate_examples_index.py website/examples
+        run: python scripts/generate_examples_index.py website/examples
 
       # --- Upload combined site ---
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: website
 
@@ -168,4 +160,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

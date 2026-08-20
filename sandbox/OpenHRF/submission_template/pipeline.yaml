@@ -1,0 +1,30 @@
+# Delay-And-Sum B-mode reconstruction pipeline for the USTB OpenH-RF datasets.
+#
+# Raw RF channel data -> demodulation -> delay-and-sum beamforming ->
+# envelope detection -> normalization -> log compression to a B-mode image.
+#
+# The axial extent (zlims) and grid type (cartesian for linear/curved arrays,
+# polar for phased-array sector scans) are derived automatically per file in
+# reconstruct.py. The parameters below apply to every track in the file.
+
+parameters:
+  f_number: 1.75
+  grid_size_x: 400
+  grid_size_z: 600
+  dynamic_range: [-60, 0]
+  selected_transmits: all
+  apply_lens_correction: false
+
+pipeline:
+  operations:
+    - name: keras.ops.cast
+      params:
+        dtype: float32
+    - name: demodulate
+    - name: beamform
+      params:
+        beamformer: delay_and_sum
+        num_patches: 200
+    - name: envelope_detect
+    - name: normalize
+    - name: log_compress

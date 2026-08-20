@@ -5,9 +5,9 @@
 
     <tocitem target="getting_started.html" image="HelpIcon.GETTING_STARTED">Getting Started</tocitem>
 
-    <tocitem target="http://www.ustb.no" image="$toolbox/matlab/icons/webicon.gif">USTB Web Site</tocitem>
-    <tocitem target="https://bitbucket.org/ustb/ustb/src/master/" image="$toolbox/matlab/icons/webicon.gif">USTB repository</tocitem>
-    <tocitem target="https://bitbucket.org/ustb/ustb/issues?" image="$toolbox/matlab/icons/webicon.gif">USTB Issue tracker</tocitem>
+    <tocitem target="https://www.ultrasoundtoolbox.com" image="$toolbox/matlab/icons/webicon.gif">USTB Web Site</tocitem>
+    <tocitem target="https://github.com/unioslo/USTB" image="$toolbox/matlab/icons/webicon.gif">USTB repository</tocitem>
+    <tocitem target="https://github.com/unioslo/USTB/issues" image="$toolbox/matlab/icons/webicon.gif">USTB Issue tracker</tocitem>
 	
 </tocitem>
 </toc>

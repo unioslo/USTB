@@ -13,8 +13,8 @@ function results = export_dataset_previews_to_website(varargin)
 %   naming as website/scripts/build_datasets_page.py (see website_slug_for_dataset).
 %
 %   Name-value:
-%     'url'              — primary dataset base (default 'https://www.ustb.no/datasets',
-%                          no trailing slash)
+%     'url'              — primary dataset base (default Zenodo record for USTB
+%                          datasets via tools.zenodo_dataset_files_base())
 %     'stop_on_error'    — default false
 %     'website_root'     — override path to repo root (default: ustb_path())
 %     'indices'          — optional row vector of 1-based indices into the registry
@@ -29,7 +29,7 @@ function results = export_dataset_previews_to_website(varargin)
 %     python3 website/scripts/build_datasets_page.py
 
 p = inputParser;
-addParameter(p, 'url', 'https://www.ustb.no/datasets', @(s) ischar(s) || isstring(s));
+addParameter(p, 'url', tools.zenodo_dataset_files_base(), @(s) ischar(s) || isstring(s));
 addParameter(p, 'stop_on_error', false, @islogical);
 addParameter(p, 'website_root', '', @(s) ischar(s) || isstring(s));
 addParameter(p, 'indices', [], @(x) isempty(x) || (isnumeric(x) && isvector(x) && all(x > 0)));
@@ -108,10 +108,7 @@ for i = 1:n
     end
     try
         if strcmp(T(i).mode, 'beamformed_only')
-            b_data = uff.read_object(uff_file, '/b_data');
-            if isempty(b_data) || isempty(b_data.data)
-                b_data = uff.read_object(uff_file, '/b_data_das');
-            end
+            b_data = read_beamformed_only_for_preview(uff_file);
         else
             b_data = dataset_preview_beamform(uff_file);
         end
@@ -173,7 +170,9 @@ end
 end
 
 function C = dataset_url_bases(primary)
+zenodo = tools.zenodo_dataset_files_base();
 bases = {
+    zenodo
     primary
     'https://www.ustb.no/datasets'
     'http://www.ustb.no/datasets'
@@ -191,6 +190,24 @@ for k = 1:numel(bases)
         C{end+1} = b; %#ok<AGROW>
     end
 end
+end
+
+function b_data = read_beamformed_only_for_preview(uff_file)
+%READ_BEAMFORMED_ONLY_FOR_PREVIEW  Load a stored beamformed group for catalog PNGs.
+candidates = {'/b_data_das', '/b_data', '/b_data_cf', '/b_data_tx'};
+last_err = '';
+for k = 1:numel(candidates)
+    try
+        b_data = uff.read_object(uff_file, candidates{k});
+        if ~isempty(b_data) && ~isempty(b_data.data)
+            return
+        end
+    catch ME
+        last_err = ME.message;
+    end
+end
+error('export_dataset_previews:beamformed_only', ...
+    'No beamformed group in %s (%s)', uff_file, last_err);
 end
 
 function write_gray_stub_preview(path, label)

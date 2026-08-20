@@ -110,7 +110,7 @@ hold off
 
 
 
-% Convert til polar representation, scale, and convert back
+% Convert to polar representation, scale, and convert back
 [polarImage, angle, radius] = inverse_scan_convert( ...
     tmp_p, ay, ax);
 
@@ -174,7 +174,7 @@ end
 
 function [polarImage, angle, radius] = inverse_scan_convert(inputImage, xs, zs, noAng, noR, interpolationMethod)
 
-% Set parameters to default values if they are not provdied
+% Set parameters to default values if they are not provided
 if nargin<6
   interpolationMethod = 'linear';
 end
@@ -186,14 +186,14 @@ end
 % Get the theta and range for every sample and put them in grids the size of inputImage
 [xGrid, zGrid] = meshgrid(xs, zs);
 
-% Find the "box" in cartesian coordinates that encapsulates all our samples
+% Find the "box" in Cartesian coordinates that encapsulates all our samples
 [Th, Ra] = cart2pol(xGrid, zGrid);
 Th = Th - pi/2;
 maxT = max(abs(Th(:)));
 minR = min(Ra(:));
 maxR = max(Ra(:));
 
-% Find the carthesian coordinates for the samples we want as output, ..
+% Find the Cartesian coordinates for the samples we want as output, ..
 angle = -maxT:(2*maxT)/(noAng-1):maxT;
 radius = minR:(maxR-minR)/(noR-1):maxR;
 [Ts, Rs] = meshgrid(angle, radius);
@@ -207,7 +207,7 @@ polarImage = interp2(double(xGrid), double(zGrid), double(inputImage), ...
 
 end
 
-%GETSCANCONVERTEDIMAGE Converts an image from polar to carthesian coordinates.
+%GETSCANCONVERTEDIMAGE Converts an image from polar to Cartesian coordinates.
 %
 % [scanConvertedImage, Xs, Zs] = getScanConvertedImage(inputImage, thetas, ranges, sizeX, sizeZ, interpolationMethod)
 %
@@ -224,7 +224,7 @@ end
 % 2009.09.10 - Are C. Jensen {Created the function (more of a rewrite/cleanup of Austeng's code)}
 function [scanConvertedImage, Xs, Zs] = scan_convert(inputImage, thetas, ranges, sizeX, sizeZ, interpolationMethod)
 
-% Set parameters to default values if they are not provdied
+% Set parameters to default values if they are not provided
 if nargin<6
     interpolationMethod = 'linear';
 end
@@ -236,7 +236,7 @@ end
 % Get the theta and range for every sample and put them in grids the size of inputImage
 [thetaGrid, rangeGrid] = meshgrid(thetas, ranges);
 
-% Find the "box" in cartesian coordinates that encapsulates all our samples
+% Find the "box" in Cartesian coordinates that encapsulates all our samples
 [z, x] = pol2cart(thetaGrid, rangeGrid);
 minX = min(x(:));
 maxX = max(x(:));

@@ -14,7 +14,7 @@
     <list>
 		<listitem>
 			<label>Product Page (Web)</label>
-			<callback>web www.ustb.no -browser</callback>
+			<callback>web https://www.ultrasoundtoolbox.com -browser</callback>
 			<icon>$toolbox/matlab/icons/webicon.gif</icon>
 		</listitem>
 	</list>

@@ -38,8 +38,8 @@ z_row = x_row + 2j*x_row;
 
 % HINT: In MATLAB there is a difference between the transpose and the conjugate transpose. This can be hard to debug if you get it wrong the first time!
 
-z_col1 = z_row'; % this is called "transpose"
-z_col2 = z_row.'; % this is called "ctranspose"
+z_col1 = z_row'; % this is called "ctranspose" (complex conjugate transpose)
+z_col2 = z_row.'; % this is called "transpose" (non-conjugate transpose)
 
 figure(1); hold on; xlabel('real'); ylabel('imag')
 plot(real(z_col1), imag(z_col1),'r-o', 'Displayname','z_{col1}')
@@ -49,7 +49,7 @@ legend
 
 %% Task 2a)
 % Q: This is one way to make a matrix. Give examples of other methods to 
-%    make a 5x5 matrix and a 2x3 matrix with optional entires. 
+%    make a 5x5 matrix and a 2x3 matrix with optional entries. 
 
 % HINT: Matrices can be composed as rows of columns, or columns as rows (remember the difference between commas , and semicolons ;). 
 % However, there are other methods that are often employed for structured matrices such as: ones(), eye(), magic(), diag().

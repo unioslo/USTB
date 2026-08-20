@@ -60,10 +60,6 @@ switch fn
         % sandbox/The_Generalized_Beamformer/UFF_Verasonics_all.m (CPWC/DW)
         channel_data = uff.read_object(uff_file, '/channel_data');
         channel_data.N_frames = 1;
-        channel_data.sound_speed = 1460;
-        for seq = 1:channel_data.N_waves
-            channel_data.sequence(seq).sound_speed = channel_data.sound_speed;
-        end
         scan = uff.linear_scan();
         scan.x_axis = linspace(channel_data.probe.x(1), channel_data.probe.x(end), 512).';
         scan.z_axis = linspace(3e-3, 50e-3, 512).';
@@ -78,13 +74,9 @@ switch fn
         b_data = mid.go();
 
     case 'L7_STA_TheGB.uff'
-        % sandbox/The_Generalized_Beamformer — STA with scanline (1 MLA)
+        % sandbox/The_Generalized_Beamformer — STA
         channel_data = uff.read_object(uff_file, '/channel_data');
         channel_data.N_frames = 1;
-        channel_data.sound_speed = 1460;
-        for seq = 1:channel_data.N_waves
-            channel_data.sequence(seq).sound_speed = channel_data.sound_speed;
-        end
         scan = uff.linear_scan();
         scan.x_axis = linspace(channel_data.probe.x(1), channel_data.probe.x(end), 256).';
         scan.z_axis = linspace(3e-3, 50e-3, 512).';
@@ -106,10 +98,6 @@ switch fn
         channel_data = uff.read_object(uff_file, '/channel_data');
         if contains(fn, 'TheGB')
             channel_data.N_frames = 1;
-            channel_data.sound_speed = 1460;
-            for seq = 1:channel_data.N_waves
-                channel_data.sequence(seq).sound_speed = channel_data.sound_speed;
-            end
         end
         x_axis = zeros(channel_data.N_waves, 1);
         for n = 1:channel_data.N_waves

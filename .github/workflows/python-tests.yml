@@ -2,8 +2,7 @@ name: Python Tests
 
 on:
   pull_request:
-    paths:
-      - 'python/**'
+    branches: [master]
   push:
     branches: [master]
     paths:

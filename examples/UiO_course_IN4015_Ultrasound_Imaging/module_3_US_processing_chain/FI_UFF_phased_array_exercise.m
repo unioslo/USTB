@@ -10,7 +10,7 @@
 close all;
 clear all;
 
-% Read the data, poentitally download it
+% Read the data, potentially download it
 url = tools.zenodo_dataset_files_base();
 % if not found downloaded from here
 local_path = [ustb_path(),'/data/']; % location of example data
@@ -25,7 +25,7 @@ tools.download(filename, url, local_path);
 channel_data = uff.read_object([local_path, filename],'/channel_data');
 
 %% Part I : Do phased array beamforming with the USTB
-% Here you dont't have to implemen anything. Just run the code as it is.
+% Here you don't have to implement anything. Just run the code as it is.
 % You will later compare your beamformed image with the image resulting
 % from this beamforming. Just try to understand what is going on.
 
@@ -37,7 +37,7 @@ for n=1:channel_data.N_waves
 end
 scan=uff.sector_scan('azimuth_axis',azimuth_axis,'depth_axis',depth_axis);
 
-% Call the midprocessor to do convnetional delay and sum beamforming 
+% Call the midprocessor to do conventional delay and sum beamforming 
 mid=midprocess.das();
 mid.channel_data=channel_data;
 mid.scan=scan;
@@ -61,12 +61,12 @@ colormap gray; caxis([-60 0]); title('USTB image in "beamspace"');
 
 %% Part II : Implement beambased beamforming from scratch
 % Please see the slides on beambased beamforming, and especially the slide
-% on the geometry og beambased beamforming on tips on how to implement
+% on the geometry of beambased beamforming for tips on how to implement
 % this.
 % 
 % A hint is to review the exercise from module 2 on wave physics where you
-% implemented an receive beamformer. Now you are extending it to also
-% include to compensate for the transmit part of the propagation delay as
+% implemented a receive beamformer. Now you are extending it to also
+% include compensating for the transmit part of the propagation delay as
 % well as handling multiple transmits.
 
 % First let us extract the variables you need
@@ -103,12 +103,12 @@ img = zeros(N_depth,N_transmits);                % Buffer for the final image
 
     %for each receive channel
         % beamform by interpolating (using interp1) into the calculated
-        % delays for each radial dept sample for each transmit
+        % delays for each radial depth sample for each transmit
         % the call to interp1 might look like this:
         % interp1(sample_time, rfData(:,r,t)', delays(t,:,r))'
             % where r is the current receive channel and t is the current transmit
-            % you allready have sample_time and rfData, but need to calculate
-            % the propriate delays
+            % you already have sample_time and rfData, but need to calculate
+            % the appropriate delays
             
 %Normalize the image to maximum value = 1
 if max(img(:)) ~= 0

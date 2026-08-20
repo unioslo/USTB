@@ -16,11 +16,12 @@ set -e
 set -o pipefail 2>/dev/null || true
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 # shellcheck source=publish_common.sh
 . "${SCRIPT_DIR}/publish_common.sh"
 
 publish_common_matlab_extra
-OUTPUT_DIR="${SCRIPT_DIR}/examples_html"
+OUTPUT_DIR="${REPO_ROOT}/examples_html"
 TARBALL="examples-html.tar.gz"
 FIELD_II_PATH="/opt/field_ii"
 
@@ -35,10 +36,10 @@ publish_require_matlab
 echo "MATLAB: $(matlab -batch "disp(version)" 2>/dev/null | tail -1)"
 
 echo -n "MEX: "
-if ls "${SCRIPT_DIR}/+mex/das_c.mexw64" >/dev/null 2>&1; then
-    ls -la "${SCRIPT_DIR}/+mex/das_c.mexw64" 2>/dev/null | awk '{print $6, $7, $8, $9}'
-elif ls "${SCRIPT_DIR}/+mex/das_c.mexa64" >/dev/null 2>&1; then
-    ls -la "${SCRIPT_DIR}/+mex/das_c.mexa64" 2>/dev/null | awk '{print $6, $7, $8, $9}'
+if ls "${REPO_ROOT}/+mex/das_c.mexw64" >/dev/null 2>&1; then
+    ls -la "${REPO_ROOT}/+mex/das_c.mexw64" 2>/dev/null | awk '{print $6, $7, $8, $9}'
+elif ls "${REPO_ROOT}/+mex/das_c.mexa64" >/dev/null 2>&1; then
+    ls -la "${REPO_ROOT}/+mex/das_c.mexa64" 2>/dev/null | awk '{print $6, $7, $8, $9}'
 else
     echo "(no das_c mex found)"
 fi
@@ -53,12 +54,12 @@ fi
 
 echo ""
 
-SCRIPT_DIR_M=$(publish_repo_path_for_matlab "$SCRIPT_DIR")
+REPO_ROOT_M=$(publish_repo_path_for_matlab "$REPO_ROOT")
 OUTPUT_DIR_M=$(publish_repo_path_for_matlab "$OUTPUT_DIR")
 echo "Publishing examples..."
-echo "(MATLAB cwd path: ${SCRIPT_DIR_M})"
+echo "(MATLAB cwd path: ${REPO_ROOT_M})"
 unset DISPLAY
-matlab "${MATLAB_BATCH_EXTRA[@]}" -batch "cd('${SCRIPT_DIR_M}'); addpath(genpath(pwd)); ${FIELD_II_CMD}publish_all_examples('${OUTPUT_DIR_M}', true);" 2>&1 | tee publish_examples.log
+matlab "${MATLAB_BATCH_EXTRA[@]}" -batch "cd('${REPO_ROOT_M}'); addpath(genpath(pwd)); ${FIELD_II_CMD}publish_all_examples('${OUTPUT_DIR_M}', true);" 2>&1 | tee publish_examples.log
 
 echo ""
 echo "=== Checking for errors in published HTML ==="
@@ -89,14 +90,14 @@ echo "Output:   ${OUTPUT_DIR}"
 
 echo ""
 echo "=== Packaging ==="
-cd "${OUTPUT_DIR}" && tar -czf "${SCRIPT_DIR}/${TARBALL}" . && cd "${SCRIPT_DIR}"
-echo "Tarball: ${TARBALL} ($(du -h "${TARBALL}" | cut -f1))"
+cd "${OUTPUT_DIR}" && tar -czf "${REPO_ROOT}/${TARBALL}" . && cd "${REPO_ROOT}"
+echo "Tarball: ${TARBALL} ($(du -h "${REPO_ROOT}/${TARBALL}" | cut -f1))"
 
 if [ "${1:-}" = "--upload" ]; then
     echo ""
     echo "=== Uploading to GitHub Release examples-v1 ==="
     REPO="${2:-olemarius90/USTB}"
-    gh release upload examples-v1 "${TARBALL}" --repo "${REPO}" --clobber
+    gh release upload examples-v1 "${REPO_ROOT}/${TARBALL}" --repo "${REPO}" --clobber
     echo "Uploaded ${TARBALL} to ${REPO} release examples-v1"
 fi
 

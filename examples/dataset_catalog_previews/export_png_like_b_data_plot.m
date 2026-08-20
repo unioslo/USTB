@@ -19,6 +19,9 @@ try
     % Pass at most 8 args so plot() applies default mode and sets font_color (nargin<9 branch).
     b_data.plot(fig, '', dynamic_range_db, 'log', [], 1);
 
+    % beamformed_data.plot adds uicontrol sliders; headless print/export fails without this.
+    delete(findall(fig, 'Type', 'uicontrol'));
+
     cb = findobj(fig, 'Type', 'colorbar');
     if ~isempty(cb)
         delete(cb);

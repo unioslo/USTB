@@ -73,10 +73,10 @@ CF = zeros(scan.N_x_axis,scan.N_z_axis);
 das_weighted_CF_signal = zeros(scan.N_x_axis,scan.N_z_axis);
 
 % Calculate the coherent sum over the elements (the expression in the
-% numerator (above the brøkstrek ;))
+% numerator (above the fraction line ;))
 coherent_sum;                             %<----- Finish this line
 % Calculate the incoherent sum over the elements (the sum in the expression
-% in the denominator (below the brøkstrek ;))
+% in the denominator (below the fraction line ;))
 incoherent_sum;                               %<----- Finish this line
 % Use the coherent, incoherent sum and the scalar M for each pixel to
 % calculate the coherence factor as in expression 1.38.
@@ -95,9 +95,9 @@ USTB_coherence_factor = cf.CF.get_image('none');
 % Do as you have done in earlier module exercises. Some numerical tolerance
 % might be needed. Display the results in your report.
 
-%% Part III : Let's analyse the delayed data
+%% Part III : Let's analyze the delayed data
 % If we plot the delayed data for two pixels in the image, and deliberately
-% choosing to plot the delayed data around the point scatter at x = -5.5 mm
+% choosing to plot the delayed data around the point scatterer at x = -5.5 mm
 % and z = 35 +- 2 mm, the top plot, and right next to it in x = -4.7 mm with
 % the same z = 35 +- 2mm in the plot below.
 
@@ -118,8 +118,8 @@ ylabel('z [mm]')
 title(['The delayed data through x= ',num2str(scan.x_axis(197)*1000,2),'mm , z = ',num2str(scan.z_axis(302)*1000,2),' mm']);
 
 % In the top plot we see that the delayed data align perfectly along the
-% red line overlayed at the location of the point scatter. While in the
-% plot below, we see that the the data does not align perfectly and that
+% red line overlayed at the location of the point scatterer. While in the
+% plot below, we see that the data does not align perfectly and that
 % the amplitude of the data is alternating from a positive to a negative
 % signal value along the overlaid line.
 %
@@ -139,7 +139,7 @@ caxis([-200 0])
 
 % What is the image of the coherent sum equal to?
 
-%% Part IV: Applying the CF as a image weight to the DAS image
+%% Part IV: Applying the CF as an image weight to the DAS image
 % The default value from the postprocess Coherence Factor was the
 % conventional DAS image multiplied with the CF as an image weight as in
 % equation 1.39. Implement this yourself and verify that it is equal to the

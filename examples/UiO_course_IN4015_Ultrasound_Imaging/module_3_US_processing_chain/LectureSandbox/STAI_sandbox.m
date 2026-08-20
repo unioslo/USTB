@@ -8,7 +8,7 @@ url = tools.zenodo_dataset_files_base();
 filename = ['experimental_STAI_dynamic_range.uff'];
 
 % checks if the data is in your data path, and downloads it otherwise.
-% The defaults data path is under USTB's folder, but you can change this
+% The default data path is under USTB's folder, but you can change this
 % by setting an environment variable with setenv(DATA_PATH,'the_path_you_want_to_use');
 tools.download(filename, url, data_path);   
 
@@ -21,7 +21,7 @@ demod.input = channel_data;
 demod.modulation_frequency = channel_data.pulse.center_frequency;
 channel_data_demod = demod.go();
 
-%% Estimate power spectrums
+%% Estimate power spectra
 [fx, F] = tools.power_spectrum(channel_data.data,channel_data.sampling_frequency);
 [fx_demod, F_demod] = tools.power_spectrum(channel_data_demod.data,channel_data_demod.sampling_frequency);
 
@@ -34,7 +34,7 @@ data_demod_simple = channel_data.data.*demodVec;
 [fx_demod_simple, F_demod_simple] = tools.power_spectrum(data_demod_simple,channel_data.sampling_frequency);
 
 
-%% Display the different power spectrums
+%% Display the different power spectra
 figure(1);
 subplot(311)
 plot(fx*10^-6,db(F),'LineWidth',2);

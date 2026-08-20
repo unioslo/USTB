@@ -1,0 +1,38 @@
+# zea.Pipeline for reconstruct_v2.py — pressure-field-weighted Delay-And-Sum B-mode.
+#
+# Raw RF channel data -> cast -> band-pass -> window -> demodulate -> downsample ->
+# DAS beamforming with pressure-field (pfield) weighting -> envelope detection ->
+# normalization -> log compression.
+#
+# This is the canonical RF, multi-transmit pipeline. reconstruct_v2.py adapts it per
+# file: for baseband (IQ, n_ch==2) data the band_pass_filter and demodulate steps are
+# skipped, and for single-transmit data (n_tx==1, e.g. a single plane wave) pfield
+# weighting is disabled (nothing to compound). The band_pass_filter passband is set at
+# run time to (0.5*fc, 1.5*fc) from the probe centre frequency.
+
+parameters:
+  f_number: 1.75
+  grid_size_x: 400
+  grid_size_z: 600
+  dynamic_range: [-60, 0]
+  selected_transmits: all
+
+pipeline:
+  operations:
+    - name: keras.ops.cast
+      params:
+        dtype: float32
+    - name: band_pass_filter
+    - name: apply_window
+    - name: demodulate
+    - name: downsample
+      params:
+        factor: 2
+    - name: beamform
+      params:
+        beamformer: delay_and_sum
+        enable_pfield: true
+        num_patches: 200
+    - name: envelope_detect
+    - name: normalize
+    - name: log_compress
