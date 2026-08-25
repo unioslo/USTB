@@ -16,7 +16,7 @@ Please provide a written report that
 - includes all plots needed for supporting your arguments when answering the exercise parts and displaying your results.
 
 The report should be uploaded to [devilry.ifi.uio.no](https://devilry.ifi.uio.no).  
-**Deadline for uploading: Tuesday 29. November at 10:00.**
+**Deadline for uploading: Tuesday 24. November 2026 at 10:00.**
 
 ## Datasets
 You will use the simulated Synthetic Transmit Aperture Imaging (STAI) dataset

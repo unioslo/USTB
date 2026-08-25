@@ -11,7 +11,7 @@ Please provide a written report that
 - all plots needed for supporting your arguments when answering the exercise parts
 
 The report should be uploaded to [devilry.ifi.uio.no](devilry.ifi.uio.no).  
-**Deadline for uploading: Tuesday 6. September at 10:00. **
+**Deadline for uploading: Tuesday 1. September 2026 at 10:00. **
 
 ## Exercise One MATLAB:
 This exercise will only go into a few of the details of MATLAB programming, and it is wise to use
