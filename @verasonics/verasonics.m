@@ -131,6 +131,11 @@ classdef verasonics < handle
                 prb.pitch=h.Trans.spacingMm/1000;
                 prb.element_width=h.Trans.elementWidth/1000; 
                 prb.radius=h.Trans.radiusMm/1000;
+            elseif strcmp(h.Trans.name, 'Sucre') || strcmp(h.Trans.name, 'L22-14v')
+                prb=uff.linear_array();
+                prb.N=h.Trans.numelements;
+                prb.pitch=h.Trans.spacingMm*1e-3;
+                prb.element_width=h.Trans.elementWidth*1e-3;
             else
                 error('Sorry, that probe is not supported in USTB yet.');
             end
