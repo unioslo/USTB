@@ -12,7 +12,7 @@ Please provide a written report that
 - includes all plots needed for supporting your arguments when answering the exercise parts
 
 The report should be uploaded to [devilry.ifi.uio.no](https://devilry.ifi.uio.no).  
-**Deadline for uploading: Tuesday 1. September at 10:00.**
+**Deadline for uploading: Tuesday 1. September 2026 at 10:00.**
 
 ## Exercise 1 : Set up MATLAB and the USTB
 The first exercise is simply to demonstrate that you have installed MATLAB and successfully set up the USTB. Run the "minimal_example.m" in this folder and add

@@ -28,7 +28,7 @@ Please provide a written report that
 - includes all plots needed for supporting your arguments when answering the exercise parts
 
 The report should be uploaded to [devilry.ifi.uio.no](https://devilry.ifi.uio.no).  
-**Deadline for uploading: Tuesday 16. September at 14:00.**
+**Deadline for uploading: Tuesday 15. September 2026 at 10:00.**
  
 ## Exercise One:
 Please follow and answer the questions in *exercise_1_assignment_basic_sound_speed_and_waves.m* and write all your answers in the report

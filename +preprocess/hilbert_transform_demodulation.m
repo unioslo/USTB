@@ -120,7 +120,7 @@ classdef hilbert_transform_demodulation < preprocess
             
             if s < tools.getAvailableMemory() / 3 
                 % Down-mix
-                data = h.input.data .* exp(-1j*2*pi*h.modulation_frequency*h.input.time);
+                data = double(h.input.data) .* exp(-1j*2*pi*h.modulation_frequency*h.input.time);
             
             % Calculate pre-envelope
             data = hilbert(h.input.data); 
