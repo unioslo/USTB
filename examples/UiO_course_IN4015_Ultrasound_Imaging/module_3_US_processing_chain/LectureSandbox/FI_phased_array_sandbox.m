@@ -103,7 +103,7 @@ set(gca,'FontSize',15)
 saveas(f,'examples/UiO_course_IN4015_Ultrasound_Imaging/module_3_US_processing_chain/Figures/sector_scan_apod_hamming_expanding.png')
 %%
 b_data_hamming_expanding = mid.go();toc();                         
-b_data.plot([],['Point Scatters'],[],[],[],[],[],'dark');            % Display
+b_data.plot([],['Point Scatterers'],[],[],[],[],[],'dark');            % Display
 
 
 %%
@@ -143,14 +143,14 @@ title('Raw image of envelope');
 saveas(f,'examples/UiO_course_IN4015_Ultrasound_Imaging/module_3_US_processing_chain/Figures/raw_envelope_image_caxis.png');
 
 
-%% Display logaritmic compression
+%% Display logarithmic compression
 input = linspace(0,1,1024)
 
 f = figure
 plot(input,20*log10(input),'Linewidth',2)
 xlabel('Input signal (Linear Scale)');
 ylabel('Output signal (dB Scale)')
-title('Logaritmic compression');
+title('Logarithmic compression');
 
 
 saveas(f,'examples/UiO_course_IN4015_Ultrasound_Imaging/module_3_US_processing_chain/Figures/logaritmic_compression.png');

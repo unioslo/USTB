@@ -29,10 +29,16 @@
 
 clear all; close all;
 
+if strcmp(tools.headless_publish_figure_visible(), 'on')
+    % publish / -nodisplay snapshots are dropped for invisible root figures otherwise
+    set(groot, 'DefaultFigureVisible', 'on');
+end
+
 % Comment out wether you want to run the experimental or simulated data
 %filename = 'experimental_STAI_dynamic_range.uff';
 filename = 'FieldII_STAI_dynamic_range.uff';
-url='http://ustb.no/datasets/';      % if not found downloaded from here
+url = tools.zenodo_dataset_files_base();
+% if not found downloaded from here
 
 % checks if the data is in your data path, and downloads it otherwise.
 % The defaults data path is under USTB's folder, but you can change this
@@ -71,7 +77,7 @@ das=postprocess.coherent_compounding();
 das.input = b_data_tx;
 b_data_das = das.go();
 b_data_das.data = b_data_das.data.*weights(:); %Compensate for geometrical spreading
-b_data_das.plot();
+tools.publish_beamformed_snap(b_data_das);
 
 %% COHERENCE FACTOR
 cf = postprocess.coherence_factor();
@@ -81,7 +87,7 @@ cf.transmit_apodization = mid.transmit_apodization;
 cf.input = b_data_tx;
 b_data_cf = cf.go();
 b_data_cf.data = b_data_cf.data.*weights(:); %Compensate for geometrical spreading
-b_data_cf.plot();
+tools.publish_beamformed_snap(b_data_cf);
 
 %% MINIMUM VARIANCE
 mv = postprocess.capon_minimum_variance();
@@ -96,7 +102,7 @@ mv.L_elements = channel_data.probe.N/2;
 mv.regCoef = 1/100;
 b_data_mv = mv.go();
 b_data_mv.data = b_data_mv.data.*weights(:); %Compensate for geometrical spreading
-b_data_mv.plot();
+tools.publish_beamformed_snap(b_data_mv);
 
 %% Running the Dynamic Range Test
 % To run the dynamic range test we call the implementation under tools and

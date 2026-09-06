@@ -4,7 +4,8 @@ close all;
 M = 45;
 
 %% Download data
-url='https://nyhirse.medisin.ntnu.no/ustb/data/gcnr/';   % if not found data will be downloaded from here
+url = tools.zenodo_dataset_files_base();
+% if not found data will be downloaded from here
 filename='invitro_20.uff';
 tools.download(filename, url, data_path);   
 

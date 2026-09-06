@@ -22,7 +22,8 @@
 clear all; close all;
 
 % data location
-url='http://ustb.no/datasets/';      % if not found downloaded from here
+url = tools.zenodo_dataset_files_base();
+% if not found downloaded from here
 
 filename='L7_FI_IUS2018.uff';
 tools.download(filename, url, data_path);   

@@ -26,7 +26,8 @@ clear all;
 close all;
 
 % data location
-url='http://ustb.no/datasets/';       % if not found data will be downloaded from here
+url = tools.zenodo_dataset_files_base();
+% if not found data will be downloaded from here
 local_path = [data_path(), filesep];  % location of example data on this computer
 
 filename = ['FieldII_CPWC_point_scatterers_res_v2.uff'];

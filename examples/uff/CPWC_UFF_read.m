@@ -14,8 +14,9 @@
 % server otherwise.
 
 % data location
-url='http://www.ustb.no/datasets/';   % if not found data will be downloaded from here
-filename='test02.uff';
+url = tools.zenodo_dataset_files_base();
+% if not found data will be downloaded from here
+filename='PICMUS_simulation_contrast_speckle.uff';
 
 % checks if the data is in your data path, and downloads it otherwise.
 % The defaults data path is under USTB's folder, but you can change this
@@ -36,14 +37,14 @@ uff.index([data_path filesep filename],'/',display);
 % * we can define an object of the correct class and use the method *read*:
 
 b_data=uff.beamformed_data();
-b_data.read([data_path filesep filename],'/b_data');
+b_data.read([data_path filesep filename],'/beamformed_data');
 
 %%
 % 
 % * or we can use the function *uff.read_object* and let the function
 % create the correct object class for us
 
-b_data2=uff.read_object([data_path filesep filename],'/b_data');
+b_data2=uff.read_object([data_path filesep filename],'/beamformed_data');
 
 %%
 % 

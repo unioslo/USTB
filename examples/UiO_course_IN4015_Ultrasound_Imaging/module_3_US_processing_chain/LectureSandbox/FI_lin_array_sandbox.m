@@ -1,4 +1,10 @@
 %% Linear array  % Linear Scan
+if ~exist(fullfile(data_path, 'L7_FI_IUS2018.uff'), 'file')
+    tools.download('L7_FI_IUS2018.uff', tools.zenodo_dataset_files_base(), data_path);
+end
+if ~exist(fullfile(data_path, 'FieldII_P4_point_scatterers.uff'), 'file')
+    tools.download('FieldII_P4_point_scatterers.uff', tools.zenodo_dataset_files_base(), data_path);
+end
 channel_data = uff.channel_data()
 channel_data.read([data_path,filesep,'L7_FI_IUS2018.uff'],'/channel_data')
 
@@ -174,7 +180,7 @@ f_number = (40/1000)/(channel_data.probe.pitch*channel_data.probe.N_elements)
 
 %%
 b_data_hamming_expanding = mid.go();toc();                         
-b_data.plot([],['Point Scatters'],[],[],[],[],[],'dark');            % Display
+b_data.plot([],['Point Scatterers'],[],[],[],[],[],'dark');            % Display
 
 
 %%

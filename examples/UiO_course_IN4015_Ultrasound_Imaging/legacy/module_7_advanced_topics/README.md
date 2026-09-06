@@ -4,19 +4,19 @@ In this exercise you will explore more advanced beamforming, known
 as adaptive beamforming since we are adapting the beamforming process
 to the data we have received. More specifically, we will investigate the coherence factor.
 
-## Litterature:
+## Literature:
 Section 1.8, 1.9 and 1.11 in the compendium, and specifically equation 1.38  for the coherence factor.
 
 ## Delivery: 
 Please provide a written report that
 
-- report the results you are asked to find
-- answers the question raised
+- reports the results you are asked to find
+- answers the questions raised
 - provides the main code lines needed to solve the questions directly in the report
-- all plots needed for supporting your arguments when answering the exercise parts and displaying your results.
+- includes all plots needed for supporting your arguments when answering the exercise parts and displaying your results.
 
-The report should be uploaded to [devilry.ifi.uio.no](devilry.ifi.uio.no).  
-**Deadline for uploading: Tuesday 29. November at 10:00. **
+The report should be uploaded to [devilry.ifi.uio.no](https://devilry.ifi.uio.no).  
+**Deadline for uploading: Tuesday 24. November 2026 at 10:00.**
 
 ## Datasets
 You will use the simulated Synthetic Transmit Aperture Imaging (STAI) dataset
@@ -36,15 +36,15 @@ https://drive.google.com/file/d/1xAXoEWhPcYjam9R1iuQ0gWKdDXiVlPCX/view?usp=shari
     Calculate the coherence factor as in equation 1.38 in the compendium.
 
 ### Part II
-    Check your implementation agains the USTB implementation.
+    Check your implementation against the USTB implementation.
 
 ### Part III
-    Analyse the delayed data:
+    Analyze the delayed data:
     + Describe how the plotted delayed data will affect the coherence factor?
     + What is the image you plot of the coherent sum equal to?
 
 ### Part IV
-    Applying the CF as a image weight to the DAS image
+    Applying the CF as an image weight to the DAS image
 
 ### Part V
     Compare DAS CF to DAS image:

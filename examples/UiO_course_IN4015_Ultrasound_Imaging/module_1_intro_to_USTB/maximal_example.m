@@ -10,7 +10,7 @@
 % Date: 14.06.2021
 
 % Download and read dataset
-url='http://ustb.no/datasets/';                  
+url = tools.zenodo_dataset_files_base();
 local_path = [ustb_path(),'/data/']; 
 filename='Verasonics_P2-4_parasternal_long_small.uff';
 tools.download(filename, url, local_path);
@@ -55,7 +55,7 @@ b_data_me.plot([],['Human Heart'],[80],[],[],[],[],'dark');      % Display
 %% There must be a more efficient way?! 
 % Yes there is, it's called a processing pipeline. With the pipeline we can
 % group the call to the processing objects together and the pipeline
-% handles the forwarding of data between and soem paramteres between the
+% handles the forwarding of data between and some parameters between the
 % processing objects.
 
 pipe=pipeline();

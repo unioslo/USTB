@@ -11,7 +11,7 @@ Please provide a written report that
 - all plots needed for supporting your arguments when answering the exercise parts
 
 The report should be uploaded to [devilry.ifi.uio.no](devilry.ifi.uio.no).  
-**Deadline for uploading: Tuesday 6. September at 10:00. **
+**Deadline for uploading: Tuesday 1. September 2026 at 10:00. **
 
 ## Exercise One MATLAB:
 This exercise will only go into a few of the details of MATLAB programming, and it is wise to use
@@ -20,17 +20,17 @@ programming in MATLAB.
 
 The best tip in general is to use the internet actively to find what you need. This includes YouTube, 
 StackOverflow, and notably the documentation provided by MathWorks (the company behind MATLAB). It is
- well worth spending some time getting familiar with how functions (e.g., [sum] (https://se.mathworks.com/help/matlab/ref/sum.html) are documented.
+ well worth spending some time getting familiar with how functions (e.g., [sum](https://se.mathworks.com/help/matlab/ref/sum.html)) are documented.
 
 The experience from earlier years in IN3015/IN4015 is that students have varied backgrounds. Ideally you should know a
 programming language already, and for many this will be Python. The scientific stack in Python includes Numpy and 
-Scipy, which is very similar to MATLAB. Two relevant resources for those with a Python background are 
-[Numpy for Matlab users] (https://numpy.org/doc/stable/user/numpy-for-matlab-users.html) 
-or [Matlab for Python users] at (https://blogs.mathworks.com/student-lounge/2021/02/19/introduction-to-matlab-for-python-users/)
+Scipy, which are very similar to MATLAB. Two relevant resources for those with a Python background are 
+[Numpy for Matlab users](https://numpy.org/doc/stable/user/numpy-for-matlab-users.html) 
+or [Matlab for Python users](https://blogs.mathworks.com/student-lounge/2021/02/19/introduction-to-matlab-for-python-users/).
 
-MathWorks have a lot of official resources, for instance this [getting started page] (https://se.mathworks.com/help/matlab/getting-started-with-matlab.html)
+MathWorks have a lot of official resources, for instance this [getting started page](https://se.mathworks.com/help/matlab/getting-started-with-matlab.html).
 An alternative is the onramp tutorial that starts from the very basics, and lets you program interactively in the web browser. Note that you do need to be logged in:
-(https://matlabacademy.mathworks.com/details/matlab-onramp/gettingstarted)
+[MATLAB Onramp](https://matlabacademy.mathworks.com/details/matlab-onramp/gettingstarted)
 
 ### Within MATLAB:
 
@@ -47,7 +47,7 @@ and selecting add to path, or by using the \texttt{addpath} function.
 ## TASKS
 In the Matlab_intro.m file, you will find sections of code (separated by \texttt{\%\%}) that can be run individually. Run the code and answer the questions in the file.
 
-### Hints: 1) Arrays - lists of numbers}
+### Hints: 1) Arrays - lists of numbers
 
 \textbf{a)} In MATLAB 1D-arrays are either row (lying) or column (standing) vectors. Type \texttt{x\_row} into the command window and press enter. What about \texttt{x\_col}?
 
@@ -71,7 +71,7 @@ In the next few modules we will find that the datasets in ultrasound imaging are
 
 \textbf{d)} No hints here.
 
-\subsection*{Hits: 3) Indexing}
+\subsection*{Hints: 3) Indexing}
 
 \subsection*{Exercise 4) Install and run The UltraSound ToolBox}
 
@@ -90,6 +90,6 @@ See the readme.md in this folder.
     disp( abs(px(2)-px(1)) )
 \end{lstlisting}
 
-At some point you will certainly run into bugs that are hard to fix. Learning to use MATLABs debug tools are very helpful. Writing \texttt{dbstop if error} is one way to set breakpoint when something goes awry. In nested function calls it can be difficult to asses why an error is raised, but from the toolbar during debug mode you can always access any layer of the ``Function Call Stack''. Write code that raises an error, and see if you can find the bug using the built-in tools.
+At some point you will certainly run into bugs that are hard to fix. Learning to use MATLAB's debug tools are very helpful. Writing \texttt{dbstop if error} is one way to set breakpoint when something goes awry. In nested function calls it can be difficult to assess why an error is raised, but from the toolbar during debug mode you can always access any layer of the ``Function Call Stack''. Write code that raises an error, and see if you can find the bug using the built-in tools.
 
 \end{document}

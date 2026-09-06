@@ -6,14 +6,13 @@ function ok = TE_ps_cpw_iq(h)
     import uff.*;
     
     % data location
-    url='https://www.ustb.no/datasets/ps';   % if not found data will be downloaded from here
     local_path=[ustb_path() '/data/ps/'];                              % location of example data in this computer                      
     raw_data_filename='ps_cpw_iq.mat';
     beamformed_data_filename='beamformed_ps_cpw_iq.mat';
     
     % check if the file is available in the local path & downloads otherwise
-    tools.download(raw_data_filename, url, local_path);
-    tools.download(beamformed_data_filename, url, local_path);
+    tools.download_ps_test_data();
+
     
     % load data
     load([local_path raw_data_filename]);    

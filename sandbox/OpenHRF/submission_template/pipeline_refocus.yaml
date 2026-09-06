@@ -1,0 +1,50 @@
+# zea.Pipeline for reconstruct_REFoCUS.py — REFoCUS synthetic-aperture recovery + DAS.
+#
+# REFoCUS (Bottenus 2018) inverts the transmit-encoding matrix to recover the
+# multistatic (per-element) data set from a plane-wave / focused transmit sequence,
+# which is then beamformed with pressure-field-weighted Delay-And-Sum.
+#
+# Raw RF -> cast -> window -> REFoCUS decode -> band-pass -> demodulate -> downsample ->
+# DAS with pfield weighting -> envelope detection -> normalization -> log compression.
+#
+# reconstruct_REFoCUS.py adapts this per file: REFoCUS requires enough transmit events
+# to be well posed, so datasets with fewer than 8 transmits (e.g. a single plane wave,
+# or PICMUS with 5 angles) and synthetic-transmit-aperture (STA) data instead use the
+# pfield-DAS pipeline in pipeline_v2.yaml. Baseband (IQ) data skips band_pass_filter and
+# demodulate. jit_compile is disabled on refocus to avoid a cuBLASLt autotuning failure
+# on the complex matmul under XLA on some GPUs.
+
+parameters:
+  f_number: 1.75
+  grid_size_x: 400
+  grid_size_z: 600
+  dynamic_range: [-60, 0]
+  selected_transmits: all
+
+pipeline:
+  operations:
+    - name: keras.ops.cast
+      params:
+        dtype: float32
+    - name: apply_window
+      params:
+        size: 64
+        start: 64
+    - name: refocus
+      params:
+        method: adjoint
+        param: null
+        jit_compile: false
+    - name: band_pass_filter
+    - name: demodulate
+    - name: downsample
+      params:
+        factor: 2
+    - name: beamform
+      params:
+        beamformer: delay_and_sum
+        enable_pfield: true
+        num_patches: 200
+    - name: envelope_detect
+    - name: normalize
+    - name: log_compress

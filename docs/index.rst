@@ -30,3 +30,10 @@ written to UFF files, while there are three main types of processing classes:
 
    api/tools
    api/core
+
+Examples
+--------
+
+Browse the full collection of published USTB examples organized by category:
+
+`Examples Gallery <examples/index.html>`_

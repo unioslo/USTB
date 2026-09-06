@@ -200,25 +200,41 @@ classdef uff < handle
     %% display methods
     methods
         function print_authorship(h)
-            out_name = textwrap([],h.name,50);
-            fprintf('Name: \t\t %s \n',out_name{1});
-            for i = 2:numel(out_name)
-                fprintf('\t\t %s \n',out_name{i});
-            end
-            out_reference = textwrap([],h.reference,50);
-            fprintf('Reference: \t %s \n',out_reference{1});
-            for i = 2:numel(out_reference)
-                fprintf('\t\t %s \n',out_reference{i});
-            end
-            fprintf('Author(s): ');
-            for i = 1:numel(h.author)
-                if i == 1
-                    fprintf('\t %s \n',h.author{i});
-                else
-                    fprintf('\t\t %s \n',h.author{i});
+            out_name = textwrap([], h.name, 50);
+            if isempty(out_name)
+                fprintf('Name: \t\t (not set)\n');
+            else
+                fprintf('Name: \t\t %s \n', out_name{1});
+                for i = 2:numel(out_name)
+                    fprintf('\t\t %s \n', out_name{i});
                 end
             end
-            fprintf('Version: \t %s \n',h.version{:});
+            out_reference = textwrap([], h.reference, 50);
+            if isempty(out_reference)
+                fprintf('Reference: \t (not set)\n');
+            else
+                fprintf('Reference: \t %s \n', out_reference{1});
+                for i = 2:numel(out_reference)
+                    fprintf('\t\t %s \n', out_reference{i});
+                end
+            end
+            fprintf('Author(s): ');
+            if isempty(h.author)
+                fprintf('\t (not set)\n');
+            else
+                for i = 1:numel(h.author)
+                    if i == 1
+                        fprintf('\t %s \n', h.author{i});
+                    else
+                        fprintf('\t\t %s \n', h.author{i});
+                    end
+                end
+            end
+            if isempty(h.version)
+                fprintf('Version: \t (not set)\n');
+            else
+                fprintf('Version: \t %s \n', h.version{:});
+            end
         end
     end
 end

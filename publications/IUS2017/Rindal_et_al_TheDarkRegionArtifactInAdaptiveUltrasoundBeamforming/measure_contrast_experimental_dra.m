@@ -26,17 +26,23 @@ idx_speckle = idx_speckle_outer;
 
 %%
 
-f1 = figure(1111);clf;
-set(f1,'Position',[100,100,300,300]);
+f1 = figure(1111); %#ok<*FIGLEG>
+clf(f1);
+set(f1, 'Position', [100, 100, 300, 300]);
+if strcmp(tools.headless_publish_figure_visible(), 'on')
+    set(f1, 'Visible', 'on');
+elseif ~usejava('desktop')
+    set(f1, 'Visible', 'off');
+end
 imagesc(sta_image.scan.x_axis*1e3,sta_image.scan.z_axis*1e3,image.all{1});
 colormap gray; caxis([-60 0]); axis image; xlabel('x [mm]');ylabel('y [mm]');
 %colorbar
 axi = gca;
-viscircles(axi,[xc_nonecho,zc_nonecho],r_nonecho,'EdgeColor','r','EnhanceVisibility',0);
-viscircles(axi,[xc_nonecho,zc_nonecho],r_speckle_inner,'EdgeColor',[1 1 1],'EnhanceVisibility',0);
-viscircles(axi,[xc_nonecho,zc_nonecho],r_speckle_outer,'EdgeColor',[1 1 1],'EnhanceVisibility',0);
-viscircles(axi,[xc_alt,zc_alt],r_alt_2,'EdgeColor','y','EnhanceVisibility',0);
-viscircles(axi,[xc_alt_2,zc_alt_2],r_speckle,'EdgeColor','g','EnhanceVisibility',0.5);
+ipt_viscircles(axi, [xc_nonecho, zc_nonecho], r_nonecho, 'EdgeColor', 'r', 'EnhanceVisibility', 0);
+ipt_viscircles(axi, [xc_nonecho, zc_nonecho], r_speckle_inner, 'EdgeColor', [1 1 1], 'EnhanceVisibility', 0);
+ipt_viscircles(axi, [xc_nonecho, zc_nonecho], r_speckle_outer, 'EdgeColor', [1 1 1], 'EnhanceVisibility', 0);
+ipt_viscircles(axi, [xc_alt, zc_alt], r_alt_2, 'EdgeColor', 'y', 'EnhanceVisibility', 0);
+ipt_viscircles(axi, [xc_alt_2, zc_alt_2], r_speckle, 'EdgeColor', 'g', 'EnhanceVisibility', 0.5);
 
 text(xc_nonecho-0.7,zc_nonecho,'1','FontSize',18,'FontWeight','bold','Color','r');
 text(xc_nonecho+5.15,zc_nonecho,'2','FontSize',18,'FontWeight','bold','Color','w');
@@ -44,6 +50,8 @@ text(xc_nonecho-7.5,zc_nonecho,'3','FontSize',18,'FontWeight','bold','Color','g'
 text(xc_alt-1,zc_alt,'4','FontSize',18,'FontWeight','bold','Color','y');
 set(axi,'FontSize',12);
 
+drawnow;
+tools.publish_snap_now_figure(f1);
 
 if nargin == 14
     saveas(f1,f_filename,'eps2c');
@@ -54,6 +62,46 @@ for i = 1:length(image.all)
     CR_alt(i) = abs(mean(image.all{i}(idx_cyst))-mean(image.all{i}(idx_speckle_alt)));
     CR_alt_2(i) = abs(mean(image.all{i}(idx_cyst))-mean(image.all{i}(idx_speckle_alt_2)));
 end
+
+end
+
+function ipt_viscircles(ax, ctr, radius_mm, varargin)
+%IPT_VISCIRCLES  Image Processing Toolbox viscircles, or polyline fallback (CI / publish).
+
+if exist('viscircles', 'file') == 2 %#ok<EXIST>
+    viscircles(ax, ctr, radius_mm, varargin{:});
+    return
+end
+
+theta = linspace(0, 2 * pi, 81);
+xe = ctr(1) + radius_mm * cos(theta);
+ye = ctr(2) + radius_mm * sin(theta);
+ec = [1 0 0];
+k = 1;
+while k <= numel(varargin)
+    if strcmp(varargin{k}, 'EdgeColor') && k + 1 <= numel(varargin)
+        ec = varargin{k + 1};
+        k = k + 2;
+    elseif strcmp(varargin{k}, 'EnhanceVisibility') && k + 1 <= numel(varargin)
+        k = k + 2;
+    else
+        k = k + 1;
+    end
+end
+if ischar(ec) || isstring(ec)
+    switch char(ec)
+        case 'r'
+            ec = [1 0 0];
+        case 'y'
+            ec = [1 1 0];
+        case 'g'
+            ec = [0 1 0];
+        otherwise
+            ec = [1 0 0];
+    end
+end
+hold(ax, 'on');
+plot(ax, xe, ye, 'Color', ec, 'LineWidth', 1.5);
 
 end
 

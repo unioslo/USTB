@@ -1,0 +1,163 @@
+name: Deploy Website to GitHub Pages
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/deploy-website.yml'
+      - 'website/**'
+      - 'docs/**'
+      - 'examples/**'
+      - '+uff/**'
+      - '+midprocess/**'
+      - '+postprocess/**'
+      - '+preprocess/**'
+      - '+tools/**'
+      - '*.m'
+      - 'scripts/**'
+  pull_request:
+    paths:
+      - '.github/workflows/deploy-website.yml'
+      - 'website/**'
+      - 'docs/**'
+      - 'examples/**'
+      - '+uff/**'
+      - '+midprocess/**'
+      - '+postprocess/**'
+      - '+preprocess/**'
+      - '+tools/**'
+      - '*.m'
+      - 'scripts/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      # --- Sphinx API docs ---
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Sphinx dependencies
+        run: pip install -r docs/requirements.txt
+
+      - name: Build API documentation
+        run: sphinx-build -b html docs website/api
+
+      # --- Pre-built release assets on examples-v1: examples-html, publications-html, datasets-html ---
+      # curl -f: 404 HTML from GitHub must not be treated as success (else fallback never runs; iframe 404).
+      - name: Download published examples
+        run: |
+          set -e
+          mkdir -p website/examples
+          PRIMARY="https://github.com/${{ github.repository }}/releases/download/examples-v1/examples-html.tar.gz"
+          FALLBACK="https://github.com/olemarius90/USTB/releases/download/examples-v1/examples-html.tar.gz"
+          if ! curl -fL --retry 2 --connect-timeout 20 -S -o /tmp/examples-html.tar.gz "$PRIMARY"; then
+            echo "Primary examples download failed, trying olemarius90/USTB release..."
+            curl -fL --retry 2 --connect-timeout 20 -S -o /tmp/examples-html.tar.gz "$FALLBACK"
+          fi
+          gzip -t /tmp/examples-html.tar.gz
+          tar -xzf /tmp/examples-html.tar.gz -C website/examples
+
+      # Verify archive *contents* after extract: all publication iframes on website/publications.html
+      - name: Download publication pages
+        run: |
+          set -e
+          STAGE="/tmp/publications-staging"
+          PRIMARY="https://github.com/${{ github.repository }}/releases/download/examples-v1/publications-html.tar.gz"
+          FALLBACK="https://github.com/olemarius90/USTB/releases/download/examples-v1/publications-html.tar.gz"
+          EXPECTED=(
+            publications/preprint/generalized_beamformer/CPWC_double_adaptive_redone.html
+            publications/TUSON/Vralstad_et_al_2026_Retrospective_transmit_correction_of_blocked_arrays/Correction_of_simulated_blockage.html
+            publications/TUFFC/Dynamic_range_2020/dynamic_range_test.html
+            publications/TUFFC/Prieur_fDMAS_2018/FI_UFF_FIeldII_simulations_Fig2_and_Fig3.html
+            publications/IUS/2018_virtual_source_model/Proceedings_FI_UFF_Verasonics_RTB_delay_models.html
+            publications/IUS/2017_dark_region_artifact/process_beamformed_experimental_data.html
+          )
+          try_publications() {
+            local url="$1"
+            rm -rf "$STAGE" && mkdir -p "$STAGE"
+            curl -fL --retry 2 --connect-timeout 20 -S -o /tmp/publications-html.tar.gz "$url"
+            gzip -t /tmp/publications-html.tar.gz
+            tar -xzf /tmp/publications-html.tar.gz -C "$STAGE"
+            local ok=1
+            for f in "${EXPECTED[@]}"; do
+              if [ ! -f "$STAGE/$f" ]; then
+                echo "missing in bundle: $f"
+                ok=0
+              fi
+            done
+            [ "$ok" -eq 1 ]
+          }
+          mkdir -p website/examples/publications
+          if try_publications "$PRIMARY"; then
+            echo "publications: using primary release asset"
+          elif try_publications "$FALLBACK"; then
+            echo "publications: primary missing or wrong bundle; used olemarius90/USTB"
+          else
+            echo "::error::publications-html.tar.gz must contain all publication iframe targets"
+            exit 1
+          fi
+          cp -a "$STAGE/publications/." website/examples/publications/
+
+      # --- Dataset page (datasets.html + assets/images/datasets/*.png) ---
+      - name: Download dataset previews bundle
+        run: |
+          set -e
+          STAGE="/tmp/datasets-html-staging"
+          EXPECTED="datasets.html"
+          PRIMARY="https://github.com/${{ github.repository }}/releases/download/examples-v1/datasets-html.tar.gz"
+          FALLBACK="https://github.com/olemarius90/USTB/releases/download/examples-v1/datasets-html.tar.gz"
+          try_datasets() {
+            local url="$1"
+            rm -rf "$STAGE" && mkdir -p "$STAGE"
+            curl -fL --retry 2 --connect-timeout 20 -S -o /tmp/datasets-html.tar.gz "$url"
+            gzip -t /tmp/datasets-html.tar.gz
+            tar -xzf /tmp/datasets-html.tar.gz -C "$STAGE"
+            if [ ! -f "$STAGE/$EXPECTED" ]; then return 1; fi
+            return 0
+          }
+          mkdir -p website/assets/images/datasets
+          if try_datasets "$PRIMARY"; then
+            echo "datasets-html: primary OK"
+          elif try_datasets "$FALLBACK"; then
+            echo "datasets-html: used olemarius90/USTB fallback"
+          else
+            echo "::warning::datasets-html.tar.gz missing or invalid — using datasets page from checkout"
+            exit 0
+          fi
+          cp -a "${STAGE}/." website/
+
+      # --- Regenerate examples index to include publications ---
+      - name: Generate examples index
+        run: python scripts/generate_examples_index.py website/examples
+
+      # --- Upload combined site ---
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: website
+
+  deploy:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

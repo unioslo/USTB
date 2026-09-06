@@ -152,4 +152,21 @@ fprintf('   What minimum frequency do you need?\n');
 fprintf('   Hint: Lateral resolution ≈ wavelength/2\n');
 fprintf('   Your answer: _____ MHz\n\n');
 
+fprintf('C) An ultrasound echo comes from a pixel 30 mm in front of the middle receive element.\n');
+fprintf('   A second receive element is located 5 mm to the side.\n');
+fprintf('   Assuming c = 1540 m/s, how long does the echo take to reach each element?\n\n');
+
+fprintf('                 * Pixel\n');
+fprintf('                 |\\\n');
+fprintf('                 | \\\n');
+fprintf('        30 mm    |  \\\n');
+fprintf('                 |   \\\n');
+fprintf('                 |    \\\n');
+fprintf('                 |     \\\n');
+fprintf('                 *------*\n');
+fprintf('              middle   side\n');
+fprintf('              element  element\n');
+fprintf('                 < 5 mm >\n\n');
+
+fprintf('   Your answers: _____ microseconds and _____ microseconds\n\n');
 

@@ -16,9 +16,13 @@
 
 clear all;
 close all;
+% Publish (-batch/-nodisplay): visible root figures snapshot reliably into HTML.
+if strcmp(tools.headless_publish_figure_visible(), 'on')
+    set(groot, 'DefaultFigureVisible', 'on');
+end
 
 %% Download and load channel data
-url = 'http://ustb.no/datasets/';
+url = tools.zenodo_dataset_files_base();
 filename = 'PICMUS_numerical_calib_v2.uff';
 
 tools.download(filename, url, data_path);
@@ -114,7 +118,7 @@ time{1} = toc();
 
 label{1} = 'DASonRX->DASonTX';
 fprintf('Completed in %.2f seconds.\n', time{1});
-img{1}.plot()
+tools.publish_beamformed_snap(img{1});
 
 %% =========================================================================
 %% IMAGE 2: MV on RX -> DAS on TX
@@ -148,7 +152,7 @@ time{2} = toc();
 
 label{2} = 'MVonRX->DASonTX';
 fprintf('Completed in %.2f seconds.\n', time{2});
-img{2}.plot()
+tools.publish_beamformed_snap(img{2});
 %% =========================================================================
 %% IMAGE 3: DAS on RX -> MV on TX
 %% =========================================================================
@@ -215,7 +219,7 @@ adapt_rx.regCoef = 1/100;
 
 % Step 1: DAS on transmit only
 das.dimension = dimension.transmit;
-das.receive_apodization = receive_apodization_none_window
+das.receive_apodization = receive_apodization_none_window;
 
 tic();
 b_data_das = das.go();
@@ -234,14 +238,13 @@ fprintf('Completed in %.2f seconds.\n', time{5});
 cf = postprocess.coherence_factor;
 cf.input = b_data_das;
 b_data_cf = cf.go();
-b_data_cf.plot([], 'Coherence Factor', [], 'abs');
-caxis([0 1]);
+tools.publish_beamformed_snap(b_data_cf, 'Coherence Factor', [], 'abs');
 
-cf.CF.plot([], 'Coherence Factor', [], 'abs');
+tools.publish_beamformed_snap(cf.CF, 'Coherence Factor', [], 'abs');
 
 img_cf_temp = uff.beamformed_data(img{5});
 img_cf_temp.data = img{5}.data.*cf.CF.data.^0.3;
-img_cf_temp.plot([], 'MVonRX->DASonTX with CF', dynamic_range, compression);
+tools.publish_beamformed_snap(img_cf_temp, 'MVonRX->DASonTX with CF', dynamic_range, compression);
 
 %% =========================================================================
 %% Display Results
@@ -253,10 +256,10 @@ for i = 1:5
 end
 
 %% Plot single image
-img{5}.plot(figure(123), label{5}, dynamic_range, compression);
+tools.publish_beamformed_snap(img{5}, label{5}, dynamic_range, compression);
 
 %% Plot Figure - All 5 images
-figure(3);
+f_combo = figure(3); clf(f_combo);
 img{1}.plot(subplot(2,3,1), label{1}, dynamic_range, compression);
 ax(1) = gca;
 img{2}.plot(subplot(2,3,2), label{2}, dynamic_range, compression);
@@ -268,16 +271,19 @@ ax(4) = gca;
 img{5}.plot(subplot(2,3,5), label{5}, dynamic_range, compression);
 ax(5) = gca;
 linkaxes(ax);
-set(gcf,'Position',[29 33 1109 715]);
+set(f_combo, 'Position', [29 33 1109 715]);
+drawnow;
+tools.publish_snap_now_figure(f_combo);
 
 %% Plot timing bar chart
-figure(4);
+f_time = figure(4); clf(f_time);
 bar([time{:}]/60);
 xticklabels(label);
 xtickangle(45);
 ylabel('Computation time (m)');
 set(gca,'FontSize',14);
-set(gcf,'Position',[29 33 800 400]);
+set(f_time,'Position',[29 33 800 400]);
+tools.publish_snap_now_figure(f_time);
 
 %% Save figures
 folder_path = 'figures';
@@ -301,10 +307,11 @@ for i = 1:length(img)
     print(f, [folder_path, filesep, strrep(label{i}, '->', '_'), '_redone'], '-depsc2');
     axis([0 10 20 28]);
     print(f, [folder_path, filesep, strrep(label{i}, '->', '_'), '_zoomed_redone'], '-depsc2');
+    tools.publish_snap_now_figure(f);
 end
 
 %% Compare beamformed data
-b_data_compare.plot();
+tools.publish_beamformed_snap(b_data_compare);
 
 %% Plot timing bar chart
 running_time_in_m = [time{1:5}]/60;
@@ -327,6 +334,7 @@ text(x_pos, running_time_in_m, num2str(running_time_in_m(:),'%.2f'), ...
 set(gca, 'XTickLabel', labels_latex, 'TickLabelInterpreter', 'latex', 'FontSize',24);
 set(gcf,'Position',[250 344 781 470]); grid on;
 saveas(f99, [folder_path, filesep, 'adaptive_timing_redone'], 'eps2c');
+tools.publish_snap_now_figure(f99);
 
 %% =========================================================================
 %% gCNR Analysis
@@ -371,7 +379,7 @@ set(f200, 'PaperPositionMode', 'auto');
 f200.PaperUnits = 'inches';
 f200.PaperPosition = [0 0 6 5];
 print(f200, [folder_path, filesep, 'DASonRX_DASonTX_ROI_locations_redone'], '-depsc2');
-
+tools.publish_snap_now_figure(f200);
 
 % gCNR bar plot
 f201 = figure(201); clf;
@@ -388,6 +396,7 @@ x_pos = 1:5;
 text(x_pos, GCNR, num2str(GCNR(:),'%.3f'), ...
     'HorizontalAlignment','center', 'VerticalAlignment','bottom', 'FontSize', 12);
 saveas(f201, [folder_path, filesep, 'gCNR_res'], 'eps2c');
+tools.publish_snap_now_figure(f201);
 %% =========================================================================
 %% FWHM / 6dB Resolution Analysis
 %% =========================================================================
@@ -406,7 +415,7 @@ x_idx_max = find(scan.x_axis <= (x_target + x_range), 1, 'last');
 x_range_idx = x_idx_min:x_idx_max;
 
 % Measure FWHM for all 6 beamformers with plots
-figure(300); clf;
+f300 = figure(300); clf(f300);
 res = zeros(1, 5);
 
 for m = 1:5%6
@@ -420,7 +429,7 @@ for m = 1:5%6
     lateral = lateral - max(lateral);  % Normalize to 0 dB at peak
     
     % Calculate 6dB resolution (no internal plotting)
-    res(m) = compute_fwhm_6dB(x_mm, lateral);
+    res(m) = GPWC_compute_fwhm_6dB(x_mm, lateral);
     
     % Plot lateral profile
     subplot(2, 4, m);
@@ -455,6 +464,9 @@ title('6dB Resolution');
 set(gca, 'FontSize', 10);
 grid on;
 
+drawnow;
+tools.publish_snap_now_figure(f300);
+
 % Display results
 fprintf('\n=== FWHM (6dB Resolution) Comparison ===\n');
 for i = 1:5
@@ -477,6 +489,7 @@ text(x_pos, res, num2str(res(:),'%.2f'), ...
     'HorizontalAlignment','center', 'VerticalAlignment','bottom', 'FontSize', 12);
 ylim([0 max(res)*1.15]);
 saveas(f301, [folder_path, filesep, 'FWHM_res'], 'eps2c');
+tools.publish_snap_now_figure(f301);
 %% =========================================================================
 %% Lateral Profile Plot
 %% =========================================================================
@@ -502,7 +515,7 @@ grid on;
 set(gca, 'FontSize', 14);
 set(gcf,'Position',[250 344 781 470]); grid on;
 saveas(f400, [folder_path, filesep, 'lateral_profile_plot'], 'eps2c');
-
+tools.publish_snap_now_figure(f400);
 
 %% =========================================================================
 %% Combined Bar Charts Figure
@@ -552,6 +565,7 @@ title('(c) FWHM Resolution', 'FontSize', 14);
 
 % Save combined figure
 saveas(f500, [folder_path, filesep, 'combined_metrics_redone'], 'eps2c');
+tools.publish_snap_now_figure(f500);
 
 %% =========================================================================
 %% Summary Table
@@ -563,29 +577,3 @@ for i = 1:5
     fprintf('%-25s %10.2f %10.3f %10.3f\n', label{i}, time{i}, GCNR(i), res(i));
 end
 
-%% =========================================================================
-%% Local Functions
-%% =========================================================================
-function res = compute_fwhm_6dB(x_axis, y_signal)
-    % COMPUTE_FWHM_6DB Compute the -6dB width (FWHM) of a signal
-    %   x_axis: lateral position in mm
-    %   y_signal: signal in dB (should be normalized so max = 0)
-    %   res: -6dB width in mm
-    
-    % Interpolate for better resolution
-    coeff = 10;
-    x_interp = linspace(x_axis(1), x_axis(end), length(x_axis) * coeff);
-    y_interp = interp1(x_axis, y_signal, x_interp, 'spline');
-    
-    % Find points above -6dB
-    idx_above = find(y_interp >= -6);
-    
-    if isempty(idx_above)
-        res = NaN;
-        warning('Could not find -6dB crossing points');
-        return;
-    end
-    
-    % Calculate width
-    res = x_interp(idx_above(end)) - x_interp(idx_above(1));
-end

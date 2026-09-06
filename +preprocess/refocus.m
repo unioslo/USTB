@@ -257,7 +257,7 @@ classdef refocus < preprocess
                 tx_apod(:,wave) = h.input.sequence(wave).apodization_values;
             end
 
-            rxdata_multiTx = padarray(h.input.data,h.post_pad_samples,'post');
+            rxdata_multiTx = tools.pad_post_samples(h.input.data, h.post_pad_samples);
             normalized_rxdata_multiTx = rxdata_multiTx / max(rxdata_multiTx(:));
             N_samples_output = size(normalized_rxdata_multiTx,1);
 

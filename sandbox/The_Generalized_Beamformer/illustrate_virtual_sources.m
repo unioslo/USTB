@@ -1,7 +1,8 @@
 
 %% Checking the file is in the path
 % data location
-url='http://ustb.no/datasets/';      % if not found data will be downloaded from here
+url = tools.zenodo_dataset_files_base();
+% if not found data will be downloaded from here
 
 filename_DW='L7_DW_IUS2023.uff';selected_tx = 1;tag = 'DW';
 tools.download(filename_DW, url, data_path);

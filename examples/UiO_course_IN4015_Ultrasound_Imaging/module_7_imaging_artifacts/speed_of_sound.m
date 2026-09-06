@@ -8,7 +8,7 @@ clear all;
 close all;
 
 %% Download and read channel_data
-url='http://ustb.no/datasets/'; 
+url = tools.zenodo_dataset_files_base();
 filename='L7_CPWC_TheGB.uff'; selected_tx(1) = 20; tag{1} = 'FI'; tag_title{1} = 'Focused';
 tools.download(filename, url, data_path);
 channel_data=uff.read_object([data_path filesep filename],'/channel_data');
@@ -21,7 +21,7 @@ channel_data.data = channel_data.data(:,:,6);
 % Try to beamform the image with at least three different sound speeds
 % including 1460 m/s (fat), 1540 m/s (typical mean) and 1600 m/s (muscle). 
 % How does this affect the final image? How does it affect the resolution of the
-% point scatter? How does it affect the size of the cyst? Notice that the point scatter
+% point scatterer? How does it affect the size of the cyst? Notice that the point scatterer
 % "moves" with different sound speeds so you have to change what line to plot in the figure 
 % further down in the code.
 channel_data.sound_speed = 1460;  %<------------- Update this value in Part I
@@ -31,7 +31,7 @@ end
 
 %% Part II: 
 % During the reconstruction process with varying sound speeds, you may have noticed that objects within the 
-% image shift and alter in size. To accurately evaluate the lowest point scatter, you likely had to manually
+% image shift and alter in size. To accurately evaluate the lowest point scatterer, you likely had to manually
 % adjust the depth index under consideration. Nevertheless, for applications such as machine learning, it is 
 % crucial that reconstructed objects remain stationary across images with different sound speeds, enabling a 
 % direct "pixel-by-pixel" comparison. How can the z_axis of the reconstructed scan be adjusted so that it appropriately 
@@ -52,10 +52,10 @@ b_data_das=mid.go();
 
 img = b_data_das.get_image();
 
-% Create plot to analyse results for part I and II
+% Create plot to analyze results for part I and II
 figure();
 imagesc(img)
-title('Use this image to find the correct depth index to investigate the lowest point scatter');
+title('Use this image to find the correct depth index to investigate the lowest point scatterer');
 
 depth_idx_of_point_scatter = 359; % 359 is correct for sound_speed = 1460 in Part I
 figure;hold all;
@@ -71,5 +71,5 @@ viscircles(gca,[-11,scan.z_axis(depth_idx_of_point_scatter)*1000],4,'EdgeColor',
 
 %% Exercise 3: 
 % Based on the two previous exercises - which sound speed was correct when
-% reconstruction this dataset? Perhaps you can suggest a criteria 
+% reconstructing this dataset? Perhaps you can suggest a criterion 
 % to evaluate the sound speed in the reconstruction?

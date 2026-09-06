@@ -1,0 +1,48 @@
+name: Build USTB Toolbox
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Package USTB Toolbox
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up MATLAB
+        uses: matlab-actions/setup-matlab@v2
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          TAG="${GITHUB_REF#refs/tags/v}"
+          echo "version=$TAG" >> "$GITHUB_OUTPUT"
+          echo "Building USTB toolbox version: $TAG"
+
+      - name: Build toolbox
+        uses: matlab-actions/run-command@v2
+        env:
+          TOOLBOX_VERSION: ${{ steps.version.outputs.version }}
+        with:
+          command: build_toolbox
+
+      - name: Upload toolbox artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: USTB-${{ steps.version.outputs.version }}
+          path: USTB_v${{ steps.version.outputs.version }}.mltbx
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: USTB_v${{ steps.version.outputs.version }}.mltbx
+          name: USTB ${{ steps.version.outputs.version }}
+          draft: false
+          generate_release_notes: true

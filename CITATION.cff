@@ -1,0 +1,62 @@
+cff-version: 1.2.0
+title: UltraSound ToolBox
+message: >-
+  If you use this software in academic work, cite the IUS 2017 paper in
+  preferred-citation. Depending on your use, you may also need to cite datasets
+  and individual processes — see the Citation page on the project website and
+  the `reference` fields on UFF objects and processes in MATLAB.
+type: software
+license: MIT
+repository-code: "https://github.com/unioslo/USTB"
+url: "https://unioslo.github.io/USTB/"
+abstract: >-
+  MATLAB toolbox for beamforming, processing, and visualization of ultrasonic
+  signals; facilitates comparison of imaging techniques and dissemination of
+  research results.
+keywords:
+  - ultrasound
+  - beamforming
+  - MATLAB
+  - signal-processing
+authors:
+  - family-names: Rodriguez-Molares
+    given-names: Alfonso
+  - family-names: Rindal
+    given-names: Ole Marius Hoel
+  - family-names: Bernard
+    given-names: Olivier
+  - family-names: Nair
+    given-names: Arun
+  - family-names: Bell
+    given-names: M. A. L.
+  - family-names: Liebgott
+    given-names: "Hervé"
+  - family-names: Austeng
+    given-names: Andreas
+  - family-names: Løvstakken
+    given-names: Lasse
+preferred-citation:
+  type: conference-paper
+  title: "The UltraSound ToolBox"
+  authors:
+    - family-names: Rodriguez-Molares
+      given-names: Alfonso
+    - family-names: Rindal
+      given-names: Ole Marius Hoel
+    - family-names: Bernard
+      given-names: Olivier
+    - family-names: Nair
+      given-names: Arun
+    - family-names: Bell
+      given-names: M. A. L.
+    - family-names: Liebgott
+      given-names: "Hervé"
+    - family-names: Austeng
+      given-names: Andreas
+    - family-names: Løvstakken
+      given-names: Lasse
+  collection-title: "2017 IEEE International Ultrasonics Symposium (IUS)"
+  year: 2017
+  start: 1
+  end: 4
+  doi: 10.1109/ULTSYM.2017.8092389

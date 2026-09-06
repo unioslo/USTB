@@ -43,7 +43,7 @@ dy = dx;            % grid point spacing in the y direction [m]
 x_offset = 20;      % x-position of transducer center [grid points]
 
 % =========================================================================
-% PREPAIR WHAT'S NEEDED TO SIMULATE
+% PREPARE WHAT'S NEEDED TO SIMULATE
 % =========================================================================
 
 PMLSize = 10; 
@@ -83,7 +83,7 @@ sensor_data = kspaceFirstOrder2D(kgrid, medium, source, sensor, ...
     input_args{:});
 
 % =========================================================================
-% VISUALISATION
+% VISUALIZATION
 % =========================================================================
 textForPlots.rFocus = rFocus;
 textForPlots.cycles = cycles;

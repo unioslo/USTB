@@ -6,8 +6,14 @@
 
 clear all;close all
 
+% MATLAB publish / -batch: root figures visible so HTML snapshots are not skipped
+if strcmp(tools.headless_publish_figure_visible(), 'on')
+    set(groot, 'DefaultFigureVisible', 'on');
+end
+
 % data location
-url='http://ustb.no/datasets/';      % if not found downloaded from here
+url = tools.zenodo_dataset_files_base();
+% if not found downloaded from here
 local_path = [ustb_path(),'/data/']; % location of example data
 
 % Choose dataset
@@ -34,25 +40,25 @@ b_data_das.print_authorship
 % Also display all images used in Fig. 3 in the publication.
 image.all{1} = b_data_das.get_image();
 image.tags{1} = 'DAS';
-b_data_das.plot(1,'DAS');
+tools.publish_beamformed_snap(b_data_das, 'DAS');
 image.all{2} = b_data_mv.get_image();
 image.tags{2} = 'MV';
-b_data_mv.plot(2,'MV');
+tools.publish_beamformed_snap(b_data_mv, 'MV');
 image.all{3} = b_data_ebmv.get_image();
 image.tags{3} = 'EBMV';
-b_data_ebmv.plot(3,'EBMV');
+tools.publish_beamformed_snap(b_data_ebmv, 'EBMV');
 image.all{4} = b_data_cf.get_image();
 image.tags{4} = 'CF';
-b_data_cf.plot(4,'CF');
+tools.publish_beamformed_snap(b_data_cf, 'CF');
 image.all{5} = b_data_gcf.get_image();
 image.tags{5} = 'GCF';
-b_data_gcf.plot(5,'GCF');
+tools.publish_beamformed_snap(b_data_gcf, 'GCF');
 image.all{6} = b_data_pcf.get_image();
 image.tags{6} = 'PCF';
-b_data_pcf.plot(6,'PCF');
+tools.publish_beamformed_snap(b_data_pcf, 'PCF');
 image.all{7} = b_data_dmas.get_image();
 image.tags{7} = 'DMAS';
-b_data_dmas.plot(7,'DMAS');
+tools.publish_beamformed_snap(b_data_dmas, 'DMAS');
 
 %% Measure the contrast creating Fig. 4
 % Measure the contrast of the different images creating Fig. 4 in the
@@ -76,3 +82,5 @@ ylim([0 30]);
 set(gca,'FontSize',12);
 set(h_legend,'Position',[0.1525    0.7997    0.1209    0.1257]);
 
+drawnow;
+tools.publish_snap_now_figure(f12);

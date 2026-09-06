@@ -2,7 +2,7 @@ classdef integration_uff_cpwc_verasonics_test < matlab.unittest.TestCase
 
     methods (Test)
         function test_uff_read_and_cpwc_beamforming(testCase)
-            url = 'http://ustb.no/datasets/';
+            url = tools.zenodo_dataset_files_base();
             filename = 'L7_CPWC_193328.uff';
             tools.download(filename, url, data_path);
 
@@ -41,7 +41,7 @@ classdef integration_uff_cpwc_verasonics_test < matlab.unittest.TestCase
         end
 
         function test_uff_channel_data_properties(testCase)
-            url = 'http://ustb.no/datasets/';
+            url = tools.zenodo_dataset_files_base();
             filename = 'L7_CPWC_193328.uff';
             tools.download(filename, url, data_path);
 

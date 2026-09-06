@@ -26,7 +26,8 @@
 clear all; close all;
 
 % data location
-url='http://ustb.no/datasets/';      % if not found download from here
+url = tools.zenodo_dataset_files_base();
+% if not found download from here
 local_path = [ustb_path(),'/data/']; % location of example data
 addpath(local_path);
 

@@ -5,7 +5,8 @@ function ok = TE_FI_RTB(h)
 % Author Ole Marius Hoel Rindal (olemarius@olemarius.net)
 
 % data location
-url='https://www.ustb.no/datasets/';      % if not found downloaded from here
+url = tools.zenodo_dataset_files_base();
+% if not found downloaded from here
 filename='L7_FI_IUS2018.uff';
 filename_reference='reference_RTB_data.uff';
 data_path=fullfile(ustb_path(), 'data');

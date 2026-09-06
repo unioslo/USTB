@@ -1,11 +1,12 @@
-url='http://ustb.no/datasets/';                  %Download and read dataset
+url = tools.zenodo_dataset_files_base();
+%Download and read dataset
 local_path = [ustb_path(),'/data/']; 
 filename='Verasonics_P2-4_parasternal_long_small.uff';
 tools.download(filename, url, local_path);
 channel_data = uff.read_object([local_path, filename],'/channel_data');
 
 % NB! If you have trouble downloading the data using the download tool you can 
-% download the data directly from https://ustb.no/datasets/Verasonics_P2-4_parasternal_long_small.uff
+% download the data directly from https://zenodo.org/records/20261898/files/Verasonics_P2-4_parasternal_long_small.uff
 % Delete the corrupt file with the same filename and move the downloaded data
 % to the "data/" folder in the USTB repository and rerun the example.
 
@@ -23,4 +24,4 @@ mid.receive_apodization.window=uff.window.none;
 b_data = mid.go();toc();                         
 b_data.plot([],['Human Heart'],[],[],[],[],[],'dark');    % Display 
 % Exercise Module 1: Add your name to the title above so that it says
-% "Human Heart by Your Name" and add the image your report.
+% "Human Heart by Your Name" and add the image to your report.

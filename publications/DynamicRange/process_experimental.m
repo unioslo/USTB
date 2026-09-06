@@ -14,7 +14,8 @@ close all;
 filename = [data_path,filesep,'experimental_STAI_dynamic_range.uff'];
 channel_data = uff.channel_data();
 channel_data.read(filename,'/channel_data')
-url='http://ustb.no/datasets/';      % if not found downloaded from here
+url = tools.zenodo_dataset_files_base();
+% if not found downloaded from here
 
 % checks if the data is in your data path, and downloads it otherwise.
 % The defaults data path is under USTB's folder, but you can change this

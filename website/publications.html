@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publications – UltraSound ToolBox</title>
+    <link rel="icon" href="assets/images/ustb-logo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Gudea:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css">
+    <style>
+        .pub-links { font-size: 14px; margin-top: 5px; }
+        .pub-links a { margin-right: 10px; }
+        .pub-iframe { width: 100%; height: 70vh; border: 1px solid #ddd; background: #fff; margin: 10px 0 20px; }
+        .page-content h2 { margin-top: 1.75rem; }
+        .page-content h3 { font-size: 1.1rem; color: #303030; margin: 1.25rem 0 0.5rem; }
+        .venue-note { color: #666; font-size: 0.95rem; margin: -0.5rem 0 1rem; }
+        details { margin-bottom: 20px; }
+        details summary { cursor: pointer; color: #c9302c; font-weight: 600; font-size: 15px; }
+        details summary:hover { text-decoration: underline; }
+        details[open] summary { margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-inner">
+        <div class="site-branding">
+            <a href="index.html"><img src="assets/images/ustb-logo.png" alt="USTB Logo"></a>
+            <div>
+                <div class="site-title"><a href="index.html">UltraSound ToolBox</a></div>
+                <div class="site-description">MATLAB toolbox for processing ultrasonic signals</div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<nav class="main-nav">
+    <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="documentation.html">Documentation</a></li>
+        <li><a href="examples.html">Examples</a></li>
+        <li><a href="datasets.html">Datasets</a></li>
+        <li><a href="publications.html">Publications</a></li>
+        <li><a href="team.html">Team</a></li>
+        <li><a href="citation.html">Citation</a></li>
+    </ul>
+</nav>
+
+<div class="content-wrap" style="display: block; max-width: 1100px;">
+    <div class="page-content">
+        <h1>Publications</h1>
+
+        <p>The following publications have been produced using the USTB. Click &ldquo;Show published results&rdquo; to view the figures inline.</p>
+
+        <h2>Ultrasonics</h2>
+        <p class="venue-note">Elsevier journal covering fundamental and applied ultrasonics.</p>
+
+        <h3>The Generalized Beamformer in the UltraSound ToolBox (2026, submitted)</h3>
+        <p>Rindal, O. M. H., Vr&aring;lstad, A. E., Rodriguez-Molares, A., Fiorentini, S., Avdal, J., Austeng, A. (2026). <em>The Generalized Beamformer in the UltraSound ToolBox.</em> Ultrasonics (submitted). Preprint: <a href="https://www.techrxiv.org/users/684320/articles/1263073-the-generalized-beamformer-in-the-ultrasound-toolbox" target="_blank">TechRxiv</a></p>
+        <div class="pub-links">
+            <a href="https://github.com/unioslo/USTB/tree/master/sandbox/The_Generalized_Beamformer" target="_blank">MATLAB code</a>
+        </div>
+        <details>
+            <summary>Show all transmit sequences (Fig. 5) &darr;</summary>
+            <iframe class="pub-iframe" src="examples/publications/preprint/generalized_beamformer/TheGB_all_transmit_sequences.html"></iframe>
+        </details>
+        <details>
+            <summary>Show double adaptive beamforming (Fig. 7) &darr;</summary>
+            <iframe class="pub-iframe" src="examples/publications/preprint/generalized_beamformer/CPWC_double_adaptive_redone.html"></iframe>
+        </details>
+
+        <h2>IEEE Transactions on Ultrasonics (T-USON)</h2>
+        <p class="venue-note">Open-access short-paper line of the IEEE UFFC Society.</p>
+
+        <h3>Retrospective transmit correction of blocked arrays (2026, to appear)</h3>
+        <p>Vr&aring;lstad, A. E., M&aring;s&oslash;y, S.-E., Bj&aring;stad, T. G., S&oslash;rnes, A. R., Rindal, O. M. H. (2026). <em>Retrospective transmit correction of blocked arrays applied to cardiac ultrasound imaging.</em> <em>IEEE Trans. Ultrason.</em> (T-USON) (to appear).</p>
+        <div class="pub-links">
+            <a href="https://github.com/unioslo/USTB/tree/master/publications/TUSON/Vralstad_et_al_2026_Retrospective_transmit_correction_of_blocked_arrays" target="_blank">MATLAB code</a>
+        </div>
+        <details>
+            <summary>Show published results &darr;</summary>
+            <iframe class="pub-iframe" src="examples/publications/TUSON/Vralstad_et_al_2026_Retrospective_transmit_correction_of_blocked_arrays/Correction_of_simulated_blockage.html"></iframe>
+        </details>
+
+        <h2>IEEE Transactions on Ultrasonics, Ferroelectrics, and Frequency Control (TUFFC)</h2>
+        <p class="venue-note">Society&rsquo;s regular transactions title.</p>
+
+        <h3>Dynamic range and contrast (2020)</h3>
+        <p>Rindal, O. M. H., Austeng, A., Fatemi, A., Rodriguez-Molares, A. (2020). <em>The effect of dynamic range alterations in the estimation of contrast.</em> <em>IEEE Trans. Ultrason. Ferroelect. Freq. Control</em></p>
+        <div class="pub-links">
+            <a href="examples/pdf/Rindal_et_al_DynamicRangeAlterationsInTheEstimationOfContrast.pdf" target="_blank">PDF</a>
+            <a href="https://github.com/unioslo/USTB/tree/master/publications/DynamicRange" target="_blank">MATLAB code</a>
+        </div>
+        <details>
+            <summary>Show published results &darr;</summary>
+            <iframe class="pub-iframe" src="examples/publications/TUFFC/Dynamic_range_2020/dynamic_range_test.html"></iframe>
+        </details>
+
+        <h3>Filtered delay multiply-and-sum (fDMAS)</h3>
+        <p>Prieur, F., Rindal, O. M. H., &amp; Austeng, A. (2018). <em>Signal coherence and image amplitude with the Filtered-Delay-Multiply-And-Sum beamformer.</em> <em>IEEE Trans. Ultrason. Ferroelect. Freq. Control</em></p>
+        <div class="pub-links">
+            <a href="examples/pdf/preprint_F_Prieur_et_al_2018_TUFFC_Signal_coherence_and_image_amplitude_with_the_filtered_delay_multiply_and_sum.pdf" target="_blank">PDF</a>
+            <a href="https://github.com/unioslo/USTB/tree/master/publications/TUFFC/Prieur_et_al_Signal_coherence_and_image_amplitude_with_the_fDMAS" target="_blank">MATLAB code</a>
+        </div>
+        <details>
+            <summary>Show published results &darr;</summary>
+            <iframe class="pub-iframe" src="examples/publications/TUFFC/Prieur_fDMAS_2018/FI_UFF_FIeldII_simulations_Fig2_and_Fig3.html"></iframe>
+        </details>
+
+        <h3>Generalized contrast-to-noise ratio (gCNR)</h3>
+        <p>Rodriguez-Molares, A., Rindal, O. M. H., D&rsquo;hooge, J., M&aring;s&oslash;y, S. E., Austeng, A., Torp, H. (2018). <em>The Generalized Contrast-to-Noise ratio.</em> <em>IEEE Trans. Ultrason. Ferroelect. Freq. Control</em></p>
+        <div class="pub-links">
+            <a href="https://github.com/unioslo/USTB/tree/master/publications/TUFFC/Rodriguez-Molares_et_al_Generalized_Contrast_to_Noise_ratio" target="_blank">MATLAB code</a>
+        </div>
+
+        <h2>IEEE International Ultrasonics Symposium (IUS)</h2>
+        <p class="venue-note">Society conference proceedings; commonly cited as IUS with year.</p>
+
+        <h3>Virtual source model (IUS 2018)</h3>
+        <p>Rindal, O. M. H., Rodriguez-Molares, A., Austeng, A. (2018). <em>A simple, artifact-free, virtual source model.</em> In <em>Proc. IEEE IUS</em>, 1&ndash;4.</p>
+        <div class="pub-links">
+            <a href="examples/pdf/Rindal_et_al_A_simple_artifact_free_virtual_source_model.pdf" target="_blank">PDF</a>
+            <a href="https://github.com/unioslo/USTB/tree/master/publications/IUS2018/Rindal_et_al_ASimpleArtifactFreeVirtualSourceModel" target="_blank">MATLAB code</a>
+        </div>
+        <details>
+            <summary>Show published results &darr;</summary>
+            <iframe class="pub-iframe" src="examples/publications/IUS/2018_virtual_source_model/Proceedings_FI_UFF_Verasonics_RTB_delay_models.html"></iframe>
+        </details>
+
+        <h3>Dark region artifact in adaptive beamforming (IUS 2017)</h3>
+        <p>Rindal, O. M. H., Rodriguez-Molares, A., &amp; Austeng, A. (2017). <em>The Dark Region Artifact in Adaptive Ultrasound Beamforming.</em> In <em>Proc. IEEE IUS</em>, 1&ndash;4.</p>
+        <div class="pub-links">
+            <a href="examples/pdf/Rindal_et_al_2017_The_Dark_Region_Artifact_in_Adaptive_Ultrasound_Beamforming.pdf" target="_blank">PDF</a>
+            <a href="https://github.com/unioslo/USTB/tree/master/publications/IUS2017/Rindal_et_al_TheDarkRegionArtifactInAdaptiveUltrasoundBeamforming" target="_blank">MATLAB code</a>
+        </div>
+        <details>
+            <summary>Show published results &darr;</summary>
+            <iframe class="pub-iframe" src="examples/publications/IUS/2017_dark_region_artifact/process_beamformed_experimental_data.html"></iframe>
+        </details>
+
+        <h3>The UltraSound ToolBox (IUS 2017)</h3>
+        <p>Rodriguez-Molares, A., Rindal, O. M. H., Bernard, O., Nair, A., Bell, M. A. L., Liebgott, H., Austeng, A., L&oslash;vstakken, L. (2017). <em>The UltraSound ToolBox.</em> In <em>Proc. IEEE IUS</em>, 1&ndash;4. <a href="https://doi.org/10.1109/ULTSYM.2017.8092389" target="_blank">doi:10.1109/ULTSYM.2017.8092389</a></p>
+    </div>
+</div>
+
+<footer class="site-footer">
+    <p>Theme: <a href="https://themezee.com/themes/wellington/" target="_blank">Wellington</a> by ThemeZee.</p>
+</footer>
+
+</body>
+</html>

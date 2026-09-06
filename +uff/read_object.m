@@ -144,6 +144,11 @@ else
                             object.(prop{m}.name)=uff.read_object(filename,prop{m}.location,verbose);
                         end
                     end
+
+                    % Post-read: fix origin for focused waves from old UFF files
+                    if isa(object, 'uff.wave')
+                        object.fix_origin_from_source();
+                    end
                 end
             else
                 warning('UFF:UnsupportedClass', 'Class %s not supported by UFF; skipping write.', class(value));

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examples – UltraSound ToolBox</title>
+    <link rel="icon" href="assets/images/ustb-logo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Gudea:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-inner">
+        <div class="site-branding">
+            <a href="index.html"><img src="assets/images/ustb-logo.png" alt="USTB Logo"></a>
+            <div>
+                <div class="site-title"><a href="index.html">UltraSound ToolBox</a></div>
+                <div class="site-description">MATLAB toolbox for processing ultrasonic signals</div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<nav class="main-nav">
+    <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="documentation.html">Documentation</a></li>
+        <li><a href="examples.html">Examples</a></li>
+        <li><a href="datasets.html">Datasets</a></li>
+        <li><a href="publications.html">Publications</a></li>
+        <li><a href="team.html">Team</a></li>
+        <li><a href="citation.html">Citation</a></li>
+    </ul>
+</nav>
+
+<div class="content-wrap" style="display: block; max-width: 1100px;">
+
+    <!-- MATLAB Examples -->
+    <div class="page-content" style="margin-bottom: 10px;">
+        <h1>MATLAB Examples</h1>
+        <p>Published MATLAB examples with executed code, output, and figures. <a href="examples/index.html" target="_blank">Open gallery in new tab &rarr;</a></p>
+    </div>
+    <iframe src="examples/index.html" style="width: 100%; height: 50vh; border: 1px solid #ddd; background: #fff; margin-bottom: 20px;"></iframe>
+
+    <!-- Python Examples -->
+    <div class="page-content" style="margin-bottom: 10px;">
+        <h1>Python Examples</h1>
+        <p>Interactive Jupyter notebooks with the Python USTB implementation. Click to expand and view with code, output, and figures.</p>
+        <style>
+            .nb-details { margin-bottom: 15px; }
+            .nb-details summary { cursor: pointer; color: #c9302c; font-weight: 600; font-size: 15px; padding: 8px 0; }
+            .nb-details summary:hover { text-decoration: underline; }
+            .nb-details .nb-desc { color: #666; font-size: 14px; margin-left: 5px; font-weight: 400; }
+            .nb-iframe { width: 100%; height: 80vh; border: 1px solid #ddd; background: #fff; margin-top: 5px; }
+        </style>
+
+        <details class="nb-details">
+            <summary>Minimal Example <span class="nb-desc">— Cardiac phased array imaging with sector scan</span></summary>
+            <iframe class="nb-iframe" src="https://nbviewer.org/github/unioslo/USTB/blob/master/python/notebooks/minimal_example.ipynb"></iframe>
+        </details>
+
+        <details class="nb-details">
+            <summary>CPWC Linear Array <span class="nb-desc">— Plane wave compound imaging with L7 linear array</span></summary>
+            <iframe class="nb-iframe" src="https://nbviewer.org/github/unioslo/USTB/blob/master/python/notebooks/cpwc_linear.ipynb"></iframe>
+        </details>
+
+        <details class="nb-details">
+            <summary>PICMUS Resolution <span class="nb-desc">— 75 plane-wave experimental resolution phantom</span></summary>
+            <iframe class="nb-iframe" src="https://nbviewer.org/github/unioslo/USTB/blob/master/python/notebooks/picmus_experiment_resolution.ipynb"></iframe>
+        </details>
+
+        <details class="nb-details">
+            <summary>Maximal Example <span class="nb-desc">— Full pipeline: demodulation &rarr; DAS &rarr; coherence factor &rarr; median</span></summary>
+            <iframe class="nb-iframe" src="https://nbviewer.org/github/unioslo/USTB/blob/master/python/notebooks/maximal_example.ipynb"></iframe>
+        </details>
+    </div>
+
+</div>
+
+<footer class="site-footer">
+    <p>Theme: <a href="https://themezee.com/themes/wellington/" target="_blank">Wellington</a> by ThemeZee.</p>
+</footer>
+
+</body>
+</html>

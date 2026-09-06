@@ -19,7 +19,8 @@ clear all; close all;
 
 %% Load channel data
 % The channel data is available from the ustb.no website. 
-url='http://ustb.no/datasets/';      % if not found downloaded from here
+url = tools.zenodo_dataset_files_base();
+% if not found downloaded from here
 filename = 'FieldII_STAI_uniform_fov.uff';
 
 % Check if the data is allready in your data path, and downloads it otherwise.

@@ -2,7 +2,8 @@ clear all;
 close all;
 
 %% Download data
-url='https://www.ustb.no/datasets/';   % if not found data will be downloaded from here
+url = tools.zenodo_dataset_files_base();
+% if not found data will be downloaded from here
 
 %filename='L7_FI_carotid_cross_1.uff';
 %filename='L7_FI_carotid_cross_2.uff';

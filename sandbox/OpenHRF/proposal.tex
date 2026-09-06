@@ -1,0 +1,137 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{xcolor}
+
+\title{\textbf{OpenH-RF Proposal:}\\[4pt]
+The UltraSound ToolBox (USTB) Channel Capture Dataset}
+\author{
+  Ole Marius Hoel Rindal\textsuperscript{1},
+  Anders E.\ Vr\aa lstad\textsuperscript{1},
+  Alfonso Rodriguez-Molares\textsuperscript{2},\\
+  Andreas Austeng\textsuperscript{1}
+  \\[6pt]
+  \textsuperscript{1}University of Oslo (UiO), Norway \quad
+  \textsuperscript{2}NTNU, Norway
+}
+\date{}
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+
+% ------------------------------------------------------------------
+\section{Executive Summary}
+
+We propose to contribute \textbf{53 pre-beamformed (channel capture) ultrasound datasets} from the UltraSound ToolBox (USTB) initiative to OpenH-RF.
+The datasets span \textbf{in-vivo human cardiac and carotid imaging}, \textbf{tissue-mimicking phantoms}, and \textbf{physics-based Field~II simulations}, covering linear, phased-array, and convex probes with plane-wave, diverging-wave, focused, and synthetic-transmit-aperture sequences.
+
+All data is openly hosted on Zenodo (\texttt{10.5281/zenodo.20261898}) under the \textbf{MIT license} and stored in the community-standard Ultrasound File Format (UFF/HDF5).
+We provide a conversion pipeline (\texttt{pyuff-ustb} $\rightarrow$ \texttt{zea}) that maps UFF channel data to the OpenH-RF format, along with DAS reference reconstructions and processing scripts.
+For simulated and phantom data, true ground truth (scatterer maps, known geometry) is available.
+
+The USTB project (\url{https://github.com/unioslo/USTB}, \url{https://www.ultrasoundtoolbox.com}) has been maintained since 2017 and is widely used for ultrasound beamforming research and education.
+All datasets with DAS reference reconstructions are cataloged at \url{https://www.ultrasoundtoolbox.com/datasets.html}.
+
+% ------------------------------------------------------------------
+\section{Task \& Application Selection}
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabular}{@{}llcrl@{}}
+\toprule
+\textbf{Task Group} & \textbf{Application} & \textbf{Datasets} & \textbf{Tier} & \textbf{Hardware} \\
+\midrule
+\multirow{2}{*}{6.1 Reconstruction}
+  & Echocardiography     & 3 & In-vivo human (x40) & Verasonics P2-4 \\
+  & General (carotid)    & 5 & In-vivo human (x40) & Verasonics L7-4 \\
+  & Phantom benchmarks   & 15 & Phantom (x1) & Verasonics/Alpinion \\
+  & Simulated phantoms   & 18 & Simulation (x1) & Field~II \\
+\midrule
+6.4 Motion Est.
+  & Shear Wave Elast.    & 3 & Phantom (x1) & Verasonics L7-4 \\
+  & ARFI                 & 1 & Phantom (x1) & Verasonics L7-4 \\
+\midrule
+6.1 Reconstruction
+  & Blocked array corr.  & 3 & Simulation (x1) & Field~II P4 \\
+  & Dynamic range eval.  & 5 & Simulation + Phantom (x1) & Field~II / Verasonics \\
+\bottomrule
+\end{tabular}
+\caption{Dataset summary. Total: 53 channel capture measurements.}
+\end{table}
+
+\noindent\textbf{Weighted contribution:}
+8 in-vivo human datasets $\times$ 40 = 320, plus 45 phantom/simulation datasets $\times$ 1 = 45.
+\textbf{Total weighted: $\sim$365 equivalent measurements.}
+
+% ------------------------------------------------------------------
+\section{Technical Approach}
+
+\subsection*{Data Format Conversion}
+Each UFF dataset is converted to OpenH-RF (\texttt{zea} HDF5) using a Python pipeline:
+
+\begin{enumerate}[nosep]
+  \item Read UFF with \texttt{pyuff-ustb} (channel data, probe geometry, transmit sequence).
+  \item Map fields to \texttt{zea} scan dictionary (probe geometry, polar/azimuth angles, focus distances, t0 delays, sampling frequency, sound speed).
+  \item Generate DAS beamformed B-mode image as reference reconstruction using the USTB MATLAB beamformer or the Python \texttt{ustb} package.
+  \item Write \texttt{.hdf5} via \texttt{zea.File.create()}.
+\end{enumerate}
+
+\subsection*{Reference Reconstructions \& Ground Truth}
+We provide DAS beamformed images as \textbf{reference reconstructions} (not ground truth labels) using the USTB beamformer (f-number 1.75, Hanning apodization, coherent compounding).
+True ground truth is available where the scattering medium is known:
+\begin{itemize}[nosep]
+  \item \textbf{Simulations} (Field~II): scatterer position maps and medium definitions.
+  \item \textbf{Phantoms} (CIRS): known cyst/wire geometry, sound speed, attenuation.
+  \item \textbf{SWE/ARFI}: displacement and velocity maps from push-tracking sequences.
+\end{itemize}
+For in-vivo data, no ground truth exists; we supply the raw channel data and processing scripts as permitted by the RFP.
+
+\subsection*{Quality Assurance}
+\begin{itemize}[nosep]
+  \item Automated validation: finite-valued channel data, correct dimensions, non-zero energy.
+  \item Beamformed image sanity checks: peak amplitude, dynamic range $>$ 40\,dB.
+  \item Cross-verified against published results in USTB examples and publications.
+\end{itemize}
+
+% ------------------------------------------------------------------
+\section{Data Rights \& Licensing}
+
+All datasets are released under the \textbf{MIT License} (code) and hosted on Zenodo under open-access terms.
+We confirm intent to release the converted dataset under \textbf{CC~BY~4.0} as required by OpenH-RF.
+No third-party IP encumbrances apply.
+The PICMUS datasets were originally distributed by the IEEE IUS community under open terms for benchmarking.
+
+% ------------------------------------------------------------------
+\section{Team Qualifications}
+
+\begin{itemize}[nosep]
+  \item \textbf{Ole Marius Hoel Rindal} (UiO) --- Lead developer of USTB since 2017; publications on adaptive beamforming, coherence-based imaging, and the Generalized Beamformer.
+  \item \textbf{Anders E.\ Vr\aa lstad} (UiO) --- PhD candidate; retrospective transmit correction of blocked arrays (T-USON 2026).
+  \item \textbf{Alfonso Rodriguez-Molares} (NTNU) --- Co-creator of USTB and the UFF format; generalized contrast-to-noise ratio (gCNR).
+  \item \textbf{Andreas Austeng} (UiO) --- Professor; signal processing for medical ultrasound.
+\end{itemize}
+
+% ------------------------------------------------------------------
+\section{Project Plan}
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Task} & \textbf{Period} & \textbf{Deliverable} \\
+\midrule
+Finalize conversion pipeline & May 18--25, 2026 & \texttt{convert\_ustb\_to\_openh\_rf.py} \\
+Generate reference reconstructions & May 25--Jun 1, 2026 & 53 DAS B-mode images \\
+Convert all datasets to zea HDF5 & Jun 1--7, 2026 & 53 \texttt{.hdf5} files \\
+Quality assurance \& validation & Jun 7--10, 2026 & Validation report \\
+Submit proposal + upload data & Jun 10, 2026 & Proposal + S3/GDrive delivery \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{document}

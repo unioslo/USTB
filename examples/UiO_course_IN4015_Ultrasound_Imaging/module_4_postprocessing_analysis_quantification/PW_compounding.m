@@ -13,12 +13,13 @@ close all;
 % We define the local path and the url where the data is stored
 
 % data location
-url='http://ustb.no/datasets/';      % if not found data will be downloaded from here
+url = tools.zenodo_dataset_files_base();
+% if not found data will be downloaded from here
 filename='PICMUS_experiment_resolution_distortion.uff';
 filename='PICMUS_simulation_contrast_speckle.uff';
 
 % checks if the data is in your data path, and downloads it otherwise.
-% The defaults data path is under USTB's folder, but you can change this
+% The default data path is under USTB's folder, but you can change this
 % by setting an environment variable with setenv(DATA_PATH,'the_path_you_want_to_use');
 tools.download(filename, url, data_path);
 
@@ -40,14 +41,14 @@ das.receive_apodization.f_number = 1.7;
 das.transmit_apodization.window = uff.window.none;
 b_data_all = das.go()
 
-%% Finally, we will plot the individual plane wave images using the built in
+%% Finally, we will plot the individual plane wave images using the built-in
 % plot function in USTB
 b_data_all.plot([],['Individual PW images'],[],[],[],[],[],'dark')
 
 %% Exercise part I
 % Now, in this exercise you are going to explore coherent and incoherent
 % compounding of the individual plane wave images. See section 1.7.3 and
-% 1.7.4 the compendium "Software Beamforming in Medical Ultrasound Imaging"
+% 1.7.4 in the compendium "Software Beamforming in Medical Ultrasound Imaging".
 % Note: the weight w is 1 in both cases here.
 
 % First, let us get all the individual plane wave images in one matrix. The
@@ -56,7 +57,7 @@ b_data_all.plot([],['Individual PW images'],[],[],[],[],[],'dark')
 image_matrix = b_data_all.get_image('none');
 
 % Let us verify that the size of the matrix is 512x512x75 since the number
-% of x-pixels is 512, the number of z-axis is 512 and the number of
+% of x-pixels is 512, the number of z-pixels is 512 and the number of
 % transmits, thus individual plane waves are 75
 size(image_matrix)
 
@@ -80,7 +81,7 @@ coherent_compounding;           % <---- Implement coherent compounding here
 incoherent_compounding;         % <---- Implement incoherent compounding here
 
 %% Verify your implementation of coherent and incoherent compounding
-% Using changing the dimension to "both" to get coherent compounding
+% By changing the dimension to "both" to get coherent compounding
 das.dimension = dimension.both()
 b_data_coherent = das.go();
 b_data_coherent.plot([],['USTB Coherent Compounding using midprocess'])
@@ -92,7 +93,7 @@ b_data_coherent = cc.go();
 b_data_coherent.plot([],['USTB Coherent Compounding using postprocess'])
 coherent_compounding_USTB = b_data_coherent.get_image();
 
-% Using the postprocess incoherent_compunding
+% Using the postprocess incoherent_compounding
 ic = postprocess.incoherent_compounding()
 ic.input = b_data_all;
 b_data_incoherent = ic.go()
@@ -101,7 +102,7 @@ incoherent_compounding_USTB = b_data_incoherent.get_image();
 
 %% Exercise Part II: Comparing your implementation to the USTB implementation
 % Now, you need to plot and verify that your implementation is similar to
-% the images obtained with the USTB. You can do this in a similar matter to
+% the images obtained with the USTB. You can do this in a similar manner to
 % how you compared your implementation of beamforming in module 3.
 % NB! Due to small numerical differences you can accept a small numerical
 % difference between the images and tolerate a pixel difference of
@@ -112,9 +113,9 @@ incoherent_compounding_USTB = b_data_incoherent.get_image();
 %% Compare your implementation of incoherent compounding to the USTB
 
 %% Exercise Part III : Implement a mix of coherent and incoherent compounding
-% We can also do something inbetween full coherent and incoherent
+% We can also do something in between full coherent and incoherent
 % compounding. We can for example split the low quality images into two parts,
-% and sum the different halfs coherently, before summing those two images
+% and sum the different halves coherently, before summing those two images
 % incoherently. If you for example split the transmit angles into two as:
 
 angles_first_sum = 1:channel_data.N_waves/2;
@@ -122,10 +123,10 @@ angles_second_sum = round(channel_data.N_waves/2)+1:channel_data.N_waves;
 
 % And then sum the plane wave images resulting from the angles_first_sum
 % coherently but separately, and then angles_second_sum coherently but separately.
-% Before they both are combined incoherently. Thus you have done mix
+% Before they both are combined incoherently. Thus you have done mixed
 % compounding. You can put the results in the mix_compounding variable:
 
-mix_compounding; % <---- Implement coherent compounding here. You might need more than one line
+mix_compounding; % <---- Implement mixed compounding here. You might need more than one line
 
 
 figure()
@@ -144,15 +145,15 @@ title('Incoherent Compounding')
 subplot(224)
 imagesc(scan.x_axis*1000, scan.z_axis*1000, mix_compounding)
 colormap gray; axis image;colorbar;  caxis([-60 0])
-title('Mix Compounding')
+title('Mixed Compounding')
     
-%% Exercise Part IV : Compare the resoluting resolution from coherent, incoherent and mix compounding
+%% Exercise Part IV : Compare the resulting resolution from coherent, incoherent and mixed compounding
 % Below, we provide the code to plot the lateral line, the line along the
-% x-axis, through the point scatter at 19 mm. Often resolution is measured
+% x-axis, through the point scatterer at 19 mm. Often resolution is measured
 % as the Full Width Half Maximum (FWHM) equal to the width at -6 dB.
-% Improved resolution means smaller width of the point scatter.
+% Improved resolution means smaller width of the point scatterer.
 % Discuss how the different compounding strategies influenced the resolution
-% of this point scatter.
+% of this point scatterer.
 %
 % You need to make sure you are running this on the resolution dataset
 if contains(filename,'resolution')
@@ -162,7 +163,7 @@ if contains(filename,'resolution')
     plot(scan.x_axis*1000,single_image(line,:),'LineWidth',2,'DisplayName','Single Transmit Image');hold on;
     plot(scan.x_axis*1000,coherent_compounding(line,:),'LineWidth',2,'DisplayName','Coherent Compounding');hold on;
     plot(scan.x_axis*1000,incoherent_compounding(line,:),'LineWidth',2,'DisplayName','Incoherent Compounding');
-    plot(scan.x_axis*1000,mix_compounding(line,:),'LineWidth',2,'DisplayName','Mix Compounding');
+    plot(scan.x_axis*1000,mix_compounding(line,:),'LineWidth',2,'DisplayName','Mixed Compounding');
     plot(scan.x_axis*1000,ones(1,scan.N_x_axis)*-6,'r--','LineWidth',2,'DisplayName','- 6dB (FWHM)')
     xlim([-3 3]);ylim([-40 0])
     legend;
@@ -175,13 +176,13 @@ end
 % Measure the contrast of the resulting images using the contrast ratio (CR)
 % and the contrast-to-noise ratio (CNR). You should measure the contrast of the
 % single plane wave image and the three different compounding techniques and discuss the results.
-% The implementation to measure the CR is allready provided, but you have to calculate the CNR.
+% The implementation to measure the CR is already provided, but you have to calculate the CNR.
 %
 % NB! Remember that both the CR and CNR is estimated on the power of the beamformed signal, and
 % thus the mean is estimated as given in the code for the coherent compounding in the ROI region:
 % mean_ROI_coherent = mean(abs(coherent_compounding_signal(idx_ROI(:))).^2)
 % Be sure to also use the power of the signal when estimating the standard deviation for the CNR estimation,
-% and also remember that MATLAB has a built in function for standard deviation std().
+% and also remember that MATLAB has a built-in function for standard deviation std().
 %
 % You need to make sure that you are running this on the contrast dataset.
 

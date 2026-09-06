@@ -18,7 +18,8 @@
 clear all; close all;
 
 % data location
-url='http://ustb.no/datasets/';      % if not found downloaded from here
+url = tools.zenodo_dataset_files_base();
+% if not found downloaded from here
 filename='L7_FI_IUS2018.uff';
 
 % checks if the data is in your data path, and downloads it otherwise.
@@ -86,6 +87,7 @@ mid_RTB.scan=scan_RTB;
 % Rindal, O. M. H., Rodriguez-Molares, A., & Austeng, A. (2018). A simple , artifact-free , virtual source model. 
 % IEEE International Ultrasonics Symposium, IUS, 1–4. 
 mid_RTB.spherical_transmit_delay_model = spherical_transmit_delay_model.hybrid;
+mid_RTB.pw_margin = 3e-3;
 mid_RTB.transmit_apodization.window=uff.window.tukey25;
 mid_RTB.transmit_apodization.f_number = 2;
 mid_RTB.transmit_apodization.MLA = MLA;

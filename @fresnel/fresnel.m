@@ -76,6 +76,9 @@ classdef fresnel < handle
             out_dataset.pulse = h.pulse();
             out_dataset.phantom = h.phantom();
             out_dataset.sequence = h.sequence();
+            for n=1:numel(out_dataset.sequence)
+                out_dataset.sequence(n).fix_origin_from_source();
+            end
             out_dataset.sampling_frequency = h.sampling_frequency();
             out_dataset.sound_speed = h.phantom.sound_speed;
             out_dataset.PRF = h.PRF;

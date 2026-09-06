@@ -1,36 +1,36 @@
 # Module 1 Introduction to the USTB: Getting familiar with the USTB and MATLAB
 
-This module contains two exercises. The first exercise is to demonstrate that you have installed MATLAB and have set up the USTB. The second exercise is
+This module contains two exercises. The first exercise is to demonstrate that you have installed MATLAB and have set up the USTB. The second exercise
 is to familiarize ourselves with some MATLAB concepts that will come in handy later in the course.
 
 ## Delivery:
 Please provide a written report that
 
-- report the results you are asked to find
-- answers the question raised
+- reports the results you are asked to find
+- answers the questions raised
 - provides the main code lines needed to solve the questions directly in the report
-- all plots needed for supporting your arguments when answering the exercise parts
+- includes all plots needed for supporting your arguments when answering the exercise parts
 
-The report should be uploaded to [devilry.ifi.uio.no](https//devilry.ifi.uio.no).  
-**Deadline for uploading: Tuesday 2. September at 14:00. **
+The report should be uploaded to [devilry.ifi.uio.no](https://devilry.ifi.uio.no).  
+**Deadline for uploading: Tuesday 1. September 2026 at 10:00.**
 
 ## Exercise 1 : Set up MATLAB and the USTB
-The first exercise is simply to demonstrate that you have installed MATLAB and sucessfully set up the USTB. Run the "minimal_example.m" in this folder and add
+The first exercise is simply to demonstrate that you have installed MATLAB and successfully set up the USTB. Run the "minimal_example.m" in this folder and add
 your name to the title of the figure of the ultrasound image. Save this figure and add it to your report.
 
-NB! If you have trouble downloading the data using the download tool you can download the data directly from https://ustb.no/datasets/Verasonics_P2-4_parasternal_long_small.uff . 
+NB! If you have trouble downloading the data using the download tool you can download the data directly from Zenodo: https://zenodo.org/records/19550715/files/Verasonics_P2-4_parasternal_long_small.uff?download=1
 Delete the corrupt file with the same filename and move the downloaded data to the "data/" folder in the USTB repository and rerun the example. 
 
-NB! There is a known issue with Mac and some C compilers and libraries, hopefully you find a solution and we can share this to everyone. If not, the quick workaround is for the "midprosessor" state that you want to use the MATLAB implementation by using "mid.code = code.matlab;"
+NB! If there are issues with the compiled mex files, the quick workaround for the "midprocessor" is to state that you want to use the MATLAB implementation by using "mid.code = code.matlab;"
 
 ## Exercise 2 : Introduction to MATLAB
 In the second exercise you will be exposed to some MATLAB concepts that are relevant for the course. You need to answer each task found in the "MATLAB_intro.m" file. If you are new to MATLAB you may want to read "IN3015_IN4015_MATLAB_intro.pdf".
 
 ## Additional USTB exercise:
-NB! You don't need add anything to the report from this exercise.
+NB! You don't need to add anything to the report from this exercise.
 
-You are going to use the USTB quite alot in this course. Below are a few relevant USTB examples you should work thorugh. You should also install the simulation tools Field II and kWave that 
-is used quite a lot together with the USTB. The kWave toolbox will for example be used in the exercise for module 2.
+You are going to use the USTB quite a lot in this course. Below are a few relevant USTB examples you should work through. You should also install the simulation tools Field II and kWave that 
+are used quite a lot together with the USTB. The kWave toolbox will for example be used in the exercise for module 2.
 
 + Get to know the UltraSound ToolBox by running and getting familiar with multiple examples 
 	+ Pure USTB examples. Run at least five of these

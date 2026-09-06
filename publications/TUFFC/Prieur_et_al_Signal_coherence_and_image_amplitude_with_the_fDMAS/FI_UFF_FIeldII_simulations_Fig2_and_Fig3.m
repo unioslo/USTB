@@ -27,8 +27,13 @@
 
 clear all; close all;
 
+if strcmp(tools.headless_publish_figure_visible(), 'on')
+    set(groot, 'DefaultFigureVisible', 'on');
+end
+
 % data location
-url='http://ustb.no/datasets/';      % if not found downloaded from here
+url = tools.zenodo_dataset_files_base();
+% if not found downloaded from here
 local_path = [ustb_path(),'/data/']; % location of example data
 
 
@@ -79,7 +84,7 @@ das = postprocess.coherent_compounding();
 das.input = delayed_b_data;
 b_data = das.go();
 
-b_data.plot([],'DAS');
+tools.publish_beamformed_snap(b_data, 'DAS');
 
 %% Create the DMAS image using the delay_multiply_and_sum postprocess
 
@@ -92,7 +97,7 @@ dmas.receive_apodization = delay.receive_apodization;
 
 b_data_dmas=dmas.go();
 
-b_data_dmas.plot(100,'DMAS');
+tools.publish_beamformed_snap(b_data_dmas, 'DMAS');
 
 %% Get images
 
@@ -101,7 +106,7 @@ imgDAS=reshape(b_data.data,b_data.scan.N_z_axis,b_data.scan.N_x_axis);
 
 %% Speckle image
 % Image normalization by image mean
-figure('color','w','position',[  -850   706   682   287],'name','norm mean');
+fh_nm = figure('color','w','position',[  -850   706   682   287],'name','norm mean');
 subplot(1,2,1);
 mDAS=mean(abs(imgDAS(:)));
 imagesc(b_data.scan.x_axis*1e3,b_data.scan.z_axis*1e3,db(abs(imgDAS)/mDAS));
@@ -116,7 +121,7 @@ set(gca,'position',[0.52 0.148 0.4 0.815]);daspect([1 1 1]);
 xlabel('azimuth [mm]','fontweight','bold','fontsize',16)
 
 % Image normalization by image max
-figure('color','w','position',[  -850   706   682   287],'name','norm max');
+fh_nmax = figure('color','w','position',[  -850   706   682   287],'name','norm max');
 subplot(1,2,1);
 mDAS=max(abs(imgDAS(:)));
 imagesc(b_data.scan.x_axis*1e3,b_data.scan.z_axis*1e3,db(abs(imgDAS)/mDAS));
@@ -130,8 +135,12 @@ caxis([-60 0]);colorbar;colormap gray;
 set(gca,'position',[0.52 0.148 0.4 0.815]);daspect([1 1 1]);
 xlabel('azimuth [mm]','fontweight','bold','fontsize',16)
 
+drawnow;
+tools.publish_snap_now_figure(fh_nm);
+tools.publish_snap_now_figure(fh_nmax);
+
 %% Speckle statistics
-figure('color','w','position',[-616    62   617   502]);
+fh_stat = figure('color','w','position',[-616    62   617   502]);
 subplot('position',[0.053 0.58 0.43 0.38]);
 h=histogram(real(imgDAS(:)/mDAS),100,'Normalization','pdf');
 x=h.BinEdges(1:end-1)+h.BinWidth/2;axis('tight')
@@ -175,3 +184,6 @@ a=annotation('textbox',[0.7 0.186 0.180 0.194],...
     ' \sigma = ',num2str(sigma,'%.3f'),...
     ' SNR = ',num2str(mu/sigma,'%.3f')]);
 set(a,'linestyle','none','fontweight','bold','fontsize',14);
+
+drawnow;
+tools.publish_snap_now_figure(fh_stat);
