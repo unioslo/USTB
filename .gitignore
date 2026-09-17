@@ -43,3 +43,4 @@ __pycache__/
 python/dist/
 website/api/
 /das_c.mexa64
+.DS_Store
