@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Generalized Beamformer – UltraSound ToolBox</title>
+    <link rel="icon" href="assets/images/ustb-logo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Gudea:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css">
+    <style>
+        .page-content h2 { margin-top: 1.75rem; }
+        .gb-quote { border-left: 3px solid #c9302c; padding: 10px 20px; margin: 15px 0; background: #f9f9f9; }
+        .gb-code { background: #f5f5f5; border: 1px solid #ddd; border-radius: 3px; padding: 12px 15px; overflow-x: auto; font-size: 13px; line-height: 1.5; }
+        .gb-figure { margin: 20px 0; }
+        .gb-figure img { max-width: 100%; border: 1px solid #ddd; background: #fff; }
+        .gb-caption { color: #666; font-size: 0.9rem; margin-top: 6px; }
+        .pub-links { font-size: 14px; margin-top: 5px; }
+        .pub-links a { margin-right: 10px; }
+    </style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-inner">
+        <div class="site-branding">
+            <a href="index.html"><img src="assets/images/ustb-logo.png" alt="USTB Logo"></a>
+            <div>
+                <div class="site-title"><a href="index.html">UltraSound ToolBox</a></div>
+                <div class="site-description">MATLAB toolbox for processing ultrasonic signals</div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<nav class="main-nav">
+    <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="documentation.html">Documentation</a></li>
+        <li><a href="examples.html">Examples</a></li>
+        <li><a href="datasets.html">Datasets</a></li>
+        <li><a href="publications.html">Publications</a></li>
+        <li><a href="team.html">Team</a></li>
+        <li><a href="citation.html">Citation</a></li>
+    </ul>
+</nav>
+
+<div class="content-wrap">
+    <main class="main-content">
+        <div class="page-content">
+            <h1>The Generalized Beamformer</h1>
+            <p>The Generalized Beamformer (GB) is the unified, pixel-based beamforming framework at the core of USTB — it is what <code>midprocess.das</code> actually implements. A single core expression reconstructs plane-wave, diverging-wave, single-element (STA), and focused transmit sequences alike, with only the transmit delay model and apodization parameters changing between them.</p>
+
+            <blockquote class="gb-quote">
+                Rindal, O. M. H., Vrålstad, A. E., Avdal, J., Fiorentini, S., Austeng, A., Rodriguez-Molares, A. (2026). <em>The Generalized Beamformer in the UltraSound ToolBox.</em> <em>Ultrasonics</em>, 170, 108289. <a href="https://doi.org/10.1016/j.ultras.2026.108289" target="_blank">doi:10.1016/j.ultras.2026.108289</a>
+            </blockquote>
+            <div class="pub-links">
+                <a href="https://authors.elsevier.com/a/1nnk4,yaZx5-I" target="_blank">Read the article (free access)</a>
+                <a href="https://www.techrxiv.org/users/684320/articles/1263073-the-generalized-beamformer-in-the-ultrasound-toolbox" target="_blank">Preprint (TechRxiv)</a>
+                <a href="https://github.com/unioslo/USTB/tree/master/sandbox/The_Generalized_Beamformer" target="_blank">MATLAB code</a>
+                <a href="publications.html">Full publication entry &amp; figures</a>
+            </div>
+
+            <h2>One framework, four transmit sequences</h2>
+            <p>The same <code>midprocess.das</code> object beamforms focused, diverging, plane-wave, and single-element (STA) transmit sequences. Only the transmit apodization and delay model configuration change; the delay-and-sum core is shared. Below, all four sequences are beamformed from the same L7 linear-array acquisitions and produce comparable image quality, despite using fundamentally different transmit wavefronts:</p>
+
+            <div class="gb-figure">
+                <img src="assets/images/generalized_beamformer/four_transmit_sequences.png" alt="Compounded images from plane wave, diverging wave, single-element (STA), and focused transmit sequences, all beamformed with midprocess.das">
+                <p class="gb-caption">Fig. 5 in the paper: plane wave (11 Tx), diverging wave (25 Tx), single-element/STA (128 Tx), and focused (128 Tx) imaging of the same CIRS phantom, all beamformed with <code>midprocess.das</code>.</p>
+            </div>
+
+            <p>The only code that differs between transmit types is the apodization/delay-model setup — everything downstream (<code>mid.go()</code>) is identical:</p>
+            <pre class="gb-code"><code>mid = midprocess.das();
+mid.dimension = dimension.receive;
+mid.channel_data = channel_data;
+mid.scan = scan;
+
+if contains(filename, 'FI')
+    % Focused: hybrid spherical transmit delay model, tight receive MLA
+    mid.spherical_transmit_delay_model = spherical_transmit_delay_model.hybrid;
+    mid.pw_margin = 2/1000;
+    mid.transmit_apodization.window = uff.window.tukey25;
+    mid.transmit_apodization.f_number = 2.5;
+    mid.transmit_apodization.MLA = MLA;
+    mid.transmit_apodization.MLA_overlap = MLA;
+    mid.transmit_apodization.minimum_aperture = [2.5e-03 2.5e-03];
+else
+    % Plane wave / diverging wave / STA: no transmit apodization window
+    mid.transmit_apodization.window = uff.window.none;
+    mid.transmit_apodization.f_number = 1.7;
+end
+
+mid.receive_apodization.window = uff.window.hamming;
+mid.receive_apodization.f_number = 1.7;</code></pre>
+            <p class="gb-caption">From <a href="https://github.com/unioslo/USTB/blob/master/sandbox/The_Generalized_Beamformer/TheGB_all_transmit_sequences.m" target="_blank">TheGB_all_transmit_sequences.m</a> — full script (with data download, single-transmit vs. compounded display, and acquisition-parameter table) published under <a href="publications.html">Publications</a>.</p>
+
+            <h2>Synthetic transmit focusing for adaptive beamforming</h2>
+            <p>Because the GB exposes the delayed data per transmit event before compounding (<code>dimension.none</code>/<code>dimension.receive</code>/<code>dimension.transmit</code>), it enables a novel <em>synthetic transmit focusing</em> (STF) strategy: coherently combine signals across transmit events first, then apply adaptive processing (e.g. Coherence Factor or Minimum Variance) on the already-focused data — instead of running the adaptive processor once per transmit event and only compounding afterwards. For Coherent Plane-Wave Compounding (CPWC), this reduces computational complexity substantially while improving resolution and maintaining contrast:</p>
+
+            <div class="gb-figure">
+                <img src="assets/images/generalized_beamformer/double_adaptive_comparison.png" alt="Five beamformer combinations: DAS/MV on receive and transmit, including double-adaptive MV-on-MV">
+                <p class="gb-caption">Fig. 7 in the paper: five ways of combining DAS and Capon Minimum Variance (MV) across receive and transmit dimensions on the same CPWC acquisition.</p>
+            </div>
+
+            <div class="gb-figure">
+                <img src="assets/images/generalized_beamformer/stf_metrics.png" alt="Bar charts comparing computation time, gCNR, and FWHM resolution across the five beamformer combinations">
+                <p class="gb-caption">Running MV once on the synthetically-focused transmit data (<code>DAS<sub>RX</sub> &rarr; MV<sub>TX</sub></code>) is roughly 13&times; faster than double-adaptive MV-on-MV (0.14 vs. 1.88 min) while matching its resolution (0.19 mm FWHM) and gCNR.</p>
+            </div>
+
+            <p>Synthetic transmit focusing is just DAS on the transmit dimension only, fed into an adaptive postprocess configured for the transmit dimension:</p>
+            <pre class="gb-code"><code>% Step 1: DAS on receive only (keeps transmit events separate)
+das.dimension = dimension.receive;
+das.receive_apodization = receive_apodization;
+b_data_das = das.go();
+
+% Step 2: Apply adaptive beamforming across the transmit dimension
+adapt_tx.dimension = dimension.transmit;
+adapt_tx.input = b_data_das;
+img = adapt_tx.go();</code></pre>
+            <p class="gb-caption">Trimmed from <a href="https://github.com/unioslo/USTB/blob/master/sandbox/The_Generalized_Beamformer/CPWC_double_adaptive_redone.m" target="_blank">CPWC_double_adaptive_redone.m</a> (<code>adapt_tx</code> is a <code>postprocess.capon_minimum_variance</code>) — see the full script, all five combinations, and the gCNR/resolution analysis under <a href="publications.html">Publications</a>.</p>
+
+            <h2>Try it yourself</h2>
+            <ul>
+                <li><a href="https://github.com/unioslo/USTB/tree/master/sandbox/The_Generalized_Beamformer" target="_blank">Browse the MATLAB scripts</a> used to produce the paper's figures, including cardiac, fetal, and sonar applications.</li>
+                <li><a href="publications.html#generalized-beamformer">See the published, executed HTML output</a> of the two scripts featured above, with full code and console output.</li>
+                <li><a href="datasets.html" target="_blank">Download the L7 datasets</a> (plane wave, diverging wave, STA, focused) used in the all-transmit-sequences example.</li>
+            </ul>
+
+            <h2>Citing this work</h2>
+            <p>If USTB's beamforming contributes to your published work, please cite <strong>both</strong> the IUS 2017 toolbox paper and the Generalized Beamformer paper above — see <a href="citation.html">Citation</a> for the full policy and machine-readable metadata. <code>midprocess.das</code> also prints a one-time reminder of both references to the MATLAB console the first time it is run in a session.</p>
+        </div>
+    </main>
+
+    <aside class="sidebar">
+        <div class="sidebar-widget">
+            <h3>About</h3>
+            <p>The Generalized Beamformer is the pixel-based delay-and-sum core shared by all transmit sequences in USTB, implemented in <code>midprocess.das</code>.</p>
+        </div>
+        <div class="sidebar-widget">
+            <h3>Paper</h3>
+            <ul style="list-style: none; padding-left: 0;">
+                <li><a href="https://doi.org/10.1016/j.ultras.2026.108289" target="_blank">DOI: 10.1016/j.ultras.2026.108289</a></li>
+                <li><a href="https://authors.elsevier.com/a/1nnk4,yaZx5-I" target="_blank">Free-access link</a></li>
+                <li><a href="https://www.techrxiv.org/users/684320/articles/1263073-the-generalized-beamformer-in-the-ultrasound-toolbox" target="_blank">TechRxiv preprint</a></li>
+            </ul>
+        </div>
+        <div class="sidebar-widget">
+            <h3>Code &amp; data</h3>
+            <ul style="list-style: none; padding-left: 0;">
+                <li><a href="https://github.com/unioslo/USTB/tree/master/sandbox/The_Generalized_Beamformer" target="_blank">Sandbox scripts</a></li>
+                <li><a href="datasets.html">UFF datasets</a></li>
+                <li><a href="https://github.com/unioslo/USTB" target="_blank">Repository</a></li>
+            </ul>
+        </div>
+    </aside>
+</div>
+
+<footer class="site-footer">
+    <p>Theme: <a href="https://themezee.com/themes/wellington/" target="_blank">Wellington</a> by ThemeZee.</p>
+</footer>
+
+</body>
+</html>
