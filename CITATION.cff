@@ -1,10 +1,13 @@
 cff-version: 1.2.0
 title: UltraSound ToolBox
 message: >-
-  If you use this software in academic work, cite the IUS 2017 paper in
-  preferred-citation. Depending on your use, you may also need to cite datasets
-  and individual processes — see the Citation page on the project website and
-  the `reference` fields on UFF objects and processes in MATLAB.
+  If you use this software in academic work, cite BOTH the IUS 2017 paper in
+  preferred-citation (which introduced the toolbox) AND the Generalized
+  Beamformer paper listed under references (which describes the core
+  beamformer, midprocess.das, used by most USTB pipelines). Depending on your
+  use, you may also need to cite datasets and individual processes — see the
+  Citation page on the project website and the `reference` fields on UFF
+  objects and processes in MATLAB.
 type: software
 license: MIT
 repository-code: "https://github.com/unioslo/USTB"
@@ -60,3 +63,26 @@ preferred-citation:
   start: 1
   end: 4
   doi: 10.1109/ULTSYM.2017.8092389
+references:
+  - type: article
+    title: "The Generalized Beamformer in the UltraSound ToolBox"
+    authors:
+      - family-names: Rindal
+        given-names: Ole Marius Hoel
+      - family-names: Vrålstad
+        given-names: Anders Emil
+      - family-names: Avdal
+        given-names: "Jørgen"
+      - family-names: Fiorentini
+        given-names: Stefano
+      - family-names: Austeng
+        given-names: Andreas
+      - family-names: Rodriguez-Molares
+        given-names: Alfonso
+    journal: Ultrasonics
+    volume: 170
+    year: 2026
+    doi: 10.1016/j.ultras.2026.108289
+    notes: >-
+      Describes the core Generalized Beamformer (midprocess.das) used by most
+      USTB pipelines. Cite alongside the preferred-citation above.
