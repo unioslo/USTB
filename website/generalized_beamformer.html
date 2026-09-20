@@ -103,20 +103,19 @@ mid.receive_apodization.f_number = 1.7;</code></pre>
 
             <div class="gb-figure">
                 <img src="assets/images/generalized_beamformer/stf_metrics.png" alt="Bar charts comparing computation time, gCNR, and FWHM resolution across the five beamformer combinations">
-                <p class="gb-caption">Running MV once on the synthetically-focused transmit data (<code>DAS<sub>RX</sub> &rarr; MV<sub>TX</sub></code>) is roughly 13&times; faster than double-adaptive MV-on-MV (0.14 vs. 1.88 min) while matching its resolution (0.19 mm FWHM) and gCNR.</p>
+                <p class="gb-caption">Synthetically focusing the transmit dimension first and running MV once on receive (<code>DAS<sub>TX</sub> &rarr; MV<sub>RX</sub></code>) is roughly 13&times; faster than double-adaptive MV-on-MV (0.14 vs. 1.88 min) while matching its resolution (0.19 mm FWHM) and gCNR.</p>
             </div>
 
-            <p>Synthetic transmit focusing is just DAS on the transmit dimension only, fed into an adaptive postprocess configured for the transmit dimension:</p>
-            <pre class="gb-code"><code>% Step 1: DAS on receive only (keeps transmit events separate)
-das.dimension = dimension.receive;
-das.receive_apodization = receive_apodization;
+            <p>Synthetic transmit focusing sums the delayed data across the transmit dimension first (synthesizing a focused transmit), then feeds that into an adaptive postprocess configured for the receive dimension:</p>
+            <pre class="gb-code"><code>% Step 1: DAS on transmit only (synthesizes a focused transmit)
+das.dimension = dimension.transmit;
+das.receive_apodization = receive_apodization_none_window;
 b_data_das = das.go();
 
-% Step 2: Apply adaptive beamforming across the transmit dimension
-adapt_tx.dimension = dimension.transmit;
-adapt_tx.input = b_data_das;
-img = adapt_tx.go();</code></pre>
-            <p class="gb-caption">Trimmed from <a href="https://github.com/unioslo/USTB/blob/master/sandbox/The_Generalized_Beamformer/CPWC_double_adaptive_redone.m" target="_blank">CPWC_double_adaptive_redone.m</a> (<code>adapt_tx</code> is a <code>postprocess.capon_minimum_variance</code>) — see the full script, all five combinations, and the gCNR/resolution analysis under <a href="publications.html">Publications</a>.</p>
+% Step 2: Apply adaptive beamforming across the receive dimension
+adapt_rx.input = b_data_das;
+img = adapt_rx.go();</code></pre>
+            <p class="gb-caption">Trimmed from <a href="https://github.com/unioslo/USTB/blob/master/sandbox/The_Generalized_Beamformer/CPWC_double_adaptive_redone.m" target="_blank">CPWC_double_adaptive_redone.m</a> (<code>adapt_rx</code> is a <code>postprocess.capon_minimum_variance</code> with <code>dimension.receive</code>) — see the full script, all five combinations, and the gCNR/resolution analysis under <a href="publications.html">Publications</a>.</p>
 
             <h2>Try it yourself</h2>
             <ul>
