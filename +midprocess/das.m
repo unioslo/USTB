@@ -36,9 +36,10 @@ classdef das < midprocess
     %   See also MIDPROCESS, DIMENSION, CODE, SPHERICAL_TRANSMIT_DELAY_MODEL
     %
     %   References:
-    %       Rindal et al., "The Generalized Beamformer", TechRxiv preprint,
-    %       https://www.techrxiv.org/users/684320/articles/1263073-the-generalized-beamformer-in-the-ultrasound-toolbox
-    
+    %       Rindal et al., "The Generalized Beamformer in the UltraSound
+    %       ToolBox", Ultrasonics, 170, 108289, 2026.
+    %       https://doi.org/10.1016/j.ultras.2026.108289
+
     %   authors:    Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no>
     %               Ole Marius Hoel Rindal <olemarius@olemarius.net>
     %               Stefano Fiorentini <stefano.fiorentini@ntnu.no>
@@ -66,7 +67,8 @@ classdef das < midprocess
     methods (Access = public)
         function h=das()
             h.name='USTB DAS General Beamformer';
-            h.reference= 'www.ustb.no';
+            h.reference= ['Rindal, O. M. H. et al. (2026). The Generalized Beamformer in the ' ...
+                'UltraSound ToolBox. Ultrasonics, 170, 108289. https://doi.org/10.1016/j.ultras.2026.108289'];
             h.implemented_by={'Stefano Fiorentini <stefano.fiorentini@ntnu.no>', 'Alfonso Rodriguez-Molares <alfonso.r.molares@ntnu.no>','Ole Marius Hoel Rindal <olemarius@olemarius.net>'};
             h.version='v1.1.0';
         end
@@ -75,7 +77,8 @@ classdef das < midprocess
     %% go method
     methods
         function beamformed_data=go(h)
-            
+            tools.print_citation_reminder();
+
             % short names
             N_pixels = h.scan.N_pixels;
             N_channels = h.channel_data.N_channels;

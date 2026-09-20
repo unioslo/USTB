@@ -19,9 +19,12 @@ The USTB source is available from **both** of these official locations; use whic
 
 ### Citationware ###
 
-The USTB is made possible through the contribution of several labs around the world. It contains pieces of intellectual property from many authors, and because of that different references must be cited depending on your use of USTB. There are three kinds of intellectual properties that must be acknowledged: datasets, processes, and the toolbox itself. Please se our website http://www.ustb.no/citation/ for details on how to properly refence the intellectual property. Be sure to reference our proceedings paper from IUS (IEEE International Ultrasonics Symposium) 2017 whenever you are using the toolbox in research or other publications:
+The USTB is made possible through the contribution of several labs around the world. It contains pieces of intellectual property from many authors, and because of that different references must be cited depending on your use of USTB. There are three kinds of intellectual properties that must be acknowledged: datasets, processes, and the toolbox itself. Please se our website http://www.ustb.no/citation/ for details on how to properly refence the intellectual property. Be sure to reference **both** of the following whenever you are using the toolbox in research or other publications: our proceedings paper from IUS (IEEE International Ultrasonics Symposium) 2017, which introduced the toolbox, and the latest Generalized Beamformer paper, which describes the core beamformer (`midprocess.das`) used by most USTB pipelines:
 
 * Rodriguez-Molares, A., Rindal, O. M. H., Bernard, O., Nair, A., Bell, M. A. L., Liebgott, H., Austeng, A., Løvstakken, L. (2017). *The UltraSound ToolBox.* IEEE International Ultrasonics Symposium, IUS, 1–4. https://doi.org/10.1109/ULTSYM.2017.8092389
+* Rindal, O. M. H., Vrålstad, A. E., Avdal, J., Fiorentini, S., Austeng, A., Rodriguez-Molares, A. (2026). *The Generalized Beamformer in the UltraSound ToolBox.* Ultrasonics, 170, 108289. https://doi.org/10.1016/j.ultras.2026.108289
+
+Datasets and individual processes beyond the core beamformer may require additional references — see the `reference` property of the corresponding UFF class or process. `midprocess.das` prints a one-time reminder of the above in the MATLAB console the first time it is run in a session.
 
 Machine-readable citation metadata: [`CITATION.cff`](CITATION.cff) (GitHub citation / CFF) and [`citation.bib`](citation.bib) (BibTeX) at the repository root. The code is released under the [MIT License](LICENSE); citation expectations for research are separate from that license (see the website citation page).
 

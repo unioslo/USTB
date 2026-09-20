@@ -48,10 +48,14 @@
             <p>The backbone of USTB are its processes. A process is an abstract class that implements some kind of processing or algorithm. For instance a process can be a delay-and-sum beamformer, a coherence factor computation, a clutter filter, an edge detector, etc. All these processes have an associated <code>reference</code> property that must be cited if you want to use that process in your work. Note that sometimes more than one process is used in the processing chain; every process must be cited.</p>
 
             <h2>Toolbox</h2>
-            <p>The USTB toolbox should be cited as well. Please use the reference from the proceedings of the IUS (IEEE International Ultrasonics Symposium) 2017:</p>
+            <p>The USTB toolbox should be cited as well. Please cite <strong>both</strong> of the references below: the proceedings paper from the IUS (IEEE International Ultrasonics Symposium) 2017, which introduced the toolbox, and the Generalized Beamformer paper, which describes the core beamformer (<code>midprocess.das</code>) used by most USTB pipelines:</p>
             <blockquote style="border-left: 3px solid #c9302c; padding: 10px 20px; margin: 15px 0; background: #f9f9f9;">
                 Rodriguez-Molares, A., Rindal, O. M. H., Bernard, O., Nair, A., Bell, M. A. L., Liebgott, H., Austeng, A., Løvstakken, L. (2017). <em>The UltraSound ToolBox.</em> IEEE International Ultrasonics Symposium, IUS, 1–4. <a href="https://doi.org/10.1109/ULTSYM.2017.8092389">doi:10.1109/ULTSYM.2017.8092389</a>
             </blockquote>
+            <blockquote style="border-left: 3px solid #c9302c; padding: 10px 20px; margin: 15px 0; background: #f9f9f9;">
+                Rindal, O. M. H., Vrålstad, A. E., Avdal, J., Fiorentini, S., Austeng, A., Rodriguez-Molares, A. (2026). <em>The Generalized Beamformer in the UltraSound ToolBox.</em> Ultrasonics, 170, 108289. <a href="https://doi.org/10.1016/j.ultras.2026.108289">doi:10.1016/j.ultras.2026.108289</a>
+            </blockquote>
+            <p>MATLAB will also print a one-time reminder of these two references in the command window the first time <code>midprocess.das</code> is run in a session.</p>
 
             <h2>Authors vs implementers</h2>
             <p>Processes also have an <code>implemented_by</code> property. In many cases algorithms are not implemented by their original authors. There is no mechanism yet to cite implementations, unless the implementation itself is a piece of intellectual property and has an associated reference. But implementers can be acknowledged in the acknowledgements section of your article or thesis.</p>
@@ -66,12 +70,13 @@
                 <li>R. Mallart and M. Fink, <em>Adaptive focusing in scattering media through sound-speed inhomogeneities: The van Cittert Zernike approach and focusing criterion,</em> J. Acoust. Soc. Am., vol. 96, no. 6, pp. 3721-3732, 1994.</li>
             </ul>
 
-            <p>And you should also add the reference of the UltraSound ToolBox:</p>
+            <p>And you should also add the two references of the UltraSound ToolBox itself, since forming the beamformed image uses the core beamformer (<code>midprocess.das</code>):</p>
             <ul>
                 <li>Rodriguez-Molares, A., Rindal, O. M. H., Bernard, O., Nair, A., Bell, M. A. L., Liebgott, H., Austeng, A., Løvstakken, L. (2017). <em>The UltraSound ToolBox.</em> IEEE International Ultrasonics Symposium, IUS, 1–4. <a href="https://doi.org/10.1109/ULTSYM.2017.8092389">doi:10.1109/ULTSYM.2017.8092389</a></li>
+                <li>Rindal, O. M. H., Vrålstad, A. E., Avdal, J., Fiorentini, S., Austeng, A., Rodriguez-Molares, A. (2026). <em>The Generalized Beamformer in the UltraSound ToolBox.</em> Ultrasonics, 170, 108289. <a href="https://doi.org/10.1016/j.ultras.2026.108289">doi:10.1016/j.ultras.2026.108289</a></li>
             </ul>
 
-            <p>These 4 references must be included in your article or thesis.</p>
+            <p>These 5 references must be included in your article or thesis.</p>
         </div>
     </main>
 
