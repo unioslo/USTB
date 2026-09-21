@@ -69,7 +69,10 @@ classdef ulm_tracking2d_test < matlab.unittest.TestCase
             Tracks = ulm.tracking2D(MatTracking, ULM, 'velocityinterp');
 
             testCase.verifyNumElements(Tracks, 1);
-            track = Tracks{1};
+            % tracking2D returns tracks as single; compare as double so
+            % verifyEqual's AbsTol check isn't tripped up by a class
+            % mismatch (single vs double) on otherwise-equal values.
+            track = double(Tracks{1});
             testCase.verifySize(track, [size(track, 1), 5]); % z x vz vx t
 
             % Constant axial speed of 1 px/frame => 1 px/s given scale(3)=1.
