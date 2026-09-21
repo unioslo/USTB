@@ -80,6 +80,61 @@ def _plot_sector_scan(scan, img_db, title, dynamic_range):
     return fig, ax
 
 
+def plot_channel_data(channel_data, n_wave=None, plot_abs=True, title=None):
+    """Plot raw or demodulated channel data as a (channel, time) image.
+
+    Mirrors MATLAB uff.channel_data.plot(figure, n_wave, plot_abs).
+
+    Args:
+        channel_data: object with .data [samples x channels x waves x
+            frames], .sampling_frequency, .initial_time.
+        n_wave: which transmit wave to plot (default: the middle one).
+        plot_abs: if True, plot the envelope magnitude; if False, plot the
+            real and imaginary parts side by side (for IQ data).
+        title: plot title.
+    """
+    data = np.asarray(channel_data.data)
+    if data.ndim == 2:
+        data = data[:, :, np.newaxis]
+    elif data.ndim == 4:
+        data = data[:, :, :, 0]
+
+    N_samples, N_channels, N_waves = data.shape
+    if n_wave is None:
+        n_wave = N_waves // 2
+
+    fs = float(channel_data.sampling_frequency)
+    t0 = float(channel_data.initial_time)
+    time_us = (t0 + np.arange(N_samples) / fs) * 1e6
+
+    trace = data[:, :, n_wave]
+
+    if plot_abs:
+        fig, ax = plt.subplots(1, 1, figsize=(6, 6))
+        img = np.abs(trace)
+        pcm = ax.pcolormesh(np.arange(1, N_channels + 1), time_us, img,
+                             cmap="inferno", shading="gouraud")
+        ax.invert_yaxis()
+        ax.set_xlabel("Channel")
+        ax.set_ylabel("time [us]")
+        ax.set_title(title if title else f"Beam {n_wave}")
+        plt.colorbar(pcm, ax=ax)
+        plt.tight_layout()
+        return fig, ax
+    else:
+        fig, axes = plt.subplots(1, 2, figsize=(11, 6))
+        for ax, part, label in zip(axes, [trace.real, trace.imag], ["Real", "Imaginary"]):
+            pcm = ax.pcolormesh(np.arange(1, N_channels + 1), time_us, part,
+                                 cmap="inferno", shading="gouraud")
+            ax.invert_yaxis()
+            ax.set_xlabel("Channel")
+            ax.set_ylabel("time [us]")
+            ax.set_title(f"{label} Part - Beam {n_wave}")
+            plt.colorbar(pcm, ax=ax)
+        plt.tight_layout()
+        return fig, axes
+
+
 def _plot_linear_scan(scan, img_db, title, dynamic_range):
     """Rectangular linear scan display using pcolormesh for scan conversion."""
     x_axis = np.asarray(scan.x_axis).ravel()

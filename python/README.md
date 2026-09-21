@@ -43,9 +43,14 @@ b_data.plot(title="My Image")
 
 - **`midprocess.DAS`** — Generalized Delay-And-Sum beamformer
 - **`preprocess.FastDemodulation`** — RF to IQ conversion
-- **`postprocess.CoherenceFactor`** — Mallart-Fink coherence factor
+- **`preprocess.Demodulation`** — Kaiser-windowed band-pass/low-pass IQ demodulation
+- **`postprocess.CoherenceFactor`** — Mallart-Fink coherence factor (with the raw CF map exposed via `.CF`)
+- **`postprocess.CoherentCompounding`** / **`IncoherentCompounding`** — multi-transmit/receive compounding
 - **`postprocess.Median`** — 2D median filter for speckle reduction
-- **Scan-converted display** — sector and linear scan visualization
+- **`Pipeline`** — chain preprocess/midprocess/postprocess steps in one call
+- **`tools`** — `download`, `zenodo_dataset_files_base`, `scan_convert`, `power_spectrum`, `uniform_fov_weighting`
+- **`BeamformedData.get_image()` / `.save_as_gif()`** — image extraction and animated B-mode export
+- **Scan-converted display** — sector and linear scan visualization, plus raw channel-data preview via `plotting.plot_channel_data`
 - **UFF I/O** — reads/writes USTB UFF files via [pyuff-ustb](https://github.com/magnusdk/pyuff_ustb)
 
 ## Examples

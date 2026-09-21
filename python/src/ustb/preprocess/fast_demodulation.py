@@ -7,6 +7,8 @@ low-pass filtering, and decimation.
 import numpy as np
 from scipy.signal import firwin, filtfilt, decimate
 
+from ustb.preprocess._channel_data_view import DemodulatedChannelData
+
 
 class FastDemodulation:
     """Fast IQ demodulation for channel data.
@@ -23,9 +25,6 @@ class FastDemodulation:
 
     def go(self):
         """Execute demodulation. Returns a modified channel_data copy."""
-        from pyuff_ustb.objects.uff import Uff
-        from copy import copy
-
         ch_data = self.input
         data = np.array(ch_data.data, dtype=np.float64)
         if data.ndim == 2:
@@ -79,74 +78,9 @@ class FastDemodulation:
             new_t0 = t0
 
         # Create output channel_data with updated properties
-        output = _copy_channel_data(ch_data)
+        output = DemodulatedChannelData(ch_data)
         output._data_override = iq_data.astype(np.complex64)
         output._fs_override = new_fs
         output._t0_override = new_t0
         output._fc_override = fc
         return output
-
-
-class _DemodulatedChannelData:
-    """Lightweight wrapper around channel data with overridden fields."""
-
-    def __init__(self, original):
-        self._original = original
-        self._data_override = None
-        self._fs_override = None
-        self._t0_override = None
-        self._fc_override = None
-
-    @property
-    def data(self):
-        if self._data_override is not None:
-            return self._data_override
-        return self._original.data
-
-    @property
-    def sampling_frequency(self):
-        return self._fs_override or self._original.sampling_frequency
-
-    @property
-    def initial_time(self):
-        return self._t0_override if self._t0_override is not None else self._original.initial_time
-
-    @property
-    def modulation_frequency(self):
-        return self._fc_override or self._original.modulation_frequency
-
-    @property
-    def sound_speed(self):
-        return self._original.sound_speed
-
-    @property
-    def sequence(self):
-        return self._original.sequence
-
-    @property
-    def probe(self):
-        return self._original.probe
-
-    @property
-    def pulse(self):
-        return self._original.pulse
-
-    @property
-    def N_samples(self):
-        return self.data.shape[0]
-
-    @property
-    def N_channels(self):
-        return self.data.shape[1]
-
-    @property
-    def N_waves(self):
-        return self.data.shape[2]
-
-    @property
-    def N_frames(self):
-        return self.data.shape[3] if self.data.ndim > 3 else 1
-
-
-def _copy_channel_data(ch_data):
-    return _DemodulatedChannelData(ch_data)
