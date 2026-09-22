@@ -66,6 +66,12 @@ if strcmp(ULM.LocMethod,'interp')
     end
 end
 
+if strcmp(ULM.LocMethod,'curvefitting') && isempty(ver('optim'))
+    warning(['LocMethod ''curvefitting'' calls lsqcurvefit/optimoptions, which require the ' ...
+        'Optimization Toolbox. It does not appear to be installed; localization2D will error ' ...
+        'once it reaches the first candidate.']);
+end
+
 if ~isfield(ULM.parameters,'NLocalMax')
     if fwhmz==3,ULM.parameters.NLocalMax = 2;
     else,ULM.parameters.NLocalMax = 3;

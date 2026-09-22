@@ -1,0 +1,4 @@
+# Ignore all generated figures and output files in this folder
+*
+!.gitignore
+!.keep_this_folder_in_git
