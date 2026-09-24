@@ -1,8 +1,13 @@
 %% Step 1: Data Loading
 % Start by loading the first chunk of channel data and the uff scan object 
-file_path = [ustb_path(),'/data/']; 
-invivo_ch_data = uff.read_object([file_path filesep 'InVivoRatBrain.uff'], '/1/channel_data');
-invivo_scan = uff.read_object([file_path filesep 'InVivoRatBrain.uff'], '/scan');
+data_path = [ustb_path(),'/data/']; 
+figure_path = [ustb_path(),'/examples/ulm/Figure/'];
+if ~exist(figure_path, 'dir')
+    mkdir(figure_path);
+end
+
+invivo_ch_data = uff.read_object([data_path filesep 'InVivoRatBrain.uff'], '/1/channel_data');
+invivo_scan = uff.read_object([data_path filesep 'InVivoRatBrain.uff'], '/scan');
 
 % Use only the first xx frames
 invivo_ch_data.data = invivo_ch_data.data(:,:,:,1:40);
@@ -43,12 +48,28 @@ cf = postprocess.coherence_factor();
 cf.dimension = dimension.receive;
 
 
-% Before computing them, setting a higher framerate, and displaying the
-% results.
-cf.input = das.go();
+invivo_b_das = das.go();
+cf.input = invivo_b_das;
 invivo_b_cf = cf.go();
 invivo_b_cf.frame_rate = 100;
-invivo_b_cf.plot([], 'InVivo Rat Brain CF', 60)
+
+% Save SVD-filtered DAS beamformed B-mode image
+fig_das = figure('Visible', 'off');
+invivo_b_das.plot(fig_das, 'InVivo Rat Brain SVD-Filtered DAS', 60);
+exportgraphics(gca, [figure_path 'Beamformed_DAS_SVD_filtered.png']);
+
+% Save SVD-filtered Coherence Factor (CF) beamformed image
+fig_cf = figure('Visible', 'off');
+invivo_b_cf.plot(fig_cf, 'InVivo Rat Brain SVD-Filtered CF', 60);
+exportgraphics(gca, [figure_path 'Beamformed_CF_SVD_filtered.png']);
+
+% Save Maximum Intensity Projection (MIP) of SVD-filtered CF over all 40 frames
+fig_mip = figure('Visible', 'off');
+mip_data = uff.beamformed_data(invivo_b_cf);
+mip_data.data = max(abs(invivo_b_cf.data), [], 4);
+mip_data.plot(fig_mip, 'InVivo Rat Brain SVD-Filtered CF (MIP over 40 frames)', 60);
+exportgraphics(gca, [figure_path 'Beamformed_CF_SVD_filtered_MIP.png']);
+
 
 
 %% Step 3: The actual ULM part
@@ -130,11 +151,12 @@ tracks = u.go();
 % Synthesize a "track" image. Other image modes are available. See
 % enumeration("ulm.image_mode") for more
 ulm_img = u.create_image(tracks, "tracks");
-figure;
+fig1 = figure('Visible', 'off');
 imagesc(invivo_scan.x_axis * 1e3, invivo_scan.z_axis * 1e3, ulm_img);
 xlabel("X [mm]");ylabel("z [mm]");
 title('ULM InVivo Rat Brain')
 colormap turbo;
+exportgraphics(gca, [figure_path 'ULM_InVivo_Rat_Brain.png']);
 
 
 %% Step 5b: ULM Image Construction with interpolation
@@ -148,8 +170,15 @@ colormap turbo;
 
 u.tracking = ulm.tracking.velocity_interpolation;
 ulm_img = u.create_image(u.go(), "tracks");
-figure;
+fig2 = figure('Visible', 'off');
 imagesc(invivo_scan.x_axis * 1e3, invivo_scan.z_axis * 1e3, ulm_img);
 xlabel("X [mm]");ylabel("z [mm]");
 title('ULM InVivo Rat Brain with interpolation')
 colormap turbo;
+exportgraphics(gca, [figure_path 'ULM_InVivo_Rat_Brain_interpolated.png']);
+fprintf('\nSaved output images to:\n - %s\n - %s\n - %s\n - %s\n - %s\n', ...
+    [figure_path 'Beamformed_DAS_SVD_filtered.png'], ...
+    [figure_path 'Beamformed_CF_SVD_filtered.png'], ...
+    [figure_path 'Beamformed_CF_SVD_filtered_MIP.png'], ...
+    [figure_path 'ULM_InVivo_Rat_Brain.png'], ...
+    [figure_path 'ULM_InVivo_Rat_Brain_interpolated.png']);

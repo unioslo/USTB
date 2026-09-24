@@ -57,9 +57,9 @@ classdef ulm_tracking2d_test < matlab.unittest.TestCase
         end
 
         function test_velocityinterp_returns_position_and_velocity_columns(testCase)
-            testCase.assumeTrue(~isempty(ver('curvefit')), ...
-                'velocityinterp mode requires the Curve Fitting Toolbox (smooth()).');
-
+            % Unlike master, this branch's tracking2D no longer calls
+            % smooth() (it uses ulm.movingAverageShrink instead), so
+            % this no longer needs the Curve Fitting Toolbox.
             nFrames = 20;
             MatTracking = testCase.straightLineTrack(nFrames, [1 0], [10 10]);
 

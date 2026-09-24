@@ -3,13 +3,26 @@ local_path = [ustb_path(),'/data/'];
 base_url = 'https://zenodo.org/records/7883227/files/';
 
 %%
+% Downloading metadata param.mat
+param_url = [base_url 'param.mat?download=1'];
+param_file = [local_path 'param.mat'];
+if ~exist(param_file, 'file')
+    fprintf("Downloading metadata param.mat...\n");
+    websave(param_file, param_url);
+end
+
 % Downloading first 25 RF files
-fprintf("Donwloading in vivo rat brain data");
-RF_url = [base_url 'RF_001_to_025.zip?download=1'];
 RF_file = [local_path 'RF_001_to_025.zip'];
-websave(RF_file, RF_url)
-unzip(RF_file, local_path);
-fprintf("Done!");
+if ~exist([local_path filesep 'RF'], 'dir')
+    if ~exist(RF_file, 'file')
+        fprintf("Downloading in vivo rat brain data...\n");
+        RF_url = [base_url 'RF_001_to_025.zip?download=1'];
+        websave(RF_file, RF_url);
+    end
+    fprintf("Unpacking in vivo rat brain data...\n");
+    unzip(RF_file, local_path);
+end
+fprintf("Done!\n");
 
 %% Step 2: Initial data loading
 % Downloaded rat data needs to be converted to UFF
@@ -66,6 +79,11 @@ device.Resource = struct( ...
 %   /20/channel_data
 % 
 
+uff_filename = [local_path filesep 'InVivoRatBrain.uff'];
+if exist(uff_filename, 'file')
+    delete(uff_filename);
+end
+
 for chunk_i = 1:N_chunks
     if N_chunks > 1
 
@@ -84,7 +102,7 @@ for chunk_i = 1:N_chunks
     ch_data.modulation_frequency = ch_data.sampling_frequency; 
 
 
-    uff.write_object([local_path filesep 'InVivoRatBrain.uff'], ch_data, 'channel_data', ['/' num2str(chunk_i)]);
+    uff.write_object(uff_filename, ch_data, 'channel_data', ['/' num2str(chunk_i)]);
 end
 
 tools.workbar(1);
@@ -102,7 +120,7 @@ scan_obj.x_axis = lmb_x * ch_data.lambda;
 scan_obj.z_axis = lmb_z * ch_data.lambda;
 
 % Write scan grid to the root of the UFF file
-uff.write_object([local_path filesep 'InVivoRatBrain.uff' ], scan_obj, 'scan', '/');
+uff.write_object(uff_filename, scan_obj, 'scan', '/');
 
 fprintf('Successfully saved Rat Brain UFF file');
 
