@@ -18,7 +18,7 @@ The report should be uploaded to [devilry.ifi.uio.no](https://devilry.ifi.uio.no
 The first exercise is simply to demonstrate that you have installed MATLAB and successfully set up the USTB. Run the "minimal_example.m" in this folder and add
 your name to the title of the figure of the ultrasound image. Save this figure and add it to your report.
 
-NB! If you have trouble downloading the data using the download tool you can download the data directly from Zenodo: https://zenodo.org/records/19550715/files/Verasonics_P2-4_parasternal_long_small.uff?download=1
+NB! If you have trouble downloading the data using the download tool you can download the data directly from Zenodo: https://zenodo.org/records/20261898/files/Verasonics_P2-4_parasternal_long_small.uff?download=1
 Delete the corrupt file with the same filename and move the downloaded data to the "data/" folder in the USTB repository and rerun the example. 
 
 NB! If there are issues with the compiled mex files, the quick workaround for the "midprocessor" is to state that you want to use the MATLAB implementation by using "mid.code = code.matlab;"
