@@ -146,6 +146,8 @@ To regenerate MATLAB reference data:
 ```bash
 matlab -batch "addpath('.'); run('python/tests/generate_all_references.m');"
 matlab -batch "addpath('.'); run('python/tests/generate_apodization_reference.m');"
+# Small committed references used in CI (tests/ci_reference/, test_ci_matlab_reference.py)
+matlab -batch "addpath('.'); run('python/tests/generate_ci_references.m');"
 ```
 
 #### Running Python examples

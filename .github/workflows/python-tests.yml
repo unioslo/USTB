@@ -24,6 +24,23 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      # Datasets for the pixel-by-pixel comparison with the committed MATLAB
+      # references (tests/test_ci_matlab_reference.py); one job is enough.
+      - name: Cache datasets
+        if: matrix.python-version == '3.12'
+        uses: actions/cache@v4
+        with:
+          path: data
+          key: ci-datasets-L7_CPWC_193328-PICMUS_experiment_resolution_distortion
+
+      - name: Download datasets
+        if: matrix.python-version == '3.12'
+        run: |
+          mkdir -p data
+          for f in L7_CPWC_193328.uff PICMUS_experiment_resolution_distortion.uff; do
+            [ -f "data/$f" ] || curl -fL --retry 3 -o "data/$f" "https://zenodo.org/records/20261898/files/$f"
+          done
+
       - name: Install package with dev dependencies
         working-directory: python
         run: pip install -e ".[dev]"
