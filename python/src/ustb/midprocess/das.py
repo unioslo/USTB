@@ -11,6 +11,11 @@ from scipy.interpolate import interp1d
 from ustb.enums import Dimension, Wavefront
 from ustb.apodization import Apodization
 
+try:
+    from ustb.midprocess._das_kernel import das_kernel
+except ImportError:  # numba not installed: fall back to the NumPy loop
+    das_kernel = None
+
 
 class DAS:
     """Generalized DAS beamformer matching MATLAB midprocess.das.
@@ -204,7 +209,51 @@ class DAS:
     def _beamform(ch_data, ch_data_time, tx_apodization, rx_apodization,
                   transmit_delay, receive_delay, w0, dim,
                   N_pixels, N_channels, N_waves, N_frames):
-        """Pure-Python DAS beamformer matching MATLAB tools.matlab_beamformer."""
+        """DAS beamformer matching MATLAB tools.matlab_beamformer.
+
+        Uses the numba-compiled kernel when numba is available, otherwise a
+        NumPy loop over waves and channels (the same algorithm, much slower).
+        """
+        if das_kernel is not None:
+            return DAS._beamform_numba(ch_data, ch_data_time, tx_apodization, rx_apodization,
+                                       transmit_delay, receive_delay, w0, dim,
+                                       N_pixels, N_channels, N_waves, N_frames)
+        return DAS._beamform_numpy(ch_data, ch_data_time, tx_apodization, rx_apodization,
+                                   transmit_delay, receive_delay, w0, dim,
+                                   N_pixels, N_channels, N_waves, N_frames)
+
+    @staticmethod
+    def _output_shape(dim, N_pixels, N_channels, N_waves, N_frames):
+        return {
+            Dimension.none: (N_pixels, N_channels, N_waves, N_frames),
+            Dimension.receive: (N_pixels, 1, N_waves, N_frames),
+            Dimension.transmit: (N_pixels, N_channels, 1, N_frames),
+            Dimension.both: (N_pixels, 1, 1, N_frames),
+        }[Dimension(dim)]
+
+    @staticmethod
+    def _beamform_numba(ch_data, ch_data_time, tx_apodization, rx_apodization,
+                        transmit_delay, receive_delay, w0, dim,
+                        N_pixels, N_channels, N_waves, N_frames):
+        bf_data = np.zeros(DAS._output_shape(dim, N_pixels, N_channels, N_waves, N_frames),
+                           dtype=np.complex64)
+        t0 = float(ch_data_time[0])
+        dt = float(ch_data_time[1] - ch_data_time[0]) if len(ch_data_time) > 1 else 1.0
+        das_kernel(
+            np.ascontiguousarray(ch_data, dtype=np.complex64), t0, dt,
+            np.ascontiguousarray(tx_apodization, dtype=np.float32),
+            np.ascontiguousarray(rx_apodization, dtype=np.float32),
+            np.ascontiguousarray(transmit_delay, dtype=np.float32),
+            np.ascontiguousarray(receive_delay, dtype=np.float32),
+            float(w0), int(dim), bf_data,
+        )
+        return bf_data
+
+    @staticmethod
+    def _beamform_numpy(ch_data, ch_data_time, tx_apodization, rx_apodization,
+                        transmit_delay, receive_delay, w0, dim,
+                        N_pixels, N_channels, N_waves, N_frames):
+        """NumPy DAS loop matching MATLAB tools.matlab_beamformer."""
         if dim == Dimension.none:
             bf_data = np.zeros((N_pixels, N_channels, N_waves, N_frames), dtype=np.complex64)
         elif dim == Dimension.receive:

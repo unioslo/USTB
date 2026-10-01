@@ -174,12 +174,12 @@ class Apodization:
         f_number = self._pair(self.f_number)
         min_ap = self._pair(self.minimum_aperture) * f_number
         max_ap = self._pair(self.maximum_aperture) * f_number
+        z_dist = np.asarray(z_dist, dtype=np.float64)
+        abs_z, sign_z = np.abs(z_dist), np.sign(z_dist)
         limited = []
         for axis in range(2):
-            zd = np.array(z_dist, dtype=np.float64, copy=True)
-            zd[np.abs(z_dist) <= min_ap[axis]] = np.sign(zd[np.abs(z_dist) <= min_ap[axis]]) * min_ap[axis]
-            zd[np.abs(z_dist) >= max_ap[axis]] = np.sign(zd[np.abs(z_dist) >= max_ap[axis]]) * max_ap[axis]
-            limited.append(zd)
+            zd = np.where(abs_z <= min_ap[axis], sign_z * min_ap[axis], z_dist)
+            limited.append(np.where(abs_z >= max_ap[axis], sign_z * max_ap[axis], zd))
         return limited
 
     # ------------------------------------------------------------------
@@ -341,7 +341,16 @@ class Apodization:
         window = _WINDOWS.get(Window(int(getattr(self.window, "value", self.window))))
         if window is None:
             raise ValueError(f"Unknown apodization window: {self.window!r}")
-        return (window(ratio_theta) * window(ratio_phi)).astype(np.float32)
+        weights = window(ratio_theta)
+        # Every window is 1 at ratio 0, so skip the elevation window for 1-D
+        # geometries (all ratio_phi == 0). Where ratio_phi is NaN (0/0 at zero
+        # depth) the weight is 0, as in the full computation.
+        zero_phi = ratio_phi == 0
+        if zero_phi.all():
+            return weights.astype(np.float32)
+        if (zero_phi | np.isnan(ratio_phi)).all():
+            return np.where(zero_phi, weights, 0.0).astype(np.float32)
+        return (weights * window(ratio_phi)).astype(np.float32)
 
 
 class _Point:
