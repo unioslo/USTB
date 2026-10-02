@@ -32,24 +32,26 @@ Machine-readable citation metadata: [`CITATION.cff`](CITATION.cff) (GitHub citat
 
 The USTB is actively developed, so there might be structural changes between releases. The current version in `master` is:
 
-* v2.3: https://github.com/unioslo/USTB/releases/tag/v2.3.3
+* v3.0: https://github.com/unioslo/USTB/releases/tag/v3.0.0
+
+The toolbox is also available as an installable MATLAB toolbox (`.mltbx`) from [GitHub Releases](https://github.com/unioslo/USTB/releases) and requires MATLAB R2020b or later.
 
 compared to the previous version:
 
-* v2.2: https://github.com/unioslo/USTB/releases/tag/v2.2.4
+* v2.3: https://github.com/unioslo/USTB/releases/tag/v2.3.3
 
 the main changes are:
 
-* A new implementation of the sector scan allowing to compensate for blocked arrays
-* Improve the speed of the beamformer
-* A CUDA implementation of the generalized beamformer
-* corrected implementation of Unified Delay Model for RTB/MLA processing
-* major update of the FLUST simulator
-* corrected issue with diverging wave delay calculation
-* corrected data location for unit tests
-* added examples and exercises used in the course IN3015/4015 Ultrasound Imaging at the University of Oslo.
+* Ultrasound localization microscopy (ULM) framework (`+ulm`), with processing of rat brain data
+* Fourier-domain beamforming examples
+* Retrospective transmit correction of blocked arrays
+* Examples and scripts for the paper *The Generalized Beamformer in the UltraSound ToolBox* (Ultrasonics, 2026)
+* A Python implementation of USTB, available on PyPI (`pip install ustb`)
+* Automatic dataset download from Zenodo and a catalog of the public datasets
+* Wave physics exercises for the course IN3015/4015 Ultrasound Imaging at the University of Oslo
+* Released under the MIT License
+* Continuous integration with MATLAB and Python tests on GitHub Actions, and published examples on the website
 * several bugfixes and other improvements have been done as well.
-* more tests have been added
 
 ### Using a MAC? ###
 If you are using a Mac and are getting an error running the das_c.mexmaca64 file be sure to install the oneTBB parallelization library.

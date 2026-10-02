@@ -4,8 +4,8 @@
     <param.authnamewatermark>The UltraSound ToolBox Taskforce</param.authnamewatermark>
     <param.email>contact@ustb.no</param.email>
     <param.company>UiO, NTNU, CREATIS, JHU</param.company>
-    <param.summary>USTB: a toolbox for ultrasonic signal processing</param.summary>
-    <param.description>USTB is a free MATLAB toolbox for processing ultrasonic signals Its aim is to facilitate the comparison of imaging techniques and the dissemination of research results. USTB covers processing techniques for both tissue and flow visualization, as well as other image processing techniques.</param.description>
+    <param.summary>Open-source MATLAB toolbox for beamforming, processing and visualization of ultrasonic signals.</param.summary>
+    <param.description>The UltraSound ToolBox (USTB) is an open-source MATLAB toolbox for processing ultrasonic signals. Its aim is to make it easy to compare imaging techniques and to share research results. USTB covers processing for tissue and flow visualization, as well as other image reconstruction techniques. At its core is the Generalized Beamformer, a single pixel-based framework that beamforms plane-wave, diverging-wave, synthetic-aperture and focused transmit sequences alike. Examples, datasets, documentation and citation information: https://www.ustb.no</param.description>
     <param.screenshot>${PROJECT_ROOT}\helpfiles\USTB_logo.png</param.screenshot>
     <param.version>3.0.0</param.version>
     <param.output>${PROJECT_ROOT}\USTB.mltbx</param.output>
@@ -551,7 +551,7 @@ run_tests_matlab.m
     <param.required.addons />
     <param.matlab.project.id />
     <param.matlab.project.name />
-    <param.release.start />
+    <param.release.start>R2020b</param.release.start>
     <param.release.end />
     <param.release.current.only>false</param.release.current.only>
     <param.compatiblity.windows>true</param.compatiblity.windows>
@@ -579,7 +579,6 @@ run_tests_matlab.m
       <param.required.addons />
       <param.matlab.project.id />
       <param.matlab.project.name />
-      <param.release.start />
       <param.release.end />
       <param.release.current.only />
       <param.compatiblity.windows />
