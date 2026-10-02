@@ -30,7 +30,7 @@ USTB (UltraSound ToolBox) is an open-source toolbox for beamforming, processing,
 |---|---|---|
 | MATLAB tests | `matlab -batch "results = runtests('tests'); assertSuccess(results);"` | Requires MATLAB + Signal_Processing_Toolbox |
 | MATLAB legacy tests | `matlab -batch "ut = unit_test(); ut.all();"` | Downloads test data from ustb.no |
-| Python tests | `cd python && pip install -e '.[dev]' && pytest tests/` | Unit tests run without MATLAB or datasets |
+| Python tests | `cd python && pip install -e '.[dev]' && pytest tests/` | Unit tests and the committed MATLAB references run without MATLAB or datasets |
 | Python integration tests | `cd python && pytest tests/test_integration_matlab.py tests/test_examples_vs_matlab.py` | Requires MATLAB reference HDF5 files and datasets |
 | Sphinx docs build | `sphinx-build -b html docs docs/_build/html` | Python 3 + `pip install -r docs/requirements.txt` |
 | Website preview | `cd website && python3 -m http.server 8090` | Static site, no build step |
@@ -90,7 +90,7 @@ cd python
 pip install -e ".[dev]"   # editable install with test dependencies
 ```
 
-Dependencies: `numpy`, `scipy`, `matplotlib`, `pyuff-ustb>=3.0.0`
+Dependencies: `numpy`, `scipy`, `matplotlib`, `numba` (DAS and Capon kernels), `pyuff-ustb>=3.0.0`; Python >= 3.10
 
 #### Package structure (`python/src/ustb/`)
 
@@ -100,6 +100,12 @@ Dependencies: `numpy`, `scipy`, `matplotlib`, `pyuff-ustb>=3.0.0`
 | `ustb.preprocess.FastDemodulation` | `preprocess.fast_demodulation` | RF → IQ conversion |
 | `ustb.postprocess.CoherenceFactor` | `postprocess.coherence_factor` | Mallart-Fink CF |
 | `ustb.postprocess.Median` | `postprocess.median` | 2D median filter |
+| `ustb.preprocess.SVDFilter`, `ustb.postprocess.SVDFilter` | `preprocess/postprocess.svd_filter` | SVD clutter filter across frames |
+| `ustb.postprocess.GeneralizedCoherenceFactor`, `PhaseCoherenceFactor` | `generalized_coherence_factor`, `phase_coherence_factor` | Coherence-based weighting |
+| `ustb.postprocess.CaponMinimumVariance` | `postprocess.capon_minimum_variance` | Minimum variance (numba kernel) |
+| `ustb.postprocess.DelayMultiplyAndSum` | `postprocess.delay_multiply_and_sum` | DMAS |
+| `ustb.postprocess.ShortLagSpatialCoherence` | `postprocess.short_lag_spatial_coherence` | SLSC (published definition; MATLAB uses a MEX without source) |
+| `ustb.postprocess.AutocorrelationDisplacementEstimation`, `Modified...` | `(modified_)autocorrelation_displacement_estimation` | Kasai / Loupas Doppler |
 | `ustb.enums.Dimension` | `dimension` | none/receive/transmit/both |
 | `ustb.enums.Wavefront` | `uff.wavefront` | plane/spherical/photoacoustic |
 | `ustb.enums.Window` | `uff.window` | none/boxcar/hanning/hamming/tukey/scanline |
@@ -148,6 +154,8 @@ matlab -batch "addpath('.'); run('python/tests/generate_all_references.m');"
 matlab -batch "addpath('.'); run('python/tests/generate_apodization_reference.m');"
 # Small committed references used in CI (tests/ci_reference/, test_ci_matlab_reference.py)
 matlab -batch "addpath('.'); run('python/tests/generate_ci_references.m');"
+matlab -batch "addpath('.'); run('python/tests/generate_process_references.m');"  # ci_reference/processes.h5
+matlab -batch "addpath('.'); run('python/tests/generate_flow_references.m');"     # ci_reference/flow.h5
 ```
 
 #### Running Python examples
