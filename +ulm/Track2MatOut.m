@@ -99,7 +99,7 @@ switch mode
             if strcmp(mode,'2D_velmean')
                 velnorm = Tracks{itrack}(:,3);
             else
-                velnorm = smooth(vecnorm(Tracks{itrack}(:,3:4),2,2),10); % velocity is smoothed
+                velnorm = ulm.movingAverageShrink(vecnorm(Tracks{itrack}(:,3:4),2,2),10); % velocity is smoothed
             end
             if strcmp(mode,'2D_vel_z')
                 % encode the direction of the velocity in positive/negative value

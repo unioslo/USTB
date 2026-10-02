@@ -3,24 +3,10 @@ classdef ulm_class_test < matlab.unittest.TestCase
     % validation, the derived `process` struct, threshold defaulting,
     % and the pairing() classification statistics.
     %
-    % ulm.ULM's constructor unconditionally requires a large set of
-    % paid toolboxes (Bioinformatics, Curve Fitting, Statistics and
-    % Machine Learning, Computer Vision, ...) on top of MATLAB itself.
-    % The whole class is skipped when any of them is not installed so
-    % this stays CI-safe on minimal MATLAB installs; run it on a fully
-    % licensed workstation to get real coverage.
-
-    methods (TestClassSetup)
-        function skipIfMissingToolboxes(testCase)
-            % Short names as understood by ver(), mirroring the
-            % toolboxes ulm.ULM's constructor requires.
-            requiredIds = {'comm', 'bioinfo', 'images', 'curvefit', ...
-                'signal', 'stats', 'parallel', 'vision'};
-            haveAll = all(cellfun(@(id) ~isempty(ver(id)), requiredIds));
-            testCase.assumeTrue(haveAll, ...
-                'ulm.ULM requires toolboxes that are not installed in this environment.');
-        end
-    end
+    % Unlike master, this branch's ulm.ULM constructor only warns (not
+    % errors) about missing toolboxes, so construction -- and every
+    % method exercised below (input/scan setters, update(), process,
+    % pairing()) -- works without them; no toolbox gate needed here.
 
     methods (Test)
         function test_set_input_rejects_non_beamformed_data(testCase)

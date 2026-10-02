@@ -113,13 +113,19 @@ classdef ULM < handle
     methods
         function h = ULM()
             % Checking licenses and features
-            ToolBoxRequires = {'Communications','Bioinformatics','Image Processing','Curve Fitting','Signal Processing','Statistics and Machine Learning','Parallel Computing','Computer Vision Toolbox'};
+            % Image Processing is the only toolbox any function under +ulm
+            % actually calls (imregionalmax, imresize); Communications,
+            % Bioinformatics, Curve Fitting, Signal Processing, Statistics
+            % and Machine Learning, Parallel Computing, and Computer
+            % Vision Toolbox were declared here but unused.
+            ToolBoxRequires = {'Image Processing'};
+            installedToolboxes = {ver().Name}; % struct2array(ver) needs Statistics and Machine Learning Toolbox; this doesn't.
             err = 0;
             for featureName=ToolBoxRequires
-               IsInstalledToolbox = contains(struct2array(ver), featureName{1});
-               if ~IsInstalledToolbox, warning([featureName{1} ' is missing']),err=1;end
+               IsInstalledToolbox = contains(installedToolboxes, featureName{1});
+               if ~any(IsInstalledToolbox), warning([featureName{1} ' is missing']),err=1;end
             end
-            if err,error('Toolbox are missing.');end;clear ToolBoxRequires featureName IsInstalledToolbox err
+            if err, warning('Some optional toolboxes are missing, proceeding with available functions.'); end; clear ToolBoxRequires featureName IsInstalledToolbox err
         end
         function update(h)
             if isempty(h.threshold_pairing)

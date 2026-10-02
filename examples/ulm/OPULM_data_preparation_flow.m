@@ -43,8 +43,8 @@ fprintf("Unpacking PALA InSilicoFlow RF data....");
 unzip([local_path 'PALA_data_InSilicoFlow_RF.zip'], local_path )
 fprintf("Done!\n");
 
-% Metadata              
-tools.download('PALA_data_InSilicoFlow_RF.zip', url, local_path);
+% Metadata
+tools.download('PALA_data_InSilicoFlow.zip', url, local_path);
 % Unpack zip
 fprintf("Unpacking PALA InSilicoFlow metadata....");
 unzip([local_path 'PALA_data_InSilicoFlow.zip'], local_path )

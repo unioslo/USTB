@@ -116,8 +116,8 @@ switch lower(mode)
             track_points=double(Tracks_raw{1,i_track});
             xi=track_points(:,2);
             zi=track_points(:,1);
-            zu=interp1(1:length(zi),smooth(zi,smooth_factor),1:interp_factor:length(zi));
-            xu=interp1(1:length(xi),smooth(xi,smooth_factor),1:interp_factor:length(xi));
+            zu=interp1(1:length(zi),ulm.movingAverageShrink(zi,smooth_factor),1:interp_factor:length(zi));
+            xu=interp1(1:length(xi),ulm.movingAverageShrink(xi,smooth_factor),1:interp_factor:length(xi));
 
             if length(zi)>ULM.min_length
                 Tracks_out{i_track,1}=cat(2,zu,xu);
@@ -133,8 +133,8 @@ switch lower(mode)
             TimeAbs=(0:(length(zi)-1))*ULM.scale(3);
 
             % Interpolation of spatial and time components
-            zu=interp1(1:length(zi),smooth(zi,smooth_factor),1:interp_factor:length(zi));
-            xu=interp1(1:length(xi),smooth(xi,smooth_factor),1:interp_factor:length(xi));
+            zu=interp1(1:length(zi),ulm.movingAverageShrink(zi,smooth_factor),1:interp_factor:length(zi));
+            xu=interp1(1:length(xi),ulm.movingAverageShrink(xi,smooth_factor),1:interp_factor:length(xi));
             TimeAbs_interp = interp1(1:length(TimeAbs),TimeAbs,1:interp_factor:length(TimeAbs));
 
             % Velocity
@@ -161,8 +161,8 @@ switch lower(mode)
             end
 
             % Interpolate tracks for density rendering
-            zu = interp1(1:length(zi),smooth(zi,smooth_factor),1:interp_factor:length(zi));
-            xu = interp1(1:length(xi),smooth(xi,smooth_factor),1:interp_factor:length(xi));
+            zu = interp1(1:length(zi),ulm.movingAverageShrink(zi,smooth_factor),1:interp_factor:length(zi));
+            xu = interp1(1:length(xi),ulm.movingAverageShrink(xi,smooth_factor),1:interp_factor:length(xi));
             dd = sqrt(diff(xu).^2+diff(zu).^2); % curvilinear abscissa
             vmean = sum(dd)./(length(zi))/ULM.scale(3); % averaged velocity of the track in [unit]/s
 
