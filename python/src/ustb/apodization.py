@@ -6,6 +6,7 @@ The geometry and window definitions are ported from +uff/apodization.m.
 """
 
 import numpy as np
+from ustb._scan_grid import scan_grid
 from ustb.enums import Wavefront, Window
 
 
@@ -124,8 +125,12 @@ class Apodization:
         oz = np.array([o.z for o in origin])[index]
         return ox[:, None], oy[:, None], oz[:, None]
 
-    def _incidence_aperture(self):
-        """Tangents of the pixel-element angles (MATLAB incidence_aperture)."""
+    def _incidence_aperture(self, return_distance=False):
+        """Tangents of the pixel-element angles (MATLAB incidence_aperture).
+
+        With ``return_distance``, also returns the pixel-element distance along
+        the aperture axis (MATLAB's third output).
+        """
         px, py, pz = self._focus_xyz()
         ex = np.asarray(self.probe.x, dtype=np.float64).ravel()[None, :]
         ey = np.asarray(self.probe.y, dtype=np.float64).ravel()[None, :]
@@ -167,19 +172,20 @@ class Apodization:
         x_dist, y_dist, z_dist = _rotate_points(x_dist, y_dist, z_dist, tilt[0], tilt[1])
         zx_dist, zy_dist = self._limit_aperture(z_dist)
         with np.errstate(divide="ignore", invalid="ignore"):
-            return x_dist / zx_dist, y_dist / zy_dist
+            tangents = (x_dist / zx_dist, y_dist / zy_dist)
+        return tangents + (z_dist,) if return_distance else tangents
 
     def _limit_aperture(self, z_dist):
         """Clamp the depth used for the aperture to [minimum, maximum] * f-number."""
         f_number = self._pair(self.f_number)
         min_ap = self._pair(self.minimum_aperture) * f_number
         max_ap = self._pair(self.maximum_aperture) * f_number
+        z_dist = np.asarray(z_dist, dtype=np.float64)
+        abs_z, sign_z = np.abs(z_dist), np.sign(z_dist)
         limited = []
         for axis in range(2):
-            zd = np.array(z_dist, dtype=np.float64, copy=True)
-            zd[np.abs(z_dist) <= min_ap[axis]] = np.sign(zd[np.abs(z_dist) <= min_ap[axis]]) * min_ap[axis]
-            zd[np.abs(z_dist) >= max_ap[axis]] = np.sign(zd[np.abs(z_dist) >= max_ap[axis]]) * max_ap[axis]
-            limited.append(zd)
+            zd = np.where(abs_z <= min_ap[axis], sign_z * min_ap[axis], z_dist)
+            limited.append(np.where(abs_z >= max_ap[axis], sign_z * max_ap[axis], zd))
         return limited
 
     # ------------------------------------------------------------------
@@ -288,50 +294,15 @@ class Apodization:
         return B[:, lateral_index, 0].T.astype(np.float32)
 
     def _scanline_lateral_index(self):
-        """Lateral (azimuth or x) index of every pixel, and the number of scanlines.
-
-        The pixel order is detected from the scan axes, so scans in pyuff_ustb
-        order (lateral axis varying fastest) and in MATLAB order (depth varying
-        fastest) are both handled.
-        """
-        focus = self.focus
-        px, _, pz = self._focus_xyz()
-        azimuth_axis = getattr(focus, "azimuth_axis", None)
-        x_axis = getattr(focus, "x_axis", None)
-
-        if azimuth_axis is not None:
-            azimuth = np.asarray(azimuth_axis, dtype=np.float64).ravel()
-            depth = np.asarray(focus.depth_axis, dtype=np.float64).ravel()
-            depth_grid, lateral = np.meshgrid(depth, np.arange(azimuth.size), indexing="ij")
-            origin = getattr(focus, "origin", None)
-            single = origin is not None and not isinstance(origin, (list, tuple))
-            ox, oz = (origin.x, origin.z) if single else (0.0, 0.0)
-            x_grid = depth_grid * np.sin(azimuth[lateral]) + ox
-            z_grid = depth_grid * np.cos(azimuth[lateral]) + oz
-            N_lateral = azimuth.size
-        elif x_axis is not None:
-            x_values = np.asarray(x_axis, dtype=np.float64).ravel()
-            z_values = np.asarray(focus.z_axis, dtype=np.float64).ravel()
-            lateral, depth_index = np.meshgrid(np.arange(x_values.size), np.arange(z_values.size),
-                                               indexing="ij")
-            x_grid, z_grid = x_values[lateral], z_values[depth_index]
-            N_lateral = x_values.size
-        else:
+        """Lateral (azimuth or x) index of every pixel, and the number of scanlines."""
+        try:
+            _, lateral_index, _, N_lateral = scan_grid(self.focus)
+        except ValueError as error:
             raise ValueError(
                 "The scan class does not support scanline based beamforming. This must be "
                 "done manually, defining several scans and setting the apodization to none."
-            )
-
-        if isinstance(getattr(focus, "origin", None), (list, tuple)):
-            # One origin per scanline: pyuff_ustb cannot compute x for these
-            # scans itself, so assume its default (lateral fastest) ordering
-            return lateral.ravel(order="C"), N_lateral
-        for order in ("C", "F"):
-            if (px.size == x_grid.size
-                    and np.allclose(x_grid.ravel(order=order), px, rtol=0, atol=1e-9)
-                    and np.allclose(z_grid.ravel(order=order), pz, rtol=0, atol=1e-9)):
-                return lateral.ravel(order=order), N_lateral
-        raise ValueError("Could not match the scan pixels to its axes for scanline apodization")
+            ) from error
+        return lateral_index, N_lateral
 
     # ------------------------------------------------------------------
     # Windows (MATLAB uff.apodization window methods)
@@ -341,7 +312,16 @@ class Apodization:
         window = _WINDOWS.get(Window(int(getattr(self.window, "value", self.window))))
         if window is None:
             raise ValueError(f"Unknown apodization window: {self.window!r}")
-        return (window(ratio_theta) * window(ratio_phi)).astype(np.float32)
+        weights = window(ratio_theta)
+        # Every window is 1 at ratio 0, so skip the elevation window for 1-D
+        # geometries (all ratio_phi == 0). Where ratio_phi is NaN (0/0 at zero
+        # depth) the weight is 0, as in the full computation.
+        zero_phi = ratio_phi == 0
+        if zero_phi.all():
+            return weights.astype(np.float32)
+        if (zero_phi | np.isnan(ratio_phi)).all():
+            return np.where(zero_phi, weights, 0.0).astype(np.float32)
+        return (weights * window(ratio_phi)).astype(np.float32)
 
 
 class _Point:
