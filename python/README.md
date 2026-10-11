@@ -41,17 +41,21 @@ b_data.plot(title="My Image")
 
 ## Features
 
-- **`midprocess.DAS`** — Generalized Delay-And-Sum beamformer
-- **`preprocess.FastDemodulation`** — RF to IQ conversion
-- **`preprocess.Demodulation`** — Kaiser-windowed band-pass/low-pass IQ demodulation
-- **`postprocess.CoherenceFactor`** — Mallart-Fink coherence factor (with the raw CF map exposed via `.CF`)
-- **`postprocess.CoherentCompounding`** / **`IncoherentCompounding`** — multi-transmit/receive compounding
-- **`postprocess.Median`** — 2D median filter for speckle reduction
+- **`midprocess.DAS`** — Generalized Delay-And-Sum beamformer, compiled with numba and run in parallel over pixels
+- **`preprocess`** — `FastDemodulation` and `Demodulation` (RF to IQ), `SVDFilter` (spatiotemporal clutter filter)
+- **`postprocess`**:
+  - compounding: `CoherentCompounding`, `IncoherentCompounding`
+  - adaptive beamforming: `CoherenceFactor`, `GeneralizedCoherenceFactor`, `PhaseCoherenceFactor`, `CaponMinimumVariance`, `DelayMultiplyAndSum`, `ShortLagSpatialCoherence`
+  - flow: `SVDFilter`, `AutocorrelationDisplacementEstimation`, `ModifiedAutocorrelationDisplacementEstimation`
+  - image processing: `Median`
+- **`Apodization`** — every window; receive, transmit (plane and diverging waves) and scanline (MLA) apodization
 - **`Pipeline`** — chain preprocess/midprocess/postprocess steps in one call
-- **`tools`** — `download`, `zenodo_dataset_files_base`, `scan_convert`, `power_spectrum`, `uniform_fov_weighting`
+- **`tools`** — `download`, `zenodo_dataset_files_base`, `scan_convert`, `power_spectrum`, `estimate_frequency`, `uniform_fov_weighting`
 - **`BeamformedData.get_image()` / `.save_as_gif()`** — image extraction and animated B-mode export
 - **Scan-converted display** — sector and linear scan visualization, plus raw channel-data preview via `plotting.plot_channel_data`
 - **UFF I/O** — reads/writes USTB UFF files via [pyuff-ustb](https://github.com/magnusdk/pyuff_ustb)
+
+Documentation: [USTB for Python](https://unioslo.github.io/USTB/api/python/index.html), including a [MATLAB to Python](https://unioslo.github.io/USTB/api/python/matlab_to_python.html) guide (class mapping and known differences).
 
 ## Examples
 

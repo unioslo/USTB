@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Python reimplementation of the UltraSound ToolBox (USTB) for beamforming, processing, and visualization of ultrasonic signals."
 readme = "README.md"
 license = {text = "MIT"}
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 authors = [
     { name = "Ole Marius Hoel Rindal", email = "omrindal@ifi.uio.no" },
     { name = "USTB Contributors" },
@@ -19,12 +19,17 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: Medical Science Apps.",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 
 dependencies = [
     "numpy",
     "scipy",
     "matplotlib",
+    "numba>=0.59",
     "pyuff-ustb>=3.0.0",
 ]
 

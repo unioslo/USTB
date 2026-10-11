@@ -6,7 +6,7 @@ from file I/O, using synthetic data.
 
 import numpy as np
 import pytest
-from ustb.midprocess.das import DAS
+from ustb.midprocess.das import DAS, das_kernel as DAS_KERNEL
 from ustb.enums import Dimension, Wavefront, Window
 
 
@@ -301,3 +301,33 @@ class TestDASBeamformOutput:
         assert abs(peak_z - z_target) < 2e-3, (
             f"Peak at z={peak_z*1e3:.1f}mm, expected {z_target*1e3:.1f}mm"
         )
+
+
+@pytest.mark.skipif(DAS_KERNEL is None, reason="numba not installed")
+class TestNumbaKernel:
+    """The numba kernel must give the same result as the NumPy loop."""
+
+    @pytest.mark.parametrize("dim", list(Dimension))
+    @pytest.mark.parametrize("w0", [0.0, 2 * np.pi * 5e6])
+    def test_should_match_numpy_loop(self, dim, w0):
+        rng = np.random.default_rng(0)
+        N_samples, N_channels, N_waves, N_frames, N_pixels = 200, 6, 3, 2, 50
+        ch_data = (rng.standard_normal((N_samples, N_channels, N_waves, N_frames))
+                   + 1j * rng.standard_normal((N_samples, N_channels, N_waves, N_frames))
+                   ).astype(np.complex64)
+        fs, t0 = 20e6, 1e-6
+        time = (t0 + np.arange(N_samples) / fs).astype(np.float32)
+        # Delays partly outside the recorded time, to test the zero padding
+        rx_delay = rng.uniform(0, 7e-6, (N_pixels, N_channels)).astype(np.float32)
+        tx_delay = rng.uniform(-1e-6, 5e-6, (N_pixels, N_waves)).astype(np.float32)
+        rx_apo = rng.uniform(0, 1, (N_pixels, N_channels)).astype(np.float32)
+        tx_apo = rng.uniform(0, 1, (N_pixels, N_waves)).astype(np.float32)
+        rx_apo[rx_apo < 0.2] = 0
+        tx_apo[:, 1] = 0
+
+        args = (ch_data, time, tx_apo, rx_apo, tx_delay, rx_delay, w0, dim,
+                N_pixels, N_channels, N_waves, N_frames)
+        fast = DAS._beamform_numba(*args)
+        slow = DAS._beamform_numpy(*args)
+        assert fast.shape == slow.shape
+        np.testing.assert_allclose(fast, slow, rtol=1e-4, atol=1e-4 * np.abs(slow).max())

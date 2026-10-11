@@ -7,6 +7,7 @@ on:
       - '.github/workflows/deploy-website.yml'
       - 'website/**'
       - 'docs/**'
+      - 'python/src/**'
       - 'examples/**'
       - '+uff/**'
       - '+midprocess/**'
@@ -20,6 +21,7 @@ on:
       - '.github/workflows/deploy-website.yml'
       - 'website/**'
       - 'docs/**'
+      - 'python/src/**'
       - 'examples/**'
       - '+uff/**'
       - '+midprocess/**'
@@ -51,7 +53,8 @@ jobs:
           python-version: '3.12'
 
       - name: Install Sphinx dependencies
-        run: pip install -r docs/requirements.txt
+        # ./python: the Python API pages (docs/python) import the ustb package
+        run: pip install -r docs/requirements.txt ./python
 
       - name: Build API documentation
         run: sphinx-build -b html docs website/api
