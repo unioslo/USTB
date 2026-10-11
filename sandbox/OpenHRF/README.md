@@ -48,6 +48,33 @@ the USTB origin-referenced plane-wave model as
 wavefront crosses the origin. See `ULMShare_openhrf_to_uff_example.m` for a
 full B-mode / power-Doppler example.
 
+## ULM of ULMShare data
+
+`ULMShare_ULM_example.m` builds a ULM density map of mouse 16, acquisition 1
+(Grade A, Fig. 5 of the ULMShare paper) with USTB. Compared with the ULMShare
+reference processing ([code/example_script.m](https://github.com/provostultrasoundlab/ulmshare)
+with the [TAL toolbox](https://github.com/provostultrasoundlab/TrackingAndLocalizationULM),
+Leconte et al., IEEE TMI 2024):
+
+| Step | ULMShare (TAL) | USTB example |
+|---|---|---|
+| Beamforming | MUST DAS, 25 um grid, F#1.4 | USTB DAS (GPU), same grid and F# |
+| Clutter filter | SVD, 5% of the components rejected | same |
+| Enhancement | lag-1 autocorrelation; optional local TGC (sigma = 9 px) before a second SVD | lag-1, then the same local normalization (no second SVD) |
+| Detection | tracking *before* localization: Jerman vesselness of the (z, x, t) volume, threshold, 3-D thinning into centerlines | the `numberOfParticles` brightest maxima per frame, kept if above `intensity_threshold` |
+| Localization | radial symmetry along the centerlines, averaged over 3 frames | radial symmetry per frame (PALA) |
+| Linking | given by the centerlines, segments >= 20 frames | Hungarian frame-to-frame linking, 1.5 lambda gate, >= 15 frames |
+| Rendering | every spline-interpolated point counted, lambda/10 | each track counted once per pixel, lambda/10 |
+
+Without normalization, the fixed number of maxima per frame fills up with noise
+wherever the noise floor is high (deep tissue, where TGC is largest) and with
+residual skull clutter near the top. Normalizing by the local RMS and keeping
+only localizations with SNR >= 1.5 removes the false band below 7 mm and most
+of the haze between vessels (`ulm.ULM.intensity_threshold` was added for this).
+A plain-MATLAB version of the TAL tracker (vesselness + `bwskel`) was tried but
+needs its own detection threshold before it beats this: on normalized data it
+detects noise "tubes" everywhere.
+
 ## PICMUS policy
 
 PICMUS-sourced acquisitions are **excluded** from this submission, with one

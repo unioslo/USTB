@@ -16,6 +16,7 @@ classdef ULM < handle
         interp_factor = 1/10     % Interpolation factor. Default 1/resolution, given resolution = 10.
         max_linking_distance = 2 % Maximum linking distance between two frames to reject pairing, in pixels. (2-4 pixel).
         numberOfParticles = 70   % Expected number of particles per frame
+        intensity_threshold = 0  % Discard localizations whose input intensity is below this value (0 = keep all)
         min_length = 15          % Minimum length of the tracks
         fwhm = [3 3]             % Size of the mask for localization. (3x3 for pixel at lambda, 5x5 at lambda/2). [fwhmz fwhmx]
         max_gap_closing = 0      % Allowed gap in microbubbles pairing. (0)
@@ -148,6 +149,9 @@ classdef ULM < handle
             fprintf("Running localization...");
 
             [MatTracking] = ulm.localization2D(data_in, h.process);
+            % numberOfParticles always keeps the N brightest maxima per frame;
+            % the threshold drops the ones that are only noise.
+            MatTracking = MatTracking(MatTracking(:,1) >= h.intensity_threshold, :);
 
             fprintf("Done\n");
 

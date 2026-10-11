@@ -9,7 +9,9 @@
 %   1. USTB DAS on the ULMShare grid (25 um, F#1.4), all plane waves compounded
 %   2. SVD clutter filter (5% of the components rejected)
 %   3. lag-1 autocorrelation signal enhancement (7-frame Hanning window)
-%   4. USTB ulm.ULM: radial-symmetry localization + tracking
+%   4. local noise normalization (as ULMShare's optional TGC, sigma = 9 px)
+%   5. USTB ulm.ULM: radial-symmetry localization + tracking, keeping only
+%      localizations above an SNR threshold
 % The tracks of every buffer are saved, so an interrupted run resumes, and are
 % finally rendered into a density map and a directional (up/down flow) map.
 %
@@ -43,11 +45,13 @@ z_axis = (0.5e-3:25e-6:8.5e-3-25e-6).';
 f_number = 1.4;
 clutter_filter_cut = 5/100;     % fraction of SVD components rejected
 lag1_window = 7;                % frames
+normalization_sigma = 9;        % [pixels] Gaussian width of the local noise estimate
 % ULM (positions are tracked in wavelengths)
 ulm_resolution = 10;            % density map pixel = lambda/10
 fwhm = [5 5];                   % localization kernel [pixels]
 n_local_max = 7;                % max regional maxima in a kernel (grid is ~lambda/4)
 number_of_particles = 300;      % max localizations per frame
+snr_threshold = 1.5;            % min normalized intensity of a localization
 max_linking_distance = 1.5;     % [lambda] per frame (~150 mm/s at 1 kHz)
 min_length = 15;                % [frames] (ULMShare uses 20 with its own tracker)
 
@@ -88,7 +92,14 @@ for n_buffer = buffers
     window = reshape(window./sum(window), 1, 1, []);
     enhanced = sqrt(abs(convn(iq(:, :, 1:end-1).*conj(iq(:, :, 2:end)), window, 'same')));
 
-    % 4. ULM localization + tracking
+    % 4. Local noise normalization. The noise floor varies with depth (TGC)
+    % and residual skull clutter is strong near the top; without this the
+    % numberOfParticles brightest maxima per frame fill up with deep noise and
+    % skull clutter. ULMShare applies the same mask before re-running the SVD;
+    % applying it after lag-1 is cheaper and gave the same effect here.
+    enhanced = enhanced./imgaussfilt(sqrt(mean(enhanced.^2, 3)), normalization_sigma);
+
+    % 5. ULM localization + tracking
     b_ulm = uff.beamformed_data();
     b_ulm.scan = scan;
     b_ulm.data = reshape(single(enhanced), scan.N_pixels, 1, 1, []);
@@ -100,6 +111,7 @@ for n_buffer = buffers
     u.fwhm = fwhm;
     u.NLocalMax = n_local_max;
     u.numberOfParticles = number_of_particles;
+    u.intensity_threshold = snr_threshold;
     u.max_linking_distance = max_linking_distance;
     u.min_length = min_length;
     u.resolution = ulm_resolution;
