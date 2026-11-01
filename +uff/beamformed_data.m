@@ -467,6 +467,44 @@ classdef beamformed_data < uff
     end
     
     methods (Access = public )
+         function save_as_movie(h,filename)
+             %SAVE_AS_MOVIE Save the frames of the last plot as a movie
+             %
+             % Usage: b_data.plot([],title,dynamic_range); b_data.save_as_movie(filename)
+             %
+             %   filename    .mp4 (MPEG-4) or .avi (Motion JPEG AVI), frame rate h.frame_rate
+             [~,~,ext] = fileparts(filename);
+             if strcmpi(ext,'.avi')
+                 vidObj = VideoWriter(filename,'Motion JPEG AVI');
+             else
+                 vidObj = VideoWriter(filename,'MPEG-4');
+             end
+             vidObj.Quality = 100;
+             vidObj.FrameRate = h.frame_rate;
+             open(vidObj);
+             axis_handle = get(h.image_handle,'Parent');
+             % the first capture of a new (or invisible) figure can come
+             % out at another scale, so capture once before the movie and
+             % use that size for every frame
+             drawnow();
+             frame = getframe(h.figure_handle);
+             frame_size = size(frame.cdata);
+             for i = 1:size(h.all_images,3)
+                 set(h.image_handle,'CData',h.all_images(:,:,i));
+                 title(axis_handle,[h.in_title,', Frame = ',num2str(i),'/',num2str(size(h.all_images,3))]);
+                 drawnow();
+                 frame = getframe(h.figure_handle);
+                 if ~isequal(size(frame.cdata),frame_size)
+                     % nearest-neighbour rescale to the movie size
+                     rows = round(linspace(1,size(frame.cdata,1),frame_size(1)));
+                     cols = round(linspace(1,size(frame.cdata,2),frame_size(2)));
+                     frame.cdata = frame.cdata(rows,cols,:);
+                 end
+                 writeVideo(vidObj, frame);
+             end
+             close(vidObj)
+         end
+
          function save_as_gif(h,filename)
              if nargin < 2
                 FileName = uiputfile('movie.gif','Save gif loop as');
