@@ -11,6 +11,12 @@ function channel_data = openhrf_to_uff(filename, varargin)
 %   OPENHRF_TO_UFF(..., 'uff_file', out_file) also writes the result to a
 %   UFF file (as /channel_data).
 %
+%   ULMShare files (detected from the openhrf_source or description
+%   attribute, L22-14v stored with 80 um pitch) are corrected to the 100 um
+%   probe pitch and a +1.28 us receive time offset, see the ULMShare
+%   correction below. OPENHRF_TO_UFF(..., 'ulmshare_correction', false)
+%   returns the geometry as stored.
+%
 %   This is the inverse of convert_ustb_to_openh_rf.py in this folder. Only
 %   plane-wave acquisitions (focus_distances = Inf or 0, zero transmit
 %   origins) are supported for now, e.g. the ULMShare dataset:
@@ -40,6 +46,7 @@ p = inputParser;
 addRequired(p, 'filename', @(x) ischar(x) || isstring(x));
 addParameter(p, 'frames', [], @(x) isempty(x) || (isnumeric(x) && isvector(x)));
 addParameter(p, 'uff_file', '', @(x) ischar(x) || isstring(x));
+addParameter(p, 'ulmshare_correction', true, @(x) islogical(x) || isnumeric(x));
 parse(p, filename, varargin{:});
 filename = char(filename);
 frames = p.Results.frames;
@@ -96,11 +103,32 @@ assert(all(is_plane_wave), ['openhrf_to_uff: only plane-wave acquisitions are su
 %% Probe
 probe_geometry = double(read('/probe/probe_geometry')).';      % [n_el x 3]
 n_el = size(probe_geometry, 1);
+pitch = median(vecnorm(diff(probe_geometry, 1, 1), 2, 2));
+element_width = pitch;    % not always stored by zea; pitch is the best estimate
+
+%% ULMShare correction
+% The ULMShare files store the L22-14v (128 elements) with 80 um pitch, the
+% element width (ULMShare's getProbe.m), and t0_delays computed for it. The
+% probe pitch is 100 um: scale the element positions and the firing delays
+% (proportional to the element position for a plane wave) by 100/80. The
+% recording also starts ~1.28 us (10 lambda) after the transmit, probably a
+% Verasonics Receive.startDepth that is not stored (initial_times = 0); this
+% is inferred from the data (focusing, raw samples), not confirmed by
+% ULMShare. Turn off with 'ulmshare_correction', false.
+ulmshare_corrected = false;
+if p.Results.ulmshare_correction && is_ulmshare(filename, info) ...
+        && n_el == 128 && abs(pitch - 80e-6) < 1e-7
+    scale = 100e-6/pitch;
+    probe_geometry(:, 1) = probe_geometry(:, 1)*scale;
+    t0_delays = t0_delays*scale;
+    initial_times = initial_times + 1.28e-6;
+    pitch = 100e-6;
+    ulmshare_corrected = true;
+end
+
 prb = uff.probe();
 geometry = zeros(n_el, 7);
 geometry(:, 1:3) = probe_geometry;
-pitch = median(vecnorm(diff(probe_geometry, 1, 1), 2, 2));
-element_width = pitch;    % not always stored by zea; pitch is the best estimate
 if has('/probe/element_width')
     element_width = double(read('/probe/element_width'));
 end
@@ -184,6 +212,10 @@ if any(strcmp(attributes, 'openhrf_source'))
         double(h5readatt(filename, '/', 'openhrf_first_frame')) + frames(1), ...
         double(h5readatt(filename, '/', 'openhrf_first_frame')) + frames(end));
 end
+if ulmshare_corrected
+    channel_data.name{end+1} = ['ULMShare correction applied: 100 um pitch (stored 80 um is the ' ...
+        'element width), transmit delays scaled to it, +1.28 us receive time offset'];
+end
 if has('/metadata/credit')
     channel_data.reference = {read_string(filename, '/metadata/credit')};
 end
@@ -214,4 +246,16 @@ if iscell(str)
     str = str{1};
 end
 str = char(str);
+end
+
+function tf = is_ulmshare(filename, info)
+% ULMShare data from OpenH-RF: the source path (openhrf_download_subset.py)
+% or the description names ULMShare
+tf = false;
+attributes = {info.Attributes.Name};
+for name = {'openhrf_source', 'description'}
+    if any(strcmp(attributes, name{1}))
+        tf = tf || contains(lower(char(h5readatt(filename, '/', name{1}))), 'ulmshare');
+    end
+end
 end
