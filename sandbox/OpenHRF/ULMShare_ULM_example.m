@@ -6,7 +6,9 @@
 %
 % Per 400-frame buffer, following the ULMShare reference processing
 % (code/example_script.m in https://github.com/provostultrasoundlab/ulmshare):
-%   1. USTB DAS on the ULMShare grid (25 um, F#1.4), all plane waves compounded
+%   1. USTB DAS (31.25 x 25 um grid, F#1.4), all plane waves compounded, with
+%      the probe geometry corrected (100 um pitch, +1.28 us time offset,
+%      1580 m/s; see load_buffer)
 %   2. SVD clutter filter (5% of the components rejected)
 %   3. lag-1 autocorrelation signal enhancement (7-frame Hanning window)
 %   4. USTB ulm.ULM: radial-symmetry localization + tracking
@@ -37,8 +39,10 @@ track_folder = fullfile(data_folder, 'tracks');
 buffers = 50:149;
 
 %% Processing parameters
-% Beamforming grid of the ULMShare reference processing
-x_axis = (-5e-3:25e-6:5e-3-25e-6).';
+% Beamforming grid: 25 um axially as the ULMShare reference processing,
+% 31.25 um laterally. fwhm and n_local_max are in pixels and were set on the
+% 80 um pitch geometry, whose 25 um lateral pixels were 31.25 um in reality.
+x_axis = (-5e-3:31.25e-6:5e-3-31.25e-6).';
 z_axis = (0.5e-3:25e-6:8.5e-3-25e-6).';
 f_number = 1.4;
 clutter_filter_cut = 5/100;     % fraction of SVD components rejected
@@ -46,7 +50,7 @@ lag1_window = 7;                % frames
 % ULM (positions are tracked in wavelengths)
 ulm_resolution = 10;            % density map pixel = lambda/10
 fwhm = [5 5];                   % localization kernel [pixels]
-n_local_max = 7;                % max regional maxima in a kernel (grid is ~lambda/4)
+n_local_max = 7;                % max regional maxima in a kernel (grid is ~lambda/3.2 x lambda/4)
 number_of_particles = 300;      % max localizations per frame
 max_linking_distance = 1.5;     % [lambda] per frame (~150 mm/s at 1 kHz)
 min_length = 15;                % [frames] (ULMShare uses 20 with its own tracker)
@@ -68,8 +72,8 @@ for n_buffer = buffers
     end
     t_buffer = tic;
 
-    % 1. Convert and beamform
-    channel_data = openhrf_to_uff(buffer_file);
+    % 1. Convert, correct the geometry and beamform
+    channel_data = load_buffer(buffer_file);
     das = midprocess.das();
     das.channel_data = channel_data;
     das.scan = scan;
@@ -161,6 +165,37 @@ title('ULMShare mouse 16 - ULM flow direction (red: up, blue: down)', 'Color', '
 set(gca, 'XColor', 'w', 'YColor', 'w');
 
 %% Local functions
+function channel_data = load_buffer(buffer_file)
+% Geometry corrections for the ULMShare files:
+% - Pitch: the files store the L22-14v with 80 um pitch (the element width,
+%   as in ULMShare's getProbe.m). The probe pitch is 100 um; with it the 11
+%   angle images line up in depth, and the plane-wave transmit delays are
+%   -(D/2)|sin a|/c for that aperture.
+% - Time offset: the recording starts about 1.28 us (10 lambda) after the
+%   transmit, likely a Verasonics Receive.startDepth that the files do not
+%   store. Without it the receive delays keep a quadratic error across the
+%   aperture, which a sound speed of ~1650 m/s or an aberration correction
+%   only partly absorbs.
+% - Sound speed 1580 m/s: best together with the offset on mouse 16 and 21
+%   (1540 m/s is nearly as good).
+pitch = 100e-6;
+t0 = 1.28e-6;
+channel_data = openhrf_to_uff(buffer_file);
+channel_data.sound_speed = 1580;
+prb = channel_data.probe;
+geometry = prb.geometry;
+geometry(:, 1) = ((1:prb.N_elements).' - (prb.N_elements + 1)/2)*pitch;
+prb.geometry = geometry;
+channel_data.probe = prb;
+D = max(prb.x) - min(prb.x);
+seq = channel_data.sequence;
+for k = 1:numel(seq)
+    seq(k).probe = prb;
+    seq(k).delay = -(D/2)*abs(sin(seq(k).source.azimuth))/channel_data.sound_speed + t0;
+end
+channel_data.sequence = seq;
+end
+
 function iq_out = svd_clutter_filter(iq_in, cut)
 % Reject the first round(N*cut)-1 temporal singular components, using the
 % N x N Gram matrix as the ULMShare reference implementation does.
