@@ -42,7 +42,10 @@ buffers = 50:149;
 % 31.25 um laterally. fwhm and n_local_max are in pixels and were set on the
 % 80 um pitch geometry, whose 25 um lateral pixels were 31.25 um in reality.
 x_axis = (-5e-3:31.25e-6:5e-3-31.25e-6).';
-z_axis = (0.5e-3:25e-6:8.5e-3-25e-6).';
+% With the +1.28 us time offset (openhrf_to_uff) everything is ~1 mm deeper
+% than in the ULMShare processing: above ~1.5 mm there is only coupling
+% gel, and the skull base of mouse 16 is at ~8 mm.
+z_axis = (1.5e-3:25e-6:9e-3-25e-6).';
 f_number = 1.4;
 clutter_filter_cut = 5/100;     % fraction of SVD components rejected
 lag1_window = 7;                % frames
