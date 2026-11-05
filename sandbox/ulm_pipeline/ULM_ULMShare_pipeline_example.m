@@ -15,10 +15,15 @@ track_folder = fullfile(data_folder, 'tracks');
 if ~exist(track_folder, 'dir'), mkdir(track_folder); end
 buffers = 50;                   % 50:149 for the full Grade A acquisition
 
-% Beamforming grid of the ULMShare reference processing (25 um, ~lambda/4)
+% Beamforming grid: 25 um axially as the ULMShare reference processing,
+% 31.25 um laterally. fwhm and normalization_sigma are in pixels and were
+% set on the earlier 80 um pitch geometry, whose 25 um lateral pixels were
+% 31.25 um wide in reality.
 scan = uff.linear_scan();
-scan.x_axis = (-5e-3:25e-6:5e-3-25e-6).';
-scan.z_axis = (0.5e-3:25e-6:8.5e-3-25e-6).';
+scan.x_axis = (-5e-3:31.25e-6:5e-3-31.25e-6).';
+% With the +2.56 us time offset everything is ~2 mm deeper than in the
+% ULMShare processing (skull top ~2.7 mm, skull base of mouse 16 ~9 mm)
+scan.z_axis = (2.5e-3:25e-6:10e-3-25e-6).';
 
 %% Dataset-dependent parameters
 p = ulm_pipeline_parameters();
@@ -50,15 +55,7 @@ end
 ulm_pipeline_show(track_folder, scan, p, 'ULMShare mouse 16');
 
 function channel_data = load_buffer(buffer_file)
-% openhrf_to_uff gives the ULMShare plane waves the transmit delay
-% -(D/2)|sin a|/c. The angle images only line up in depth with 1.2 times
-% that (residual axial shift 2-3 um rms instead of 11-12 um), where the
-% compounding gain also peaks; the cause is not known.
+% openhrf_to_uff corrects the ULMShare geometry (100 um pitch, +2.56 us
+% receive time offset); the stored 1540 m/s is kept
 channel_data = openhrf_to_uff(buffer_file);
-D = max(channel_data.probe.x) - min(channel_data.probe.x);
-seq = channel_data.sequence;
-for k = 1:numel(seq)
-    seq(k).delay = -1.2*(D/2)*abs(sin(seq(k).source.azimuth))/channel_data.sound_speed;
-end
-channel_data.sequence = seq;
 end
