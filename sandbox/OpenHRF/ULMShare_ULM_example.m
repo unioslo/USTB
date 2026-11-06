@@ -6,11 +6,13 @@
 %
 % Per 400-frame buffer, following the ULMShare reference processing
 % (code/example_script.m in https://github.com/provostultrasoundlab/ulmshare):
-%   1. USTB DAS (31.25 x 25 um grid, F#1.4, 1580 m/s), all plane waves
+%   1. USTB DAS (31.25 x 25 um grid, F#1.4, 1540 m/s), all plane waves
 %      compounded
-%   2. SVD clutter filter (5% of the components rejected)
+%   2. SVD clutter filter (15% of the components rejected; ULMShare uses 5%)
 %   3. lag-1 autocorrelation signal enhancement (7-frame Hanning window)
-%   4. USTB ulm.ULM: radial-symmetry localization + tracking
+%   4. local noise normalization (as ULMShare's optional TGC, sigma = 9 px)
+%   5. USTB ulm.ULM: radial-symmetry localization + tracking, keeping only
+%      localizations above an SNR threshold
 % The tracks of every buffer are saved, so an interrupted run resumes, and are
 % finally rendered into a density map and a directional (up/down flow) map.
 %
@@ -42,18 +44,21 @@ buffers = 50:149;
 % 31.25 um laterally. fwhm and n_local_max are in pixels and were set on the
 % 80 um pitch geometry, whose 25 um lateral pixels were 31.25 um in reality.
 x_axis = (-5e-3:31.25e-6:5e-3-31.25e-6).';
-% With the +1.28 us time offset (openhrf_to_uff) everything is ~1 mm deeper
-% than in the ULMShare processing: above ~1.5 mm there is only coupling
-% gel, and the skull base of mouse 16 is at ~8 mm.
-z_axis = (1.5e-3:25e-6:9e-3-25e-6).';
+% With the +2.56 us time offset (openhrf_to_uff) everything is ~2 mm deeper
+% than in the ULMShare processing: the recording starts at ~2 mm (an
+% artefact band), the skull top is at ~2.7 mm and the skull base of mouse 16
+% at ~9 mm.
+z_axis = (2.5e-3:25e-6:10e-3-25e-6).';
 f_number = 1.4;
-clutter_filter_cut = 5/100;     % fraction of SVD components rejected
+clutter_filter_cut = 15/100;    % fraction of SVD components rejected (ULMShare: 5%; more skull clutter is removed with 15%)
 lag1_window = 7;                % frames
+normalization_sigma = 9;        % [pixels] Gaussian width of the local noise estimate
 % ULM (positions are tracked in wavelengths)
 ulm_resolution = 10;            % density map pixel = lambda/10
 fwhm = [5 5];                   % localization kernel [pixels]
 n_local_max = 7;                % max regional maxima in a kernel (grid is ~lambda/3.2 x lambda/4)
 number_of_particles = 300;      % max localizations per frame
+snr_threshold = 1.5;            % min normalized intensity of a localization
 max_linking_distance = 1.5;     % [lambda] per frame (~150 mm/s at 1 kHz)
 min_length = 15;                % [frames] (ULMShare uses 20 with its own tracker)
 
@@ -75,10 +80,8 @@ for n_buffer = buffers
     t_buffer = tic;
 
     % 1. Convert and beamform. openhrf_to_uff corrects the ULMShare geometry
-    % (100 um pitch, +1.28 us receive time offset); 1580 m/s is best together
-    % with that offset on mouse 16 and 21 (1540 m/s is nearly as good)
+    % (100 um pitch, +2.56 us receive time offset); the stored 1540 m/s is kept
     channel_data = openhrf_to_uff(buffer_file);
-    channel_data.sound_speed = 1580;
     das = midprocess.das();
     das.channel_data = channel_data;
     das.scan = scan;
@@ -97,7 +100,14 @@ for n_buffer = buffers
     window = reshape(window./sum(window), 1, 1, []);
     enhanced = sqrt(abs(convn(iq(:, :, 1:end-1).*conj(iq(:, :, 2:end)), window, 'same')));
 
-    % 4. ULM localization + tracking
+    % 4. Local noise normalization. The noise floor varies with depth (TGC)
+    % and residual skull clutter is strong near the top; without this the
+    % numberOfParticles brightest maxima per frame fill up with deep noise and
+    % skull clutter. ULMShare applies the same mask before re-running the SVD;
+    % applying it after lag-1 is cheaper and gave the same effect here.
+    enhanced = enhanced./imgaussfilt(sqrt(mean(enhanced.^2, 3)), normalization_sigma);
+
+    % 5. ULM localization + tracking
     b_ulm = uff.beamformed_data();
     b_ulm.scan = scan;
     b_ulm.data = reshape(single(enhanced), scan.N_pixels, 1, 1, []);
@@ -109,6 +119,7 @@ for n_buffer = buffers
     u.fwhm = fwhm;
     u.NLocalMax = n_local_max;
     u.numberOfParticles = number_of_particles;
+    u.intensity_threshold = snr_threshold;
     u.max_linking_distance = max_linking_distance;
     u.min_length = min_length;
     u.resolution = ulm_resolution;

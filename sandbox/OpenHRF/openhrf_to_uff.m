@@ -13,9 +13,9 @@ function channel_data = openhrf_to_uff(filename, varargin)
 %
 %   ULMShare files (detected from the openhrf_source or description
 %   attribute, L22-14v stored with 80 um pitch) are corrected to the 100 um
-%   probe pitch and a +1.28 us receive time offset, see the ULMShare
-%   correction below. OPENHRF_TO_UFF(..., 'ulmshare_correction', false)
-%   returns the geometry as stored.
+%   probe pitch and a +2.56 us (20 lambda) receive time offset, see the
+%   ULMShare correction below. OPENHRF_TO_UFF(..., 'ulmshare_correction',
+%   false) returns the geometry as stored.
 %
 %   This is the inverse of convert_ustb_to_openh_rf.py in this folder. Only
 %   plane-wave acquisitions (focus_distances = Inf or 0, zero transmit
@@ -111,17 +111,18 @@ element_width = pitch;    % not always stored by zea; pitch is the best estimate
 % element width (ULMShare's getProbe.m), and t0_delays computed for it. The
 % probe pitch is 100 um: scale the element positions and the firing delays
 % (proportional to the element position for a plane wave) by 100/80. The
-% recording also starts ~1.28 us (10 lambda) after the transmit, probably a
-% Verasonics Receive.startDepth that is not stored (initial_times = 0); this
-% is inferred from the data (focusing, raw samples), not confirmed by
-% ULMShare. Turn off with 'ulmshare_correction', false.
+% recording starts 2.56 us (20 lambda) after the transmit: the Verasonics
+% Receive.startDepth (startDepth_wavelengths: 20 in the original ULMShare
+% sequence.json files), not stored in OpenH-RF (initial_times = 0). See
+% https://github.com/open-h/Open-H-RF/issues/59. Turn off with
+% 'ulmshare_correction', false.
 ulmshare_corrected = false;
 if p.Results.ulmshare_correction && is_ulmshare(filename, info) ...
         && n_el == 128 && abs(pitch - 80e-6) < 1e-7
     scale = 100e-6/pitch;
     probe_geometry(:, 1) = probe_geometry(:, 1)*scale;
     t0_delays = t0_delays*scale;
-    initial_times = initial_times + 1.28e-6;
+    initial_times = initial_times + 2.56e-6;
     pitch = 100e-6;
     ulmshare_corrected = true;
 end
@@ -214,7 +215,7 @@ if any(strcmp(attributes, 'openhrf_source'))
 end
 if ulmshare_corrected
     channel_data.name{end+1} = ['ULMShare correction applied: 100 um pitch (stored 80 um is the ' ...
-        'element width), transmit delays scaled to it, +1.28 us receive time offset'];
+        'element width), transmit delays scaled to it, +2.56 us (20 lambda) receive time offset'];
 end
 if has('/metadata/credit')
     channel_data.reference = {read_string(filename, '/metadata/credit')};
