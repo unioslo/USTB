@@ -62,18 +62,16 @@ classdef process < handle
         
         
         function h=save_hash(h)
-            h.last_hash=h.hash();
+            % Output caching is disabled (see check_hash), so nothing to store
         end
-        
-        
+
+
         function equal=check_hash(h)
-            if isempty(h.last_hash) equal=false;
-            else
-                equal=strcmp(h.hash(),h.last_hash); 
-                if equal 
-                    warning('Inputs and outputs are unchanged. Skipping process...'); 
-                end
-            end
+            % Output caching on the input hash is disabled: go() always
+            % recomputes. tools.hash only samples ~1000 elements of large
+            % arrays, so new data whose sampled elements happen to be equal
+            % to the previous input (e.g. all zero) returned the old output.
+            equal=false;
         end
         
     end
