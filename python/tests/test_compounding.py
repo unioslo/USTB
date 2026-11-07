@@ -2,16 +2,19 @@
 
 import numpy as np
 import pytest
-from ustb.postprocess.coherent_compounding import CoherentCompounding
-from ustb.postprocess.incoherent_compounding import IncoherentCompounding
+
 from ustb.beamformed_data import BeamformedData
 from ustb.enums import Dimension
+from ustb.postprocess.coherent_compounding import CoherentCompounding
+from ustb.postprocess.incoherent_compounding import IncoherentCompounding
 
 
 def make_input(N_pixels=5, N_channels=1, N_waves=4, N_frames=1, seed=0):
     rng = np.random.default_rng(seed)
-    data = (rng.standard_normal((N_pixels, N_channels, N_waves, N_frames))
-            + 1j * rng.standard_normal((N_pixels, N_channels, N_waves, N_frames))).astype(np.complex64)
+    data = (
+        rng.standard_normal((N_pixels, N_channels, N_waves, N_frames))
+        + 1j * rng.standard_normal((N_pixels, N_channels, N_waves, N_frames))
+    ).astype(np.complex64)
     return BeamformedData(scan="mock_scan", data=data)
 
 

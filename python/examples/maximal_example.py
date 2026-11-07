@@ -4,24 +4,34 @@ Python equivalent of examples/UiO_course/.../maximal_example.m.
 Pipeline: demodulation -> DAS (transmit dimension) -> coherence factor -> median filter.
 """
 
-import numpy as np
-import matplotlib
-matplotlib.use("Agg")
+import os
 
-from examples.utils import read_channel_data, save_image
+import matplotlib.pyplot as plt
+import numpy as np
 from pyuff_ustb.objects import SectorScan
 from pyuff_ustb.objects.point import Point
-from ustb.preprocess import FastDemodulation
+from pyuff_ustb.objects.uff import Uff
+
+from ustb.enums import Dimension, Window
 from ustb.midprocess import DAS
 from ustb.postprocess import CoherenceFactor, Median
-from ustb.enums import Dimension, Window
+from ustb.preprocess import FastDemodulation
+from ustb.tools import download, zenodo_dataset_files_base
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+DATA_PATH = os.path.join(HERE, "..", "..", "data")
+OUTPUT_PATH = os.path.join(HERE, "output")
 
 
 def main():
-    channel_data = read_channel_data("Verasonics_P2-4_parasternal_long_small.uff")
-    print(f"Channel data: {channel_data.N_samples} samples, "
-          f"{channel_data.N_channels} channels, "
-          f"{channel_data.N_waves} waves, {channel_data.N_frames} frames")
+    filename = "Verasonics_P2-4_parasternal_long_small.uff"
+    filepath = download(filename, zenodo_dataset_files_base(), DATA_PATH)
+    channel_data = Uff(filepath).read("channel_data")
+    print(
+        f"Channel data: {channel_data.N_samples} samples, "
+        f"{channel_data.N_channels} channels, "
+        f"{channel_data.N_waves} waves, {channel_data.N_frames} frames"
+    )
 
     sequence = channel_data.sequence
     if not isinstance(sequence, (list, tuple)):
@@ -33,14 +43,11 @@ def main():
         float(sequence[-1].source.azimuth),
         len(sequence),
     )
-    scan = SectorScan()
-    scan.__dict__["azimuth_axis"] = azimuth_axis
-    scan.__dict__["depth_axis"] = depth_axis
-    origin = Point()
-    origin.__dict__["distance"] = 0.0
-    origin.__dict__["azimuth"] = 0.0
-    origin.__dict__["elevation"] = 0.0
-    scan.__dict__["origin"] = origin
+    scan = SectorScan(
+        azimuth_axis=azimuth_axis,
+        depth_axis=depth_axis,
+        origin=Point(distance=0.0, azimuth=0.0, elevation=0.0),
+    )
 
     # Step 1: Demodulation
     print("Step 1: Demodulation...")
@@ -48,8 +55,10 @@ def main():
     demod.modulation_frequency = float(channel_data.pulse.center_frequency)
     demod.input = channel_data
     channel_data_demod = demod.go()
-    print(f"  Demodulated: {channel_data_demod.N_samples} samples, "
-          f"fc={channel_data_demod.modulation_frequency/1e6:.1f} MHz")
+    print(
+        f"  Demodulated: {channel_data_demod.N_samples} samples, "
+        f"fc={channel_data_demod.modulation_frequency / 1e6:.1f} MHz"
+    )
 
     # Step 2: DAS beamforming (transmit dimension only — keep Rx channels)
     print("Step 2: DAS (dimension=transmit)...")
@@ -80,9 +89,15 @@ def main():
     print(f"  Median output: {b_data_me.data.shape}")
 
     fig, ax = b_data_me.plot(title="Human Heart (Maximal Example)", dynamic_range=80)
-    save_image(fig, "maximal_example.png")
+    os.makedirs(OUTPUT_PATH, exist_ok=True)
+    output_file = os.path.join(OUTPUT_PATH, "maximal_example.png")
+    fig.savefig(output_file, dpi=150, bbox_inches="tight")
+    print(f"Image saved to {output_file}")
     return b_data_me
 
 
 if __name__ == "__main__":
-    main()
+    b_data_me = main()
+    # Play all frames as a movie loop (keep a reference while it plays)
+    anim = b_data_me.animate(title="Human Heart (Maximal Example)", dynamic_range=80, fps=5)
+    plt.show()

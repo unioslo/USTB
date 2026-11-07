@@ -1,7 +1,6 @@
 """Unit tests for USTB enumerations."""
 
-import pytest
-from ustb.enums import Dimension, Wavefront, Window, Code
+from ustb.enums import Code, Dimension, Wavefront, Window
 
 
 class TestDimension:

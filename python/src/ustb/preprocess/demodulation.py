@@ -7,7 +7,7 @@ FastDemodulation's simpler fixed-length low-pass-only design.
 """
 
 import numpy as np
-from scipy.signal import kaiserord, firwin, lfilter
+from scipy.signal import firwin, kaiserord, lfilter
 
 from ustb.preprocess._channel_data_view import DemodulatedChannelData
 from ustb.tools.power_spectrum import power_spectrum
@@ -38,8 +38,7 @@ def _design_bandpass(fs, fc, bandpass_frequency_vector):
     numtaps, beta = kaiserord(_ripple_db(_BANDPASS_DEV), width)
     numtaps = numtaps + 1 if numtaps % 2 == 0 else numtaps
     numtaps = max(numtaps, 3)
-    return firwin(numtaps, [f_pass1, f_pass2], window=("kaiser", beta),
-                   pass_zero=False, fs=fs)
+    return firwin(numtaps, [f_pass1, f_pass2], window=("kaiser", beta), pass_zero=False, fs=fs)
 
 
 def _estimate_center_frequency(data, fs):
@@ -89,12 +88,16 @@ class Demodulation:
         fs = float(ch_data.sampling_frequency)
         t0 = float(ch_data.initial_time)
 
-        fc = float(self.modulation_frequency) if self.modulation_frequency is not None \
+        fc = (
+            float(self.modulation_frequency)
+            if self.modulation_frequency is not None
             else _estimate_center_frequency(data, fs)
+        )
         self.modulation_frequency = fc
 
-        downsample_frequency = self.downsample_frequency \
-            if self.downsample_frequency is not None else 2.0 * fc
+        downsample_frequency = (
+            self.downsample_frequency if self.downsample_frequency is not None else 2.0 * fc
+        )
         Ndown = max(1, int(np.floor(fs / downsample_frequency)))
         downsample_frequency = fs / Ndown
         self.downsample_frequency = downsample_frequency

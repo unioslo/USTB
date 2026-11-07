@@ -4,6 +4,7 @@ import os
 import pathlib
 
 import pytest
+
 from ustb.tools import download, zenodo_dataset_files_base
 
 
@@ -64,3 +65,30 @@ class TestDownload:
         download(str(dest_file), src_file.as_uri())
 
         assert dest_file.exists()
+
+    def test_should_report_progress_and_completion(self, tmp_path, capsys):
+        src_file = tmp_path / "src.txt"
+        src_file.write_text("x" * 1000)
+        dest_file = tmp_path / "dest.txt"
+
+        download(str(dest_file), src_file.as_uri())
+        out = capsys.readouterr().out
+
+        assert "100%" in out
+        assert f"Downloaded {dest_file}" in out
+
+    def test_should_report_existing_file(self, tmp_path, capsys):
+        dest_file = tmp_path / "data.txt"
+        dest_file.write_text("already here")
+
+        download(str(dest_file), "file:///does/not/exist.txt")
+
+        assert f"Using existing {dest_file}" in capsys.readouterr().out
+
+    def test_should_not_leave_a_partial_file_when_download_fails(self, tmp_path):
+        dest_file = tmp_path / "dest.txt"
+
+        with pytest.raises(OSError):
+            download(str(dest_file), (tmp_path / "missing.txt").as_uri())
+
+        assert list(tmp_path.iterdir()) == []

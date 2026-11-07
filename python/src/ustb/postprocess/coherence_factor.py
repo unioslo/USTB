@@ -12,8 +12,8 @@ import warnings
 
 import numpy as np
 
-from ustb.enums import Dimension, Window
 from ustb.beamformed_data import BeamformedData
+from ustb.enums import Dimension, Window
 
 
 class CoherenceFactor:
@@ -49,13 +49,14 @@ class CoherenceFactor:
             if N_channels < 2 and N_waves > 1:
                 warnings.warn(
                     "Not enough channels to compute factor. "
-                    "Changing dimension to dimension.transmit"
+                    "Changing dimension to dimension.transmit",
+                    stacklevel=2,
                 )
                 dimension = Dimension.transmit
             elif N_waves < 2 and N_channels > 1:
                 warnings.warn(
-                    "Not enough waves to compute factor. "
-                    "Changing dimension to dimension.receive"
+                    "Not enough waves to compute factor. Changing dimension to dimension.receive",
+                    stacklevel=2,
                 )
                 dimension = Dimension.receive
             elif N_waves < 2 and N_channels < 2:
@@ -64,11 +65,13 @@ class CoherenceFactor:
 
         rx_apod = (
             self._receive_apodization(N_pixels, N_channels)
-            if dimension != Dimension.transmit else None
+            if dimension != Dimension.transmit
+            else None
         )
         tx_apod = (
             self._transmit_apodization(N_pixels, N_waves)
-            if dimension != Dimension.receive else None
+            if dimension != Dimension.receive
+            else None
         )
 
         threshold = self.active_element_criterium

@@ -2,12 +2,16 @@
 
 import numpy as np
 import pytest
+from pyuff_ustb.objects import LinearScan, SectorScan
+from pyuff_ustb.objects.point import Point
+
 from ustb.apodization import Apodization
 from ustb.enums import Window
 
 
 class FakeProbe:
     """Minimal probe mock for testing."""
+
     def __init__(self, N, pitch=0.3e-3):
         self._x = (np.arange(N) - (N - 1) / 2) * pitch
         self._y = np.zeros(N)
@@ -32,6 +36,7 @@ class FakeProbe:
 
 class FakeScan:
     """Minimal scan mock for testing."""
+
     def __init__(self, x, z):
         self._x = np.asarray(x).ravel()
         self._z = np.asarray(z).ravel()
@@ -160,7 +165,7 @@ class TestApodizationPlaneWaveTransmit:
         apo.sequence = [plane_wave(0.0)]
         apo.focus = FakeScan([0.0], [20e-3])
         with pytest.raises(ValueError):
-            apo.data
+            _ = apo.data
 
 
 class TestApodizationDivergingWaveTransmit:
@@ -196,8 +201,9 @@ class TestApodizationReceiveWindows:
         # Element 2.5 mm off-axis at 10 mm depth: ratio = |x/z| = 0.25
         apo.probe._x = np.array([2.5e-3])
         apo.focus = FakeScan([0.0], [10e-3])
-        np.testing.assert_allclose(apo.data, [[0.53836 + 0.46164 * np.cos(2 * np.pi * 0.25)]],
-                                   atol=1e-6)
+        np.testing.assert_allclose(
+            apo.data, [[0.53836 + 0.46164 * np.cos(2 * np.pi * 0.25)]], atol=1e-6
+        )
 
     def test_should_be_finite_at_zero_depth(self):
         apo = Apodization()
@@ -209,23 +215,18 @@ class TestApodizationReceiveWindows:
 
 
 def _sector_scan(azimuth_axis, depth_axis):
-    from pyuff_ustb.objects import SectorScan
-    from pyuff_ustb.objects.point import Point
     scan = SectorScan()
-    scan.__dict__["azimuth_axis"] = np.asarray(azimuth_axis, dtype=float)
-    scan.__dict__["depth_axis"] = np.asarray(depth_axis, dtype=float)
-    origin = Point()
-    origin.__dict__.update(distance=np.float64(0.0), azimuth=np.float64(0.0),
-                           elevation=np.float64(0.0))
-    scan.__dict__["origin"] = origin
+    scan.azimuth_axis = np.asarray(azimuth_axis, dtype=float)
+    scan.depth_axis = np.asarray(depth_axis, dtype=float)
+    origin = Point(distance=np.float64(0.0), azimuth=np.float64(0.0), elevation=np.float64(0.0))
+    scan.origin = origin
     return scan
 
 
 def _linear_scan(x_axis, z_axis):
-    from pyuff_ustb.objects import LinearScan
     scan = LinearScan()
-    scan.__dict__["x_axis"] = np.asarray(x_axis, dtype=float)
-    scan.__dict__["z_axis"] = np.asarray(z_axis, dtype=float)
+    scan.x_axis = np.asarray(x_axis, dtype=float)
+    scan.z_axis = np.asarray(z_axis, dtype=float)
     return scan
 
 
@@ -269,8 +270,7 @@ class TestApodizationScanline:
 
         # MATLAB filter2(ones(2,1)/2, ..., 'same'): each wave's 4 scanlines are
         # smoothed with the next one, so scanline 4 is shared by both waves
-        expected = np.array([[1, 1, 1, 0.5, 0, 0, 0, 0],
-                             [0, 0, 0, 0.5, 1, 1, 1, 0.5]]).T
+        expected = np.array([[1, 1, 1, 0.5, 0, 0, 0, 0], [0, 0, 0, 0.5, 1, 1, 1, 0.5]]).T
         np.testing.assert_allclose(result, expected)
 
     def test_should_reject_a_wave_count_that_does_not_match_the_scanlines(self):
@@ -279,4 +279,4 @@ class TestApodizationScanline:
         apo.sequence = [None] * 3
         apo.focus = _linear_scan(np.linspace(-5e-3, 5e-3, 8), [10e-3])
         with pytest.raises(ValueError):
-            apo.data
+            _ = apo.data

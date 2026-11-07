@@ -1,7 +1,10 @@
 """Unit tests for ustb.tools.power_spectrum."""
 
 import numpy as np
+
 from ustb.tools import power_spectrum
+
+rng = np.random.default_rng(0)
 
 
 class TestPowerSpectrum:
@@ -20,7 +23,7 @@ class TestPowerSpectrum:
     def test_should_return_correct_shapes(self):
         fs = 20e6
         N = 512
-        data = np.random.randn(N, 8, 3, 5)
+        data = rng.standard_normal((N, 8, 3, 5))
 
         fx, pw = power_spectrum(data, fs)
 
@@ -30,7 +33,7 @@ class TestPowerSpectrum:
     def test_normalised_should_peak_at_one(self):
         fs = 20e6
         N = 512
-        data = np.random.randn(N, 4, 1, 1)
+        data = rng.standard_normal((N, 4, 1, 1))
 
         fx, pw = power_spectrum(data, fs, normalised=True)
 
@@ -48,7 +51,7 @@ class TestPowerSpectrum:
     def test_should_accept_1d_input(self):
         fs = 20e6
         N = 256
-        data = np.random.randn(N)
+        data = rng.standard_normal(N)
 
         fx, pw = power_spectrum(data, fs)
 
@@ -58,7 +61,7 @@ class TestPowerSpectrum:
     def test_n_argument_should_limit_frames_averaged(self):
         fs = 20e6
         N = 128
-        data = np.random.randn(N, 1, 1, 10)
+        data = rng.standard_normal((N, 1, 1, 10))
 
         fx, pw = power_spectrum(data, fs, N=3)
         fx_all, pw_all = power_spectrum(data, fs, N=10)

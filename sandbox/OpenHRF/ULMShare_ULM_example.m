@@ -6,8 +6,9 @@
 %
 % Per 400-frame buffer, following the ULMShare reference processing
 % (code/example_script.m in https://github.com/provostultrasoundlab/ulmshare):
-%   1. USTB DAS on the ULMShare grid (25 um, F#1.4), all plane waves compounded
-%   2. SVD clutter filter (5% of the components rejected)
+%   1. USTB DAS (31.25 x 25 um grid, F#1.4, 1540 m/s), all plane waves
+%      compounded
+%   2. SVD clutter filter (15% of the components rejected; ULMShare uses 5%)
 %   3. lag-1 autocorrelation signal enhancement (7-frame Hanning window)
 %   4. local noise normalization (as ULMShare's optional TGC, sigma = 9 px)
 %   5. USTB ulm.ULM: radial-symmetry localization + tracking, keeping only
@@ -39,17 +40,23 @@ track_folder = fullfile(data_folder, 'tracks');
 buffers = 50:149;
 
 %% Processing parameters
-% Beamforming grid of the ULMShare reference processing
-x_axis = (-5e-3:25e-6:5e-3-25e-6).';
-z_axis = (0.5e-3:25e-6:8.5e-3-25e-6).';
+% Beamforming grid: 25 um axially as the ULMShare reference processing,
+% 31.25 um laterally. fwhm and n_local_max are in pixels and were set on the
+% 80 um pitch geometry, whose 25 um lateral pixels were 31.25 um in reality.
+x_axis = (-5e-3:31.25e-6:5e-3-31.25e-6).';
+% With the +2.56 us time offset (openhrf_to_uff) everything is ~2 mm deeper
+% than in the ULMShare processing: the recording starts at ~2 mm (an
+% artefact band), the skull top is at ~2.7 mm and the skull base of mouse 16
+% at ~9 mm.
+z_axis = (2.5e-3:25e-6:10e-3-25e-6).';
 f_number = 1.4;
-clutter_filter_cut = 5/100;     % fraction of SVD components rejected
+clutter_filter_cut = 15/100;    % fraction of SVD components rejected (ULMShare: 5%; more skull clutter is removed with 15%)
 lag1_window = 7;                % frames
 normalization_sigma = 9;        % [pixels] Gaussian width of the local noise estimate
 % ULM (positions are tracked in wavelengths)
 ulm_resolution = 10;            % density map pixel = lambda/10
 fwhm = [5 5];                   % localization kernel [pixels]
-n_local_max = 7;                % max regional maxima in a kernel (grid is ~lambda/4)
+n_local_max = 7;                % max regional maxima in a kernel (grid is ~lambda/3.2 x lambda/4)
 number_of_particles = 300;      % max localizations per frame
 snr_threshold = 1.5;            % min normalized intensity of a localization
 max_linking_distance = 1.5;     % [lambda] per frame (~150 mm/s at 1 kHz)
@@ -72,7 +79,8 @@ for n_buffer = buffers
     end
     t_buffer = tic;
 
-    % 1. Convert and beamform
+    % 1. Convert and beamform. openhrf_to_uff corrects the ULMShare geometry
+    % (100 um pitch, +2.56 us receive time offset); the stored 1540 m/s is kept
     channel_data = openhrf_to_uff(buffer_file);
     das = midprocess.das();
     das.channel_data = channel_data;

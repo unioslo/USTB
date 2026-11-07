@@ -8,8 +8,8 @@ magnitudes).
 import numpy as np
 from numpy.lib.stride_tricks import sliding_window_view
 
-from ustb.enums import Dimension
 from ustb.beamformed_data import BeamformedData
+from ustb.enums import Dimension
 
 
 def _moving_sum(x, window_size, axis):

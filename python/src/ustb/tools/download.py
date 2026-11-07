@@ -36,6 +36,7 @@ def download(file, url, local_path=None):
         dest = file
 
     if os.path.exists(dest):
+        print(f"Using existing {dest}")
         return dest
 
     dest_dir = os.path.dirname(dest)
@@ -47,5 +48,37 @@ def download(file, url, local_path=None):
     print(f"URL:\t\t{src_url}")
     print(f"Path:\t\t{dest_dir or '.'}")
 
-    urllib.request.urlretrieve(src_url, dest)
+    # Download to a temporary name so an interrupted download is not mistaken
+    # for a complete file on the next run
+    partial = dest + ".part"
+    try:
+        urllib.request.urlretrieve(src_url, partial, reporthook=_ProgressPrinter())
+    except BaseException:
+        if os.path.exists(partial):
+            os.remove(partial)
+        raise
+    os.replace(partial, dest)
+    print(f"\nDownloaded {dest}")
     return dest
+
+
+class _ProgressPrinter:
+    """urlretrieve reporthook printing the download progress on one line."""
+
+    def __init__(self):
+        self.last_percent = -1
+
+    def __call__(self, block_count, block_size, total_size):
+        done_mb = block_count * block_size / 1e6
+        if total_size <= 0:  # size unknown: report megabytes only
+            print(f"\rDownloaded {done_mb:.1f} MB", end="", flush=True)
+            return
+        percent = min(100, int(100 * block_count * block_size / total_size))
+        if percent != self.last_percent:
+            self.last_percent = percent
+            total_mb = total_size / 1e6
+            print(
+                f"\rDownloading {percent:3d}% ({min(done_mb, total_mb):.1f} / {total_mb:.1f} MB)",
+                end="",
+                flush=True,
+            )

@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from ustb.preprocess.demodulation import Demodulation
 
 
@@ -11,8 +12,16 @@ class FakePulse:
 
 
 class FakeChannelData:
-    def __init__(self, data, fs, t0=0.0, sound_speed=1540.0, pulse=None,
-                 probe="mock_probe", sequence="mock_sequence"):
+    def __init__(
+        self,
+        data,
+        fs,
+        t0=0.0,
+        sound_speed=1540.0,
+        pulse=None,
+        probe="mock_probe",
+        sequence="mock_sequence",
+    ):
         self.data = data
         self.sampling_frequency = fs
         self.initial_time = t0
@@ -86,15 +95,21 @@ class TestDemodulationBasic:
         out = demod.go()
 
         envelope = np.abs(out.data[:, 0, 0, 0])
-        steady = envelope[len(envelope) // 4: 3 * len(envelope) // 4]
+        steady = envelope[len(envelope) // 4 : 3 * len(envelope) // 4]
         assert steady.std() / steady.mean() < 0.1
 
     def test_should_preserve_pass_through_properties(self):
         fs = 40e6
         fc = 5e6
         data = make_rf_tone(fs, fc)
-        ch_data = FakeChannelData(data, fs, sound_speed=1480.0, pulse=FakePulse(fc),
-                                   probe="my_probe", sequence="my_sequence")
+        ch_data = FakeChannelData(
+            data,
+            fs,
+            sound_speed=1480.0,
+            pulse=FakePulse(fc),
+            probe="my_probe",
+            sequence="my_sequence",
+        )
 
         demod = Demodulation()
         demod.modulation_frequency = fc

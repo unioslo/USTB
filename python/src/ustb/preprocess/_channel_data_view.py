@@ -25,7 +25,11 @@ class DemodulatedChannelData:
 
     @property
     def sampling_frequency(self):
-        return self._fs_override if self._fs_override is not None else self._original.sampling_frequency
+        return (
+            self._fs_override
+            if self._fs_override is not None
+            else self._original.sampling_frequency
+        )
 
     @property
     def initial_time(self):
@@ -33,7 +37,11 @@ class DemodulatedChannelData:
 
     @property
     def modulation_frequency(self):
-        return self._fc_override if self._fc_override is not None else self._original.modulation_frequency
+        return (
+            self._fc_override
+            if self._fc_override is not None
+            else self._original.modulation_frequency
+        )
 
     @property
     def sound_speed(self):

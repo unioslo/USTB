@@ -5,7 +5,7 @@ low-pass filtering, and decimation.
 """
 
 import numpy as np
-from scipy.signal import firwin, filtfilt, decimate
+from scipy.signal import filtfilt, firwin
 
 from ustb.preprocess._channel_data_view import DemodulatedChannelData
 

@@ -1,14 +1,17 @@
 """Unit tests for ustb.tools.scan_convert."""
 
 import numpy as np
+
 from ustb.tools import scan_convert
+
+rng = np.random.default_rng(0)
 
 
 class TestScanConvert:
     def test_should_return_expected_output_shape(self):
         ranges = np.linspace(10e-3, 50e-3, 40)
         thetas = np.linspace(-np.pi / 4, np.pi / 4, 20)
-        img = np.random.rand(len(ranges), len(thetas))
+        img = rng.random((len(ranges), len(thetas)))
 
         out, xs, zs = scan_convert(img, thetas, ranges, size_x=64, size_z=32)
 

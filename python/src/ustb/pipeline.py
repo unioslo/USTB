@@ -5,6 +5,7 @@ the USTB convention: preprocess -> midprocess -> postprocess.
 """
 
 from ustb.apodization import Apodization
+from ustb.midprocess import DAS
 
 
 def _classify(proc):
@@ -44,8 +45,6 @@ class Pipeline:
 
     def go(self, process_list=None):
         if not process_list:
-            from ustb.midprocess import DAS
-
             midproc = DAS()
             midproc.channel_data = self.channel_data
             midproc.receive_apodization = self.receive_apodization

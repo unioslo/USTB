@@ -1,9 +1,9 @@
 """Unit tests for ustb.pipeline.Pipeline."""
 
-import numpy as np
 import pytest
+
+import ustb.pipeline as pipeline_module
 from ustb.pipeline import Pipeline, _classify
-from ustb.apodization import Apodization
 
 
 class FakePreprocess:
@@ -62,13 +62,12 @@ class TestClassify:
 
 
 class TestPipelineDefaultDAS:
-    def test_should_run_default_das_when_no_process_list_given(self):
+    def test_should_run_default_das_when_no_process_list_given(self, monkeypatch):
         pipe = Pipeline()
         pipe.channel_data = "mock_channel_data"
         pipe.scan = "mock_scan"
 
         # Patch DAS with a fake for isolation from beamforming numerics.
-        import ustb.midprocess as midprocess_module
 
         class FakeDAS:
             def __init__(self):
@@ -80,12 +79,8 @@ class TestPipelineDefaultDAS:
             def go(self):
                 return f"das({self.channel_data},{self.scan})"
 
-        original = midprocess_module.DAS
-        midprocess_module.DAS = FakeDAS
-        try:
-            output = pipe.go()
-        finally:
-            midprocess_module.DAS = original
+        monkeypatch.setattr(pipeline_module, "DAS", FakeDAS)
+        output = pipe.go()
 
         assert output == "das(mock_channel_data,mock_scan)"
 

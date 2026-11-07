@@ -1,9 +1,10 @@
 """Unit tests for ustb.tools.uniform_fov_weighting."""
 
 import numpy as np
-from ustb.tools import uniform_fov_weighting
+
 from ustb.apodization import Apodization
 from ustb.enums import Window
+from ustb.tools import uniform_fov_weighting
 
 
 class FakeProbe:

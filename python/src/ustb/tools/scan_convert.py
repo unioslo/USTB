@@ -40,8 +40,11 @@ def scan_convert(input_image, thetas, ranges, size_x=512, size_z=512, method="li
     range_out = np.sqrt(zs_grid**2 + xs_grid**2)
 
     interpolator = RegularGridInterpolator(
-        (ranges, thetas), input_image, method=method,
-        bounds_error=False, fill_value=-np.inf,
+        (ranges, thetas),
+        input_image,
+        method=method,
+        bounds_error=False,
+        fill_value=-np.inf,
     )
     query = np.column_stack([range_out.ravel(), theta_out.ravel()])
     scan_converted_image = interpolator(query).reshape(zs_grid.shape)

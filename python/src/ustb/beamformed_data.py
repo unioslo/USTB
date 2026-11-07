@@ -1,6 +1,10 @@
 """BeamformedData container matching MATLAB uff.beamformed_data."""
 
+import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.animation import FuncAnimation, PillowWriter
+
+from ustb.plotting import animate_beamformed_data, plot_beamformed_data
 
 
 class BeamformedData:
@@ -19,9 +23,14 @@ class BeamformedData:
             return self.data.shape[0]
         return 0
 
-    def plot(self, title="", dynamic_range=60):
-        from ustb.plotting import plot_beamformed_data
-        return plot_beamformed_data(self, title=title, dynamic_range=dynamic_range)
+    def plot(self, title="", dynamic_range=60, frame=0):
+        return plot_beamformed_data(self, title=title, dynamic_range=dynamic_range, frame=frame)
+
+    def animate(self, title="", dynamic_range=60, fps=5, controls=None):
+        """Play all frames as a looping movie; see ustb.plotting.animate_beamformed_data."""
+        return animate_beamformed_data(
+            self, title=title, dynamic_range=dynamic_range, fps=fps, controls=controls
+        )
 
     def _image_shape(self):
         """Return (N_rows, N_cols) for reshaping self.data's pixel axis.
@@ -91,8 +100,6 @@ class BeamformedData:
         Mirrors MATLAB uff.beamformed_data.save_as_gif(filename). Requires
         a single-channel image stack (e.g. dimension.both output).
         """
-        import matplotlib.pyplot as plt
-        from matplotlib.animation import FuncAnimation, PillowWriter
 
         img_stack = self.get_image(compression="log")
         if img_stack.shape[2] != 1:
@@ -105,12 +112,15 @@ class BeamformedData:
 
         fig, ax = plt.subplots()
         frame0 = img_stack[:, :, 0].T
-        im = ax.imshow(frame0, cmap="gray", vmin=-dynamic_range, vmax=0,
-                        origin="upper", aspect="auto")
+        im = ax.imshow(
+            frame0, cmap="gray", vmin=-dynamic_range, vmax=0, origin="upper", aspect="auto"
+        )
         ax.axis("off")
 
         def _title(i):
-            return f"{title}, Frame = {i + 1}/{N_frames}" if title else f"Frame = {i + 1}/{N_frames}"
+            return (
+                f"{title}, Frame = {i + 1}/{N_frames}" if title else f"Frame = {i + 1}/{N_frames}"
+            )
 
         ax.set_title(_title(0))
 

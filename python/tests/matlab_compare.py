@@ -43,9 +43,12 @@ def match_pixels(ml_coords, py_coords, atol=1e-6):
         perm[py_group] = ml_group
     assert len(np.unique(perm)) == len(perm), "Pixel matching is not one-to-one"
 
-    for axis, (ml_c, py_c) in enumerate(zip(ml_coords, py_coords)):
+    for axis, (ml_c, py_c) in enumerate(zip(ml_coords, py_coords, strict=True)):
         np.testing.assert_allclose(
-            ml_c[perm], py_c, rtol=0, atol=atol,
+            ml_c[perm],
+            py_c,
+            rtol=0,
+            atol=atol,
             err_msg=f"Scan coordinate {axis} differs after pixel matching",
         )
     return perm
@@ -77,8 +80,10 @@ def assert_pixelwise_match(ml_data, py_data, name, min_corr, max_rel_err, mask=N
     """Assert pixel-by-pixel agreement of beamformed data with MATLAB."""
     corrs, rel_errs = pixelwise_metrics(ml_data, py_data, mask)
     worst_corr, worst_err = min(corrs), max(rel_errs)
-    print(f"{name}: pixelwise envelope correlation {worst_corr:.6f}, "
-          f"relative complex error {worst_err:.2e}")
+    print(
+        f"{name}: pixelwise envelope correlation {worst_corr:.6f}, "
+        f"relative complex error {worst_err:.2e}"
+    )
     assert worst_corr > min_corr, (
         f"{name}: pixelwise envelope correlation {worst_corr:.6f} <= {min_corr}"
     )

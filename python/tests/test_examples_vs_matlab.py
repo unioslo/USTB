@@ -6,11 +6,19 @@ order them differently) and compares the beamformed data pixel by pixel.
 """
 
 import os
+
+import h5py
 import numpy as np
 import pytest
-import h5py
 
-from tests.matlab_compare import match_pixels, assert_pixelwise_match
+from examples import (
+    cpwc_linear,
+    picmus_experiment_contrast,
+    picmus_experiment_resolution,
+    picmus_simulation_contrast,
+    picmus_simulation_resolution,
+)
+from tests.matlab_compare import assert_pixelwise_match, match_pixels
 
 REF_DIR = os.path.dirname(__file__)
 DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "data")
@@ -27,8 +35,9 @@ def assert_matches_matlab(ref_file, b_data, name):
         ml_bf = (f["bf_real"][:] + 1j * f["bf_imag"][:]).T  # -> [pixel, ch, wave, frame]
         ml_x, ml_z = f["scan_x"][:], f["scan_z"][:]
     perm = match_pixels((ml_x, ml_z), (b_data.scan.x, b_data.scan.z))
-    assert_pixelwise_match(ml_bf[perm], b_data.data, name,
-                           min_corr=MIN_ENVELOPE_CORR, max_rel_err=MAX_RELATIVE_ERROR)
+    assert_pixelwise_match(
+        ml_bf[perm], b_data.data, name, min_corr=MIN_ENVELOPE_CORR, max_rel_err=MAX_RELATIVE_ERROR
+    )
 
 
 class TestCPWCLinear:
@@ -39,9 +48,7 @@ class TestCPWCLinear:
     def result(self):
         if not os.path.exists(self.DATA):
             pytest.skip("Dataset not available")
-        from examples.cpwc_linear import main
-        import matplotlib; matplotlib.use("Agg")
-        return main()
+        return cpwc_linear.main()
 
     @pytest.mark.skipif(not os.path.exists(REF), reason="Reference not available")
     def test_should_match_matlab_per_pixel(self, result):
@@ -62,9 +69,7 @@ class TestPICMUSExperimentResolution:
     def result(self):
         if not os.path.exists(self.DATA):
             pytest.skip("Dataset not available")
-        from examples.picmus_experiment_resolution import main
-        import matplotlib; matplotlib.use("Agg")
-        return main()
+        return picmus_experiment_resolution.main()
 
     @pytest.mark.skipif(not os.path.exists(REF), reason="Reference not available")
     def test_should_match_matlab_per_pixel(self, result):
@@ -82,9 +87,7 @@ class TestPICMUSSimulationResolution:
     def result(self):
         if not os.path.exists(self.DATA):
             pytest.skip("Dataset not available")
-        from examples.picmus_simulation_resolution import main
-        import matplotlib; matplotlib.use("Agg")
-        return main()
+        return picmus_simulation_resolution.main()
 
     @pytest.mark.skipif(not os.path.exists(REF), reason="Reference not available")
     def test_should_match_matlab_per_pixel(self, result):
@@ -102,9 +105,7 @@ class TestPICMUSExperimentContrast:
     def result(self):
         if not os.path.exists(self.DATA):
             pytest.skip("Dataset not available")
-        from examples.picmus_experiment_contrast import main
-        import matplotlib; matplotlib.use("Agg")
-        return main()
+        return picmus_experiment_contrast.main()
 
     @pytest.mark.skipif(not os.path.exists(REF), reason="Reference not available")
     def test_should_match_matlab_per_pixel(self, result):
@@ -122,9 +123,7 @@ class TestPICMUSSimulationContrast:
     def result(self):
         if not os.path.exists(self.DATA):
             pytest.skip("Dataset not available")
-        from examples.picmus_simulation_contrast import main
-        import matplotlib; matplotlib.use("Agg")
-        return main()
+        return picmus_simulation_contrast.main()
 
     @pytest.mark.skipif(not os.path.exists(REF), reason="Reference not available")
     def test_should_match_matlab_per_pixel(self, result):

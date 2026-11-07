@@ -3,6 +3,8 @@
 *.mat
 *.hdf5
 *.h5
+# Small MATLAB references for the Python CI comparison (generate_ci_references.m)
+!python/tests/ci_reference/*.h5
 *.mp4
 *.fig
 *.mltbx

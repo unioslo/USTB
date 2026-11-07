@@ -5,6 +5,7 @@ Applies 2D median filtering to reduce speckle and noise.
 
 import numpy as np
 from scipy.ndimage import median_filter
+
 from ustb.beamformed_data import BeamformedData
 
 
@@ -32,13 +33,15 @@ class Median:
             raise ValueError("Scan type not supported for median filter")
 
         N_frames = data.shape[3] if data.ndim > 3 else 1
-        img = data.reshape(N_rows, N_cols, 1, N_frames) if hasattr(scan, "x_axis") and scan.x_axis is not None else data.reshape(N_rows, N_cols, 1, N_frames)
+        img = (
+            data.reshape(N_rows, N_cols, 1, N_frames)
+            if hasattr(scan, "x_axis") and scan.x_axis is not None
+            else data.reshape(N_rows, N_cols, 1, N_frames)
+        )
 
         output_img = np.zeros_like(img)
         for f in range(N_frames):
-            output_img[:, :, 0, f] = median_filter(
-                np.abs(img[:, :, 0, f]), size=(self.m, self.n)
-            )
+            output_img[:, :, 0, f] = median_filter(np.abs(img[:, :, 0, f]), size=(self.m, self.n))
 
         output_data = output_img.reshape(data.shape)
         return BeamformedData(scan=scan, data=output_data.astype(np.complex64))

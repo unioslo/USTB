@@ -6,9 +6,13 @@ Run with: pytest tests/test_apodization_vs_matlab.py -v
 """
 
 import os
+
+import h5py
 import numpy as np
 import pytest
-import h5py
+from pyuff_ustb.objects import LinearScan, SectorScan
+from pyuff_ustb.objects.point import Point
+from pyuff_ustb.objects.uff import Uff
 
 from tests.matlab_compare import match_pixels
 from ustb.apodization import Apodization
@@ -25,8 +29,9 @@ pytestmark = pytest.mark.skipif(
 )
 
 ALL_WINDOWS = ["boxcar", "hanning", "hamming", "tukey25", "tukey50", "tukey75", "triangle"]
-LIMITS = dict(minimum_aperture=[3e-3, 3e-3], maximum_aperture=[20e-3, 20e-3],
-              grating_lobe_angle=[0.6, 0.6])
+LIMITS = dict(
+    minimum_aperture=[3e-3, 3e-3], maximum_aperture=[20e-3, 20e-3], grating_lobe_angle=[0.6, 0.6]
+)
 
 # (reference dataset, geometry, window, f-number, extra settings)
 CASES = (
@@ -35,8 +40,15 @@ CASES = (
     + [(f"tx_div/{w}", "tx_div", w, 1.2, {}) for w in ["hanning", "tukey50", "boxcar"]]
     + [("tx_div/tukey50_limits", "tx_div", "tukey50", 1.2, LIMITS)]
     + [(f"rx_linear/{w}", "rx_linear", w, 1.7, {}) for w in ALL_WINDOWS]
-    + [("rx_linear/hamming_tilt_limits", "rx_linear", "hamming", 1.4,
-        dict(tilt=[0.1, 0], minimum_aperture=[4e-3, 4e-3], maximum_aperture=[15e-3, 15e-3]))]
+    + [
+        (
+            "rx_linear/hamming_tilt_limits",
+            "rx_linear",
+            "hamming",
+            1.4,
+            dict(tilt=[0.1, 0], minimum_aperture=[4e-3, 4e-3], maximum_aperture=[15e-3, 15e-3]),
+        )
+    ]
     + [(f"sector/{w}", "sector", w, 1.5, {}) for w in ["hanning", "tukey25"]]
 )
 
@@ -56,10 +68,6 @@ class _SphericalWave:
 
 @pytest.fixture(scope="module")
 def setup():
-    from pyuff_ustb.objects.uff import Uff
-    from pyuff_ustb.objects import SectorScan
-    from pyuff_ustb.objects.point import Point
-
     ref = h5py.File(REFERENCE_FILE, "r")
     picmus = Uff(PICMUS_FILE)
     channel_data = picmus.read("channel_data")
@@ -70,33 +78,35 @@ def setup():
 
     # Diverging waves defined in the MATLAB script (h5py reads them as [wave, xyz])
     sources, origins = ref["tx_div/source"][:], ref["tx_div/origin"][:]
-    diverging_waves = [_SphericalWave(s, o) for s, o in zip(sources, origins)]
+    diverging_waves = [_SphericalWave(s, o) for s, o in zip(sources, origins, strict=True)]
 
     sector_scan = SectorScan()
-    sector_scan.__dict__["azimuth_axis"] = ref["sector/azimuth_axis"][:].ravel()
-    sector_scan.__dict__["depth_axis"] = ref["sector/depth_axis"][:].ravel()
-    apex = Point()
-    apex.__dict__.update(distance=np.float64(0.0), azimuth=np.float64(0.0),
-                         elevation=np.float64(0.0))
-    sector_scan.__dict__["origin"] = apex
+    sector_scan.azimuth_axis = ref["sector/azimuth_axis"][:].ravel()
+    sector_scan.depth_axis = ref["sector/depth_axis"][:].ravel()
+    apex = Point(distance=np.float64(0.0), azimuth=np.float64(0.0), elevation=np.float64(0.0))
+    sector_scan.origin = apex
 
-    linear_perm = match_pixels((ref["linear/x"][:], ref["linear/z"][:]),
-                               (linear_scan.x, linear_scan.z))
-    sector_perm = match_pixels((ref["sector/x"][:], ref["sector/z"][:]),
-                               (sector_scan.x, sector_scan.z))
+    linear_perm = match_pixels(
+        (ref["linear/x"][:], ref["linear/z"][:]), (linear_scan.x, linear_scan.z)
+    )
+    sector_perm = match_pixels(
+        (ref["sector/x"][:], ref["sector/z"][:]), (sector_scan.x, sector_scan.z)
+    )
     geometries = {
         "tx_plane": dict(sequence=plane_waves, focus=linear_scan, perm=linear_perm),
         "tx_div": dict(sequence=diverging_waves, focus=linear_scan, perm=linear_perm),
         "rx_linear": dict(probe=channel_data.probe, focus=linear_scan, perm=linear_perm),
-        "sector": dict(probe=Uff(PHASED_FILE).read("channel_data").probe,
-                       focus=sector_scan, perm=sector_perm),
+        "sector": dict(
+            probe=Uff(PHASED_FILE).read("channel_data").probe, focus=sector_scan, perm=sector_perm
+        ),
     }
     yield ref, geometries
     ref.close()
 
 
-@pytest.mark.parametrize("key, geometry, window, f_number, extra", CASES,
-                         ids=[case[0] for case in CASES])
+@pytest.mark.parametrize(
+    "key, geometry, window, f_number, extra", CASES, ids=[case[0] for case in CASES]
+)
 def test_should_match_matlab_apodization(setup, key, geometry, window, f_number, extra):
     ref, geometries = setup
     geo = geometries[geometry]
@@ -111,8 +121,9 @@ def test_should_match_matlab_apodization(setup, key, geometry, window, f_number,
     apo.sequence = geo.get("sequence")
 
     ml = ref[key][:].T[geo["perm"]]  # -> [pixel, element or wave], Python pixel order
-    np.testing.assert_allclose(apo.data, ml, rtol=0, atol=1e-5,
-                               err_msg=f"{key} differs from MATLAB")
+    np.testing.assert_allclose(
+        apo.data, ml, rtol=0, atol=1e-5, err_msg=f"{key} differs from MATLAB"
+    )
 
 
 # (reference dataset, scan, number of waves, MLA, MLA_overlap)
@@ -129,10 +140,6 @@ SCANLINE_CASES = [
 
 @pytest.fixture(scope="module")
 def scanline_setup(setup):
-    from pyuff_ustb.objects import LinearScan, SectorScan
-    from pyuff_ustb.objects.point import Point
-    from pyuff_ustb.objects.uff import Uff
-
     ref, _ = setup
     phased_sequence = Uff(PHASED_FILE).read("channel_data").sequence
     depth_axis = ref["scanline/depth_axis"][:].ravel()
@@ -140,29 +147,33 @@ def scanline_setup(setup):
     scans = {}
     for name in ("sector1", "sector2"):
         scan = SectorScan()
-        scan.__dict__["azimuth_axis"] = ref[f"scanline/{name}/azimuth_axis"][:].ravel()
-        scan.__dict__["depth_axis"] = depth_axis
-        apex = Point()
-        apex.__dict__.update(distance=np.float64(0.0), azimuth=np.float64(0.0),
-                             elevation=np.float64(0.0))
-        scan.__dict__["origin"] = apex
-        perm = match_pixels((ref[f"scanline/{name}/x"][:], ref[f"scanline/{name}/z"][:]),
-                            (scan.x, scan.z))
+        scan.azimuth_axis = ref[f"scanline/{name}/azimuth_axis"][:].ravel()
+        scan.depth_axis = depth_axis
+        apex = Point(distance=np.float64(0.0), azimuth=np.float64(0.0), elevation=np.float64(0.0))
+        scan.origin = apex
+        perm = match_pixels(
+            (ref[f"scanline/{name}/x"][:], ref[f"scanline/{name}/z"][:]), (scan.x, scan.z)
+        )
         scans[name] = (scan, perm)
 
     linear = LinearScan()
-    linear.__dict__["x_axis"] = ref["scanline/linear/x_axis"][:].ravel()
-    linear.__dict__["z_axis"] = ref["scanline/linear/z_axis"][:].ravel()
-    perm = match_pixels((ref["scanline/linear/x"][:], ref["scanline/linear/z"][:]),
-                        (linear.x, linear.z))
+    linear.x_axis = ref["scanline/linear/x_axis"][:].ravel()
+    linear.z_axis = ref["scanline/linear/z_axis"][:].ravel()
+    perm = match_pixels(
+        (ref["scanline/linear/x"][:], ref["scanline/linear/z"][:]), (linear.x, linear.z)
+    )
     scans["linear"] = (linear, perm)
     return ref, scans, phased_sequence
 
 
-@pytest.mark.parametrize("key, scan_name, n_waves, mla, overlap", SCANLINE_CASES,
-                         ids=[case[0] for case in SCANLINE_CASES])
-def test_should_match_matlab_scanline_apodization(scanline_setup, key, scan_name,
-                                                  n_waves, mla, overlap):
+@pytest.mark.parametrize(
+    "key, scan_name, n_waves, mla, overlap",
+    SCANLINE_CASES,
+    ids=[case[0] for case in SCANLINE_CASES],
+)
+def test_should_match_matlab_scanline_apodization(
+    scanline_setup, key, scan_name, n_waves, mla, overlap
+):
     ref, scans, phased_sequence = scanline_setup
     scan, perm = scans[scan_name]
 
@@ -175,5 +186,6 @@ def test_should_match_matlab_scanline_apodization(scanline_setup, key, scan_name
     apo.sequence = phased_sequence if n_waves is None else [None] * n_waves
 
     ml = ref[key][:].T[perm]
-    np.testing.assert_allclose(apo.data, ml, rtol=0, atol=1e-6,
-                               err_msg=f"{key} differs from MATLAB")
+    np.testing.assert_allclose(
+        apo.data, ml, rtol=0, atol=1e-6, err_msg=f"{key} differs from MATLAB"
+    )

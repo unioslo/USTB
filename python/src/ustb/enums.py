@@ -5,6 +5,7 @@ from enum import IntEnum
 
 class Dimension(IntEnum):
     """Controls which axes are summed in the generalized beamformer."""
+
     none = 0
     receive = 1
     transmit = 2
@@ -13,6 +14,7 @@ class Dimension(IntEnum):
 
 class Wavefront(IntEnum):
     """Type of transmitted wave."""
+
     plane = 0
     spherical = 1
     photoacoustic = 2
@@ -20,6 +22,7 @@ class Wavefront(IntEnum):
 
 class Window(IntEnum):
     """Window functions for apodization."""
+
     none = 0
     boxcar = 1
     rectangular = 1
@@ -35,6 +38,7 @@ class Window(IntEnum):
 
 class Code(IntEnum):
     """Implementation backend for DAS."""
+
     matlab = 0
     mex = 1
     python = 2

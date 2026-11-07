@@ -6,8 +6,8 @@ dimension(s), trading phase information for reduced speckle.
 
 import numpy as np
 
-from ustb.enums import Dimension
 from ustb.beamformed_data import BeamformedData
+from ustb.enums import Dimension
 
 
 class IncoherentCompounding:
