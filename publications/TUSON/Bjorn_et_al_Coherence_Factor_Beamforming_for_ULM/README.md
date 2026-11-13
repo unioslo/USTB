@@ -69,8 +69,6 @@ config if memory is short).
 | Fig. 10, rat brain DAS against CF | `invivo/parameters/compare_generic.png`, `compare_generic1.png` to `3.png` | `figures_invivo` |
 | Fig. 11 and metrics table | `invivo/parameters/metrics_comparison.png`, `invivo_metrics.txt` | `figures_invivo` |
 
-`figures_invivo` also writes the tuned-parameter and generic-against-tuned
-comparisons of the thesis (`compare_tuned*.png`, `compare_generic_tuned*.png`).
 Figs. 1 and 2 of the manuscript are drawings, and the numbered arrows and boxes
 in Fig. 10 were added by hand.
 
@@ -99,8 +97,8 @@ Precision, sensitivity and the Jaccard index are computed per chunk, and the
 mean and standard deviation over the chunks are reported.
 
 In vivo: the SVD clutter filter is applied to the RF channel data of each chunk
-before beamforming (F# 1.5, lambda/2 grid). ULM is run with the generic
-parameter sheet and with the simulation-tuned parameters. Tracks from all
+before beamforming (F# 1.5, lambda/2 grid). ULM is run with the same
+parameters for both beamformers. Tracks from all
 chunks are accumulated on a lambda/12 grid.
 
 ## Where this differs from the thesis, and open points
@@ -111,17 +109,21 @@ follows the thesis, but these choices are not stated there and had to be made:
 
 - **Noise.** The SNR definition (mean signal power of the whole chunk) and the
   noise realization (seeded per chunk).
-- **In vivo `NLocalMax` and `numberOfParticles`** for the generic sheet. The
+- **In vivo `NLocalMax` and `numberOfParticles`.** The
   `ulm.ULM` defaults (3 and 70) are used.
-- **SVD cutoff.** `cutoff = 2`, as in `examples/ulm/ULM_RatBrain_example.m`,
-  which removes the first singular vector only. This is probably too weak: on
-  one 800-frame chunk it leaves about 20 tracks that move more than two
-  wavelengths, with most accepted tracks sitting on stationary residual
-  clutter, while `cutoff = 5` (the PALA value) gives about 120 and `cutoff = 20`
-  about 175. The value used for the thesis figures must be confirmed.
+- **SVD cutoff.** `cutoff = 5`, which removes the first four singular vectors,
+  as PALA does. `examples/ulm/ULM_RatBrain_example.m` uses `cutoff = 2`, but
+  that leaves most accepted tracks on stationary residual clutter: on one
+  800-frame chunk about 20 tracks move more than two wavelengths with
+  `cutoff = 2`, against about 120 with `cutoff = 5`. The value used for the
+  thesis figures must be confirmed.
+- **One in vivo parameter set.** The thesis also runs the simulation-tuned
+  parameters on the in vivo data. That comparison is not part of the
+  manuscript and is not reproduced here.
 - **Image indices.** A 15 x 15 window for the local standard deviation,
-  256 histogram bins, and DAS with generic parameters as the histogram-matching
-  reference.
+  256 histogram bins, the DAS image as the histogram-matching
+  reference, and that the indices and the difference image are computed on
+  the power-compressed images (exponent 1/3) that are displayed.
 - **Vessel separation (Figs. 6 and 7).** The measured gap is the widest run of
   pixels below 5 % of the ground-truth maximum between the two canals. The
   simulated distance is a straight line fitted to the gap measured on the

@@ -33,8 +33,8 @@ cfg.insilico.framerate = 500;   % P.FrameRate of the PALA sequence
 cfg.insilico.numberOfParticles = 40;
 
 % Jaccard-optimal parameters at lambda/2 (manuscript Table "opulm-ulm-tuned")
-cfg.tuned.das = struct('fwhm', [5 5], 'NLocalMax', 4, 'max_linking_distance', 3);
-cfg.tuned.cf  = struct('fwhm', [3 3], 'NLocalMax', 2, 'max_linking_distance', 3);
+cfg.insilico.ulm.das = struct('fwhm', [5 5], 'NLocalMax', 4, 'max_linking_distance', 3);
+cfg.insilico.ulm.cf  = struct('fwhm', [3 3], 'NLocalMax', 2, 'max_linking_distance', 3);
 
 % Regions of interest of the simulated scene, [x_min x_max z_min z_max] in mm
 cfg.insilico.roi.horseshoe      = [-4.89 -3.62 3.59 4.75];
@@ -51,17 +51,13 @@ cfg.invivo.chunks     = 1:250;  % 250 chunks of 800 frames; missing files are sk
 cfg.invivo.f_number   = 1.5;
 cfg.invivo.upscale    = 1;      % the PALA rat-brain scan is already lambda/2
 cfg.invivo.framerate  = 1000;   % param.FrameRate of the dataset
-cfg.invivo.svd_cutoff = 2;      % keep singular vectors 2:end (removes the first)
+cfg.invivo.svd_cutoff = 5;      % keep singular vectors 5:end (removes the first four), as PALA
 
-% Generic parameter sheet (manuscript Table "invivo-parameters"), identical
-% for DAS and CF.
+% ULM parameters (manuscript Table "invivo-parameters"), identical for DAS and CF.
 % ASSUMPTION: NLocalMax and numberOfParticles are not given in the thesis;
 % the ulm.ULM class defaults (3 and 70) are used.
-cfg.invivo.generic = struct('fwhm', [5 5], 'NLocalMax', 3, ...
+cfg.invivo.ulm = struct('fwhm', [5 5], 'NLocalMax', 3, ...
     'max_linking_distance', 2, 'numberOfParticles', 70);
-% Simulation-tuned parameters carried over to the in vivo data
-cfg.invivo.tuned.das = cfg.tuned.das; cfg.invivo.tuned.das.numberOfParticles = 40;
-cfg.invivo.tuned.cf  = cfg.tuned.cf;  cfg.invivo.tuned.cf.numberOfParticles  = 40;
 
 % Regions of interest of the rat brain, [x_min x_max z_min z_max] in mm
 cfg.invivo.roi.b = [-1.35  0.99 7.35 8.98]; % deep central

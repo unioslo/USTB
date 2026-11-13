@@ -6,8 +6,8 @@
 % # the RF channel data is clutter filtered with the SVD filter, before
 %   beamforming, so that the coherence factor is estimated on bubble signal,
 % # the data is beamformed at lambda/2 with DAS and with the coherence factor,
-% # bubbles are localized and tracked with two parameter sets per beamformer:
-%   the shared generic sheet and the simulation-tuned parameters.
+% # bubbles are localized and tracked with the same ULM parameters for both
+%   beamformers.
 %
 % One result file per chunk is written to cfg.results_path, and chunks that
 % already have a result file are skipped, so the script can be stopped and
@@ -50,14 +50,10 @@ for chunk_i = chunks
     result = struct('chunk', chunk_i, 'lambda', channel_data.lambda, ...
         'scan_x_axis', scan.x_axis, 'scan_z_axis', scan.z_axis);
     for name = ["das", "cf"]
-        parameter_sets = struct('generic', cfg.invivo.generic, 'tuned', cfg.invivo.tuned.(name));
-        for sheet = ["generic", "tuned"]
-            prm = parameter_sets.(sheet);
-            [tracks, tracks_interp] = run_ulm(b_data.(name), scan, ...
-                channel_data.lambda, cfg.invivo.framerate, cfg.ulm, prm);
-            result.(name + "_" + sheet) = struct('tracks', {tracks}, ...
-                'tracks_interp', {tracks_interp}, 'parameters', prm);
-        end
+        [tracks, tracks_interp] = run_ulm(b_data.(name), scan, ...
+            channel_data.lambda, cfg.invivo.framerate, cfg.ulm, cfg.invivo.ulm);
+        result.(name) = struct('tracks', {tracks}, ...
+            'tracks_interp', {tracks_interp}, 'parameters', cfg.invivo.ulm);
     end
     save(result_file, '-struct', 'result', '-v7.3');
     fprintf('done in %.0f s.\n', toc(t_chunk));

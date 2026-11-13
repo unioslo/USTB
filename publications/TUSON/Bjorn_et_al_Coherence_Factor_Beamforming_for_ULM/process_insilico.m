@@ -43,7 +43,7 @@ for chunk_i = chunks
     result = struct('chunk', chunk_i, 'lambda', channel_data.lambda, ...
         'scan_x_axis', scan.x_axis, 'scan_z_axis', scan.z_axis);
     for name = ["das", "cf"]
-        prm = cfg.tuned.(name);
+        prm = cfg.insilico.ulm.(name);
         prm.numberOfParticles = cfg.insilico.numberOfParticles;
         [tracks, tracks_interp, u] = run_ulm(b_data.(name), scan, ...
             channel_data.lambda, cfg.insilico.framerate, cfg.ulm, prm);
