@@ -114,7 +114,11 @@ follows the thesis, but these choices are not stated there and had to be made:
 - **In vivo `NLocalMax` and `numberOfParticles`** for the generic sheet. The
   `ulm.ULM` defaults (3 and 70) are used.
 - **SVD cutoff.** `cutoff = 2`, as in `examples/ulm/ULM_RatBrain_example.m`,
-  which removes the first singular vector only.
+  which removes the first singular vector only. This is probably too weak: on
+  one 800-frame chunk it leaves about 20 tracks that move more than two
+  wavelengths, with most accepted tracks sitting on stationary residual
+  clutter, while `cutoff = 5` (the PALA value) gives about 120 and `cutoff = 20`
+  about 175. The value used for the thesis figures must be confirmed.
 - **Image indices.** A 15 x 15 window for the local standard deviation,
   256 histogram bins, and DAS with generic parameters as the histogram-matching
   reference.
