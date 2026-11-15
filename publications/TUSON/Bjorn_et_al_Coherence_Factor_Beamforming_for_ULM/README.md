@@ -129,6 +129,13 @@ follows the thesis, but these choices are not stated there and had to be made:
   cutoff of 20 gave 10 to 20 % more moving tracks than 10, and 40 gave more
   again; slow flow may start to be removed at the higher values. The value
   used for the thesis figures must be confirmed.
+- **One localization setting in silico.** Both beamformers use a 4 pixel
+  window and `NLocalMax` 3, the same as in vivo, and a linking distance of 3.
+  The thesis tuned the window per beamformer (DAS 5 pixels with `NLocalMax`
+  4, CF 3 pixels with `NLocalMax` 2) and reports Jaccard 80.3 % and 89.0 %.
+  With the common setting it is 79.0 % (DAS) and 87.7 % (CF) over the 20
+  chunks, so CF is ahead by the same 8.7 points. The window and `NLocalMax`
+  were changed together, so the two effects are not separated.
 - **One in vivo parameter set.** The thesis also runs the simulation-tuned
   parameters on the in vivo data. That comparison is not part of the
   manuscript and is not reproduced here.

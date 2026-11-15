@@ -32,9 +32,13 @@ cfg.insilico.upscale   = 2;     % native scan is lambda x lambda
 cfg.insilico.framerate = 500;   % P.FrameRate of the PALA sequence
 cfg.insilico.numberOfParticles = 40;
 
-% Jaccard-optimal parameters at lambda/2 (manuscript Table "opulm-ulm-tuned")
-cfg.insilico.ulm.das = struct('fwhm', [5 5], 'NLocalMax', 4, 'max_linking_distance', 3);
-cfg.insilico.ulm.cf  = struct('fwhm', [3 3], 'NLocalMax', 2, 'max_linking_distance', 3);
+% One localization setting for both beamformers, the same window and
+% NLocalMax as in vivo (4 pixels = 2 wavelengths on the lambda/2 grid). The
+% thesis tuned the window per beamformer (DAS [5 5] with NLocalMax 4, CF
+% [3 3] with NLocalMax 2); that comparison gives a Jaccard index of 80.3 %
+% (DAS) and 89.0 % (CF), against 79.0 % and 87.7 % with the common setting.
+cfg.insilico.ulm.das = struct('fwhm', [4 4], 'NLocalMax', 3, 'max_linking_distance', 3);
+cfg.insilico.ulm.cf  = struct('fwhm', [4 4], 'NLocalMax', 3, 'max_linking_distance', 3);
 
 % Regions of interest of the simulated scene, [x_min x_max z_min z_max] in mm
 cfg.insilico.roi.horseshoe      = [-4.89 -3.62 3.59 4.75];
