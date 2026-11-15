@@ -109,14 +109,26 @@ follows the thesis, but these choices are not stated there and had to be made:
 
 - **Noise.** The SNR definition (mean signal power of the whole chunk) and the
   noise realization (seeded per chunk).
-- **In vivo `NLocalMax` and `numberOfParticles`.** The
-  `ulm.ULM` defaults (3 and 70) are used.
-- **SVD cutoff.** `cutoff = 5`, which removes the first four singular vectors,
-  as PALA does. `examples/ulm/ULM_RatBrain_example.m` uses `cutoff = 2`, but
-  that leaves most accepted tracks on stationary residual clutter: on one
-  800-frame chunk about 20 tracks move more than two wavelengths with
-  `cutoff = 2`, against about 120 with `cutoff = 5`. The value used for the
-  thesis figures must be confirmed.
+- **In vivo `NLocalMax` and `numberOfParticles`.** `NLocalMax` is the `ulm.ULM`
+  default (3). `numberOfParticles` is 150. The localizer keeps that many of
+  the brightest maxima per frame, and with a low cap (70) DAS localizes mostly
+  near the surface and CF mostly at depth, because the two images are bright
+  at different depths. The thesis images are equally filled at all depths, so
+  the cap used there was probably not limiting. The value must be confirmed.
+- **In vivo localization window.** `fwhm = [4 4]` pixels (2 wavelengths on the
+  lambda/2 grid), not the [5 5] of the manuscript table. A sweep of 2 to 14
+  pixels on the first three buffers gave the most and the longest moving
+  tracks at 4 pixels for both beamformers, and ten buffers confirmed it: with
+  4 pixels CF has about 1.4 times as many moving tracks as DAS and 1.7 times
+  the track length. With 3 pixels DAS gets far fewer tracks, with 5 pixels CF
+  does. Windows of 7 pixels and more give almost no tracks, which has not been
+  explained.
+- **SVD cutoff.** `cutoff = 20`, which removes the first 19 singular vectors.
+  PALA uses 5 and `examples/ulm/ULM_RatBrain_example.m` uses 2, which leaves
+  most accepted tracks on stationary residual clutter. On three buffers a
+  cutoff of 20 gave 10 to 20 % more moving tracks than 10, and 40 gave more
+  again; slow flow may start to be removed at the higher values. The value
+  used for the thesis figures must be confirmed.
 - **One in vivo parameter set.** The thesis also runs the simulation-tuned
   parameters on the in vivo data. That comparison is not part of the
   manuscript and is not reproduced here.

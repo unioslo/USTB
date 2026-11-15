@@ -51,13 +51,22 @@ cfg.invivo.chunks     = 1:250;  % 250 chunks of 800 frames; missing files are sk
 cfg.invivo.f_number   = 1.5;
 cfg.invivo.upscale    = 1;      % the PALA rat-brain scan is already lambda/2
 cfg.invivo.framerate  = 1000;   % param.FrameRate of the dataset
-cfg.invivo.svd_cutoff = 5;      % keep singular vectors 5:end (removes the first four), as PALA
+cfg.invivo.svd_cutoff = 20;     % keep singular vectors 20:end (removes the first 19); PALA uses 5.
+                                % A sweep over 5, 10, 20 and 40 on the first buffers gave more moving
+                                % tracks with a stronger filter for both beamformers.
 
-% ULM parameters (manuscript Table "invivo-parameters"), identical for DAS and CF.
-% ASSUMPTION: NLocalMax and numberOfParticles are not given in the thesis;
-% the ulm.ULM class defaults (3 and 70) are used.
-cfg.invivo.ulm = struct('fwhm', [5 5], 'NLocalMax', 3, ...
-    'max_linking_distance', 2, 'numberOfParticles', 70);
+% ULM parameters, identical for DAS and CF.
+% The localization window is 4 pixels (2 lambda). A sweep of 2 to 14 pixels
+% on the first buffers gave the most and the longest tracks at 4 pixels for
+% both beamformers; it was confirmed on ten buffers. The manuscript table
+% lists 5 pixels. Windows of 7 pixels and more gave almost no tracks.
+% ASSUMPTION: NLocalMax and numberOfParticles are not given in the thesis.
+% NLocalMax is the ulm.ULM class default. numberOfParticles is set high
+% enough that the cap on localizations per frame does not decide at which
+% depth they fall (with 70, DAS localizes mostly near the surface and CF
+% mostly at depth, because the two images are bright at different depths).
+cfg.invivo.ulm = struct('fwhm', [4 4], 'NLocalMax', 3, ...
+    'max_linking_distance', 2, 'numberOfParticles', 150);
 
 % Regions of interest of the rat brain, [x_min x_max z_min z_max] in mm
 cfg.invivo.roi.b = [-1.35  0.99 7.35 8.98]; % deep central
